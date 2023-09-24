@@ -2,7 +2,9 @@
 "use client";
 
 import { Container } from "@/components/Container";
+import { Heading } from "@/components/Heading";
 import { Project } from "@prisma/client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -17,8 +19,17 @@ export default function Home() {
   return (
     <main>
       <Container>
-        <h1>Client List</h1>
-        <a href="/project/create">Create Client</a>
+        <div className="flex flex-row items-center justify-between">
+          <Heading>Project List</Heading>
+          <Link
+            className="
+            text-blue-500
+            "
+            href="/project/create"
+          >
+            Create Project
+          </Link>
+        </div>
         <table>
           <thead>
             <tr>
