@@ -1,5 +1,12 @@
 # Ducking MVP
 
+## Steps to run the app:
+
+1. Clone the repo
+2. Run `yarn` to install dependencies
+3. Run `docker-compose up` to start the DB
+4. Run `yarn dev` to start the app
+
 ## Useful commands
 
 ```bash
