@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@mui/material";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -15,8 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ThemeProvider theme={defaultTheme}>
+      <html lang="en">
+        <body className={inter.className}>{children}</body>
+      </html>
+    </ThemeProvider>
   );
 }
