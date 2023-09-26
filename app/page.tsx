@@ -19,16 +19,9 @@ export default function Home() {
   return (
     <main>
       <Container>
-        <div className="flex flex-row items-center justify-between">
+        <div>
           <Heading>Project List</Heading>
-          <Link
-            className="
-            text-blue-500
-            "
-            href="/project/create"
-          >
-            Create Project
-          </Link>
+          <Link href="/project/create">Create Project</Link>
         </div>
         <table>
           <thead>

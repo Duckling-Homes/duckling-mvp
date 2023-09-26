@@ -1,7 +1,6 @@
 "use client";
 import { Container } from "@/components/Container";
 import { Heading } from "@/components/Heading";
-import { buttonStyling } from "@/components/styling";
 import { useState } from "react";
 
 export default function Page() {
@@ -45,7 +44,7 @@ export default function Page() {
       <div>
         <Heading>Add Project</Heading>
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-2 mb-4">
+          <div>
             <label htmlFor="name">Name:</label>
             <input
               type="text"
@@ -56,7 +55,7 @@ export default function Page() {
               required
             />
           </div>
-          <div className="flex flex-col gap-2 mb-4">
+          <div>
             <label htmlFor="homeownerName">Homeowner Name:</label>
             <input
               type="text"
@@ -67,7 +66,7 @@ export default function Page() {
               required
             />
           </div>
-          <div className="flex flex-col gap-2 mb-4">
+          <div>
             <label htmlFor="homeownerPhone">Homeowner Phone:</label>
             <input
               type="tel"
@@ -78,7 +77,7 @@ export default function Page() {
               required
             />
           </div>
-          <div className="flex flex-col gap-2 mb-4">
+          <div>
             <label htmlFor="homeownerEmail">Homeowner Email:</label>
             <input
               type="email"
@@ -89,9 +88,7 @@ export default function Page() {
               required
             />
           </div>
-          <button className={buttonStyling} type="submit">
-            Add Project
-          </button>
+          <button type="submit">Add Project</button>
         </form>
       </div>
     </Container>
