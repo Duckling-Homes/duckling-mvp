@@ -1,8 +1,10 @@
+"use client";
+
 import { HomeOutlined, MenuOutlined } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 
 import { checkDeviceType } from "../../hooks/checkDeviceType";
-import "./style.scss";
+import "./styles.scss";
 
 const Header = () => {
   const device = checkDeviceType();

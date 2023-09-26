@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Footer from "./Footer";
+import Header from "./Header";
 
 export const Container = (props: {
   children: React.ReactNode;
@@ -10,6 +13,7 @@ export const Container = (props: {
         minHeight: "100vh",
       }}
     >
+      <Header />
       <header>
         <Link href="/">Duckling</Link>
       </header>
