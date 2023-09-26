@@ -4,8 +4,9 @@
 
 1. Clone the repo
 2. Run `yarn` to install dependencies
-3. Run `docker-compose up` to start the DB
-4. Run `yarn dev` to start the app
+3. Copy .env.example to .env
+4. Run `docker-compose up` to start the DB
+5. Run `yarn dev` to start the app
 
 ## Useful commands
 
