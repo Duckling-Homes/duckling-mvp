@@ -6,7 +6,8 @@
     "dev": "prisma migrate dev && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -27,9 +28,13 @@
     "react-dom": "18.2.0",
     "sass": "^1.68.0",
     "typescript": "5.2.2",
+    "uuid": "^9.0.1",
     "yarn": "^1.22.19"
   },
   "devDependencies": {
-    "prisma": "^5.3.1"
+    "@types/uuid": "^9.0.4",
+    "prisma": "^5.3.1",
+    "vitest": "^0.34.5",
+    "vitest-mock-extended": "^1.2.1"
   }
 }
