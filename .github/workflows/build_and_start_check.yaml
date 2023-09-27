@@ -24,7 +24,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.7.0'  # specify Node.js version here
+          node-version: '20.7.0'
 
       # Install dependencies
       - name: Install dependencies
@@ -37,8 +37,15 @@ jobs:
       # Start the app and wait for 10 seconds
       - name: Start and wait
         run: |
+          echo "Starting the application..."
           yarn start &
           APP_PID=$!
+          echo "Application started with PID $APP_PID. Waiting for 10 seconds to ensure it stays running..."
           sleep 10
-          kill -0 $APP_PID || exit 1
-          kill $APP_PID
+          if kill -0 $APP_PID; then
+            echo "Application is still running. Proceeding..."
+            kill $APP_PID
+          else
+            echo "Application is not running. Failing the check."
+            exit 1
+          fi
