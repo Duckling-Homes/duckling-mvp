@@ -36,7 +36,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-<<<<<<< HEAD
 # vscode
 .idea
 
@@ -46,4 +45,3 @@ package-lock.json
 # next-pwa generated
 **/public/workbox-*.js
 **/public/sw.js
->>>>>>> 2f731181741d623f39b914056095d2678f69f692
