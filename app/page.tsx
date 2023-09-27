@@ -6,15 +6,69 @@ import { Heading } from "@/components/Heading";
 import { Project } from "@prisma/client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import createServer from '../fakeAPI/server';
+import { DataGrid } from "@mui/x-data-grid";
+import { checkDeviceType } from "@/hooks/checkDeviceType";
+import { Button } from "@mui/material";
+
+createServer()
 
 export default function Home() {
-  const [projects, setProject] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const device = checkDeviceType();
+
 
   useEffect(() => {
-    fetch("/api/project/")
+    fetch("/fakeapi/projects/")
       .then((response) => response.json())
-      .then((data) => setProject(data));
+      .then(({ projects }) => setProjects(projects));
   }, []);
+
+  const columns = [
+    { field: 'projectName', headerName: 'Project Name', flex: true },
+    { field: 'name', headerName: 'Name', flex: true },
+    { field: 'address', headerName: 'Address', flex: true },
+    { field: 'created', headerName: 'Created', flex: true },
+    {
+      field: 'edit',
+      headerName: '',
+      renderCell: (params) => (
+        <div style={{
+          padding: '16px'
+        }}>
+          <Button
+            variant="contained"
+            size="small"
+            href="/project/123"
+          >
+            Edit
+          </Button>
+        </div>
+      ),
+    },
+  ]
+
+  const mobileColumns = [
+    { field: 'projectName', headerName: 'Project Name', flex: true },
+    {
+      field: 'edit',
+      headerName: '',
+      renderCell: (params) => (
+        <div style={{
+          padding: '16px'
+        }}>
+          <Button
+            variant="contained"
+            size="small"
+            href="/project/123"
+          >
+            Edit
+          </Button>
+        </div>
+      ),
+    },
+  ]
+
 
   return (
     <main>
@@ -23,28 +77,21 @@ export default function Home() {
           <Heading>Project List</Heading>
           <Link href="/project/create">Create Project</Link>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Homeowner Name</th>
-              <th>Homeowner Phone</th>
-              <th>Homeowner Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            {projects.map((project) => (
-              <tr key={project.id}>
-                <td>{project.id}</td>
-                <td>{project.name}</td>
-                <td>{project.homeownerName}</td>
-                <td>{project.homeownerPhone}</td>
-                <td>{project.homeownerEmail}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataGrid
+          rows={projects}
+          columns={device === 'phone' ? mobileColumns : columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          sx={{
+            borderTopLeftRadius: '0px',
+            borderTopRightRadius: '0px',
+            borderWidth: '0px',
+          }}
+          pageSizeOptions={[5, 10]}
+        />
       </Container>
     </main>
   );
