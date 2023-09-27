@@ -7,28 +7,51 @@ import { Project } from "@prisma/client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import createServer from '../fakeAPI/server';
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { checkDeviceType } from "@/hooks/checkDeviceType";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 createServer()
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const device = checkDeviceType();
 
 
   useEffect(() => {
     fetch("/fakeapi/projects/")
       .then((response) => response.json())
-      .then(({ projects }) => setProjects(projects));
+      .then(({ projects }) => {
+        setProjects(projects);
+        setFilteredProjects(projects);
+      });
   }, []);
 
-  const columns = [
-    { field: 'projectName', headerName: 'Project Name', flex: true },
-    { field: 'name', headerName: 'Name', flex: true },
-    { field: 'address', headerName: 'Address', flex: true },
-    { field: 'created', headerName: 'Created', flex: true },
+  function searchData(searchValue: string) {
+    if (searchValue === '') {
+      setFilteredProjects(projects)
+      return
+    }
+
+    let lowerCaseSearch = searchValue.toLowerCase()
+
+    let result = projects.filter(project =>
+      Object.values(project).some(prop =>
+        typeof prop === 'string' && prop.toLocaleLowerCase().includes(lowerCaseSearch)
+      )
+    )
+
+    setFilteredProjects(result)
+  }
+
+
+  const columns: GridColDef[] = [
+    { field: 'projectName', headerName: 'Project Name', flex: 1 },
+    { field: 'name', headerName: 'Name', flex: 1 },
+    { field: 'address', headerName: 'Address', flex: 1 },
+    { field: 'created', headerName: 'Created', flex: 1 },
     {
       field: 'edit',
       headerName: '',
@@ -48,8 +71,8 @@ export default function Home() {
     },
   ]
 
-  const mobileColumns = [
-    { field: 'projectName', headerName: 'Project Name', flex: true },
+  const mobileColumns: GridColDef[] = [
+    { field: 'projectName', headerName: 'Project Name', flex: 1 },
     {
       field: 'edit',
       headerName: '',
@@ -68,17 +91,31 @@ export default function Home() {
       ),
     },
   ]
-
 
   return (
     <main>
       <Container>
-        <div>
-          <Heading>Project List</Heading>
-          <Link href="/project/create">Create Project</Link>
+        <div className='projectList__upperWrapper'>
+          <div className='projectList__header'>
+            <p>My Projects</p>
+            <Button
+              variant='contained'
+              startIcon={<Add />}
+              color='primary'>New Project</Button>
+          </div>
+          <TextField
+            id="outlined-basic"
+            label="Search"
+            variant="outlined"
+            placeholder='Name, address'
+            sx={{
+              width: 300
+            }}
+            onChange={({ target }) => searchData(target.value)}
+          />
         </div>
         <DataGrid
-          rows={projects}
+          rows={filteredProjects}
           columns={device === 'phone' ? mobileColumns : columns}
           initialState={{
             pagination: {
