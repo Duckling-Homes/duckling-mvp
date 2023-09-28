@@ -1,5 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { apiErrorHandler } from "@/app/utils/apiErrorHandler";
 import { deleteProject, getProject, updateProject } from "../repository";
 import { NextRequest, NextResponse } from "next/server";
 

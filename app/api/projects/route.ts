@@ -1,6 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { createProject, getProjects } from "./repository";
-import { apiErrorHandler } from "@/app/utils/apiErrorHandler";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
