@@ -8,11 +8,22 @@ import { NextRequest, NextResponse } from "next/server";
  * example: curl -X POST http://localhost:3000/api/projects -d '{"name":"Renovation Seattle", "homeownerName":"Rahul Patni", "homeownerPhone":"123-231-1233", "homeownerEmail":"asdf@asdf.com"}' -H "Content-Type: application/json"
  */
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const { name, homeownerName, homeownerPhone, homeownerEmail, homeownerAddress } =
-    await req.json();
+  const {
+    name,
+    homeownerName,
+    homeownerPhone,
+    homeownerEmail,
+    homeownerAddress,
+  } = await req.json();
 
   return NextResponse.json(
-    await createProject({ name, homeownerName, homeownerPhone, homeownerEmail, homeownerAddress })
+    await createProject({
+      name,
+      homeownerName,
+      homeownerPhone,
+      homeownerEmail,
+      homeownerAddress,
+    }),
   );
 }
 

@@ -1,19 +1,17 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { apiErrorHandler } from "@/app/utils/apiErrorHandler";
 import { deleteProject, getProject, updateProject } from "../repository";
+import { NextRequest, NextResponse } from "next/server";
 
 /**
  * Get project by id
  * exmaple: curl http://localhost:3000/api/projects/[id]
  */
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
-  const project = await getProject(id as string);
-  if (project) {
-    res.json(project);
-  } else {
-    res.status(404).json({ message: "Project not found" });
-  }
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  return NextResponse.json(await getProject(params.id));
 }
 
 /**
