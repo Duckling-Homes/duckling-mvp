@@ -64,4 +64,3 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     apiErrorHandler(err as Error, res);
   }
 }
-
