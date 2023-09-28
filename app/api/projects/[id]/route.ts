@@ -18,14 +18,11 @@ export async function GET(
  * Delete a project by id
  * exmaple: curl -X DELETE http://localhost:3000/api/projects/[id]
  */
-export async function DELETE(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
-  const project = await deleteProject(id as string);
-  if (project) {
-    res.json(project);
-  } else {
-    res.status(404).json({ message: "Project not found" });
-  }
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  return NextResponse.json(await deleteProject(params.id));
 }
 
 /**
