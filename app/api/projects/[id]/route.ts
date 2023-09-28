@@ -29,26 +29,25 @@ export async function DELETE(
  * Update a project
  * exmaple: curl -X PATCH http://localhost:3000/api/projects/[id] -d '{"name":"Renovation Seattle", "homeownerName":"Rahul Patni", "homeownerPhone":"123-231-1233", "homeownerEmail":"asdf@asdf.com"}' -H "Content-Type: application/json"
  */
-export async function PATCH(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
   const {
     name,
     homeownerName,
     homeownerPhone,
     homeownerEmail,
     homeownerAddress,
-  } = req.body;
+  } = await req.json();
 
-  const project = await updateProject(id as string, {
-    name,
-    homeownerName,
-    homeownerPhone,
-    homeownerEmail,
-    homeownerAddress,
-  });
-  if (project) {
-    res.json(project);
-  } else {
-    res.status(404).json({ message: "Project not found" });
-  }
+  return NextResponse.json(
+    await updateProject(params.id, {
+      name,
+      homeownerName,
+      homeownerPhone,
+      homeownerEmail,
+      homeownerAddress,
+    }),
+  );
 }
