@@ -17,7 +17,7 @@ export async function getProjects() {
 
 export async function getProject(id: string) {
   const project = await prisma.project.findUnique({
-    where: { id }
+    where: { id },
   });
 
   return project;
@@ -29,10 +29,13 @@ export async function deleteProject(id: string) {
   });
 }
 
-export async function updateProject(id: string, projectUpdates: Prisma.ProjectUpdateInput) {
+export async function updateProject(
+  id: string,
+  projectUpdates: Prisma.ProjectUpdateInput,
+) {
   const updatedProject = await prisma.project.update({
     where: { id },
-    data: projectUpdates
+    data: projectUpdates,
   });
 
   return updatedProject;

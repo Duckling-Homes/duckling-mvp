@@ -12,10 +12,10 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   if (project) {
     res.json(project);
   } else {
-    res.status(404).json({ message: 'Project not found' });
+    res.status(404).json({ message: "Project not found" });
   }
 }
- 
+
 /**
  * Delete a project by id
  * exmaple: curl -X DELETE http://localhost:3000/api/projects/[id]
@@ -26,7 +26,7 @@ export async function DELETE(req: NextApiRequest, res: NextApiResponse) {
   if (project) {
     res.json(project);
   } else {
-    res.status(404).json({ message: 'Project not found' });
+    res.status(404).json({ message: "Project not found" });
   }
 }
 
@@ -36,31 +36,42 @@ export async function DELETE(req: NextApiRequest, res: NextApiResponse) {
  */
 export async function PATCH(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
-  const { name, homeownerName, homeownerPhone, homeownerEmail, homeownerAddress } = req.body;
+  const {
+    name,
+    homeownerName,
+    homeownerPhone,
+    homeownerEmail,
+    homeownerAddress,
+  } = req.body;
 
-  const project = await updateProject(id as string, { name, homeownerName, homeownerPhone, homeownerEmail, homeownerAddress });
+  const project = await updateProject(id as string, {
+    name,
+    homeownerName,
+    homeownerPhone,
+    homeownerEmail,
+    homeownerAddress,
+  });
   if (project) {
     res.json(project);
   } else {
-    res.status(404).json({ message: 'Project not found' });
+    res.status(404).json({ message: "Project not found" });
   }
 }
-
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
-      case 'GET':
+      case "GET":
         return GET(req, res);
-      case 'DELETE':
+      case "DELETE":
         return DELETE(req, res);
-      case 'PATCH':
+      case "PATCH":
         return PATCH(req, res);
       default:
-        res.setHeader('Allow', ['GET', 'DELETE']);
+        res.setHeader("Allow", ["GET", "DELETE"]);
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   } catch (err) {
     apiErrorHandler(err as Error, res);
   }
-}
+};
