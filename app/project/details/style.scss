@@ -1,0 +1,57 @@
+.dataCollection {
+  $self: &;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 32px;
+    gap: 16px;
+
+    #{$self}__photoWrapper {
+      width: 160px;
+      position: relative;
+
+      img {
+        height: 130px;
+      }
+
+      button {
+        position: absolute;
+        z-index: 200;
+        left: 30px;
+        bottom: 20px;
+      }
+    }
+
+    #{$self}__projectInfo {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      flex: 1;
+
+      #{$self}__title {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 500;
+      }
+
+      #{$self}__infoWrapper {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+
+        #{$self}__info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 12px;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}
