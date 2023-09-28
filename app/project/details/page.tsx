@@ -61,19 +61,19 @@ const DataCollection = () => {
           Edit
         </Button>
       </div>
-      <div>
-        <div>
-          Home Info
-        </div>
-        <div>
-          Plans
-        </div>
-        <div>
-          Present
-        </div>
+      <div style={{
+        padding: '8px 24px 16px 24px',
+        display: 'flex',
+        gap: '24px',
+        justifyContent: 'center',
+      }}>
+        <Button variant="outlined">Home Info</Button>
+        <Button variant="outlined">Plans</Button>
+        <Button variant="outlined">Present</Button>
       </div>
       <div>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs sx={{ background: '#FAFAFA' }}
+          variant="fullWidth" value={value} onChange={handleChange}>
           <Tab label="Basics" {...a11yProps(0)} />
           <Tab label="Objectives" {...a11yProps(1)} />
           <Tab label="Insulation" {...a11yProps(2)} />
