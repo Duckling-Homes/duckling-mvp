@@ -21,6 +21,14 @@ $ npx prisma migrate dev
 $ npx prisma generate
 ```
 
-Notes:
+## Steps to run a migration
+
+1. Change the schema
+2. Run `npx prisma migrate dev` to run the migration
+3. Run `npx prisma generate` to generate the client
+
+Note: If there are breaking changes caused by the migration, refer to the [documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate) on ways to handle it.
+
+## Notes
 
 1. We are going to build most pages as client pages. This is primarily because of the offline nature of the product.
