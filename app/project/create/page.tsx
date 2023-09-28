@@ -21,7 +21,7 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("/api/project/", {
+    const response = await fetch("/api/projects/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
