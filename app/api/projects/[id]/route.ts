@@ -1,5 +1,6 @@
-import { deleteProject, getProject, updateProject } from "../repository";
+import { ensureUserExists } from "@/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
+import { getProject, updateProject } from "../repository";
 
 /**
  * Get project by id
@@ -7,9 +8,23 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
-  return NextResponse.json(await getProject(params.id));
+  const project = await getProject(params.id);
+  if (!project) {
+    return NextResponse.json(
+      { message: `No project with id ${params.id} exists.` },
+      { status: 404 }
+    );
+  }
+  const user = await ensureUserExists(req);
+  if (project.userId !== user.id) {
+    return NextResponse.json(
+      { message: `You are not authorized to perform this action` },
+      { status: 401 }
+    );
+  }
+  return NextResponse.json(project);
 }
 
 /**
@@ -18,9 +33,24 @@ export async function GET(
  */
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
-  return NextResponse.json(await deleteProject(params.id));
+  const project = await getProject(params.id);
+  if (!project) {
+    return NextResponse.json(
+      { message: `No project with id ${params.id} exists.` },
+      { status: 404 }
+    );
+  }
+  const user = await ensureUserExists(req);
+  if (project.userId !== user.id) {
+    return NextResponse.json(
+      { message: `You are not authorized to perform this action` },
+      { status: 401 }
+    );
+  }
+
+  return NextResponse.json(project);
 }
 
 /**
@@ -29,8 +59,24 @@ export async function DELETE(
  */
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
+  const project = await getProject(params.id);
+  if (!project) {
+    return NextResponse.json(
+      { message: `No project with id ${params.id} exists.` },
+      { status: 404 }
+    );
+  }
+
+  const user = await ensureUserExists(req);
+  if (project.userId !== user.id) {
+    return NextResponse.json(
+      { message: `You are not authorized to perform this action` },
+      { status: 401 }
+    );
+  }
+
   const {
     name,
     homeownerName,
@@ -46,6 +92,6 @@ export async function PATCH(
       homeownerPhone,
       homeownerEmail,
       homeownerAddress,
-    }),
+    })
   );
 }

@@ -31,7 +31,7 @@ export async function deleteProject(id: string) {
 
 export async function updateProject(
   id: string,
-  projectUpdates: Prisma.ProjectUpdateInput,
+  projectUpdates: Prisma.ProjectUpdateInput
 ) {
   const updatedProject = await prisma.project.update({
     where: { id },
