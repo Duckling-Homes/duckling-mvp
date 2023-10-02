@@ -1,10 +1,13 @@
 'use client';
 
+
+// TODO: Change this to Roboto
 import { Inter } from "next/font/google";
-import "./globals.scss";
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+import "./globals.scss";
 
 // import ducklingTheme from "./style/theme/theme" // Here whenever we decide to move to our own theme
 

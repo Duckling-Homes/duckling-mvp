@@ -1,18 +1,15 @@
-// though we don't need to do this, I think we're not going to accommodate server side components because of the offline nature of the product
 "use client";
 
-import { Container } from "@/components/Container";
-import { Heading } from "@/components/Heading";
-import { Project } from "@prisma/client";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import createServer from '../fakeAPI/server';
+import { Container } from "@/components/Container";
+import { Project } from "@prisma/client";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { checkDeviceType } from "@/hooks/checkDeviceType";
 import { Button, TextField } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
-createServer()
+import './style.scss'
+
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -21,12 +18,13 @@ export default function Home() {
 
 
   useEffect(() => {
-    fetch("/fakeapi/projects/")
-      .then((response) => response.json())
-      .then(({ projects }) => {
-        setProjects(projects);
-        setFilteredProjects(projects);
-      });
+    // TODO: Use this whenever the real API is available
+    // fetch("/fakeapi/projects/")
+    //   .then((response) => response.json())
+    //   .then(({ projects }) => {
+    //     setProjects(projects);
+    //     setFilteredProjects(projects);
+    //   });
   }, []);
 
   function searchData(searchValue: string) {
@@ -62,7 +60,7 @@ export default function Home() {
           <Button
             variant="contained"
             size="small"
-            href="/project/123"
+            href="/project/details/123"
           >
             Edit
           </Button>
@@ -83,7 +81,7 @@ export default function Home() {
           <Button
             variant="contained"
             size="small"
-            href="/project/123"
+            href="/project/details/123"
           >
             Edit
           </Button>

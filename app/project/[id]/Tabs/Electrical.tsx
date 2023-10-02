@@ -1,8 +1,8 @@
 "use client";
 
-const Electrical = ({ hidden }) => {
+const Electrical = () => {
   return (
-    <div hidden={hidden}>
+    <div>
       Electrical
     </div>
   )

@@ -1,8 +1,8 @@
 "use client";
 
-const Rooms = ({ hidden }) => {
+const Rooms = () => {
   return (
-    <div hidden={hidden}>
+    <div>
       Rooms
     </div>
   )

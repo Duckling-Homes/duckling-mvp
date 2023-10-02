@@ -1,8 +1,8 @@
 "use client";
 
-const Photos = ({ hidden }) => {
+const Photos = () => {
   return (
-    <div hidden={hidden}>
+    <div>
       Photos
     </div>
   )

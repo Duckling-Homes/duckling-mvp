@@ -1,8 +1,8 @@
 "use client";
 
-const Objectives = ({ hidden }) => {
+const Objectives = ({ }) => {
   return (
-    <div hidden={hidden}>
+    <div>
       Objectives
     </div>
   )

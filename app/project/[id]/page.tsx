@@ -1,32 +1,30 @@
 "use client";
 
-import { Button, Tab, Tabs } from "@mui/material"
-import { CalendarMonth, Edit, Home, Person } from "@mui/icons-material"
-
-import PlaceHolderPhoto from '../../assets/placeholder-image.png'
-
-import './style.scss'
-import { useState } from "react"
+import { useState } from "react";
+import { Button, Tab, Tabs } from "@mui/material";
+import { CalendarMonth, Edit, Home, Person } from "@mui/icons-material";
+import Image from "next/image";
+import { Container } from "@/components/Container";
+import PlaceHolderPhoto from '../../assets/placeholder-image.png';
 import {
   Basics, Objectives, Envelope, Rooms,
   Appliances, Electrical, Photos
-} from './Tabs/index'
-import Image from "next/image";
-import { Container } from "@/components/Container";
+} from './Tabs/index';
+
+import './style.scss'
 
 const DataCollection = () => {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState<number>(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: number) => {
     setValue(newValue);
   };
 
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
+  const renderTabContent = (index: number, component: JSX.Element) => (
+    <div hidden={value !== index}>
+      {component}
+    </div>
+  );
 
   return (
     <Container>
@@ -76,21 +74,21 @@ const DataCollection = () => {
         <div>
           <Tabs sx={{ background: '#FAFAFA' }}
             variant="fullWidth" value={value} onChange={handleChange}>
-            <Tab label="Basics" {...a11yProps(0)} />
-            <Tab label="Objectives" {...a11yProps(1)} />
-            <Tab label="Envelope" {...a11yProps(2)} />
-            <Tab label="Rooms" {...a11yProps(3)} />
-            <Tab label="Appliances" {...a11yProps(4)} />
-            <Tab label="Electrical" {...a11yProps(5)} />
-            <Tab label="Photos" {...a11yProps(6)} />
+            <Tab label="Basics" />
+            <Tab label="Objectives" />
+            <Tab label="Envelope" />
+            <Tab label="Rooms" />
+            <Tab label="Appliances" />
+            <Tab label="Electrical" />
+            <Tab label="Photos" />
           </Tabs>
-          <Basics hidden={value !== 0} />
-          <Objectives hidden={value !== 1} />
-          <Envelope hidden={value !== 2} />
-          <Rooms hidden={value !== 3} />
-          <Appliances hidden={value !== 4} />
-          <Electrical hidden={value !== 5} />
-          <Photos hidden={value !== 6} />
+          {renderTabContent(0, <Basics />)}
+          {renderTabContent(1, <Objectives />)}
+          {renderTabContent(2, <Envelope />)}
+          {renderTabContent(3, <Rooms />)}
+          {renderTabContent(4, <Appliances />)}
+          {renderTabContent(5, <Electrical />)}
+          {renderTabContent(6, <Photos />)}
         </div>
       </div>
     </Container>

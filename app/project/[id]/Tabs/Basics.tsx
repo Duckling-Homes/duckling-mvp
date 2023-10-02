@@ -4,9 +4,9 @@ import { AddPhotoAlternate } from "@mui/icons-material";
 import { Button, Divider, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const Basics = ({ hidden }) => {
+const Basics = ({ }) => {
   return (
-    <div hidden={hidden} style={{
+    <div style={{
       display: 'flex',
       flexDirection: 'column',
       padding: '32px',
@@ -53,9 +53,10 @@ const Basics = ({ hidden }) => {
             id="basement-type-select"
             label="Basement Type"
           >
-            <MenuItem value={0}>No Basement</MenuItem>
-            <MenuItem value={1}>Option 2</MenuItem>
-            <MenuItem value={2}>Option 3</MenuItem>
+            <MenuItem value={0}>Finished</MenuItem>
+            <MenuItem value={1}>Unfinished</MenuItem>
+            <MenuItem value={2}>Crawlspace</MenuItem>
+            <MenuItem value={2}>No Basement</MenuItem>
           </Select>
         </FormControl>
       </form>
