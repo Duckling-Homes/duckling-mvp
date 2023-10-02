@@ -1,12 +1,7 @@
-'use client';
-
 
 // TODO: Change this to Roboto
 import { Inter } from "next/font/google";
 
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-        
 import { Metadata } from "next";
 
 import "./globals.scss";
@@ -26,9 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          {children}
-        </LocalizationProvider>
+        {children}
       </body>
     </html>
   );
