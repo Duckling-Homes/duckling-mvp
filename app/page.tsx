@@ -25,6 +25,9 @@ export default function Home() {
     //     setProjects(projects);
     //     setFilteredProjects(projects);
     //   });
+    fetch("/api/projects/")
+      .then((response) => response.json())
+      .then((data) => setProjects(data));
   }, []);
 
   function searchData(searchValue: string) {
