@@ -33,6 +33,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
  * Get all projects
  * exmaple: curl http://localhost:3000/api/projects
  */
-export async function GET(): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  await ensureUserExists(req);
   return NextResponse.json(await getProjects());
 }

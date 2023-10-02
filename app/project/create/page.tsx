@@ -9,6 +9,7 @@ export default function Page() {
     homeownerName: "",
     homeownerPhone: "",
     homeownerEmail: "",
+    homeownerAddress: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +85,17 @@ export default function Page() {
               id="homeownerEmail"
               name="homeownerEmail"
               value={formData.homeownerEmail}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="homeownerEmail">Homeowner Address:</label>
+            <input
+              type="text"
+              id="homeownerAddress"
+              name="homeownerAddress"
+              value={formData.homeownerAddress}
               onChange={handleChange}
               required
             />

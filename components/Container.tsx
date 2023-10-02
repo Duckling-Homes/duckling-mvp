@@ -1,5 +1,6 @@
 "use client";
 
+import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -14,6 +15,7 @@ export const Container = (props: {
       }}
     >
       <Header />
+      <UserButton afterSignOutUrl="/" />
       <header>
         <Link href="/">Duckling</Link>
       </header>

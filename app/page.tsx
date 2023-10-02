@@ -3,11 +3,26 @@
 
 import { Container } from "@/components/Container";
 import { Heading } from "@/components/Heading";
+import { useUser } from "@clerk/nextjs";
 import { Project } from "@prisma/client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+  const { isLoaded, isSignedIn } = useUser();
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isSignedIn) {
+    return (
+      <Container>
+        <Heading>You must be signed in to view this page</Heading>
+      </Container>
+    );
+  }
+
   const [projects, setProject] = useState<Project[]>([]);
 
   useEffect(() => {
