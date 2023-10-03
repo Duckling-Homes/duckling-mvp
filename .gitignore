@@ -45,3 +45,4 @@ package-lock.json
 # next-pwa generated
 **/public/workbox-*.js
 **/public/sw.js
+**/public/worker-*.js
