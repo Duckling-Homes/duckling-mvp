@@ -9,6 +9,7 @@ import { Add, Check, Close } from "@mui/icons-material";
 
 import './style.scss'
 import customFetch from "./helpers/customFetch";
+import Link from "next/link";
 
 interface Project {
   id: number;
@@ -276,13 +277,14 @@ export default function Home() {
         <div style={{
           padding: '16px'
         }}>
-          <Button
-            variant="contained"
-            size="small"
-            href="/project/details/123"
-          >
-            Edit
-          </Button>
+          <Link href={`/project/${params.id}`} passHref>
+            <Button
+              variant="contained"
+              size="small"
+            >
+              Edit
+            </Button>
+          </Link>
         </div>
       ),
     },
