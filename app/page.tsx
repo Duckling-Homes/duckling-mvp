@@ -27,6 +27,7 @@ interface NewProject {
   homeownerAddress: string;
 }
 
+// TODO: Create a new modal component?
 const CreateProjectModal: React.FC<{
   open: boolean;
   onClose: () => void;
@@ -47,6 +48,16 @@ const CreateProjectModal: React.FC<{
     }));
   };
 
+  const resetState = () => {
+    setNewProjectData({
+      name: '',
+      homeownerName: '',
+      homeownerPhone: '',
+      homeownerEmail: '',
+      homeownerAddress: '',
+    });
+  };
+
   const isSaveButtonEnabled =
     newProjectData.name &&
     newProjectData.homeownerName &&
@@ -58,6 +69,10 @@ const CreateProjectModal: React.FC<{
     <Modal
       open={open}
       className="createModal"
+      onClose={() => {
+        onClose();
+        resetState(); // Reset the state when the modal is closed
+      }}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
@@ -76,12 +91,13 @@ const CreateProjectModal: React.FC<{
             <Close />
           </IconButton>
         </div>
-        <form className='modal__form'>
+        <form className='createModal__form'>
           <FormControl>
             <TextField
               onChange={
                 ({ target }) => handleDataChange('homeownerName', target.value)
               }
+              fullWidth
               id="outlined-basic"
               label="Client Name"
               variant="outlined"
@@ -141,7 +157,7 @@ const CreateProjectModal: React.FC<{
             />
           </FormControl>
         </form>
-        <div>
+        <div className="createModal__footer">
           <Button
             variant='contained'
             startIcon={<Check />}
@@ -201,15 +217,51 @@ export default function Home() {
     setFilteredProjects(result)
   }
 
-  function createProject(newProject: Project) {
-    fetch("/api/projects/", {
-      method: 'POST',
-      body: JSON.stringify(newProject),
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-    setOpenModal(false)
+  async function fetchProjects() {
+    try {
+      const response = await fetch("/api/projects/");
+      if (!response.ok) {
+        throw new Error('Failed to fetch projects');
+      }
+
+      const data = await response.json();
+      return data.map((project: Project) => ({
+        ...project,
+        createdAt: new Date(project.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+      }));
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      return [];
+    }
   }
+
+  async function createProject(newProject: NewProject) {
+    try {
+      const response = await fetch("/api/projects/", {
+        method: 'POST',
+        body: JSON.stringify(newProject),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create project');
+      }
+      const updatedProjects = await fetchProjects();
+      setProjects(updatedProjects);
+      setFilteredProjects(updatedProjects);
+      setOpenModal(false);
+    } catch (error) {
+      console.error('Error creating project:', error);
+      // Handle the error here (e.g., show a notification to the user)
+    }
+  }
+
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Project Name', flex: 1 },
