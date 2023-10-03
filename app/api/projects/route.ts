@@ -31,6 +31,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
  * Get all projects
  * exmaple: curl http://localhost:3000/api/projects
  */
-export async function GET(): Promise<NextResponse> {
-  return NextResponse.json(await getProjects());
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  const searchParams = req.nextUrl.searchParams
+  const organizationId = searchParams.get('organizationId')
+
+  return NextResponse.json(await getProjects(organizationId ? { organizationId } : {}));
 }
