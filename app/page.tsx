@@ -183,7 +183,11 @@ export default function Home() {
 
 
   useEffect(() => {
-    fetch("/api/projects/")
+    fetch("/api/projects/", {
+      headers: {
+        'Organization-Context': 'fake-org'
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const projectsWithFormattedDate = data.map((project: Project) => ({
@@ -220,7 +224,11 @@ export default function Home() {
   // TODO: Transform this into a global state
   async function fetchProjects() {
     try {
-      const response = await fetch("/api/projects/");
+      const response = await fetch("/api/projects/", {
+        headers: {
+          'Organization-Context': 'fake-org'
+        },
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch projects');
       }
@@ -247,6 +255,7 @@ export default function Home() {
         body: JSON.stringify(newProject),
         headers: {
           'Content-Type': 'application/json',
+          'Organization-Context': 'fake-org'
         },
       });
 
