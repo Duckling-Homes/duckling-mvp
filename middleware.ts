@@ -8,7 +8,7 @@ export const config = {
 export function middleware(request: NextRequest): NextResponse | void {
   // Check for the existence and validity of the 'organization-context' header
   // For now, we simply check that it exists
-  const orgContext = request.headers.get('organization-context') || request.headers.get('Organization-Context');
+  const orgContext = request.headers.get('organization-context')
   
   // TODO change this to include making sure the org matches the user org in the metadata
   if (orgContext === null || orgContext.trim() === '') {
