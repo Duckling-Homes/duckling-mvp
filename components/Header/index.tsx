@@ -5,8 +5,20 @@ import { IconButton } from "@mui/material";
 
 import { checkDeviceType } from "../../hooks/checkDeviceType";
 import "./styles.scss";
+import { useState } from "react";
+import CustomMenu from "../Menu";
 
 const Header = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const device = checkDeviceType();
 
   return (
@@ -32,10 +44,12 @@ const Header = () => {
           color: "#fff",
           padding: device === "phone" ? "8px 12px" : "8px 22px",
         }}
+        onClick={handleClick}
         aria-label="delete"
       >
         <MenuOutlined fontSize={device === "phone" ? "small" : "large"} />
       </IconButton>
+      <CustomMenu open={open} anchorEl={anchorEl} handleClose={handleClose} />
     </div>
   );
 };
