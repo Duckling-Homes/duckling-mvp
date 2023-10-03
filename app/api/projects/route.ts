@@ -35,5 +35,5 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const orgContext = req.headers.get('organization-context')
 
-  return NextResponse.json(await getProjects( {organizationId: orgContext as string}));
+  return NextResponse.json(await getProjects(orgContext as string));
 }

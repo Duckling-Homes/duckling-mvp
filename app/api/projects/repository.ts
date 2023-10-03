@@ -9,9 +9,9 @@ export async function createProject(project: Prisma.ProjectCreateInput) {
   return createdProject;
 }
 
-export async function getProjects(filter: { organizationId?: string }) {
+export async function getProjects(organizationId: string) {
   const projects = await prisma.project.findMany({
-    where: filter
+    where: { organizationId }
   });
 
   return projects;
