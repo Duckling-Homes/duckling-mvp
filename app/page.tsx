@@ -8,6 +8,7 @@ import { Button, FormControl, IconButton, Modal, TextField } from "@mui/material
 import { Add, Check, Close } from "@mui/icons-material";
 
 import './style.scss'
+import customFetch from "./helpers/customFetch";
 
 interface Project {
   id: number;
@@ -183,7 +184,7 @@ export default function Home() {
 
 
   useEffect(() => {
-    fetch("/api/projects/")
+    customFetch("/api/projects/")
       .then((response) => response.json())
       .then((data) => {
         const projectsWithFormattedDate = data.map((project: Project) => ({
@@ -220,7 +221,7 @@ export default function Home() {
   // TODO: Transform this into a global state
   async function fetchProjects() {
     try {
-      const response = await fetch("/api/projects/");
+      const response = await customFetch("/api/projects/");
       if (!response.ok) {
         throw new Error('Failed to fetch projects');
       }
@@ -242,7 +243,7 @@ export default function Home() {
 
   async function createProject(newProject: NewProject) {
     try {
-      const response = await fetch("/api/projects/", {
+      const response = await customFetch("/api/projects/", {
         method: 'POST',
         body: JSON.stringify(newProject),
         headers: {
