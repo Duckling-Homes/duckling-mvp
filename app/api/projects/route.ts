@@ -12,7 +12,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     homeownerPhone,
     homeownerEmail,
     homeownerAddress,
-    organizationId,
   } = await req.json();
 
   return NextResponse.json(
@@ -22,7 +21,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       homeownerPhone,
       homeownerEmail,
       homeownerAddress,
-      organizationId,
+      organizationId: 'your-organization-id', // Update to get the org-id from the header
     }),
   );
 }
