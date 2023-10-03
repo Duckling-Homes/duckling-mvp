@@ -2,32 +2,186 @@
 
 import { useEffect, useState } from "react";
 import { Container } from "@/components/Container";
-import { Project } from "@prisma/client";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { checkDeviceType } from "@/hooks/checkDeviceType";
-import { Button, TextField } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Button, FormControl, IconButton, Modal, TextField } from "@mui/material";
+import { Add, Check, Close } from "@mui/icons-material";
 
 import './style.scss'
 
+interface Project {
+  id: number;
+  name: string;
+  homeownerName: string;
+  homeownerPhone: string;
+  homeownerEmail: string;
+  homeownerAddress: string;
+  createdAt: string;
+}
+
+interface NewProject {
+  name: string;
+  homeownerName: string;
+  homeownerPhone: string;
+  homeownerEmail: string;
+  homeownerAddress: string;
+}
+
+const CreateProjectModal: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  onConfirm: (newProject: NewProject) => void;
+}> = ({ open, onConfirm, onClose }) => {
+  const [newProjectData, setNewProjectData] = useState<NewProject>({
+    name: '',
+    homeownerName: '',
+    homeownerPhone: '',
+    homeownerEmail: '',
+    homeownerAddress: '',
+  })
+
+  const handleDataChange = (fieldName: string, value: string) => {
+    setNewProjectData((prevData) => ({
+      ...prevData,
+      [fieldName]: value,
+    }));
+  };
+
+  const isSaveButtonEnabled =
+    newProjectData.name &&
+    newProjectData.homeownerName &&
+    newProjectData.homeownerAddress &&
+    newProjectData.homeownerEmail &&
+    newProjectData.homeownerPhone;
+
+  return (
+    <Modal
+      open={open}
+      className="createModal"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
+    >
+      <div className="createModal__content">
+        <div className="createModal__header">
+          <p>New Project</p>
+          <IconButton
+            sx={{
+              borderRadius: '4px',
+              border: '1px solid #2196F3',
+              color: '#2196F3',
+              padding: '4px 10px',
+            }}
+            onClick={onClose}
+            aria-label="close">
+            <Close />
+          </IconButton>
+        </div>
+        <form className='modal__form'>
+          <FormControl>
+            <TextField
+              onChange={
+                ({ target }) => handleDataChange('homeownerName', target.value)
+              }
+              id="outlined-basic"
+              label="Client Name"
+              variant="outlined"
+              value={newProjectData.homeownerName}
+              required
+              placeholder='Client Name'
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              onChange={({ target }) => handleDataChange('name', target.value)}
+              id="outlined-basic"
+              label="Project Name"
+              variant="outlined"
+              value={newProjectData.name}
+              required
+              placeholder='Project Name'
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              onChange={
+                ({ target }) => handleDataChange('homeownerAddress', target.value)
+              }
+              id="outlined-basic"
+              label="Project Address"
+              variant="outlined"
+              value={newProjectData.homeownerAddress}
+              required
+              placeholder='Project Address'
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              onChange={
+                ({ target }) => handleDataChange('homeownerEmail', target.value)
+              }
+              id="outlined-basic"
+              label="Client Email Address"
+              variant="outlined"
+              value={newProjectData.homeownerEmail}
+              required
+              placeholder='Client Email Address'
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              onChange={
+                ({ target }) => handleDataChange('homeownerPhone', target.value)
+              }
+              id="outlined-basic"
+              label="Client Phone Number"
+              variant="outlined"
+              value={newProjectData.homeownerPhone}
+              required
+              placeholder='Client Phone Number'
+            />
+          </FormControl>
+        </form>
+        <div>
+          <Button
+            variant='contained'
+            startIcon={<Check />}
+            onClick={() => onConfirm(newProjectData)}
+            disabled={!isSaveButtonEnabled}
+            size='small'
+            sx={{
+              marginLeft: 'auto'
+            }}
+            color='primary'>Save
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const device = checkDeviceType();
 
 
   useEffect(() => {
-    // TODO: Use this whenever the real API is available
-    // fetch("/fakeapi/projects/")
-    //   .then((response) => response.json())
-    //   .then(({ projects }) => {
-    //     setProjects(projects);
-    //     setFilteredProjects(projects);
-    //   });
     fetch("/api/projects/")
       .then((response) => response.json())
-      .then((data) => setProjects(data));
+      .then((data) => {
+        const projectsWithFormattedDate = data.map((project: Project) => ({
+          ...project,
+          createdAt: new Date(project.createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+        }));
+
+        setProjects(projectsWithFormattedDate);
+        setFilteredProjects(projectsWithFormattedDate);
+      });
   }, []);
 
   function searchData(searchValue: string) {
@@ -47,12 +201,21 @@ export default function Home() {
     setFilteredProjects(result)
   }
 
+  function createProject(newProject: Project) {
+    fetch("/api/projects/", {
+      method: 'POST',
+      body: JSON.stringify(newProject),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+    setOpenModal(false)
+  }
 
   const columns: GridColDef[] = [
-    { field: 'projectName', headerName: 'Project Name', flex: 1 },
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'address', headerName: 'Address', flex: 1 },
-    { field: 'created', headerName: 'Created', flex: 1 },
+    { field: 'name', headerName: 'Project Name', flex: 1 },
+    { field: 'homeownerName', headerName: 'Name', flex: 1 },
+    { field: 'homeownerAddress', headerName: 'Address', flex: 1 },
+    { field: 'createdAt', headerName: 'Created', flex: 1 },
     {
       field: 'edit',
       headerName: '',
@@ -73,7 +236,7 @@ export default function Home() {
   ]
 
   const mobileColumns: GridColDef[] = [
-    { field: 'projectName', headerName: 'Project Name', flex: 1 },
+    { field: 'name', headerName: 'Project Name', flex: 1 },
     {
       field: 'edit',
       headerName: '',
@@ -95,6 +258,10 @@ export default function Home() {
 
   return (
     <main>
+      <CreateProjectModal
+        open={openModal}
+        onConfirm={(newProject: Project) => createProject(newProject)}
+      />
       <Container>
         <div className='projectList__upperWrapper'>
           <div className='projectList__header'>
@@ -102,6 +269,7 @@ export default function Home() {
             <Button
               variant='contained'
               startIcon={<Add />}
+              onClick={() => setOpenModal(true)}
               color='primary'>New Project</Button>
           </div>
           <TextField

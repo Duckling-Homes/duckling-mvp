@@ -24,3 +24,27 @@
     }
   }
 }
+
+.createModal {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    background-color: #FFF;
+
+    p {
+      padding: 16px 24px;
+    }
+
+    div {
+      display: flex;
+      justify-content: end;
+      padding: 8px;
+    }
+
+  }
+}
