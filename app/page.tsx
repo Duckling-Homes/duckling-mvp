@@ -71,7 +71,7 @@ const CreateProjectModal: React.FC<{
       className="createModal"
       onClose={() => {
         onClose();
-        resetState(); // Reset the state when the modal is closed
+        resetState();
       }}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
@@ -86,7 +86,7 @@ const CreateProjectModal: React.FC<{
               color: '#2196F3',
               padding: '4px 10px',
             }}
-            onClick={onClose}
+            onClick={() => onClose()}
             aria-label="close">
             <Close />
           </IconButton>
@@ -217,6 +217,7 @@ export default function Home() {
     setFilteredProjects(result)
   }
 
+  // TODO: Transform this into a global state
   async function fetchProjects() {
     try {
       const response = await fetch("/api/projects/");
@@ -258,7 +259,6 @@ export default function Home() {
       setOpenModal(false);
     } catch (error) {
       console.error('Error creating project:', error);
-      // Handle the error here (e.g., show a notification to the user)
     }
   }
 
@@ -312,7 +312,8 @@ export default function Home() {
     <main>
       <CreateProjectModal
         open={openModal}
-        onConfirm={(newProject: Project) => createProject(newProject)}
+        onConfirm={(newProject: NewProject) => createProject(newProject)}
+        onClose={() => setOpenModal(false)}
       />
       <Container>
         <div className='projectList__upperWrapper'>
