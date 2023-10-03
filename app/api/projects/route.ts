@@ -14,6 +14,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     homeownerAddress,
   } = await req.json();
 
+  const orgContext = req.headers.get('organization-context')
+
   return NextResponse.json(
     await createProject({
       name,
@@ -21,7 +23,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       homeownerPhone,
       homeownerEmail,
       homeownerAddress,
-      organizationId: 'your-organization-id', // Update to get the org-id from the header
+      organizationId: orgContext as string,
     }),
   );
 }
@@ -29,11 +31,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 /**
  * Get all projects
  * exmaple: curl http://localhost:3000/api/projects
- * example: curl "http://localhost:3000/api/projects?organizationId=ORG-ID"
  */
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const searchParams = req.nextUrl.searchParams
-  const organizationId = searchParams.get('organizationId')
+  const orgContext = req.headers.get('organization-context')
 
-  return NextResponse.json(await getProjects(organizationId ? { organizationId } : {}));
+  return NextResponse.json(await getProjects( {organizationId: orgContext as string}));
 }
