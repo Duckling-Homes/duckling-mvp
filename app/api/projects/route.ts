@@ -30,6 +30,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 /**
  * Get all projects
  * exmaple: curl http://localhost:3000/api/projects
+ * example: curl "http://localhost:3000/api/projects?organizationId=ORG-ID"
  */
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const searchParams = req.nextUrl.searchParams
