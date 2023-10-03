@@ -5,7 +5,6 @@ export async function createOrganization(organization: Prisma.OrganizationCreate
   return await prisma.organization.create({
     data: organization,
   });
-
 }
 
 export async function getOrganizations() {

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { deleteOrganization, getOrganization, updateOrganization } from "../repository";
 
 /**
- * Get project by id
+ * Get an organization by id
  * exmaple: curl http://localhost:3000/api/organizations/[id]
  */
 export async function GET(
@@ -13,7 +13,7 @@ export async function GET(
 }
 
 /**
- * Delete a project by id
+ * Delete an organization by id
  * exmaple: curl -X DELETE http://localhost:3000/api/organizations/[id]
  */
 export async function DELETE(
@@ -24,7 +24,7 @@ export async function DELETE(
 }
 
 /**
- * Update a project
+ * Update an organization
  * exmaple: curl -X PATCH http://localhost:3000/api/organizations/[id] -d '{"name":"Duckling & Co"}' -H "Content-Type: application/json"
  */
 export async function PATCH(
