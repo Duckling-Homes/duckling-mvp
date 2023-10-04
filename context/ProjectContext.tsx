@@ -5,6 +5,7 @@ import customFetch from "@/app/helpers/customFetch";
 interface ProjectContextProps {
   currentProject: Project | null;
   fetchProject: (projectId: string) => Promise<void>;
+  patchProject: (project: Project) => Promise<void>;
 }
 
 const ProjectContext = createContext<ProjectContextProps | undefined>(undefined);
@@ -34,9 +35,24 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   }
 
+  async function patchProject(project: Project) {
+    try {
+      const response = await customFetch(`/api/project${project.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(project),
+      })
+
+      const data = await response.json();
+      setCurrentProject(data);
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
+  }
+
   const contextValue: ProjectContextProps = {
     currentProject,
     fetchProject,
+    patchProject,
   };
 
   return (

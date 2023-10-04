@@ -24,16 +24,14 @@ const EditProjectModal: React.FC<{
   onConfirm: (updatedProject: Project) => void;
   project: Project;
 }> = ({ open, onConfirm, onClose, project }) => {
-  const [newProjectData, setNewProjectData] = useState<Project>({ project })
+  const [projectInfo, setProjectInfo] = useState<Project>(project)
 
   const handleDataChange = (fieldName: string, value: string) => {
-    setNewProjectData((prevData) => ({
+    setProjectInfo((prevData) => ({
       ...prevData,
       [fieldName]: value,
     }));
   };
-
-  const isSaveButtonEnabled = Object.values(newProjectData).every(Boolean);
 
   return (
     <Modal
@@ -45,7 +43,7 @@ const EditProjectModal: React.FC<{
     >
       <div className="createModal__content">
         <div className="createModal__header">
-          <p>{project?.name}</p>
+          <p>{projectInfo?.name}</p>
           <IconButton
             sx={{
               borderRadius: '4px',
@@ -68,7 +66,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Client Name"
               variant="outlined"
-              value={project?.homeownerName}
+              value={projectInfo?.homeownerName}
               required
               placeholder='Client Name'
             />
@@ -79,7 +77,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Project Name"
               variant="outlined"
-              value={project?.name}
+              value={projectInfo?.name}
               required
               placeholder='Project Name'
             />
@@ -92,7 +90,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Project Address"
               variant="outlined"
-              value={project?.homeownerAddress}
+              value={projectInfo?.homeownerAddress}
               required
               placeholder='Project Address'
             />
@@ -105,7 +103,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Client Email Address"
               variant="outlined"
-              value={project?.homeownerEmail}
+              value={projectInfo?.homeownerEmail}
               required
               placeholder='Client Email Address'
             />
@@ -118,7 +116,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Client Phone Number"
               variant="outlined"
-              value={project?.homeownerPhone}
+              value={projectInfo?.homeownerPhone}
               required
               placeholder='Client Phone Number'
             />
@@ -128,8 +126,8 @@ const EditProjectModal: React.FC<{
           <Button
             variant='contained'
             startIcon={<Check />}
-            onClick={() => onConfirm(newProjectData)}
-            disabled={!isSaveButtonEnabled}
+            onClick={() => onConfirm(projectInfo)}
+            // disabled={!isSaveButtonEnabled}
             size='small'
             sx={{
               marginLeft: 'auto'
@@ -145,7 +143,7 @@ const EditProjectModal: React.FC<{
 const DataCollection = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
-  const { currentProject, fetchProject } = useProjectContext();
+  const { currentProject, fetchProject, patchProject } = useProjectContext();
   const { id } = useParams()
 
   useEffect(() => {
@@ -163,13 +161,17 @@ const DataCollection = () => {
     </div>
   );
 
+  async function handleUpdateProject(projectInfo) {
+    patchProject(projectInfo)
+  }
+
   return (
     <>
       <EditProjectModal
         open={openModal}
         project={currentProject}
         onClose={() => setOpenModal(false)}
-        onConfirm={() => console.log('Modal')}
+        onConfirm={handleUpdateProject}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       />
