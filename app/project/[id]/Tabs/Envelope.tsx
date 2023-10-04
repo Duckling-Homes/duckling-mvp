@@ -35,7 +35,7 @@ const TEST = [
     leakiness: "leaky",
     notes: "AAAAAAAAAAAAAAAAAAAAAAA"
   },
-]
+];
 
 interface Envelope {
   name: string;
@@ -90,6 +90,7 @@ const Envelope = () => {
       <ChipManager
         chips={envelopes}
         currentChip={currentEnvelope}
+        chipType="Envelope"
         onChipClick={(i: number) => setCurrentEnvelope(envelopes[i])}
       />
       <div style={{

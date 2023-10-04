@@ -10,7 +10,10 @@ import './style.scss'
 interface ChipManagerProps {
   chips: Envelope[];
   currentChip: Envelope;
-  onChipClick: (i: number) => void;
+  onChipClick: (i: string) => void;
+  chipType: string;
+  onDelete: (i: string) => void;
+  onCreate: () => void;
 }
 
 const DeleteModal: React.FC<{
@@ -44,24 +47,34 @@ const ChipManager: React.FC<ChipManagerProps> = ({
   chips,
   currentChip,
   onChipClick,
+  chipType,
+  onDelete,
+  onCreate,
 }) => {
   const [deleteEnvelope, setDeleteEnvelope] = useState<{
-    name?: string;
-  }>({});
+    id: string;
+    name: string;
+  }>({
+    id: "",
+    name: "",
+  });
 
   const handleDeleteClick = () => {
-    // Handle delete action here
-    // You can use deleteEnvelope.name to identify which envelope to delete
-    // Make sure to implement this functionality
-    // Example: onDelete(deleteEnvelope.name);
-    setDeleteEnvelope({});
+    onDelete(deleteEnvelope.id);
+    setDeleteEnvelope({
+      id: "",
+      name: "",
+    });
   };
 
   return (
     <>
       <DeleteModal
         open={!!deleteEnvelope.name}
-        onClose={() => setDeleteEnvelope({})}
+        onClose={() => setDeleteEnvelope({
+          id: "",
+          name: "",
+        })}
         onConfirm={handleDeleteClick}
         envelopeName={deleteEnvelope.name}
       />
@@ -85,8 +98,14 @@ const ChipManager: React.FC<ChipManagerProps> = ({
         }
         <Button
           variant="contained"
-          size="small" startIcon={<Add />}>
-          Add Envelope
+          size="small"
+          startIcon={<Add />}
+          onClick={onCreate}
+          sx={{
+            width: '200px',
+          }}
+        >
+          Add {chipType}
         </Button>
       </div>
     </>
