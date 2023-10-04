@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Tab, Tabs } from "@mui/material";
-import { CalendarMonth, Edit, Home, Person } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { Button, FormControl, IconButton, Modal, Tab, Tabs, TextField } from "@mui/material";
+import { CalendarMonth, Check, Close, Edit, Home, Person } from "@mui/icons-material";
 import Image from "next/image";
 import { Container } from "@/components/Container";
 import PlaceHolderPhoto from '../../assets/placeholder-image.png';
@@ -12,9 +12,146 @@ import {
 } from './Tabs/index';
 
 import './style.scss'
+import { NewProject, Project } from "@/types/types";
+import { useProjectContext } from "@/context/ProjectContext";
+import { useParams } from "next/navigation";
+
+// TODO: Definitely transform this into a component
+
+const EditProjectModal: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  onConfirm: (updatedProject: Project) => void;
+  project: Project;
+}> = ({ open, onConfirm, onClose, project }) => {
+  const [newProjectData, setNewProjectData] = useState<Project>({ project })
+
+  const handleDataChange = (fieldName: string, value: string) => {
+    setNewProjectData((prevData) => ({
+      ...prevData,
+      [fieldName]: value,
+    }));
+  };
+
+  const isSaveButtonEnabled = Object.values(newProjectData).every(Boolean);
+
+  return (
+    <Modal
+      open={open}
+      className="createModal"
+      onClose={() => onClose()}
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
+    >
+      <div className="createModal__content">
+        <div className="createModal__header">
+          <p>{project?.name}</p>
+          <IconButton
+            sx={{
+              borderRadius: '4px',
+              border: '1px solid #2196F3',
+              color: '#2196F3',
+              padding: '4px 10px',
+            }}
+            onClick={onClose}
+            aria-label="close">
+            <Close />
+          </IconButton>
+        </div>
+        <form className='createModal__form'>
+          <FormControl>
+            <TextField
+              onChange={
+                ({ target }) => handleDataChange('homeownerName', target.value)
+              }
+              fullWidth
+              id="outlined-basic"
+              label="Client Name"
+              variant="outlined"
+              value={project?.homeownerName}
+              required
+              placeholder='Client Name'
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              onChange={({ target }) => handleDataChange('name', target.value)}
+              id="outlined-basic"
+              label="Project Name"
+              variant="outlined"
+              value={project?.name}
+              required
+              placeholder='Project Name'
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              onChange={
+                ({ target }) => handleDataChange('homeownerAddress', target.value)
+              }
+              id="outlined-basic"
+              label="Project Address"
+              variant="outlined"
+              value={project?.homeownerAddress}
+              required
+              placeholder='Project Address'
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              onChange={
+                ({ target }) => handleDataChange('homeownerEmail', target.value)
+              }
+              id="outlined-basic"
+              label="Client Email Address"
+              variant="outlined"
+              value={project?.homeownerEmail}
+              required
+              placeholder='Client Email Address'
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              onChange={
+                ({ target }) => handleDataChange('homeownerPhone', target.value)
+              }
+              id="outlined-basic"
+              label="Client Phone Number"
+              variant="outlined"
+              value={project?.homeownerPhone}
+              required
+              placeholder='Client Phone Number'
+            />
+          </FormControl>
+        </form>
+        <div className="createModal__footer">
+          <Button
+            variant='contained'
+            startIcon={<Check />}
+            onClick={() => onConfirm(newProjectData)}
+            disabled={!isSaveButtonEnabled}
+            size='small'
+            sx={{
+              marginLeft: 'auto'
+            }}
+            color='primary'>Save
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
 
 const DataCollection = () => {
-  const [value, setValue] = useState<number>(0);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [value, setValue] = useState<number>(0); //TODO: rename this please
+  const { currentProject, fetchProject } = useProjectContext();
+  const { id } = useParams()
+
+  useEffect(() => {
+    fetchProject(id)
+    console.log(currentProject)
+  }, [id]);
 
   const handleChange = (event: any, newValue: number) => {
     setValue(newValue);
@@ -28,6 +165,14 @@ const DataCollection = () => {
 
   return (
     <>
+      <EditProjectModal
+        open={openModal}
+        project={currentProject}
+        onClose={() => setOpenModal(false)}
+        onConfirm={() => console.log('Modal')}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      />
       <Container>
         <div className="dataCollection">
           <div className="dataCollection__header">
@@ -41,22 +186,24 @@ const DataCollection = () => {
               </Button>
             </div>
             <div className="dataCollection__projectInfo">
-              <p className="dataCollection__title">1640 Riverside Drive</p>
+              <p className="dataCollection__title">{currentProject?.name}</p>
               <div className="dataCollection__infoWrapper">
                 <span className="dataCollection__info">
-                  <Home />1640 Riverside Drive, Hill Valley, CA
+                  <Home />{currentProject?.homeownerAddress}
                 </span>
                 <span className="dataCollection__info">
-                  <Person /> Emmett Brown
+                  <Person />{currentProject?.homeownerName}
                 </span>
                 <span className="dataCollection__info">
-                  <CalendarMonth /> August 8, 2023
+                  {/* TODO: make this beautiful */}
+                  <CalendarMonth />{currentProject?.createdAt}
                 </span>
               </div>
             </div>
             <Button
               variant="contained"
               size="small"
+              onClick={() => setOpenModal(true)}
               startIcon={<Edit />}
             >
               Edit

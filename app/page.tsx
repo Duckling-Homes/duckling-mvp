@@ -59,8 +59,8 @@ const CreateProjectModal: React.FC<{
         onClose();
         resetState();
       }}
-      aria-labelledby="modal-title"
-      aria-describedby="modal-description"
+      aria-labelledby="new-project-modal"
+      aria-describedby="add-project-modal"
     >
       <div className="createModal__content">
         <div className="createModal__header">

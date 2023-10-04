@@ -5,12 +5,10 @@ import { NewProject, Project } from "@/types/types";
 
 import customFetch from "@/app/helpers/customFetch";
 
-
-// Define the shape of the context
 interface ProjectListContextProps {
   projects: Project[];
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
-  fetchProjects: () => Promise<Project[]>;
+  fetchProjects: () => Promise<void>;
   createProject: (newProject: NewProject) => Promise<void>;
 }
 
@@ -31,7 +29,6 @@ export const ProjectListProvider: React.FC<{
 }> = ({ children }) => {
 
   const [projects, setProjects] = useState<Project[]>([]);
-  const [openModal, setOpenModal] = useState<boolean>(false);
 
   useEffect(() => {
     fetchProjects();
