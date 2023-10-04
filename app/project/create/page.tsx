@@ -1,4 +1,5 @@
 "use client";
+import customFetch from "@/app/helpers/customFetch";
 import { Container } from "@/components/Container";
 import { Heading } from "@/components/Heading";
 import { useState } from "react";
@@ -22,10 +23,11 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("/api/projects/", {
+    const response = await customFetch("/api/projects/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ""
       },
       body: JSON.stringify(formData),
     });

@@ -10,9 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// This can be created via a webhook with Clerk 
+// https://clerk.com/docs/users/sync-data
 model User {
-  id      String    @id
-  Project Project[]
+  id String @id
 }
 
 model Project {
@@ -24,7 +25,4 @@ model Project {
   homeownerAddress String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now()) @updatedAt
-
-  userId String
-  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
