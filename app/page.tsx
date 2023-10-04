@@ -14,7 +14,7 @@ import {
 import { Add, Check, Close } from "@mui/icons-material";
 import Link from "next/link";
 import { NewProject, Project } from "@/types/types";
-import { useProjectContext } from "@/context/ProjectsContext";
+import { useProjectListContext } from "@/context/ProjectListContext";
 
 import './style.scss'
 
@@ -166,7 +166,7 @@ export default function Home() {
     projects,
     fetchProjects,
     createProject,
-  } = useProjectContext();
+  } = useProjectListContext();
 
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);

@@ -1,12 +1,12 @@
 'use client';
+import React from "react";
 
-import { ProjectProvider } from "@/context/ProjectsContext";
+import { ProjectListProvider } from "@/context/ProjectListContext";
 
-
-export function Providers({ children }) {
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ProjectProvider>
+    <ProjectListProvider>
       {children}
-    </ProjectProvider>
+    </ProjectListProvider>
   );
 }

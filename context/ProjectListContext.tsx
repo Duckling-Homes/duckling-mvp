@@ -7,26 +7,26 @@ import customFetch from "@/app/helpers/customFetch";
 
 
 // Define the shape of the context
-interface ProjectContextProps {
+interface ProjectListContextProps {
   projects: Project[];
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
   fetchProjects: () => Promise<Project[]>;
   createProject: (newProject: NewProject) => Promise<void>;
 }
 
-const ProjectContext = createContext<ProjectContextProps | undefined>(
+const ProjectListContext = createContext<ProjectListContextProps | undefined>(
   undefined
 );
 
-export const useProjectContext = () => {
-  const context = useContext(ProjectContext);
+export const useProjectListContext = () => {
+  const context = useContext(ProjectListContext);
   if (!context) {
-    throw new Error("useProjectContext must be used within a ProjectProvider");
+    throw new Error("useProjectListContext must be used within a ProjectProvider");
   }
   return context;
 };
 
-export const ProjectProvider: React.FC<{
+export const ProjectListProvider: React.FC<{
   children: React.ReactNode
 }> = ({ children }) => {
 
@@ -78,7 +78,7 @@ export const ProjectProvider: React.FC<{
     }
   }
 
-  const contextValue: ProjectContextProps = {
+  const contextValue: ProjectListContextProps = {
     projects,
     setProjects,
     fetchProjects,
@@ -86,8 +86,8 @@ export const ProjectProvider: React.FC<{
   };
 
   return (
-    <ProjectContext.Provider value={contextValue}>
+    <ProjectListContext.Provider value={contextValue}>
       {children}
-    </ProjectContext.Provider>
+    </ProjectListContext.Provider>
   );
 };
