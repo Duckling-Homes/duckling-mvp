@@ -1,84 +1,86 @@
-"use client";
+'use client'
 
-import { Container } from "@/components/Container";
-import { checkDeviceType } from "@/hooks/checkDeviceType";
-import { Add, Check, Close } from "@mui/icons-material";
+import { Container } from '@/components/Container'
+import { checkDeviceType } from '@/hooks/checkDeviceType'
+import { Add, Check, Close } from '@mui/icons-material'
 import {
   Button,
   FormControl,
   IconButton,
   Modal,
   TextField,
-} from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+} from '@mui/material'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { useEffect, useState } from 'react'
 
-import customFetch from "./helpers/customFetch";
-import "./style.scss";
+import customFetch from './helpers/customFetch'
+import './style.scss'
+
+import './style.scss'
 
 interface Project {
-  id: number;
-  name: string;
-  homeownerName: string;
-  homeownerPhone: string;
-  homeownerEmail: string;
-  homeownerAddress: string;
-  createdAt: string;
+  id: number
+  name: string
+  homeownerName: string
+  homeownerPhone: string
+  homeownerEmail: string
+  homeownerAddress: string
+  createdAt: string
 }
 
 interface NewProject {
-  name: string;
-  homeownerName: string;
-  homeownerPhone: string;
-  homeownerEmail: string;
-  homeownerAddress: string;
+  name: string
+  homeownerName: string
+  homeownerPhone: string
+  homeownerEmail: string
+  homeownerAddress: string
 }
 
 // TODO: Create a new modal component?
 const CreateProjectModal: React.FC<{
-  open: boolean;
-  onClose: () => void;
-  onConfirm: (newProject: NewProject) => void;
+  open: boolean
+  onClose: () => void
+  onConfirm: (newProject: NewProject) => void
 }> = ({ open, onConfirm, onClose }) => {
   const [newProjectData, setNewProjectData] = useState<NewProject>({
-    name: "",
-    homeownerName: "",
-    homeownerPhone: "",
-    homeownerEmail: "",
-    homeownerAddress: "",
-  });
+    name: '',
+    homeownerName: '',
+    homeownerPhone: '',
+    homeownerEmail: '',
+    homeownerAddress: '',
+  })
 
   const handleDataChange = (fieldName: string, value: string) => {
     setNewProjectData((prevData) => ({
       ...prevData,
       [fieldName]: value,
-    }));
-  };
+    }))
+  }
 
   const resetState = () => {
     setNewProjectData({
-      name: "",
-      homeownerName: "",
-      homeownerPhone: "",
-      homeownerEmail: "",
-      homeownerAddress: "",
-    });
-  };
+      name: '',
+      homeownerName: '',
+      homeownerPhone: '',
+      homeownerEmail: '',
+      homeownerAddress: '',
+    })
+  }
 
   const isSaveButtonEnabled =
     newProjectData.name &&
     newProjectData.homeownerName &&
     newProjectData.homeownerAddress &&
     newProjectData.homeownerEmail &&
-    newProjectData.homeownerPhone;
+    newProjectData.homeownerPhone
 
   return (
     <Modal
       open={open}
       className="createModal"
       onClose={() => {
-        onClose();
-        resetState();
+        onClose()
+        resetState()
       }}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
@@ -88,10 +90,10 @@ const CreateProjectModal: React.FC<{
           <p>New Project</p>
           <IconButton
             sx={{
-              borderRadius: "4px",
-              border: "1px solid #2196F3",
-              color: "#2196F3",
-              padding: "4px 10px",
+              borderRadius: '4px',
+              border: '1px solid #2196F3',
+              color: '#2196F3',
+              padding: '4px 10px',
             }}
             onClick={() => onClose()}
             aria-label="close"
@@ -103,7 +105,7 @@ const CreateProjectModal: React.FC<{
           <FormControl>
             <TextField
               onChange={({ target }) =>
-                handleDataChange("homeownerName", target.value)
+                handleDataChange('homeownerName', target.value)
               }
               fullWidth
               id="outlined-basic"
@@ -116,7 +118,7 @@ const CreateProjectModal: React.FC<{
           </FormControl>
           <FormControl>
             <TextField
-              onChange={({ target }) => handleDataChange("name", target.value)}
+              onChange={({ target }) => handleDataChange('name', target.value)}
               id="outlined-basic"
               label="Project Name"
               variant="outlined"
@@ -128,7 +130,7 @@ const CreateProjectModal: React.FC<{
           <FormControl>
             <TextField
               onChange={({ target }) =>
-                handleDataChange("homeownerAddress", target.value)
+                handleDataChange('homeownerAddress', target.value)
               }
               id="outlined-basic"
               label="Project Address"
@@ -141,7 +143,7 @@ const CreateProjectModal: React.FC<{
           <FormControl>
             <TextField
               onChange={({ target }) =>
-                handleDataChange("homeownerEmail", target.value)
+                handleDataChange('homeownerEmail', target.value)
               }
               id="outlined-basic"
               label="Client Email Address"
@@ -154,7 +156,7 @@ const CreateProjectModal: React.FC<{
           <FormControl>
             <TextField
               onChange={({ target }) =>
-                handleDataChange("homeownerPhone", target.value)
+                handleDataChange('homeownerPhone', target.value)
               }
               id="outlined-basic"
               label="Client Phone Number"
@@ -173,7 +175,7 @@ const CreateProjectModal: React.FC<{
             disabled={!isSaveButtonEnabled}
             size="small"
             sx={{
-              marginLeft: "auto",
+              marginLeft: 'auto',
             }}
             color="primary"
           >
@@ -182,109 +184,109 @@ const CreateProjectModal: React.FC<{
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
 export default function Home() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const device = checkDeviceType();
+  const [projects, setProjects] = useState<Project[]>([])
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
+  const [openModal, setOpenModal] = useState<boolean>(false)
+  const device = checkDeviceType()
 
   useEffect(() => {
-    customFetch("/api/projects/")
+    customFetch('/api/projects/')
       .then((response) => response.json())
       .then((data) => {
         const projectsWithFormattedDate = data.map((project: Project) => ({
           ...project,
-          createdAt: new Date(project.createdAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
+          createdAt: new Date(project.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
           }),
-        }));
+        }))
 
-        setProjects(projectsWithFormattedDate);
-        setFilteredProjects(projectsWithFormattedDate);
-      });
-  }, []);
+        setProjects(projectsWithFormattedDate)
+        setFilteredProjects(projectsWithFormattedDate)
+      })
+  }, [])
 
   function searchData(searchValue: string) {
-    if (searchValue === "") {
-      setFilteredProjects(projects);
-      return;
+    if (searchValue === '') {
+      setFilteredProjects(projects)
+      return
     }
 
-    let lowerCaseSearch = searchValue.toLowerCase();
+    const lowerCaseSearch = searchValue.toLowerCase()
 
-    let result = projects.filter((project) =>
+    const result = projects.filter((project) =>
       Object.values(project).some(
         (prop) =>
-          typeof prop === "string" &&
+          typeof prop === 'string' &&
           prop.toLocaleLowerCase().includes(lowerCaseSearch)
       )
-    );
+    )
 
-    setFilteredProjects(result);
+    setFilteredProjects(result)
   }
 
   // TODO: Transform this into a global state
   async function fetchProjects() {
     try {
-      const response = await customFetch("/api/projects/");
+      const response = await customFetch('/api/projects/')
       if (!response.ok) {
-        throw new Error("Failed to fetch projects");
+        throw new Error('Failed to fetch projects')
       }
 
-      const data = await response.json();
+      const data = await response.json()
       return data.map((project: Project) => ({
         ...project,
-        createdAt: new Date(project.createdAt).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
+        createdAt: new Date(project.createdAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
         }),
-      }));
+      }))
     } catch (error) {
-      console.error("Error fetching projects:", error);
-      return [];
+      console.error('Error fetching projects:', error)
+      return []
     }
   }
 
   async function createProject(newProject: NewProject) {
     try {
-      const response = await customFetch("/api/projects/", {
-        method: "POST",
+      const response = await customFetch('/api/projects/', {
+        method: 'POST',
         body: JSON.stringify(newProject),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("Failed to create project");
+        throw new Error('Failed to create project')
       }
-      const updatedProjects = await fetchProjects();
-      setProjects(updatedProjects);
-      setFilteredProjects(updatedProjects);
-      setOpenModal(false);
+      const updatedProjects = await fetchProjects()
+      setProjects(updatedProjects)
+      setFilteredProjects(updatedProjects)
+      setOpenModal(false)
     } catch (error) {
-      console.error("Error creating project:", error);
+      console.error('Error creating project:', error)
     }
   }
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Project Name", flex: 1 },
-    { field: "homeownerName", headerName: "Name", flex: 1 },
-    { field: "homeownerAddress", headerName: "Address", flex: 1 },
-    { field: "createdAt", headerName: "Created", flex: 1 },
+    { field: 'name', headerName: 'Project Name', flex: 1 },
+    { field: 'homeownerName', headerName: 'Name', flex: 1 },
+    { field: 'homeownerAddress', headerName: 'Address', flex: 1 },
+    { field: 'createdAt', headerName: 'Created', flex: 1 },
     {
-      field: "edit",
-      headerName: "",
-      renderCell: (params) => (
+      field: 'edit',
+      headerName: '',
+      renderCell: () => (
         <div
           style={{
-            padding: "16px",
+            padding: '16px',
           }}
         >
           <Button variant="contained" size="small" href="/project/details/123">
@@ -293,17 +295,17 @@ export default function Home() {
         </div>
       ),
     },
-  ];
+  ]
 
   const mobileColumns: GridColDef[] = [
-    { field: "name", headerName: "Project Name", flex: 1 },
+    { field: 'name', headerName: 'Project Name', flex: 1 },
     {
-      field: "edit",
-      headerName: "",
-      renderCell: (params) => (
+      field: 'edit',
+      headerName: '',
+      renderCell: () => (
         <div
           style={{
-            padding: "16px",
+            padding: '16px',
           }}
         >
           <Button variant="contained" size="small" href="/project/details/123">
@@ -312,7 +314,7 @@ export default function Home() {
         </div>
       ),
     },
-  ];
+  ]
 
   return (
     <main>
@@ -347,20 +349,20 @@ export default function Home() {
         </div>
         <DataGrid
           rows={filteredProjects}
-          columns={device === "phone" ? mobileColumns : columns}
+          columns={device === 'phone' ? mobileColumns : columns}
           initialState={{
             pagination: {
               paginationModel: { page: 0, pageSize: 5 },
             },
           }}
           sx={{
-            borderTopLeftRadius: "0px",
-            borderTopRightRadius: "0px",
-            borderWidth: "0px",
+            borderTopLeftRadius: '0px',
+            borderTopRightRadius: '0px',
+            borderWidth: '0px',
           }}
           pageSizeOptions={[5, 10]}
         />
       </Container>
     </main>
-  );
+  )
 }
