@@ -16,8 +16,6 @@ import { useEffect, useState } from 'react'
 import customFetch from './helpers/customFetch'
 import './style.scss'
 
-import './style.scss'
-
 interface Project {
   id: number
   name: string
