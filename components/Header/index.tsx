@@ -7,6 +7,7 @@ import { checkDeviceType } from "../../hooks/checkDeviceType";
 import "./styles.scss";
 import { useState } from "react";
 import CustomMenu from "../Menu";
+import Link from "next/link";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -24,17 +25,19 @@ const Header = () => {
   return (
     <div className="header">
       {device !== "phone" && (
-        <IconButton
-          sx={{
-            borderRadius: "4px",
-            backgroundColor: "#2196F3",
-            color: "#fff",
-            padding: "8px 22px",
-          }}
-          aria-label="delete"
-        >
-          <HomeOutlined />
-        </IconButton>
+        <Link href="/" passHref>
+          <IconButton
+            sx={{
+              borderRadius: "4px",
+              backgroundColor: "#2196F3",
+              color: "#fff",
+              padding: "8px 22px",
+            }}
+            aria-label="delete"
+          >
+            <HomeOutlined />
+          </IconButton>
+        </Link>
       )}
       <p>Main Street HVAC & Electric</p>
       <IconButton

@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { Metadata } from "next";
 
 import "./globals.scss";
+import { Providers } from "./providers";
 // import ducklingTheme from "./style/theme/theme" // Here whenever we decide to move to our own theme
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

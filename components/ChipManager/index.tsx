@@ -3,19 +3,24 @@
 import { useState } from "react";
 import { Add } from "@mui/icons-material";
 import { Button, Chip, Modal } from "@mui/material";
-import { Envelope } from "@/app/project/[id]/Tabs";
 
 import './style.scss'
 
+interface Chip {
+  id: string;
+  name: string;
+}
+
 interface ChipManagerProps {
-  chips: Envelope[];
-  currentChip: Envelope;
-  onChipClick: (i: string) => void;
+  chips: Chip[];
+  currentChip: string;
   chipType: string;
+  onChipClick: (i: number) => void;
   onDelete: (i: string) => void;
   onCreate: () => void;
 }
 
+//TODO: Turn this into a component
 const DeleteModal: React.FC<{
   open: boolean;
   onClose: () => void;
@@ -46,8 +51,8 @@ const DeleteModal: React.FC<{
 const ChipManager: React.FC<ChipManagerProps> = ({
   chips,
   currentChip,
-  onChipClick,
   chipType,
+  onChipClick,
   onDelete,
   onCreate,
 }) => {

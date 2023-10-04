@@ -4,30 +4,19 @@ import { useEffect, useState } from "react";
 import { Container } from "@/components/Container";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { checkDeviceType } from "@/hooks/checkDeviceType";
-import { Button, FormControl, IconButton, Modal, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  Modal,
+  TextField,
+} from "@mui/material";
 import { Add, Check, Close } from "@mui/icons-material";
+import Link from "next/link";
+import { NewProject, Project } from "@/types/types";
+import { useProjectContext } from "@/context/ProjectsContext";
 
 import './style.scss'
-import customFetch from "./helpers/customFetch";
-import Link from "next/link";
-
-interface Project {
-  id: number;
-  name: string;
-  homeownerName: string;
-  homeownerPhone: string;
-  homeownerEmail: string;
-  homeownerAddress: string;
-  createdAt: string;
-}
-
-interface NewProject {
-  name: string;
-  homeownerName: string;
-  homeownerPhone: string;
-  homeownerEmail: string;
-  homeownerAddress: string;
-}
 
 // TODO: Create a new modal component?
 const CreateProjectModal: React.FC<{
@@ -60,12 +49,7 @@ const CreateProjectModal: React.FC<{
     });
   };
 
-  const isSaveButtonEnabled =
-    newProjectData.name &&
-    newProjectData.homeownerName &&
-    newProjectData.homeownerAddress &&
-    newProjectData.homeownerEmail &&
-    newProjectData.homeownerPhone;
+  const isSaveButtonEnabled = Object.values(newProjectData).every(Boolean);
 
   return (
     <Modal
@@ -88,7 +72,7 @@ const CreateProjectModal: React.FC<{
               color: '#2196F3',
               padding: '4px 10px',
             }}
-            onClick={() => onClose()}
+            onClick={onClose}
             aria-label="close">
             <Close />
           </IconButton>
@@ -178,29 +162,35 @@ const CreateProjectModal: React.FC<{
 };
 
 export default function Home() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const {
+    projects,
+    fetchProjects,
+    createProject,
+  } = useProjectContext();
+
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const device = checkDeviceType();
 
-
   useEffect(() => {
-    customFetch("/api/projects/")
-      .then((response) => response.json())
-      .then((data) => {
-        const projectsWithFormattedDate = data.map((project: Project) => ({
-          ...project,
-          createdAt: new Date(project.createdAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-        }));
+    async function fetchData() {
+      try {
+        await fetchProjects();
+        if (projects.length > 0) {
+          setFilteredProjects(projects);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-        setProjects(projectsWithFormattedDate);
-        setFilteredProjects(projectsWithFormattedDate);
-      });
-  }, []);
+    if (projects.length > 0) {
+      setFilteredProjects(projects);
+    } else {
+      fetchData();
+    }
+
+  }, [projects, fetchProjects]);
 
   function searchData(searchValue: string) {
     if (searchValue === '') {
@@ -219,51 +209,10 @@ export default function Home() {
     setFilteredProjects(result)
   }
 
-  // TODO: Transform this into a global state
-  async function fetchProjects() {
-    try {
-      const response = await customFetch("/api/projects/");
-      if (!response.ok) {
-        throw new Error('Failed to fetch projects');
-      }
-
-      const data = await response.json();
-      return data.map((project: Project) => ({
-        ...project,
-        createdAt: new Date(project.createdAt).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-      }));
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-      return [];
-    }
+  async function handleCreate(newProject: NewProject) {
+    await createProject(newProject);
+    setOpenModal(false)
   }
-
-  async function createProject(newProject: NewProject) {
-    try {
-      const response = await customFetch("/api/projects/", {
-        method: 'POST',
-        body: JSON.stringify(newProject),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create project');
-      }
-      const updatedProjects = await fetchProjects();
-      setProjects(updatedProjects);
-      setFilteredProjects(updatedProjects);
-      setOpenModal(false);
-    } catch (error) {
-      console.error('Error creating project:', error);
-    }
-  }
-
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Project Name', flex: 1 },
@@ -299,13 +248,14 @@ export default function Home() {
         <div style={{
           padding: '16px'
         }}>
-          <Button
-            variant="contained"
-            size="small"
-            href="/project/details/123"
-          >
-            Edit
-          </Button>
+          <Link href={`/project/${params.id}`} passHref>
+            <Button
+              variant="contained"
+              size="small"
+            >
+              Edit
+            </Button>
+          </Link>
         </div>
       ),
     },
@@ -315,7 +265,7 @@ export default function Home() {
     <main>
       <CreateProjectModal
         open={openModal}
-        onConfirm={(newProject: NewProject) => createProject(newProject)}
+        onConfirm={(newProject: NewProject) => handleCreate(newProject)}
         onClose={() => setOpenModal(false)}
       />
       <Container>

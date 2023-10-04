@@ -3,6 +3,7 @@
 import ChipManager from "@/components/ChipManager";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
+import { StringLiteralLike } from "typescript";
 
 const ROOMS = [
   {
@@ -110,7 +111,7 @@ const Rooms = () => {
         chips={rooms}
         onDelete={deleteRoom}
         onCreate={createRoom}
-        currentChip={currentRoom}
+        currentChip={currentRoom.id}
         chipType="Room"
         onChipClick={(i: number) => setCurrentRoom(rooms[i])}
       />
