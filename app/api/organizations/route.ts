@@ -16,6 +16,6 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
  * Get all organizations
  * exmaple: curl http://localhost:3000/api/organizations
  */
-export const GET = withErrorHandler(async (req: NextRequest) => {
+export const GET = withErrorHandler(async (_req: NextRequest) => {
   return NextResponse.json(await getOrganizations())
 })

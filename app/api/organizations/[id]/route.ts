@@ -11,7 +11,7 @@ import withErrorHandler from '@/app/utils/withErrorHandler'
  * exmaple: curl http://localhost:3000/api/organizations/[id]
  */
 export const GET = withErrorHandler(
-  async (req: NextRequest, { params }: { params: { id: string } }) => {
+  async (_req: NextRequest, { params }: { params: { id: string } }) => {
     return NextResponse.json(await getOrganization(params.id))
   }
 )
@@ -21,7 +21,7 @@ export const GET = withErrorHandler(
  * exmaple: curl -X DELETE http://localhost:3000/api/organizations/[id]
  */
 export const DELETE = withErrorHandler(
-  async (req: NextRequest, { params }: { params: { id: string } }) => {
+  async (_req: NextRequest, { params }: { params: { id: string } }) => {
     return NextResponse.json(await deleteOrganization(params.id))
   }
 )
