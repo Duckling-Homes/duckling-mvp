@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button, FormControl, IconButton, Modal, Tab, Tabs, TextField } from "@mui/material";
-import { CalendarMonth, Check, Close, Edit, Home, Person } from "@mui/icons-material";
+import { CalendarMonth, Check, Close, Delete, Edit, Home, Person } from "@mui/icons-material";
 import Image from "next/image";
 import { Container } from "@/components/Container";
 import PlaceHolderPhoto from '../../assets/placeholder-image.png';
@@ -214,14 +214,29 @@ const DataCollection = () => {
                 </span>
               </div>
             </div>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => setOpenModal(true)}
-              startIcon={<Edit />}
-            >
-              Edit
-            </Button>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+            }}>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => setOpenModal(true)}
+                startIcon={<Edit />}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                color="error"
+                onClick={() => setOpenModal(true)}
+                startIcon={<Delete />}
+              >
+                Delete
+              </Button>
+            </div>
           </div>
           <div style={{
             padding: '8px 24px 16px 24px',
