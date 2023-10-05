@@ -63,10 +63,20 @@ const TEST = [
   },
 ];
 
+interface Appliance {
+  id: string;
+  name: string;
+  type: string;
+  location?: string;
+  condition?: string;
+  notes: string;
+  leakiness?: string;
+}
+
 const Appliances = () => {
-  const [appliances, setAppliances] = useState([]);
-  const [currentAppliance, setCurrentAppliance] = useState(TEST[1]);
-  const [applianceType, setApplianceType] = useState('');
+  const [appliances, setAppliances] = useState<Appliance[]>([]);
+  const [currentAppliance, setCurrentAppliance] = useState<Appliance>(TEST[1]);
+  const [applianceType, setApplianceType] = useState<string>('');
 
   useEffect(() => {
     setAppliances(TEST)

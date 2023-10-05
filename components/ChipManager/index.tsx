@@ -96,7 +96,7 @@ const ChipManager: React.FC<ChipManagerProps> = ({
               width: '197px',
               justifyContent: 'space-between'
             }}
-            color={chip.id === currentChip.id ? "primary" : "default"}
+            color={chip.id === currentChip ? "primary" : "default"}
             onClick={() => onChipClick(i)}
             onDelete={() => setDeleteEnvelope(chip)} />
         ))

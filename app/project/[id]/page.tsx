@@ -152,9 +152,16 @@ const DataCollection = () => {
   const { id } = useParams()
 
   useEffect(() => {
-    fetchProject(id)
-    console.log(currentProject)
-  }, [id, fetchProject, currentProject]);
+    if (typeof id === 'string') {
+      fetchProject(id)
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [id]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -164,20 +171,22 @@ const DataCollection = () => {
     <div hidden={value !== index}>{component}</div>
   )
 
-  async function handleUpdateProject(projectInfo) {
+  async function handleUpdateProject(projectInfo: Project) {
     patchProject(projectInfo)
   }
 
   return (
     <>
-      <EditProjectModal
-        open={openModal}
-        project={currentProject}
-        onClose={() => setOpenModal(false)}
-        onConfirm={handleUpdateProject}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      />
+      {currentProject && (
+        <EditProjectModal
+          open={openModal}
+          project={currentProject}
+          onClose={() => setOpenModal(false)}
+          onConfirm={handleUpdateProject}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        />
+      )}
       <Container>
         <div className="dataCollection">
           <div className="dataCollection__header">
