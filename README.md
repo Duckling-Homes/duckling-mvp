@@ -29,6 +29,10 @@ $ npx prisma generate
 
 Note: If there are breaking changes caused by the migration, refer to the [documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate) on ways to handle it.
 
+## Local Development Scripts
+
+1. If you need the hardcoded local organization, run `ts-node scripts/seedLocalOrganization.ts` from the root of the project
+
 ## Notes
 
 1. We are going to build most pages as client pages. This is primarily because of the offline nature of the product.
