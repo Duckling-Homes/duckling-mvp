@@ -39,7 +39,7 @@ const HVAC_SYSTEMS = [
 
 const TEST = [
   {
-    id: 1,
+    id: '1',
     name: "Envelope 1",
     type: "insulation",
     location: "wall",
@@ -47,7 +47,7 @@ const TEST = [
     notes: "HERE BE DRAGONS"
   },
   {
-    id: 2,
+    id: '2',
     name: "Envelope 2",
     type: "insulation",
     location: "crawlspace",
@@ -55,7 +55,7 @@ const TEST = [
     notes: "TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST"
   },
   {
-    id: 3,
+    id: '3',
     name: "Envelope 3",
     type: "air-sealing",
     leakiness: "leaky",
@@ -64,7 +64,7 @@ const TEST = [
 ];
 
 const Appliances = () => {
-  const [appliances, setAppliances] = useState({});
+  const [appliances, setAppliances] = useState([]);
   const [currentAppliance, setCurrentAppliance] = useState(TEST[1]);
   const [applianceType, setApplianceType] = useState('');
 
@@ -81,8 +81,11 @@ const Appliances = () => {
       }}
     >
       <ChipManager
+        onDelete={() => console.log('delete')}
+        onCreate={() => console.log('create')}
+        chipType="Appliance"
         chips={appliances}
-        currentChip={currentAppliance}
+        currentChip={currentAppliance.id}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
       <div style={{
