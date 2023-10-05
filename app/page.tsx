@@ -1,38 +1,22 @@
 'use client'
 
-import { Container } from '@/components/Container'
-import { checkDeviceType } from '@/hooks/checkDeviceType'
-import { Add, Check, Close } from '@mui/icons-material'
+import { useEffect, useState } from "react";
+import { Container } from "@/components/Container";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { checkDeviceType } from "@/hooks/checkDeviceType";
 import {
   Button,
   FormControl,
   IconButton,
   Modal,
   TextField,
-} from '@mui/material'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { useEffect, useState } from 'react'
-
-import customFetch from './helpers/customFetch'
+} from "@mui/material";
+import { Add, Check, Close } from "@mui/icons-material";
+import Link from "next/link";
+import { NewProject, Project } from "@/types/types";
+import { useProjectListContext } from "@/context/ProjectListContext";
+        
 import './style.scss'
-
-interface Project {
-  id: number
-  name: string
-  homeownerName: string
-  homeownerPhone: string
-  homeownerEmail: string
-  homeownerAddress: string
-  createdAt: string
-}
-
-interface NewProject {
-  name: string
-  homeownerName: string
-  homeownerPhone: string
-  homeownerEmail: string
-  homeownerAddress: string
-}
 
 // TODO: Create a new modal component?
 const CreateProjectModal: React.FC<{
@@ -65,12 +49,7 @@ const CreateProjectModal: React.FC<{
     })
   }
 
-  const isSaveButtonEnabled =
-    newProjectData.name &&
-    newProjectData.homeownerName &&
-    newProjectData.homeownerAddress &&
-    newProjectData.homeownerEmail &&
-    newProjectData.homeownerPhone
+  const isSaveButtonEnabled = Object.values(newProjectData).every(Boolean);
 
   return (
     <Modal
@@ -80,8 +59,8 @@ const CreateProjectModal: React.FC<{
         onClose()
         resetState()
       }}
-      aria-labelledby="modal-title"
-      aria-describedby="modal-description"
+      aria-labelledby="new-project-modal"
+      aria-describedby="add-project-modal"
     >
       <div className="createModal__content">
         <div className="createModal__header">
@@ -93,9 +72,8 @@ const CreateProjectModal: React.FC<{
               color: '#2196F3',
               padding: '4px 10px',
             }}
-            onClick={() => onClose()}
-            aria-label="close"
-          >
+            onClick={onClose}
+            aria-label="close">
             <Close />
           </IconButton>
         </div>
@@ -186,28 +164,35 @@ const CreateProjectModal: React.FC<{
 }
 
 export default function Home() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
-  const [openModal, setOpenModal] = useState<boolean>(false)
-  const device = checkDeviceType()
+  const {
+    projects,
+    fetchProjects,
+    createProject,
+  } = useProjectListContext();
+
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const device = checkDeviceType();
 
   useEffect(() => {
-    customFetch('/api/projects/')
-      .then((response) => response.json())
-      .then((data) => {
-        const projectsWithFormattedDate = data.map((project: Project) => ({
-          ...project,
-          createdAt: new Date(project.createdAt).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }),
-        }))
+    async function fetchData() {
+      try {
+        await fetchProjects();
+        if (projects.length > 0) {
+          setFilteredProjects(projects);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-        setProjects(projectsWithFormattedDate)
-        setFilteredProjects(projectsWithFormattedDate)
-      })
-  }, [])
+    if (projects.length > 0) {
+      setFilteredProjects(projects);
+    } else {
+      fetchData();
+    }
+
+  }, [projects, fetchProjects]);
 
   function searchData(searchValue: string) {
     if (searchValue === '') {
@@ -228,49 +213,9 @@ export default function Home() {
     setFilteredProjects(result)
   }
 
-  // TODO: Transform this into a global state
-  async function fetchProjects() {
-    try {
-      const response = await customFetch('/api/projects/')
-      if (!response.ok) {
-        throw new Error('Failed to fetch projects')
-      }
-
-      const data = await response.json()
-      return data.map((project: Project) => ({
-        ...project,
-        createdAt: new Date(project.createdAt).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }),
-      }))
-    } catch (error) {
-      console.error('Error fetching projects:', error)
-      return []
-    }
-  }
-
-  async function createProject(newProject: NewProject) {
-    try {
-      const response = await customFetch('/api/projects/', {
-        method: 'POST',
-        body: JSON.stringify(newProject),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to create project')
-      }
-      const updatedProjects = await fetchProjects()
-      setProjects(updatedProjects)
-      setFilteredProjects(updatedProjects)
-      setOpenModal(false)
-    } catch (error) {
-      console.error('Error creating project:', error)
-    }
+  async function handleCreate(newProject: NewProject) {
+    await createProject(newProject);
+    setOpenModal(false)
   }
 
   const columns: GridColDef[] = [
@@ -281,15 +226,18 @@ export default function Home() {
     {
       field: 'edit',
       headerName: '',
-      renderCell: () => (
-        <div
-          style={{
-            padding: '16px',
-          }}
-        >
-          <Button variant="contained" size="small" href="/project/details/123">
-            Edit
-          </Button>
+      renderCell: (params) => (
+        <div style={{
+          padding: '16px'
+        }}>
+          <Link href={`/project/${params.id}`} passHref>
+            <Button
+              variant="contained"
+              size="small"
+            >
+              Edit
+            </Button>
+          </Link>
         </div>
       ),
     },
@@ -300,15 +248,18 @@ export default function Home() {
     {
       field: 'edit',
       headerName: '',
-      renderCell: () => (
-        <div
-          style={{
-            padding: '16px',
-          }}
-        >
-          <Button variant="contained" size="small" href="/project/details/123">
-            Edit
-          </Button>
+      renderCell: (params) => (
+        <div style={{
+          padding: '16px'
+        }}>
+          <Link href={`/project/${params.id}`} passHref>
+            <Button
+              variant="contained"
+              size="small"
+            >
+              Edit
+            </Button>
+          </Link>
         </div>
       ),
     },
@@ -318,7 +269,7 @@ export default function Home() {
     <main>
       <CreateProjectModal
         open={openModal}
-        onConfirm={(newProject: NewProject) => createProject(newProject)}
+        onConfirm={(newProject: NewProject) => handleCreate(newProject)}
         onClose={() => setOpenModal(false)}
       />
       <Container>

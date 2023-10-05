@@ -7,6 +7,8 @@ import { useClerk } from "@clerk/nextjs";
 import { useState } from "react";
 import { checkDeviceType } from "../../hooks/checkDeviceType";
 import CustomMenu from "../Menu";
+import Link from "next/link";
+
 import "./styles.scss";
 
 const Header = () => {
@@ -27,17 +29,19 @@ const Header = () => {
   return (
     <div className="header">
       {device !== "phone" && (
-        <IconButton
-          sx={{
-            borderRadius: "4px",
-            backgroundColor: "#2196F3",
-            color: "#fff",
-            padding: "8px 22px",
-          }}
-          aria-label="delete"
-        >
-          <HomeOutlined />
-        </IconButton>
+        <Link href="/" passHref>
+          <IconButton
+            sx={{
+              borderRadius: "4px",
+              backgroundColor: "#2196F3",
+              color: "#fff",
+              padding: "8px 22px",
+            }}
+            aria-label="delete"
+          >
+            <HomeOutlined />
+          </IconButton>
+        </Link>
       )}
       <p>Main Street HVAC & Electric</p>
       <IconButton
