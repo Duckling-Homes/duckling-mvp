@@ -22,6 +22,7 @@ import { redirect, useParams } from "next/navigation";
 import './style.scss'
 import DeleteProjectModal from "@/components/Modals/DeleteProject";
 import { useProjectListContext } from "@/context/ProjectListContext";
+import { useRouter } from "next/navigation";
 
 // TODO: Definitely transform this into a component
 
@@ -153,6 +154,7 @@ const DataCollection = () => {
   const [value, setValue] = useState<number>(0); //TODO: rename this please
   const { currentProject, fetchProject, patchProject } = useProjectContext();
   const { deleteProject } = useProjectListContext();
+  const router = useRouter()
   const { id } = useParams()
 
   useEffect(() => {
@@ -182,7 +184,7 @@ const DataCollection = () => {
   async function handleDeleteProject(projectId: string) {
     await deleteProject(projectId);
     setDeleteModal(false);
-    redirect('/');
+    router.push('/')
   }
 
   return (
