@@ -1,20 +1,25 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, FormControl, IconButton, Modal, Tab, Tabs, TextField } from "@mui/material";
 import { CalendarMonth, Check, Close, Edit, Home, Person } from "@mui/icons-material";
 import Image from "next/image";
 import { Container } from "@/components/Container";
 import PlaceHolderPhoto from '../../assets/placeholder-image.png';
 import {
-  Basics, Objectives, Envelope, Rooms,
-  Appliances, Electrical, Photos
-} from './Tabs/index';
-
-import './style.scss'
+  Appliances,
+  Basics,
+  Electrical,
+  Envelope,
+  Objectives,
+  Photos,
+  Rooms,
+} from './Tabs/index'
 import { NewProject, Project } from "@/types/types";
 import { useProjectContext } from "@/context/ProjectContext";
 import { useParams } from "next/navigation";
+
+import './style.scss'
 
 // TODO: Definitely transform this into a component
 
@@ -151,15 +156,13 @@ const DataCollection = () => {
     console.log(currentProject)
   }, [id]);
 
-  const handleChange = (event: any, newValue: number) => {
-    setValue(newValue);
-  };
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+  }
 
   const renderTabContent = (index: number, component: JSX.Element) => (
-    <div hidden={value !== index}>
-      {component}
-    </div>
-  );
+    <div hidden={value !== index}>{component}</div>
+  )
 
   async function handleUpdateProject(projectInfo) {
     patchProject(projectInfo)

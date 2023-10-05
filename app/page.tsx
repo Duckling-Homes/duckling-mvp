@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { useEffect, useState } from "react";
 import { Container } from "@/components/Container";
@@ -15,14 +15,15 @@ import { Add, Check, Close } from "@mui/icons-material";
 import Link from "next/link";
 import { NewProject, Project } from "@/types/types";
 import { useProjectListContext } from "@/context/ProjectListContext";
-
+import customFetch from './helpers/customFetch'
+        
 import './style.scss'
 
 // TODO: Create a new modal component?
 const CreateProjectModal: React.FC<{
-  open: boolean;
-  onClose: () => void;
-  onConfirm: (newProject: NewProject) => void;
+  open: boolean
+  onClose: () => void
+  onConfirm: (newProject: NewProject) => void
 }> = ({ open, onConfirm, onClose }) => {
   const [newProjectData, setNewProjectData] = useState<NewProject>({
     name: '',
@@ -36,8 +37,8 @@ const CreateProjectModal: React.FC<{
     setNewProjectData((prevData) => ({
       ...prevData,
       [fieldName]: value,
-    }));
-  };
+    }))
+  }
 
   const resetState = () => {
     setNewProjectData({
@@ -46,8 +47,8 @@ const CreateProjectModal: React.FC<{
       homeownerPhone: '',
       homeownerEmail: '',
       homeownerAddress: '',
-    });
-  };
+    })
+  }
 
   const isSaveButtonEnabled = Object.values(newProjectData).every(Boolean);
 
@@ -56,8 +57,8 @@ const CreateProjectModal: React.FC<{
       open={open}
       className="createModal"
       onClose={() => {
-        onClose();
-        resetState();
+        onClose()
+        resetState()
       }}
       aria-labelledby="new-project-modal"
       aria-describedby="add-project-modal"
@@ -77,11 +78,11 @@ const CreateProjectModal: React.FC<{
             <Close />
           </IconButton>
         </div>
-        <form className='createModal__form'>
+        <form className="createModal__form">
           <FormControl>
             <TextField
-              onChange={
-                ({ target }) => handleDataChange('homeownerName', target.value)
+              onChange={({ target }) =>
+                handleDataChange('homeownerName', target.value)
               }
               fullWidth
               id="outlined-basic"
@@ -89,7 +90,7 @@ const CreateProjectModal: React.FC<{
               variant="outlined"
               value={newProjectData.homeownerName}
               required
-              placeholder='Client Name'
+              placeholder="Client Name"
             />
           </FormControl>
           <FormControl>
@@ -100,66 +101,68 @@ const CreateProjectModal: React.FC<{
               variant="outlined"
               value={newProjectData.name}
               required
-              placeholder='Project Name'
+              placeholder="Project Name"
             />
           </FormControl>
           <FormControl>
             <TextField
-              onChange={
-                ({ target }) => handleDataChange('homeownerAddress', target.value)
+              onChange={({ target }) =>
+                handleDataChange('homeownerAddress', target.value)
               }
               id="outlined-basic"
               label="Project Address"
               variant="outlined"
               value={newProjectData.homeownerAddress}
               required
-              placeholder='Project Address'
+              placeholder="Project Address"
             />
           </FormControl>
           <FormControl>
             <TextField
-              onChange={
-                ({ target }) => handleDataChange('homeownerEmail', target.value)
+              onChange={({ target }) =>
+                handleDataChange('homeownerEmail', target.value)
               }
               id="outlined-basic"
               label="Client Email Address"
               variant="outlined"
               value={newProjectData.homeownerEmail}
               required
-              placeholder='Client Email Address'
+              placeholder="Client Email Address"
             />
           </FormControl>
           <FormControl>
             <TextField
-              onChange={
-                ({ target }) => handleDataChange('homeownerPhone', target.value)
+              onChange={({ target }) =>
+                handleDataChange('homeownerPhone', target.value)
               }
               id="outlined-basic"
               label="Client Phone Number"
               variant="outlined"
               value={newProjectData.homeownerPhone}
               required
-              placeholder='Client Phone Number'
+              placeholder="Client Phone Number"
             />
           </FormControl>
         </form>
         <div className="createModal__footer">
           <Button
-            variant='contained'
+            variant="contained"
             startIcon={<Check />}
             onClick={() => onConfirm(newProjectData)}
             disabled={!isSaveButtonEnabled}
-            size='small'
+            size="small"
             sx={{
-              marginLeft: 'auto'
+              marginLeft: 'auto',
             }}
-            color='primary'>Save
+            color="primary"
+          >
+            Save
           </Button>
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
 export default function Home() {
   const {
@@ -198,11 +201,13 @@ export default function Home() {
       return
     }
 
-    let lowerCaseSearch = searchValue.toLowerCase()
+    const lowerCaseSearch = searchValue.toLowerCase()
 
-    let result = projects.filter(project =>
-      Object.values(project).some(prop =>
-        typeof prop === 'string' && prop.toLocaleLowerCase().includes(lowerCaseSearch)
+    const result = projects.filter((project) =>
+      Object.values(project).some(
+        (prop) =>
+          typeof prop === 'string' &&
+          prop.toLocaleLowerCase().includes(lowerCaseSearch)
       )
     )
 
@@ -269,22 +274,25 @@ export default function Home() {
         onClose={() => setOpenModal(false)}
       />
       <Container>
-        <div className='projectList__upperWrapper'>
-          <div className='projectList__header'>
+        <div className="projectList__upperWrapper">
+          <div className="projectList__header">
             <p>My Projects</p>
             <Button
-              variant='contained'
+              variant="contained"
               startIcon={<Add />}
               onClick={() => setOpenModal(true)}
-              color='primary'>New Project</Button>
+              color="primary"
+            >
+              New Project
+            </Button>
           </div>
           <TextField
             id="outlined-basic"
             label="Search"
             variant="outlined"
-            placeholder='Name, address'
+            placeholder="Name, address"
             sx={{
-              width: 300
+              width: 300,
             }}
             onChange={({ target }) => searchData(target.value)}
           />
@@ -306,5 +314,5 @@ export default function Home() {
         />
       </Container>
     </main>
-  );
+  )
 }

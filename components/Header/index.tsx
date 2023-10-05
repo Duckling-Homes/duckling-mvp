@@ -3,13 +3,16 @@
 import { HomeOutlined, MenuOutlined } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 
-import { checkDeviceType } from "../../hooks/checkDeviceType";
-import "./styles.scss";
+import { useClerk } from "@clerk/nextjs";
 import { useState } from "react";
+import { checkDeviceType } from "../../hooks/checkDeviceType";
 import CustomMenu from "../Menu";
 import Link from "next/link";
 
+import "./styles.scss";
+
 const Header = () => {
+  const { signOut } = useClerk();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -18,6 +21,7 @@ const Header = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+    signOut();
   };
 
   const device = checkDeviceType();
