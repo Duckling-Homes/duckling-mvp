@@ -17,10 +17,11 @@ import {
 } from './Tabs/index'
 import { Project } from "@/types/types";
 import { useProjectContext } from "@/context/ProjectContext";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 
 import './style.scss'
 import DeleteProjectModal from "@/components/Modals/DeleteProject";
+import { useProjectListContext } from "@/context/ProjectListContext";
 
 // TODO: Definitely transform this into a component
 
@@ -151,6 +152,7 @@ const DataCollection = () => {
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
   const { currentProject, fetchProject, patchProject } = useProjectContext();
+  const { deleteProject } = useProjectListContext();
   const { id } = useParams()
 
   useEffect(() => {
@@ -177,6 +179,12 @@ const DataCollection = () => {
     patchProject(projectInfo)
   }
 
+  async function handleDeleteProject(projectId: string) {
+    await deleteProject(projectId);
+    setDeleteModal(false);
+    redirect('/');
+  }
+
   return (
     <>
       {currentProject && (
@@ -194,7 +202,7 @@ const DataCollection = () => {
           open={deleteModal}
           project={currentProject}
           onClose={() => setDeleteModal(false)}
-          onConfirm={() => console.log('123')}
+          onConfirm={handleDeleteProject}
           aria-labelledby="modal-title"
           aria-describedby="modal-description"
         />

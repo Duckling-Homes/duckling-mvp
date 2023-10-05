@@ -6,7 +6,7 @@ import { useState } from "react";
 const DeleteProjectModal: React.FC<{
   open: boolean;
   onClose: () => void;
-  onConfirm: (updatedProject: Project) => void;
+  onConfirm: (projectId: string) => string;
   project: Project;
 }> = ({ open, onConfirm, onClose, project }) => {
   const [projectNameConfirmation, setProjectNameConfirmation] = useState('')
@@ -58,7 +58,7 @@ const DeleteProjectModal: React.FC<{
           <Button
             variant='contained'
             startIcon={<Delete />}
-            onClick={() => onConfirm()}
+            onClick={() => onConfirm(project.id)}
             disabled={projectNameConfirmation !== project.name}
             size='small'
             sx={{
