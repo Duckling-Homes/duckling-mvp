@@ -20,6 +20,7 @@ import { useProjectContext } from "@/context/ProjectContext";
 import { useParams } from "next/navigation";
 
 import './style.scss'
+import DeleteProjectModal from "@/components/Modals/DeleteProject";
 
 // TODO: Definitely transform this into a component
 
@@ -147,6 +148,7 @@ const EditProjectModal: React.FC<{
 
 const DataCollection = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
   const { currentProject, fetchProject, patchProject } = useProjectContext();
   const { id } = useParams()
@@ -183,6 +185,16 @@ const DataCollection = () => {
           project={currentProject}
           onClose={() => setOpenModal(false)}
           onConfirm={handleUpdateProject}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        />
+      )}
+      {currentProject && (
+        <DeleteProjectModal
+          open={deleteModal}
+          project={currentProject}
+          onClose={() => setDeleteModal(false)}
+          onConfirm={() => console.log('123')}
           aria-labelledby="modal-title"
           aria-describedby="modal-description"
         />
@@ -231,7 +243,7 @@ const DataCollection = () => {
                 variant="contained"
                 size="small"
                 color="error"
-                onClick={() => setOpenModal(true)}
+                onClick={() => setDeleteModal(true)}
                 startIcon={<Delete />}
               >
                 Delete
