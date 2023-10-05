@@ -10,9 +10,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id              String @id @default(uuid())
+  firstName       String
+  lastName        String
+  email           String
+
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
 model Organization {
   id        String @id @default(uuid())
   name      String
+
+  users User[]
+  projects Project[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -25,7 +41,9 @@ model Project {
   homeownerPhone   String
   homeownerEmail   String
   homeownerAddress String
+
   organizationId   String
+  organization     Organization @relation(fields: [organizationId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

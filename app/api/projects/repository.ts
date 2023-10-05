@@ -1,44 +1,49 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../../../lib/prisma";
+import { Prisma } from '@prisma/client'
+import prisma from '../../../lib/prisma'
 
-export async function createProject(project: Prisma.ProjectCreateInput) {
-  const createdProject = await prisma.project.create({
-    data: project,
-  });
-
-  return createdProject;
+export async function createProject(
+  projectData: Prisma.ProjectUncheckedCreateInput
+) {
+  return await prisma.project.create({
+    data: {
+      name: projectData.name,
+      homeownerName: projectData.homeownerName,
+      homeownerPhone: projectData.homeownerPhone,
+      homeownerEmail: projectData.homeownerEmail,
+      homeownerAddress: projectData.homeownerAddress,
+      organization: {
+        connect: {
+          id: projectData.organizationId,
+        },
+      },
+    },
+  })
 }
 
 export async function getProjects(organizationId: string) {
-  const projects = await prisma.project.findMany({
-    where: { organizationId }
-  });
-
-  return projects;
+  return await prisma.project.findMany({
+    where: { organizationId },
+  })
 }
 
 export async function getProject(id: string) {
-  const project = await prisma.project.findUnique({
+  return await prisma.project.findUnique({
     where: { id },
-  });
-
-  return project;
+  })
 }
 
 export async function deleteProject(id: string) {
   return await prisma.project.delete({
     where: { id },
-  });
+  })
 }
 
 export async function updateProject(
   id: string,
-  projectUpdates: Prisma.ProjectUpdateInput,
+  projectUpdates: Prisma.ProjectUpdateInput
 ) {
-  const updatedProject = await prisma.project.update({
+  return await prisma.project.update({
     where: { id },
     data: projectUpdates,
-  });
-
-  return updatedProject;
+  })
 }

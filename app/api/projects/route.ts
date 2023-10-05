@@ -1,5 +1,5 @@
-import { createProject, getProjects } from "./repository";
-import { NextRequest, NextResponse } from "next/server";
+import { createProject, getProjects } from './repository'
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * Create a project
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     homeownerPhone,
     homeownerEmail,
     homeownerAddress,
-  } = await req.json();
+  } = await req.json()
 
   const orgContext = req.headers.get('organization-context')
 
@@ -24,8 +24,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       homeownerEmail,
       homeownerAddress,
       organizationId: orgContext as string,
-    }),
-  );
+    })
+  )
 }
 
 /**
@@ -35,5 +35,5 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const orgContext = req.headers.get('organization-context')
 
-  return NextResponse.json(await getProjects(orgContext as string));
+  return NextResponse.json(await getProjects(orgContext as string))
 }

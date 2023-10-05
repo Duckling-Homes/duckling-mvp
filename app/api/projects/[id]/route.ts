@@ -1,5 +1,5 @@
-import { deleteProject, getProject, updateProject } from "../repository";
-import { NextRequest, NextResponse } from "next/server";
+import { deleteProject, getProject, updateProject } from '../repository'
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * Get project by id
@@ -7,9 +7,16 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
-  return NextResponse.json(await getProject(params.id));
+  const orgContext = req.headers.get('organization-context')
+  const project = await getProject(params.id)
+
+  if (!project || project.organizationId !== orgContext) {
+    return NextResponse.json({ message: `Project not found` }, { status: 404 })
+  }
+
+  return NextResponse.json(project)
 }
 
 /**
@@ -18,9 +25,16 @@ export async function GET(
  */
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
-  return NextResponse.json(await deleteProject(params.id));
+  const orgContext = req.headers.get('organization-context')
+  const project = await getProject(params.id)
+
+  if (!project || project.organizationId !== orgContext) {
+    return NextResponse.json({ message: `Project not found` }, { status: 404 })
+  }
+
+  return NextResponse.json(await deleteProject(params.id))
 }
 
 /**
@@ -29,7 +43,7 @@ export async function DELETE(
  */
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
   const {
     name,
@@ -37,7 +51,14 @@ export async function PATCH(
     homeownerPhone,
     homeownerEmail,
     homeownerAddress,
-  } = await req.json();
+  } = await req.json()
+
+  const orgContext = req.headers.get('organization-context')
+  const project = await getProject(params.id)
+
+  if (!project || project.organizationId !== orgContext) {
+    return NextResponse.json({ message: `Project not found` }, { status: 404 })
+  }
 
   return NextResponse.json(
     await updateProject(params.id, {
@@ -46,6 +67,6 @@ export async function PATCH(
       homeownerPhone,
       homeownerEmail,
       homeownerAddress,
-    }),
-  );
+    })
+  )
 }
