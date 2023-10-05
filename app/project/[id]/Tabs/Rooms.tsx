@@ -145,7 +145,7 @@ const Rooms = () => {
                 labelId="room-type-label"
                 id="room-type-select"
                 label="Room Type"
-                value={location}
+                value={currentRoom.type}
               >
                 {ROOM_TYPES.map((roomType, i) => (
                   <MenuItem key={i} value={'roomType'}>{roomType}</MenuItem>
