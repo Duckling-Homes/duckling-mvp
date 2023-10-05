@@ -48,7 +48,7 @@ interface Envelope {
 }
 
 const Envelope = () => {
-  const [envelopes] = useState<Envelope[]>(MOCK_DATA)
+  const [envelopes, setEnvelopes] = useState<Envelope[]>(MOCK_DATA)
   const [currentEnvelope, setCurrentEnvelope] = useState<Envelope>(MOCK_DATA[0])
   const [envelopeData, setEnvelopeData] = useState<Envelope>({
     id: '0',
@@ -79,6 +79,39 @@ const Envelope = () => {
     }
   }, [currentEnvelope])
 
+  function deleteEnvelope(envelopeId: string) {
+    const newRooms = envelopes.filter(r => r.id !== envelopeId);
+    setEnvelopes(newRooms);
+    setCurrentEnvelope(newRooms[0] || {});
+  }
+
+  function generateUID() {
+    const randomNumber = Math.random();
+    const base36String = randomNumber.toString(36).substr(2, 9);
+    const timestamp = Date.now().toString(36).substr(2, 5);
+    const uid = base36String + timestamp;
+
+    return uid;
+  };
+
+  function createEnvelope() {
+
+    const newEnvelope = {
+      id: generateUID(),
+      project_id: "ee30fb58-ee45-4efc-a302-9774133515dc",
+      name: "New Envelope",
+      type: '',
+      location: '',
+      condition: '',
+      notes: '',
+    };
+
+    const newEnvelopeList = [...envelopes, newEnvelope];
+    setEnvelopes(newEnvelopeList);
+    setCurrentEnvelope(newEnvelope);
+  }
+
+
   return (
     <div
       style={{
@@ -88,8 +121,8 @@ const Envelope = () => {
       }}
     >
       <ChipManager
-        onCreate={() => console.log('create')}
-        onDelete={() => console.log('delete')}
+        onCreate={createEnvelope}
+        onDelete={deleteEnvelope}
         chips={envelopes}
         currentChip={currentEnvelope.id}
         chipType="Envelope"
