@@ -15,7 +15,6 @@ import { Add, Check, Close } from "@mui/icons-material";
 import Link from "next/link";
 import { NewProject, Project } from "@/types/types";
 import { useProjectListContext } from "@/context/ProjectListContext";
-import customFetch from './helpers/customFetch'
         
 import './style.scss'
 

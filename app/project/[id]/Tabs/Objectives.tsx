@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, FormControl, FormGroup, FormLabel, TextField } from "@mui/material";
+import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
 
 const COMFORT_ISSUES = [
   "Drafty",

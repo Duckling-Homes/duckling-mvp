@@ -1,8 +1,8 @@
 "use client";
 
 import ChipManager from "@/components/ChipManager";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const TYPES = [
   "HVAC",
@@ -16,11 +16,11 @@ const TYPES = [
   "Other",
 ]
 
-const HVAC_TYPES = [
-  "Heating",
-  "Cooling",
-  "Heat Pump"
-]
+// const HVAC_TYPES = [
+//   "Heating",
+//   "Cooling",
+//   "Heat Pump"
+// ]
 
 const HVAC_SYSTEMS = [
   { name: "Furnace", parent: "Heating" },
@@ -64,9 +64,13 @@ const TEST = [
 ];
 
 const Appliances = () => {
-  const [appliances, setAppliances] = useState(TEST);
+  const [appliances, setAppliances] = useState({});
   const [currentAppliance, setCurrentAppliance] = useState(TEST[1]);
   const [applianceType, setApplianceType] = useState('');
+
+  useEffect(() => {
+    setAppliances(TEST)
+  }, [])
 
   return (
     <div

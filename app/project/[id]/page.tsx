@@ -15,7 +15,7 @@ import {
   Photos,
   Rooms,
 } from './Tabs/index'
-import { NewProject, Project } from "@/types/types";
+import { Project } from "@/types/types";
 import { useProjectContext } from "@/context/ProjectContext";
 import { useParams } from "next/navigation";
 
@@ -154,7 +154,7 @@ const DataCollection = () => {
   useEffect(() => {
     fetchProject(id)
     console.log(currentProject)
-  }, [id]);
+  }, [id, fetchProject, currentProject]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)

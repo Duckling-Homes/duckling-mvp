@@ -3,7 +3,6 @@
 import ChipManager from "@/components/ChipManager";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
-import { StringLiteralLike } from "typescript";
 
 const ROOMS = [
   {
@@ -62,7 +61,7 @@ const Rooms = () => {
   const [currentRoom, setCurrentRoom] = useState(ROOMS[0]);
 
   function deleteRoom(roomId: string) {
-    let newRooms = rooms.filter(r => r.id !== roomId);
+    const newRooms = rooms.filter(r => r.id !== roomId);
     setRooms(newRooms);
     setCurrentRoom(newRooms[0] || {});
   }
@@ -78,7 +77,7 @@ const Rooms = () => {
 
   function createRoom() {
 
-    let newRoom = {
+    const newRoom = {
       id: generateUID(),
       project_id: "ee30fb58-ee45-4efc-a302-9774133515dc",
       name: "New Room",
@@ -93,7 +92,7 @@ const Rooms = () => {
       notes: ""
     };
 
-    let newRoomList = [...rooms, newRoom];
+    const newRoomList = [...rooms, newRoom];
     setRooms(newRoomList);
     setCurrentRoom(newRoom);
     console.log(currentRoom);
