@@ -40,7 +40,12 @@ const Basics = ({ }) => {
             placeholder='Square Footage'
             type="number"
             value={data.square_footage}
-            onWheel={() => document.activeElement.blur()}
+            onWheel={() => {
+              const activeElement = document.activeElement as HTMLInputElement;
+              if (activeElement) {
+                activeElement.blur();
+              }
+            }}
           />
           <TextField
             id="outlined-basic"
@@ -49,7 +54,12 @@ const Basics = ({ }) => {
             placeholder='Number of Rooms'
             type="number"
             value={data.room_count}
-            onWheel={() => document.activeElement.blur()}
+            onWheel={() => {
+              const activeElement = document.activeElement as HTMLInputElement;
+              if (activeElement) {
+                activeElement.blur();
+              }
+            }}
           />
           <TextField
             id="outlined-basic"
@@ -58,7 +68,12 @@ const Basics = ({ }) => {
             placeholder='Number of Bathrooms'
             type="number"
             value={data.bathroom_count}
-            onWheel={() => document.activeElement.blur()}
+            onWheel={() => {
+              const activeElement = document.activeElement as HTMLInputElement;
+              if (activeElement) {
+                activeElement.blur();
+              }
+            }}
           />
           <TextField
             id="outlined-basic"
@@ -67,7 +82,12 @@ const Basics = ({ }) => {
             placeholder='Stories'
             type="number"
             value={data.stories}
-            onWheel={() => document.activeElement.blur()}
+            onWheel={() => {
+              const activeElement = document.activeElement as HTMLInputElement;
+              if (activeElement) {
+                activeElement.blur();
+              }
+            }}
           />
           <DatePicker
             label={"Year Built"}

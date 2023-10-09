@@ -29,7 +29,14 @@ const GOALS = [
   "Reduce Emissions",
 ]
 
-const MOCK_DATA = {
+type MockData = {
+  [key: string]: boolean | string; // Define the type of keys in MOCK_DATA
+  comfort_notes: string;
+  health_safety_notes: string;
+  goals_notes: string;
+};
+
+const MOCK_DATA: MockData = {
   "Drafty": true,
   "Too hot in summer": false,
   "Too cold in summer": false,
@@ -53,7 +60,7 @@ const MOCK_DATA = {
 }
 
 const Objectives = ({ }) => {
-  const [data] = useState(MOCK_DATA)
+  const [data] = useState<MockData>(MOCK_DATA)
   return (
     <>
       <form className="objectives">

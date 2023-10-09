@@ -32,8 +32,7 @@ const EditProjectModal: React.FC<{
   onConfirm: (updatedProject: Project) => void;
   project: Project;
 }> = ({ open, onConfirm, onClose, project }) => {
-  const [projectInfo, setProjectInfo] = useState<Project>(project)
-
+  const [projectInfo, setProjectInfo] = useState<Project>(project);
   const handleDataChange = (fieldName: string, value: string) => {
     setProjectInfo((prevData) => ({
       ...prevData,
@@ -42,7 +41,15 @@ const EditProjectModal: React.FC<{
   };
 
   const handleClose = () => {
-    setProjectInfo({});
+    setProjectInfo({
+      id: "",
+      name: "",
+      homeownerName: "",
+      homeownerPhone: "",
+      homeownerEmail: "",
+      homeownerAddress: "",
+      createdAt: "",
+    });
     onClose();
   }
 

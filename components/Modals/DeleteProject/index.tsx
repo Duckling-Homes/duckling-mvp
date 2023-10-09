@@ -1,12 +1,12 @@
 import { Close, Delete } from "@mui/icons-material";
 import { Button, FormControl, IconButton, Modal, TextField } from "@mui/material";
-import { Project } from "@prisma/client";
+import { Project } from "@/types/types";
 import { useState } from "react";
 
 const DeleteProjectModal: React.FC<{
   open: boolean;
   onClose: () => void;
-  onConfirm: (projectId: string) => string;
+  onConfirm: (projectId: string) => void;
   project: Project;
 }> = ({ open, onConfirm, onClose, project }) => {
   const [projectNameConfirmation, setProjectNameConfirmation] = useState('')

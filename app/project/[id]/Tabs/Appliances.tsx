@@ -135,6 +135,9 @@ const Appliances = () => {
       project_id: "ee30fb58-ee45-4efc-a302-9774133515dc",
       name: "New Appliance",
       type: "",
+      location: "",
+      condition: "",
+      notes: "",
     };
 
     const newApplianceList = [...appliances, newAppliance];
