@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import AWS from 'aws-sdk';
 import { Readable } from 'stream';
 
-// Initialize the MinIO S3 client
+// Initialize the S3 client (points to minio for local dev which is all it does for now)
 const s3 = new AWS.S3({
-  accessKeyId: process.env.MINIO_ACCESS_KEY || 'minio',
-  secretAccessKey: process.env.MINIO_SECRET_KEY || 'minio123',
-  endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
+  // Fallback to local values. These point to minio for now
+  accessKeyId: process.env.S3_ACCESS_KEY || 'minio',
+  secretAccessKey: process.env.S3_SECRET_KEY || 'minio123',
+  endpoint: process.env.S3_ENDPOINT || 'http://localhost:9000',
   s3ForcePathStyle: true,
   signatureVersion: 'v4',
 });
@@ -17,19 +18,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const readableStream = new Readable({
       read() {
         this.push(Buffer.from(buffer));
-        this.push(null); // Indicates end-of-file basically - the end of the stream
+        this.push(null);
       },
     });
 
     const uploadParams = {
-      Bucket: 'image-uploads',
-      Key: `${Date.now()}AXELDIDIT.jpg`, // Assuming the image is a JPEG
+      Bucket: process.env.UPLOAD_BUCKET || 'image-uploads',
+      // TODO: tenant this, definitely add the org and image id as the key
+      Key: `${Date.now()}.jpg`, // Assuming the image is a JPEG
       Body: readableStream,
     };
 
     const uploadResult = await s3.upload(uploadParams).promise();
 
-    // Upload successful, return success message
+    // Upload successful, return success message. TODO fix to return image id, probably
     return new NextResponse(JSON.stringify({ location: uploadResult.Location }), {
       status: 200,
       headers: {
@@ -38,7 +40,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
   } catch (err) {
-    // Handle error
     return new NextResponse((err as Error).message, {
       status: 500,
       headers: {
