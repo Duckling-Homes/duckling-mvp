@@ -1,6 +1,5 @@
 "use client";
 
-import Footer from "./Footer";
 import Header from "./Header";
 
 export const Container = (props: {
@@ -14,7 +13,6 @@ export const Container = (props: {
     >
       <Header />
       <div>{props.children}</div>
-      <Footer />
     </div>
   );
 };

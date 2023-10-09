@@ -3,16 +3,24 @@
 import { useState } from "react";
 import { Add } from "@mui/icons-material";
 import { Button, Chip, Modal } from "@mui/material";
-import { Envelope } from "@/app/project/[id]/Tabs";
 
 import './style.scss'
 
-interface ChipManagerProps {
-  chips: Envelope[];
-  currentChip: Envelope;
-  onChipClick: (i: number) => void;
+interface Chip {
+  id: string;
+  name: string;
 }
 
+interface ChipManagerProps {
+  chips: Chip[];
+  currentChip: string;
+  chipType: string;
+  onChipClick: (i: number) => void;
+  onDelete: (i: string) => void;
+  onCreate: () => void;
+}
+
+//TODO: Turn this into a component
 const DeleteModal: React.FC<{
   open: boolean;
   onClose: () => void;
@@ -43,25 +51,35 @@ const DeleteModal: React.FC<{
 const ChipManager: React.FC<ChipManagerProps> = ({
   chips,
   currentChip,
+  chipType,
   onChipClick,
+  onDelete,
+  onCreate,
 }) => {
   const [deleteEnvelope, setDeleteEnvelope] = useState<{
-    name?: string;
-  }>({});
+    id: string;
+    name: string;
+  }>({
+    id: "",
+    name: "",
+  });
 
   const handleDeleteClick = () => {
-    // Handle delete action here
-    // You can use deleteEnvelope.name to identify which envelope to delete
-    // Make sure to implement this functionality
-    // Example: onDelete(deleteEnvelope.name);
-    setDeleteEnvelope({});
+    onDelete(deleteEnvelope.id);
+    setDeleteEnvelope({
+      id: "",
+      name: "",
+    });
   };
 
   return (
     <>
       <DeleteModal
         open={!!deleteEnvelope.name}
-        onClose={() => setDeleteEnvelope({})}
+        onClose={() => setDeleteEnvelope({
+          id: "",
+          name: "",
+        })}
         onConfirm={handleDeleteClick}
         envelopeName={deleteEnvelope.name}
       />
@@ -78,15 +96,21 @@ const ChipManager: React.FC<ChipManagerProps> = ({
               width: '197px',
               justifyContent: 'space-between'
             }}
-            color={chip.id === currentChip.id ? "primary" : "default"}
+            color={chip.id === currentChip ? "primary" : "default"}
             onClick={() => onChipClick(i)}
             onDelete={() => setDeleteEnvelope(chip)} />
         ))
         }
         <Button
           variant="contained"
-          size="small" startIcon={<Add />}>
-          Add Envelope
+          size="small"
+          startIcon={<Add />}
+          onClick={onCreate}
+          sx={{
+            width: '200px',
+          }}
+        >
+          Add {chipType}
         </Button>
       </div>
     </>

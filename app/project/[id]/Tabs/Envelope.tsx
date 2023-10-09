@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 
 const TEST = [
   {
-    id: 1,
+    id: '1',
     name: 'Envelope 1',
     type: 'insulation',
     location: 'wall',
@@ -21,7 +21,7 @@ const TEST = [
     notes: 'HERE BE DRAGONS',
   },
   {
-    id: 2,
+    id: '2',
     name: 'Envelope 2',
     type: 'insulation',
     location: 'crawlspace',
@@ -30,13 +30,13 @@ const TEST = [
       'TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST',
   },
   {
-    id: 3,
+    id: '3',
     name: 'Envelope 3',
     type: 'air-sealing',
     leakiness: 'leaky',
     notes: 'AAAAAAAAAAAAAAAAAAAAAAA',
   },
-]
+];
 
 interface Envelope {
   name: string
@@ -45,14 +45,14 @@ interface Envelope {
   condition?: string
   leakiness?: string
   notes: string
-  id: number
+  id: string
 }
 
 const Envelope = () => {
   const [envelopes] = useState<Envelope[]>(TEST)
   const [currentEnvelope, setCurrentEnvelope] = useState<Envelope>(TEST[1])
   const [envelopeData, setEnvelopeData] = useState<Envelope>({
-    id: 0,
+    id: '0',
     type: '',
     name: '',
     location: '',
@@ -89,8 +89,11 @@ const Envelope = () => {
       }}
     >
       <ChipManager
+        onCreate={() => console.log('create')}
+        onDelete={() => console.log('delete')}
         chips={envelopes}
-        currentChip={currentEnvelope}
+        currentChip={currentEnvelope.id}
+        chipType="Envelope"
         onChipClick={(i: number) => setCurrentEnvelope(envelopes[i])}
       />
       <div

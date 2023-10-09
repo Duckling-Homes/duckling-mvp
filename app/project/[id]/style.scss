@@ -55,4 +55,55 @@
       }
     }
   }
+
+
+  // OBJECTIVES TAB
+  .objectives {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+  }
+}
+
+//TODO: move this to a separate component
+.createModal {
+  $self: &;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  &__content {
+    display: flex;
+    gap: 40px;
+    flex-direction: column;
+    margin: 0 auto;
+    background-color: #FFF;
+    border-radius: 4px;
+    width: 50%;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.20), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    padding: 40px;
+
+    #{$self}__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      p {
+        font-size: 24px;
+      }
+    }
+
+    #{$self}__form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    #{$self}__footer {
+      display: flex;
+      justify-content: end;
+    }
+
+  }
 }
