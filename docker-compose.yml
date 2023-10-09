@@ -9,3 +9,23 @@ services:
       - ./tmp/data/postgres:/data/postgres
     env_file:
       - docker.env
+  
+  minio:
+    container_name: duckling-minio
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./tmp/data/minio:/data
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    command: ["server", "/data", "--console-address", ":9001"]
+
+  setup_minio:
+    build:
+      context: .
+      dockerfile: setupMinio.Dockerfile
+    depends_on:
+      - minio
