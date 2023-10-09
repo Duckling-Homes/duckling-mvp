@@ -53,7 +53,7 @@ const MOCK_DATA = {
 }
 
 const Objectives = ({ }) => {
-  const [data, setData] = useState(MOCK_DATA)
+  const [data] = useState(MOCK_DATA)
   return (
     <>
       <form className="objectives">

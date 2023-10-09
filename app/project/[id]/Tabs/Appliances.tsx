@@ -2,7 +2,7 @@
 
 import ChipManager from "@/components/ChipManager";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const TYPES = [
   "HVAC",

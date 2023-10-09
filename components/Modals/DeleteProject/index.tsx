@@ -1,5 +1,5 @@
-import { Check, Close, Delete } from "@mui/icons-material";
-import { Button, FormControl, FormLabel, IconButton, Modal, TextField } from "@mui/material";
+import { Close, Delete } from "@mui/icons-material";
+import { Button, FormControl, IconButton, Modal, TextField } from "@mui/material";
 import { Project } from "@prisma/client";
 import { useState } from "react";
 

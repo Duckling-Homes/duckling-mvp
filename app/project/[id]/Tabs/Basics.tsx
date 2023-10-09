@@ -7,8 +7,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState } from "react";
 
-const TODAY = new Date();
-
 const MOCK_PROJECT = {
   square_footage: '2500',
   room_count: '8',
@@ -20,7 +18,7 @@ const MOCK_PROJECT = {
 }
 
 const Basics = ({ }) => {
-  const [data, setData] = useState(MOCK_PROJECT)
+  const [data] = useState(MOCK_PROJECT)
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

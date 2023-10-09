@@ -17,7 +17,7 @@ import {
 } from './Tabs/index'
 import { Project } from "@/types/types";
 import { useProjectContext } from "@/context/ProjectContext";
-import { redirect, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import './style.scss'
 import DeleteProjectModal from "@/components/Modals/DeleteProject";
