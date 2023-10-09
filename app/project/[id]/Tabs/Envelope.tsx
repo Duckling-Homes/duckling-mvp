@@ -11,30 +11,29 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 
-const TEST = [
+const MOCK_DATA = [
   {
-    id: '1',
-    name: 'Envelope 1',
+    id: 'b7ea34e5-036a-49a3-9a35-f7f3b18ffcf6',
+    name: 'Attic Insulation',
     type: 'insulation',
-    location: 'wall',
-    condition: 'good',
-    notes: 'HERE BE DRAGONS',
-  },
-  {
-    id: '2',
-    name: 'Envelope 2',
-    type: 'insulation',
-    location: 'crawlspace',
+    location: 'attic',
     condition: 'poor',
-    notes:
-      'TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST',
+    notes: 'We estimate this insulation is R9',
   },
   {
-    id: '3',
-    name: 'Envelope 3',
+    id: 'a64f1239-6f39-48c2-a4f3-1db48eef2a9e',
+    name: 'Basement Insulation',
+    type: 'insulation',
+    location: 'basement',
+    condition: 'fair',
+    notes: 'We estimate this insulation is R18',
+  },
+  {
+    id: '0cb3ca24-5b85-4a02-9c1f-0e849f91e9e7',
+    name: 'Air sealing',
     type: 'air-sealing',
     leakiness: 'leaky',
-    notes: 'AAAAAAAAAAAAAAAAAAAAAAA',
+    notes: 'Blower door results - 6 ACH50',
   },
 ];
 
@@ -49,8 +48,8 @@ interface Envelope {
 }
 
 const Envelope = () => {
-  const [envelopes] = useState<Envelope[]>(TEST)
-  const [currentEnvelope, setCurrentEnvelope] = useState<Envelope>(TEST[1])
+  const [envelopes, setEnvelopes] = useState<Envelope[]>(MOCK_DATA)
+  const [currentEnvelope, setCurrentEnvelope] = useState<Envelope>(MOCK_DATA[0])
   const [envelopeData, setEnvelopeData] = useState<Envelope>({
     id: '0',
     type: '',
@@ -80,6 +79,39 @@ const Envelope = () => {
     }
   }, [currentEnvelope])
 
+  function deleteEnvelope(envelopeId: string) {
+    const newRooms = envelopes.filter(r => r.id !== envelopeId);
+    setEnvelopes(newRooms);
+    setCurrentEnvelope(newRooms[0] || {});
+  }
+
+  function generateUID() {
+    const randomNumber = Math.random();
+    const base36String = randomNumber.toString(36).substr(2, 9);
+    const timestamp = Date.now().toString(36).substr(2, 5);
+    const uid = base36String + timestamp;
+
+    return uid;
+  };
+
+  function createEnvelope() {
+
+    const newEnvelope = {
+      id: generateUID(),
+      project_id: "ee30fb58-ee45-4efc-a302-9774133515dc",
+      name: "New Envelope",
+      type: '',
+      location: '',
+      condition: '',
+      notes: '',
+    };
+
+    const newEnvelopeList = [...envelopes, newEnvelope];
+    setEnvelopes(newEnvelopeList);
+    setCurrentEnvelope(newEnvelope);
+  }
+
+
   return (
     <div
       style={{
@@ -89,8 +121,8 @@ const Envelope = () => {
       }}
     >
       <ChipManager
-        onCreate={() => console.log('create')}
-        onDelete={() => console.log('delete')}
+        onCreate={createEnvelope}
+        onDelete={deleteEnvelope}
         chips={envelopes}
         currentChip={currentEnvelope.id}
         chipType="Envelope"
@@ -114,14 +146,14 @@ const Envelope = () => {
               labelId="envelope-type-label"
               id="envelope-type-select"
               label="Type"
-              value={envelopeData.type}
+              value={currentEnvelope.type}
               onChange={handleChange}
             >
               <MenuItem value={'insulation'}>Insulation</MenuItem>
               <MenuItem value={'air-sealing'}>Air Sealing</MenuItem>
             </Select>
           </FormControl>
-          {envelopeData.type === 'insulation' ? (
+          {currentEnvelope.type === 'insulation' ? (
             <div
               style={{
                 display: 'flex',
@@ -132,7 +164,7 @@ const Envelope = () => {
               <TextField
                 id="outlined-basic"
                 label="Name"
-                value={name}
+                value={currentEnvelope.name}
                 variant="outlined"
                 placeholder="Name"
                 fullWidth
@@ -145,7 +177,7 @@ const Envelope = () => {
                   labelId="insolation-location-label"
                   id="insolation-location-select"
                   label="Insulation Location"
-                  value={location}
+                  value={currentEnvelope.location}
                 >
                   <MenuItem value={'attic'}>Attic</MenuItem>
                   <MenuItem value={'basement'}>Basement</MenuItem>
@@ -163,7 +195,7 @@ const Envelope = () => {
                   labelId="insulation-condition-label"
                   id="insulatiom-condition-select"
                   label="Insulation Condition"
-                  value={envelopeData.condition}
+                  value={currentEnvelope.condition}
                 >
                   <MenuItem value={'none'}>None</MenuItem>
                   <MenuItem value={'good'}>Good</MenuItem>
@@ -175,13 +207,13 @@ const Envelope = () => {
                 id="outlined-basic"
                 label="User Notes"
                 variant="outlined"
-                value={envelopeData.notes}
+                value={currentEnvelope.notes}
                 placeholder="User Notes"
                 fullWidth
                 multiline
               />
             </div>
-          ) : envelopeData.type === 'air-sealing' ? (
+          ) : currentEnvelope.type === 'air-sealing' ? (
             <div
               style={{
                 display: 'flex',
@@ -194,7 +226,7 @@ const Envelope = () => {
                 label="Name"
                 variant="outlined"
                 placeholder="Name"
-                value={name}
+                value={currentEnvelope.name}
                 fullWidth
               />
               <FormControl fullWidth>
@@ -205,7 +237,7 @@ const Envelope = () => {
                   labelId="leakiness-description-label"
                   id="leakiness-description-select"
                   label="Leakiness Description"
-                  value={envelopeData.leakiness}
+                  value={currentEnvelope.leakiness}
                 >
                   <MenuItem value={'very-tight'}>Very Tight</MenuItem>
                   <MenuItem value={'tight'}>Tight</MenuItem>
@@ -220,7 +252,7 @@ const Envelope = () => {
                 label="User Notes"
                 variant="outlined"
                 placeholder="User Notes"
-                value={envelopeData.notes}
+                value={currentEnvelope.notes}
                 multiline
               />
             </div>

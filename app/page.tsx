@@ -175,24 +175,9 @@ export default function Home() {
   const device = checkDeviceType();
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        await fetchProjects();
-        if (projects.length > 0) {
-          setFilteredProjects(projects);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    setFilteredProjects(projects)
 
-    if (projects.length > 0) {
-      setFilteredProjects(projects);
-    } else {
-      fetchData();
-    }
-
-  }, [projects, fetchProjects]);
+  }, [projects]);
 
   function searchData(searchValue: string) {
     if (searchValue === '') {
@@ -215,6 +200,7 @@ export default function Home() {
 
   async function handleCreate(newProject: NewProject) {
     await createProject(newProject);
+    fetchProjects();
     setOpenModal(false)
   }
 

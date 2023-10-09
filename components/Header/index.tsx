@@ -21,8 +21,10 @@ const Header = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
-    signOut();
   };
+  const doSignOut = () => {
+    signOut();
+  }
 
   const device = checkDeviceType();
 
@@ -56,7 +58,7 @@ const Header = () => {
       >
         <MenuOutlined fontSize={device === "phone" ? "small" : "large"} />
       </IconButton>
-      <CustomMenu open={open} anchorEl={anchorEl} handleClose={handleClose} />
+      <CustomMenu handleSignout={doSignOut} open={open} anchorEl={anchorEl} handleClose={handleClose} />
     </div>
   );
 };
