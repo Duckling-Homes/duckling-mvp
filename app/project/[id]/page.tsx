@@ -41,17 +41,22 @@ const EditProjectModal: React.FC<{
     }));
   };
 
+  const handleClose = () => {
+    setProjectInfo({});
+    onClose();
+  }
+
   return (
     <Modal
       open={open}
       className="createModal"
-      onClose={() => onClose()}
+      onClose={() => handleClose()}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
       <div className="createModal__content">
         <div className="createModal__header">
-          <p>{projectInfo?.name}</p>
+          <p>{project?.name}</p>
           <IconButton
             sx={{
               borderRadius: '4px',
