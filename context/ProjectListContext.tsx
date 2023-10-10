@@ -10,6 +10,7 @@ interface ProjectListContextProps {
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
   fetchProjects: () => Promise<void>;
   createProject: (newProject: NewProject) => Promise<void>;
+  deleteProject: (projectId: string) => Promise<void>;
 }
 
 const ProjectListContext = createContext<ProjectListContextProps | undefined>(
@@ -75,11 +76,28 @@ export const ProjectListProvider: React.FC<{
     }
   }
 
+  async function deleteProject(projectId: string) {
+    try {
+      const response = await customFetch(`/api/projects/${projectId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete project');
+      }
+
+      await fetchProjects();
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  }
+
   const contextValue: ProjectListContextProps = {
     projects,
     setProjects,
     fetchProjects,
     createProject,
+    deleteProject,
   };
 
   return (

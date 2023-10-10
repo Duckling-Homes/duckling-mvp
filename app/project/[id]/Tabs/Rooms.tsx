@@ -13,7 +13,7 @@ const ROOMS = [
     width: 15,
     length: 20,
     ceiling_height: 8,
-    floor: "Second",
+    floor: "Second Floor",
     usage: "Frequent",
     comfort_issues_tags: "",
     safety_issues_tags: "",
@@ -27,7 +27,7 @@ const ROOMS = [
     width: 30,
     length: 10,
     ceiling_height: 10,
-    floor: "First",
+    floor: "Ground Floor",
     usage: "Sometimes",
     comfort_issues_tags: "",
     safety_issues_tags: "",
@@ -46,7 +46,7 @@ const ROOM_TYPES = [
   "Basement",
   "Other",
 ];
-
+//TODO: check these values
 const ROOM_FLOORS = [
   "Basement",
   "Ground Floor",
@@ -147,7 +147,7 @@ const Rooms = () => {
                 value={currentRoom.type}
               >
                 {ROOM_TYPES.map((roomType, i) => (
-                  <MenuItem key={i} value={'roomType'}>{roomType}</MenuItem>
+                  <MenuItem key={i} value={roomType}>{roomType}</MenuItem>
                 ))}
               </Select>
             </FormControl>

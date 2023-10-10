@@ -1,6 +1,7 @@
 "use client";
 
 import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
+import { useState } from "react";
 
 const COMFORT_ISSUES = [
   "Drafty",
@@ -28,7 +29,38 @@ const GOALS = [
   "Reduce Emissions",
 ]
 
+type MockData = {
+  [key: string]: boolean | string; // Define the type of keys in MOCK_DATA
+  comfort_notes: string;
+  health_safety_notes: string;
+  goals_notes: string;
+};
+
+const MOCK_DATA: MockData = {
+  "Drafty": true,
+  "Too hot in summer": false,
+  "Too cold in summer": false,
+  "Too hot in winter": false,
+  "Too cold in winter": false,
+  "Humid": false,
+  "Dry": false,
+  "Noisy System": true,
+  comfort_notes: "",
+  "Mold": false,
+  "Allergens": false,
+  "Indoor air quality": true,
+  "Asbestos": false,
+  health_safety_notes: "Too noisy",
+  "Improve comfort": false,
+  "Improve health & safety": false,
+  "Increase home value": true,
+  "Lower bills": false,
+  "Reduce emissions": false,
+  goals_notes: "Reduce 20db",
+}
+
 const Objectives = ({ }) => {
+  const [data] = useState<MockData>(MOCK_DATA)
   return (
     <>
       <form className="objectives">
@@ -47,7 +79,7 @@ const Objectives = ({ }) => {
                   onClick={() => console.log(issue)}
                   label={issue}
                   key={i}
-                  color={"primary"}
+                  color={data[issue] ? "primary" : "default"}
                 />
               ))
             }
@@ -58,6 +90,7 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Comfort Notes'
             multiline
+            value={data.comfort_notes}
           />
         </FormGroup>
         <FormGroup>
@@ -75,7 +108,7 @@ const Objectives = ({ }) => {
                   onClick={() => console.log(issue)}
                   label={issue}
                   key={i}
-                  color={"primary"}
+                  color={data[issue] ? "primary" : "default"}
                 />
               ))
             }
@@ -86,6 +119,7 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Health & Safety Notes'
             multiline
+            value={data.health_safety_notes}
           />
         </FormGroup>
         <FormGroup>
@@ -103,7 +137,7 @@ const Objectives = ({ }) => {
                   onClick={() => console.log(goal)}
                   label={goal}
                   key={i}
-                  color={"primary"}
+                  color={data[goal] ? "primary" : "default"}
                 />
               ))
             }
@@ -114,6 +148,7 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Goals Notes'
             multiline
+            value={data.goals_notes}
           />
         </FormGroup>
       </form>

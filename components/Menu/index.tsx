@@ -6,10 +6,11 @@ interface CustomMenuProps {
   open: boolean;
   handleClose: () => void;
   anchorEl: HTMLElement | null
+  handleSignout: () => void;
 }
 
 export default function CustomMenu({
-  open, handleClose, anchorEl
+  open, handleClose, anchorEl, handleSignout
 }: CustomMenuProps) {
   return (
     <Menu
@@ -21,7 +22,7 @@ export default function CustomMenu({
         'aria-labelledby': 'basic-button',
       }}
     >
-      <MenuItem onClick={handleClose}>Logout</MenuItem>
+      <MenuItem onClick={handleSignout}>Logout</MenuItem>
     </Menu>
   );
 }

@@ -1,10 +1,11 @@
-import { Container } from "@/components/Container";
 import { SignUp } from "@clerk/nextjs";
+
+import './style.scss'
 
 export default function Page() {
   return (
-    <Container>
+    <div className="signUp">
       <SignUp />
-    </Container>
+    </div>
   );
 }
