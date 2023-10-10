@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getUser, updateUser } from '../repository'
+import { getUser, updateUser } from '../../../utils/repositories/user'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 
 /**

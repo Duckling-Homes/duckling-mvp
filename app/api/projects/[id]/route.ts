@@ -1,7 +1,12 @@
 import withErrorHandler from '@/app/utils/withErrorHandler'
-import { deleteProject, getProject, updateProject } from '../repository'
+import {
+  deleteProject,
+  getProject,
+  updateProject,
+} from '../../../utils/repositories/project'
 import { NextRequest, NextResponse } from 'next/server'
 import { getProjectData } from './data/repository'
+import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
 
 /**
  * Get project by id
@@ -20,10 +25,12 @@ export const GET = withErrorHandler(
     }
 
     const projectData = await getProjectData(params.id)
+    const rooms = await getProjectRooms(params.id)
 
     return NextResponse.json({
       ...project,
       data: projectData,
+      rooms: rooms.map((room: any) => room.id),
     })
   }
 )

@@ -1,5 +1,5 @@
 import withErrorHandler from '@/app/utils/withErrorHandler'
-import { getProject } from '../../repository'
+import { getProject } from '../../../../utils/repositories/project'
 import { NextRequest, NextResponse } from 'next/server'
 import { upsertProjectData } from './repository'
 

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createOrganization, getOrganizations } from './repository'
+import {
+  createOrganization,
+  getOrganizations,
+} from '../../utils/repositories/organization'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 
 /**
