@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button, FormControl, IconButton, Modal, Tab, Tabs, TextField } from "@mui/material";
-import { CalendarMonth, Check, Close, Edit, Home, Person } from "@mui/icons-material";
+import { CalendarMonth, Check, Close, Delete, Edit, Home, Person } from "@mui/icons-material";
 import Image from "next/image";
 import { Container } from "@/components/Container";
 import PlaceHolderPhoto from '../../assets/placeholder-image.png';
@@ -20,6 +20,9 @@ import { useProjectContext } from "@/context/ProjectContext";
 import { useParams } from "next/navigation";
 
 import './style.scss'
+import DeleteProjectModal from "@/components/Modals/DeleteProject";
+import { useProjectListContext } from "@/context/ProjectListContext";
+import { useRouter } from "next/navigation";
 
 // TODO: Definitely transform this into a component
 
@@ -29,8 +32,7 @@ const EditProjectModal: React.FC<{
   onConfirm: (updatedProject: Project) => void;
   project: Project;
 }> = ({ open, onConfirm, onClose, project }) => {
-  const [projectInfo, setProjectInfo] = useState<Project>(project)
-
+  const [projectInfo, setProjectInfo] = useState<Project>(project);
   const handleDataChange = (fieldName: string, value: string) => {
     setProjectInfo((prevData) => ({
       ...prevData,
@@ -38,17 +40,30 @@ const EditProjectModal: React.FC<{
     }));
   };
 
+  const handleClose = () => {
+    setProjectInfo({
+      id: "",
+      name: "",
+      homeownerName: "",
+      homeownerPhone: "",
+      homeownerEmail: "",
+      homeownerAddress: "",
+      createdAt: "",
+    });
+    onClose();
+  }
+
   return (
     <Modal
       open={open}
       className="createModal"
-      onClose={() => onClose()}
+      onClose={() => handleClose()}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
       <div className="createModal__content">
         <div className="createModal__header">
-          <p>{projectInfo?.name}</p>
+          <p>{project?.name}</p>
           <IconButton
             sx={{
               borderRadius: '4px',
@@ -147,8 +162,11 @@ const EditProjectModal: React.FC<{
 
 const DataCollection = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
   const { currentProject, fetchProject, patchProject } = useProjectContext();
+  const { deleteProject } = useProjectListContext();
+  const router = useRouter()
   const { id } = useParams()
 
   useEffect(() => {
@@ -175,6 +193,12 @@ const DataCollection = () => {
     patchProject(projectInfo)
   }
 
+  async function handleDeleteProject(projectId: string) {
+    await deleteProject(projectId);
+    setDeleteModal(false);
+    router.push('/')
+  }
+
   return (
     <>
       {currentProject && (
@@ -183,6 +207,16 @@ const DataCollection = () => {
           project={currentProject}
           onClose={() => setOpenModal(false)}
           onConfirm={handleUpdateProject}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        />
+      )}
+      {currentProject && (
+        <DeleteProjectModal
+          open={deleteModal}
+          project={currentProject}
+          onClose={() => setDeleteModal(false)}
+          onConfirm={handleDeleteProject}
           aria-labelledby="modal-title"
           aria-describedby="modal-description"
         />
@@ -214,14 +248,29 @@ const DataCollection = () => {
                 </span>
               </div>
             </div>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => setOpenModal(true)}
-              startIcon={<Edit />}
-            >
-              Edit
-            </Button>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+            }}>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => setOpenModal(true)}
+                startIcon={<Edit />}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                color="error"
+                onClick={() => setDeleteModal(true)}
+                startIcon={<Delete />}
+              >
+                Delete
+              </Button>
+            </div>
           </div>
           <div style={{
             padding: '8px 24px 16px 24px',
