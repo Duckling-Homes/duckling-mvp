@@ -30,7 +30,7 @@ export const GET = withErrorHandler(
     return NextResponse.json({
       ...project,
       data: projectData,
-      rooms: rooms.map((room: any) => room.id),
+      rooms: rooms.map((room: { id: string }) => room.id),
     })
   }
 )
