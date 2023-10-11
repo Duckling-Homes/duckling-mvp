@@ -3,10 +3,14 @@ import { makeAutoObservable } from 'mobx';
 import customFetch from '../helpers/customFetch';
 
 export class _ModelStore {
-    projects: Project[] = [];
+    projectsByID: Map<string, Project> = new Map();
 
     constructor() {
         makeAutoObservable(this);
+    }
+
+    get projects () {
+        return Array.from(this.projectsByID.values())
     }
 
     loadProjects = async () => {
@@ -26,14 +30,24 @@ export class _ModelStore {
               day: "numeric",
             }),
           }));
-    
-          this.projects = projectsWithFormattedDate;
+
+          for (const proj of projectsWithFormattedDate) {
+            this.projectsByID.set(proj.id, proj);
+          }
         } catch (error) {
           console.error('Error fetching projects:', error);
         }
     }
 
-    // TODO: Need to build offline path for this guy
+    getProject = async (projectId: string) => {
+        if (this.projects.length === 0) {
+            await this.loadProjects();
+        }
+
+        return this.projectsByID.get(projectId);
+    }
+
+    // TODO: Need to build offline path for this guy - may require generating id
     createProject = async (newProject: NewProject) => {
         try {
             const response = await customFetch("/api/projects/", {
@@ -62,7 +76,7 @@ export class _ModelStore {
             throw new Error('Failed to delete project');
           }
     
-          await this.loadProjects();
+          this.projectsByID.delete(projectId);
         } catch (error) {
           console.error('Error deleting project:', error);
         }

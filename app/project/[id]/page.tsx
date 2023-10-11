@@ -23,6 +23,7 @@ import './style.scss'
 import DeleteProjectModal from "@/components/Modals/DeleteProject";
 import { useProjectListContext } from "@/context/ProjectListContext";
 import { useRouter } from "next/navigation";
+import { observer } from "mobx-react-lite";
 
 // TODO: Definitely transform this into a component
 
@@ -31,7 +32,7 @@ const EditProjectModal: React.FC<{
   onClose: () => void;
   onConfirm: (updatedProject: Project) => void;
   project: Project;
-}> = ({ open, onConfirm, onClose, project }) => {
+}> = observer(({ open, onConfirm, onClose, project }) => {
   const [projectInfo, setProjectInfo] = useState<Project>(project);
   const handleDataChange = (fieldName: string, value: string) => {
     setProjectInfo((prevData) => ({
@@ -158,7 +159,7 @@ const EditProjectModal: React.FC<{
       </div>
     </Modal>
   );
-};
+});
 
 const DataCollection = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
