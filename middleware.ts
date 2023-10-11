@@ -10,14 +10,15 @@ export default authMiddleware({
     }
 
     if (req.nextUrl.pathname.startsWith("/api")) {
-      const orgContext = req.headers.get("organization-context");
-      // TODO change this to include making sure the org matches the user org in the metadata
-      if (orgContext === null || orgContext.trim() === "") {
-        return NextResponse.json(
-          { success: false, message: "Missing organization-context header" },
-          { status: 401 }
-        );
-      }
+      // if this is an api route, add this header so our back end can tenantize its apis
+      if ((auth.sessionClaims?.metadata as any)?.organization_id) {
+        req.headers.set("organization-context", (auth.sessionClaims?.metadata as any)?.organization_id)
+      } else {
+          return NextResponse.json(
+            { success: false, message: "User does not have organization_id in Auth metadata" },
+            { status: 401 }
+          );
+      }      
     }
   },
 });
