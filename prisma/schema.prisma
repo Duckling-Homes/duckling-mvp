@@ -47,6 +47,8 @@ model Project {
 
   projectData ProjectData?
   projectRooms ProjectRoom[]
+  insulation ProjectInsulation[]
+  airSealing ProjectAirSealing[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -91,6 +93,33 @@ model ProjectRoom {
   projectId  String
   project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model ProjectInsulation {
+  id                  String @id @default(uuid())
+  name                String
+	insulationLocation  String
+	insulationCondition String
+	notes               String
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model ProjectAirSealing {
+  id                    String @id @default(uuid())
+  name                  String
+	leakinessDescription  String
+	notes                 String
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
