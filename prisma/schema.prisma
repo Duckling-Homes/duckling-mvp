@@ -99,10 +99,10 @@ model ProjectRoom {
 
 model ProjectInsulation {
   id                  String @id @default(uuid())
-  name                String
-	insulationLocation  String
-	insulationCondition String
-	notes               String
+  name                String?
+	insulationLocation  String?
+	insulationCondition String?
+	notes               String?
 
   projectId  String
   project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -113,9 +113,9 @@ model ProjectInsulation {
 
 model ProjectAirSealing {
   id                    String @id @default(uuid())
-  name                  String
-	leakinessDescription  String
-	notes                 String
+  name                  String?
+	leakinessDescription  String?
+	notes                 String?
 
   projectId  String
   project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)

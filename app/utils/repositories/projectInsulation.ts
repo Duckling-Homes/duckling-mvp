@@ -35,9 +35,15 @@ export async function deleteProjectInsulation(id: string) {
   })
 }
 
-export async function getProjectInsulation(id: string) {
+export async function getProjectInsulationById(id: string) {
   return await prisma.projectInsulation.findUnique({
     where: { id },
+  })
+}
+
+export async function getProjectInsulation(projectId: string) {
+  return await prisma.projectInsulation.findMany({
+    where: { projectId },
   })
 }
 

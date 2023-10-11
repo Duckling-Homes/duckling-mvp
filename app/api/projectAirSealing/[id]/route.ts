@@ -1,6 +1,6 @@
 import {
   deleteProjectAirSealing,
-  getProjectAirSealing,
+  getProjectAirSealingById,
   updateProjectAirSealing,
   validateProjectAirSealingPermission,
 } from '@/app/utils/repositories/projectAirSealing'
@@ -15,7 +15,7 @@ export const GET = withErrorHandler(
     const orgContext = req.headers.get('organization-context')
     await validateProjectAirSealingPermission(orgContext as string, params.id)
 
-    return NextResponse.json(await getProjectAirSealing(params.id))
+    return NextResponse.json(await getProjectAirSealingById(params.id))
   }
 )
 

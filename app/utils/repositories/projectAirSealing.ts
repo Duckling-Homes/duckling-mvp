@@ -34,9 +34,15 @@ export async function deleteProjectAirSealing(id: string) {
   })
 }
 
-export async function getProjectAirSealing(id: string) {
+export async function getProjectAirSealingById(id: string) {
   return await prisma.projectAirSealing.findUnique({
     where: { id },
+  })
+}
+
+export async function getProjectAirSealing(projectId: string) {
+  return await prisma.projectAirSealing.findMany({
+    where: { projectId },
   })
 }
 

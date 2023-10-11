@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
   const { name, leakinessDescription, notes, projectId } = await req.json()
+  console.log('here')
   const orgContext = req.headers.get('organization-context')
   const project = await getProject(projectId)
 

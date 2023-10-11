@@ -1,6 +1,6 @@
 import {
   deleteProjectInsulation,
-  getProjectInsulation,
+  getProjectInsulationById,
   updateProjectInsulation,
   validateProjectInsulationPermission,
 } from '@/app/utils/repositories/projectInsulation'
@@ -15,7 +15,7 @@ export const GET = withErrorHandler(
     const orgContext = req.headers.get('organization-context')
     await validateProjectInsulationPermission(orgContext as string, params.id)
 
-    return NextResponse.json(await getProjectInsulation(params.id))
+    return NextResponse.json(await getProjectInsulationById(params.id))
   }
 )
 
