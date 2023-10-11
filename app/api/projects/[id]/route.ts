@@ -5,8 +5,7 @@ import {
   updateProject,
 } from '../../../utils/repositories/project'
 import { NextRequest, NextResponse } from 'next/server'
-import { getProjectData } from './data/repository'
-import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
+import { getProjectData } from '../../../utils/repositories/projectData'
 
 /**
  * Get project by id
@@ -25,12 +24,10 @@ export const GET = withErrorHandler(
     }
 
     const projectData = await getProjectData(params.id)
-    const rooms = await getProjectRooms(params.id)
 
     return NextResponse.json({
       ...project,
       data: projectData,
-      rooms: rooms.map((room: { id: string }) => room.id),
     })
   }
 )

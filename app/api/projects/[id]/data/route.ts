@@ -1,7 +1,7 @@
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { getProject } from '../../../../utils/repositories/project'
 import { NextRequest, NextResponse } from 'next/server'
-import { upsertProjectData } from './repository'
+import { upsertProjectData } from '../../../../utils/repositories/projectData'
 
 /**
  * Upsert project data
