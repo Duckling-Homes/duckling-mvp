@@ -46,6 +46,8 @@ package-lock.json
 **/public/workbox-*.js
 **/public/sw.js
 **/sw.js.map
+**/workbox*
+**/worker*
 
 
 # minio temp files
