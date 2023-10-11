@@ -1,5 +1,5 @@
 import withErrorHandler from '@/app/utils/withErrorHandler'
-import { createProject, getProjects } from './repository'
+import { createProject, getProjects } from '../../utils/repositories/project'
 import { NextRequest, NextResponse } from 'next/server'
 
 /**

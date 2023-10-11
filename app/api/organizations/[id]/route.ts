@@ -3,7 +3,7 @@ import {
   deleteOrganization,
   getOrganization,
   updateOrganization,
-} from '../repository'
+} from '../../../utils/repositories/organization'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 
 /**

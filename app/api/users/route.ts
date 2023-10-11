@@ -1,5 +1,5 @@
 import withErrorHandler from '@/app/utils/withErrorHandler'
-import { createUser } from './repository'
+import { createUser } from '../../utils/repositories/user'
 import { NextRequest, NextResponse } from 'next/server'
 
 /**

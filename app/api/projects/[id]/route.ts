@@ -1,7 +1,11 @@
 import withErrorHandler from '@/app/utils/withErrorHandler'
-import { deleteProject, getProject, updateProject } from '../repository'
+import {
+  deleteProject,
+  getProject,
+  updateProject,
+} from '../../../utils/repositories/project'
 import { NextRequest, NextResponse } from 'next/server'
-import { getProjectData } from './data/repository'
+import { getProjectData } from '../../../utils/repositories/projectData'
 
 /**
  * Get project by id
