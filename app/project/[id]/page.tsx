@@ -23,6 +23,7 @@ import './style.scss'
 import DeleteProjectModal from "@/components/Modals/DeleteProject";
 import { useProjectListContext } from "@/context/ProjectListContext";
 import { useRouter } from "next/navigation";
+import { observer } from "mobx-react-lite";
 
 // TODO: Definitely transform this into a component
 
@@ -31,25 +32,17 @@ const EditProjectModal: React.FC<{
   onClose: () => void;
   onConfirm: (updatedProject: Project) => void;
   project: Project;
-}> = ({ open, onConfirm, onClose, project }) => {
-  const [projectInfo, setProjectInfo] = useState<Project>(project);
-  const handleDataChange = (fieldName: string, value: string) => {
-    setProjectInfo((prevData) => ({
-      ...prevData,
-      [fieldName]: value,
-    }));
+}> = observer(({ open, onConfirm, onClose, project }) => {
+
+  const { currentProject, patchProject } = useProjectContext();
+  const projectInfo = currentProject as Project;
+
+  const handleDataChange = (fieldName: keyof Project, value: string) => {
+    projectInfo[fieldName] = value;
+    patchProject(projectInfo);
   };
 
   const handleClose = () => {
-    setProjectInfo({
-      id: "",
-      name: "",
-      homeownerName: "",
-      homeownerPhone: "",
-      homeownerEmail: "",
-      homeownerAddress: "",
-      createdAt: "",
-    });
     onClose();
   }
 
@@ -158,9 +151,9 @@ const EditProjectModal: React.FC<{
       </div>
     </Modal>
   );
-};
+});
 
-const DataCollection = () => {
+const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
@@ -206,7 +199,7 @@ const DataCollection = () => {
           open={openModal}
           project={currentProject}
           onClose={() => setOpenModal(false)}
-          onConfirm={handleUpdateProject}
+          onConfirm={(info) => {handleUpdateProject(info); setOpenModal(false)}}
           aria-labelledby="modal-title"
           aria-describedby="modal-description"
         />
@@ -305,6 +298,6 @@ const DataCollection = () => {
       </Container>
     </>
   )
-}
+})
 
 export default DataCollection

@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { NewProject, Project } from "@/types/types";
 import customFetch from "@/app/helpers/customFetch";
+import ModelStore from "@/app/stores/modelStore";
+import { observer } from "mobx-react-lite";
 
 interface ProjectContextProps {
   currentProject: Project | null;
@@ -18,35 +20,19 @@ export const useProjectContext = () => {
   return context;
 };
 
-export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ProjectProvider: React.FC<{ children: ReactNode }> = observer(({ children }) => {
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
 
   async function fetchProject(projectId: string) {
-    try {
-      const response = await customFetch(`/api/projects/${projectId}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch project");
-      }
-
-      const data = await response.json();
-      setCurrentProject(data);
-    } catch (error) {
-      console.error("Error fetching project:", error);
+    const project = await ModelStore.getProject(projectId);
+    if (!project) {
+         throw new Error("Failed to fetch project");
     }
+    setCurrentProject(project);
   }
 
   async function patchProject(project: Project) {
-    try {
-      const response = await customFetch(`/api/project${project.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(project),
-      })
-
-      const data = await response.json();
-      setCurrentProject(data);
-    } catch (error) {
-      console.error("Error updating project:", error);
-    }
+    return ModelStore.patchProject(project);
   }
 
   const contextValue: ProjectContextProps = {
@@ -60,4 +46,4 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children })
       {children}
     </ProjectContext.Provider>
   );
-};
+});

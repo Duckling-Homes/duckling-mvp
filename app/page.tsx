@@ -17,6 +17,8 @@ import { NewProject, Project } from "@/types/types";
 import { useProjectListContext } from "@/context/ProjectListContext";
         
 import './style.scss'
+import { observer } from "mobx-react-lite";
+import ModelStore from "./stores/modelStore";
 
 // TODO: Create a new modal component?
 const CreateProjectModal: React.FC<{
@@ -163,20 +165,18 @@ const CreateProjectModal: React.FC<{
   )
 }
 
-export default function Home() {
+const  Home = observer(() => {
   const {
-    projects,
-    fetchProjects,
     createProject,
   } = useProjectListContext();
 
+  const projects = ModelStore.projects;
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const device = checkDeviceType();
 
   useEffect(() => {
     setFilteredProjects(projects)
-
   }, [projects]);
 
   function searchData(searchValue: string) {
@@ -200,7 +200,6 @@ export default function Home() {
 
   async function handleCreate(newProject: NewProject) {
     await createProject(newProject);
-    fetchProjects();
     setOpenModal(false)
   }
 
@@ -300,4 +299,6 @@ export default function Home() {
       </Container>
     </main>
   )
-}
+});
+
+export default Home;
