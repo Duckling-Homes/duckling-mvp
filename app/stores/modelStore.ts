@@ -1,9 +1,12 @@
 import { NewProject, Project } from '@/types/types';
-import { makeAutoObservable } from 'mobx';
+import { computed, makeAutoObservable, observable } from 'mobx';
 import customFetch from '../helpers/customFetch';
 
+// Note: Today, just using 1 ModelStore to store all state for all objects for simplicity
+// In the future we may want to split by Object type.
 export class _ModelStore {
-    projectsByID: Map<string, Project> = new Map();
+
+    projectsByID: Map<string, Project> = observable.map(new Map());
 
     constructor() {
         makeAutoObservable(this);
@@ -82,7 +85,25 @@ export class _ModelStore {
         }
     }
 
-    // TODO: Need to build in auto update detection.
+    // TODO: Need to build offline path for this guy
+    patchProject = async (project: Project) => {
+        try {
+            const response = await customFetch(`/api/projects/${project.id}`, {
+             method: 'PATCH',
+             body: JSON.stringify(project),
+            });
+    
+            if (!response.ok) {
+            throw new Error('Failed to update project');
+            }
+
+            const found = this.getProject(project.id);
+            Object.assign(found, project);
+    
+        } catch (error) {
+            console.error('Error updating project:', error);
+        }
+    }
 }
 
 const ModelStore = new _ModelStore();

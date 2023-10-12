@@ -33,24 +33,17 @@ const EditProjectModal: React.FC<{
   onConfirm: (updatedProject: Project) => void;
   project: Project;
 }> = observer(({ open, onConfirm, onClose, project }) => {
-  const [projectInfo, setProjectInfo] = useState<Project>(project);
+
+  const { currentProject, patchProject } = useProjectContext();
+  const projectInfo = currentProject as Project;
+
   const handleDataChange = (fieldName: string, value: string) => {
-    setProjectInfo((prevData) => ({
-      ...prevData,
-      [fieldName]: value,
-    }));
+    // @ts-ignore
+    projectInfo[fieldName] = value;
+    patchProject(projectInfo);
   };
 
   const handleClose = () => {
-    setProjectInfo({
-      id: "",
-      name: "",
-      homeownerName: "",
-      homeownerPhone: "",
-      homeownerEmail: "",
-      homeownerAddress: "",
-      createdAt: "",
-    });
     onClose();
   }
 
@@ -161,7 +154,7 @@ const EditProjectModal: React.FC<{
   );
 });
 
-const DataCollection = () => {
+const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
@@ -207,7 +200,7 @@ const DataCollection = () => {
           open={openModal}
           project={currentProject}
           onClose={() => setOpenModal(false)}
-          onConfirm={handleUpdateProject}
+          onConfirm={(info) => {handleUpdateProject(info); setOpenModal(false)}}
           aria-labelledby="modal-title"
           aria-describedby="modal-description"
         />
@@ -306,6 +299,6 @@ const DataCollection = () => {
       </Container>
     </>
   )
-}
+})
 
 export default DataCollection

@@ -177,7 +177,6 @@ const  Home = observer(() => {
 
   useEffect(() => {
     setFilteredProjects(projects)
-
   }, [projects]);
 
   function searchData(searchValue: string) {

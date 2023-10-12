@@ -32,12 +32,7 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = observer(({ ch
   }
 
   async function patchProject(project: Project) {
-    const projectFound = ModelStore.getProject(project.id);
-    if (!projectFound) {
-      throw new Error("Project not found");
-    }
-
-    Object.assign(projectFound, project);
+    return ModelStore.patchProject(project);
   }
 
   const contextValue: ProjectContextProps = {
