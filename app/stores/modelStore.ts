@@ -113,6 +113,24 @@ export class _ModelStore {
             console.error('Error updating project:', error);
         }
     }
+
+    patchProjectData = async (projectId: string, projectData: Project) => {
+      try {
+        const response = await customFetch(`/api/projects/${projectId}/data`, {
+          method: 'POST',
+          body: JSON.stringify(projectData),
+        });
+
+        if (!response.ok) {
+        throw new Error('Failed to update project data');
+        }
+
+        const data = response.json();
+        return data
+      } catch (error) {
+          console.error('Error updating project:', error);
+      }
+    }
 }
 
 const ModelStore = new _ModelStore();

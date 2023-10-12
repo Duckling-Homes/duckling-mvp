@@ -284,7 +284,7 @@ const DataCollection = observer(() => {
               <Tab label="Electrical" />
               <Tab label="Photos" />
             </Tabs>
-            {renderTabContent(0, <Basics projectData={currentProject.data} />)}
+            {renderTabContent(0, <Basics projectData={currentProject.data} projectId={currentProject.id}/>)}
             {renderTabContent(1, <Objectives projectData={currentProject.data} />)}
             {renderTabContent(2, <Envelope />)}
             {renderTabContent(3, <Rooms />)}
