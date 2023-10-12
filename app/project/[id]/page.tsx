@@ -37,8 +37,7 @@ const EditProjectModal: React.FC<{
   const { currentProject, patchProject } = useProjectContext();
   const projectInfo = currentProject as Project;
 
-  const handleDataChange = (fieldName: string, value: string) => {
-    // @ts-ignore
+  const handleDataChange = (fieldName: keyof Project, value: string) => {
     projectInfo[fieldName] = value;
     patchProject(projectInfo);
   };

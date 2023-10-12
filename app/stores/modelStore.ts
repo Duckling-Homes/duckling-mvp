@@ -1,5 +1,5 @@
 import { NewProject, Project } from '@/types/types';
-import { computed, makeAutoObservable, observable } from 'mobx';
+import { makeAutoObservable, observable } from 'mobx';
 import customFetch from '../helpers/customFetch';
 
 // Note: Today, just using 1 ModelStore to store all state for all objects for simplicity
