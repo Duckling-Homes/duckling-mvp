@@ -160,7 +160,7 @@ const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
-  const { currentProject, fetchProject } = useProjectContext();
+  const { currentProject, fetchProject, clearCurrentProject } = useProjectContext();
   const { deleteProject } = useProjectListContext();
   const router = useRouter()
   const { id } = useParams()
@@ -175,6 +175,11 @@ const DataCollection = observer(() => {
           console.error(error);
         });
     }
+
+    return () => {
+      clearCurrentProject();
+    };
+
   }, [id]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {

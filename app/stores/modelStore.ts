@@ -9,11 +9,11 @@ export class _ModelStore {
     projectsByID: Map<string, Project> = observable.map(new Map());
 
     constructor() {
-        makeAutoObservable(this);
+      makeAutoObservable(this);
     }
 
     get projects () {
-        return Array.from(this.projectsByID.values())
+      return Array.from(this.projectsByID.values())
     }
 
     loadProjects = async () => {

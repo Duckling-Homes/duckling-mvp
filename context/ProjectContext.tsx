@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { NewProject, Project } from "@/types/types";
-import customFetch from "@/app/helpers/customFetch";
+import React, { createContext, useContext, useState, ReactNode } from "react";
+import { Project } from "@/types/types";
 import ModelStore from "@/app/stores/modelStore";
 import { observer } from "mobx-react-lite";
 
@@ -8,6 +7,7 @@ interface ProjectContextProps {
   currentProject: Project | null;
   fetchProject: (projectId: string) => Promise<void>;
   patchProject: (project: Project) => Promise<void>;
+  clearCurrentProject: () => void;
 }
 
 const ProjectContext = createContext<ProjectContextProps | undefined>(undefined);
@@ -35,10 +35,15 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = observer(({ ch
     return ModelStore.patchProject(project);
   }
 
+  function clearCurrentProject() {
+    setCurrentProject(null);
+  }
+
   const contextValue: ProjectContextProps = {
     currentProject,
     fetchProject,
     patchProject,
+    clearCurrentProject,
   };
 
   return (
