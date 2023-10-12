@@ -30,17 +30,20 @@ import { observer } from "mobx-react-lite";
 const EditProjectModal: React.FC<{
   open: boolean;
   onClose: () => void;
-  onConfirm: (updatedProject: Project) => void;
   project: Project;
-}> = observer(({ open, onConfirm, onClose, project }) => {
+}> = observer(({ open, onClose, project }) => {
 
   const { currentProject, patchProject } = useProjectContext();
   const projectInfo = currentProject as Project;
 
   const handleDataChange = (fieldName: keyof Project, value: string) => {
     projectInfo[fieldName] = value;
-    patchProject(projectInfo);
   };
+
+  const onConfirm = () => {
+    patchProject(projectInfo);
+    onClose();
+  }
 
   const handleClose = () => {
     onClose();
@@ -139,7 +142,7 @@ const EditProjectModal: React.FC<{
           <Button
             variant='contained'
             startIcon={<Check />}
-            onClick={() => onConfirm(projectInfo)}
+            onClick={onConfirm}
             // disabled={!isSaveButtonEnabled}
             size='small'
             sx={{
@@ -182,10 +185,6 @@ const DataCollection = observer(() => {
     <div hidden={value !== index}>{component}</div>
   )
 
-  async function handleUpdateProject(projectInfo: Project) {
-    patchProject(projectInfo)
-  }
-
   async function handleDeleteProject(projectId: string) {
     await deleteProject(projectId);
     setDeleteModal(false);
@@ -199,7 +198,6 @@ const DataCollection = observer(() => {
           open={openModal}
           project={currentProject}
           onClose={() => setOpenModal(false)}
-          onConfirm={(info) => {handleUpdateProject(info); setOpenModal(false)}}
           aria-labelledby="modal-title"
           aria-describedby="modal-description"
         />
