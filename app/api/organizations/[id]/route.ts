@@ -1,15 +1,62 @@
+import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 import {
   deleteOrganization,
   getOrganization,
   updateOrganization,
 } from '../../../utils/repositories/organization'
-import withErrorHandler from '@/app/utils/withErrorHandler'
 
 /**
  * Get an organization by id
  * exmaple: curl http://localhost:3000/api/organizations/[id]
  */
+/**
+ * @swagger
+ * /organization/{id}:
+ *   get:
+ *     summary: Get organization by ID
+ *     description: Retrieves an organization by its unique ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the organization to retrieve.
+ *     responses:
+ *       200:
+ *         description: Successful response containing the organization data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "/Users/rahulpatni/dev/duckling/app/api/organizations/[id]/swagger.yaml#/components/schemas/Organization"
+ *       404:
+ *         description: Organization not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Error message indicating that the organization was not found.
+ *               example:
+ *                 message: Organization not found.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Error message indicating an internal server error.
+ *               example:
+ *                 message: Internal server error.
+ *
+ */
+
 export const GET = withErrorHandler(
   async (_req: NextRequest, { params }: { params: { id: string } }) => {
     return NextResponse.json(await getOrganization(params.id))

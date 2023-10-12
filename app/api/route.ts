@@ -1,9 +1,9 @@
+import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 import {
   createOrganization,
   getOrganizations,
-} from '../../utils/repositories/organization'
-import withErrorHandler from '@/app/utils/withErrorHandler'
+} from '../utils/repositories/organization'
 
 /**
  * Create an organization
