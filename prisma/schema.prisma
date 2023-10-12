@@ -45,10 +45,14 @@ model Project {
   organizationId   String
   organization     Organization @relation(fields: [organizationId], references: [id])
 
-  projectData ProjectData?
-  projectRooms ProjectRoom[]
-  insulation ProjectInsulation[]
-  airSealing ProjectAirSealing[]
+  projectData       ProjectData?
+  projectRooms      ProjectRoom[]
+  insulation        ProjectInsulation[]
+  airSealing        ProjectAirSealing[]
+  hvac              HVAC[]
+  waterHeaters      WaterHeater[]
+  cooktops          Cooktop[]
+  otherAppliances   OtherAppliance[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -116,6 +120,81 @@ model ProjectAirSealing {
   name                  String?
 	leakinessDescription  String?
 	notes                 String?
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model HVAC {
+  id                String @id @default(uuid())
+  hvacSystemType    String?
+  havcSystem        String?
+  fuel              String?
+  age               Int?
+  manufacturer      String?
+  modelNumber       String?
+  serialNumber      String?
+  heatingCapacity   Int?
+  coolingCapacity   Int?
+  location          String?
+  notes             String?
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model WaterHeater {
+  id                String @id @default(uuid())
+  systemType        String?
+  fuel              String?
+  age               Int?
+  manufacturer      String?
+  modelNumber       String?
+  serialNumber      String?
+  tankVolume        Int?
+  location          String?
+  notes             String?
+  
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Cooktop {
+  id                String @id @default(uuid())
+  fuel              String?
+  age               Int?
+  manufacturer      String?
+  modelNumber       String?
+  serialNumber      String?
+  isInduction       Boolean?
+  location          String?
+  notes             String?
+  
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model OtherAppliance {
+  id                String @id @default(uuid())
+  fuel              String?
+  age               Int?
+  manufacturer      String?
+  modelNumber       String?
+  serialNumber      String?
+  location          String?
+  notes             String?
 
   projectId  String
   project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
