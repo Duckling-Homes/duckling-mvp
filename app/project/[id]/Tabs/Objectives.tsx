@@ -59,8 +59,8 @@ const MOCK_DATA: MockData = {
   goals_notes: "Reduce 20db",
 }
 
-const Objectives = ({projectData}) => {
-  const [data] = useState<MockData>(projectData)
+const Objectives = ({currentProject}) => {
+  const [data] = useState<MockData>(currentProject?.data || {})
   return (
     <>
       <form className="objectives">
@@ -79,7 +79,7 @@ const Objectives = ({projectData}) => {
                   onClick={() => console.log(issue)}
                   label={issue}
                   key={i}
-                  color={data.comfortIssueTags.includes(issue) ? "primary" : "default"}
+                  color={data.comfortIssueTags?.includes(issue) ? "primary" : "default"}
                 />
               ))
             }
@@ -108,7 +108,7 @@ const Objectives = ({projectData}) => {
                   onClick={() => console.log(issue)}
                   label={issue}
                   key={i}
-                  color={data.healthSafetyIssueTags.includes(issue) ? "primary" : "default"}
+                  color={data.healthSafetyIssueTags?.includes(issue) ? "primary" : "default"}
                 />
               ))
             }
@@ -137,7 +137,7 @@ const Objectives = ({projectData}) => {
                   onClick={() => console.log(goal)}
                   label={goal}
                   key={i}
-                  color={data.homeownerGoalsTags.includes(goal) ? "primary" : "default"}
+                  color={data.homeownerGoalsTags?.includes(goal) ? "primary" : "default"}
                 />
               ))
             }

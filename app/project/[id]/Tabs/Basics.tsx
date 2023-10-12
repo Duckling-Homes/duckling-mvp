@@ -7,10 +7,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { set } from "mobx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const Basics = ({ projectData, projectId}) => {
-  const [data, setData] = useState(projectData)
+const Basics = ({ currentProject }) => {
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    if (currentProject?.data) {
+      setData(currentProject.data)
+    }
+  }, [currentProject])
 
   const handleInputChange = async (inputName, value) => {
     setData((prevData) => ({
@@ -18,7 +24,7 @@ const Basics = ({ projectData, projectId}) => {
       [inputName]: value,
     }));
 
-    await ModelStore.patchProjectData(projectId, { ...data, [inputName]: value });
+    await ModelStore.patchProjectData(currentProject.id, { ...data, [inputName]: value });
   };
 
   return (
@@ -40,7 +46,7 @@ const Basics = ({ projectData, projectId}) => {
             variant="outlined"
             placeholder='Square Footage'
             type="number"
-            value={data.squareFootage}
+            value={data.squareFootage || ''}
             onChange={(e) => handleInputChange('squareFootage', parseInt(e.target.value))}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
@@ -55,7 +61,7 @@ const Basics = ({ projectData, projectId}) => {
             variant="outlined"
             placeholder='Number of Rooms'
             type="number"
-            value={data.roomCount}
+            value={data.roomCount || ''}
             onChange={(e) => handleInputChange('roomCount', parseInt(e.target.value))}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
@@ -70,7 +76,7 @@ const Basics = ({ projectData, projectId}) => {
             variant="outlined"
             placeholder='Number of Bathrooms'
             type="number"
-            value={data.bathroomCount}
+            value={data.bathroomCount || ''}
             onChange={(e) => handleInputChange('bathroomCount', parseInt(e.target.value))}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
@@ -85,7 +91,7 @@ const Basics = ({ projectData, projectId}) => {
             variant="outlined"
             placeholder='Stories'
             type="number"
-            value={data.stories}
+            value={data?.stories || ''}
             onChange={(e) => handleInputChange('stories', parseInt(e.target.value))}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
@@ -107,7 +113,7 @@ const Basics = ({ projectData, projectId}) => {
               labelId="basement-type-label"
               id="basement-type-select"
               label="Basement Type"
-              value={data.basementType}
+              value={data?.basementType || ''}
               onChange={(e) => handleInputChange('basementType', e.target.value)}
             >
               <MenuItem value={'Finished'}>Finished</MenuItem>

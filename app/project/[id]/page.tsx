@@ -278,7 +278,7 @@ const DataCollection = observer(() => {
             <Button variant="outlined">Plans</Button>
             <Button variant="outlined">Present</Button>
           </div>
-          {currentProject?.data ? <div>
+          <div>
             <Tabs sx={{ background: '#FAFAFA' }}
               variant="fullWidth" value={value} onChange={handleChange}>
               <Tab label="Basics" />
@@ -289,14 +289,14 @@ const DataCollection = observer(() => {
               <Tab label="Electrical" />
               <Tab label="Photos" />
             </Tabs>
-            {renderTabContent(0, <Basics projectData={currentProject.data} projectId={currentProject.id}/>)}
-            {renderTabContent(1, <Objectives projectData={currentProject.data} />)}
+            {renderTabContent(0, <Basics currentProject={currentProject}/>)}
+            {renderTabContent(1, <Objectives currentProject={currentProject} />)}
             {renderTabContent(2, <Envelope />)}
             {renderTabContent(3, <Rooms />)}
             {renderTabContent(4, <Appliances />)}
             {renderTabContent(5, <Electrical />)}
             {renderTabContent(6, <Photos />)}
-          </div> : null}
+          </div>
         </div>
       </Container>
     </>
