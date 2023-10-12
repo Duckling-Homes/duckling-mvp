@@ -1,5 +1,6 @@
 "use client";
 
+import { Project } from "@/types/types";
 import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
 import { useState } from "react";
 
@@ -29,38 +30,12 @@ const GOALS = [
   "Reduce Emissions",
 ]
 
-type MockData = {
-  [key: string]: boolean | string; // Define the type of keys in MOCK_DATA
-  comfort_notes: string;
-  health_safety_notes: string;
-  goals_notes: string;
-};
-
-const MOCK_DATA: MockData = {
-  "Drafty": true,
-  "Too hot in summer": false,
-  "Too cold in summer": false,
-  "Too hot in winter": false,
-  "Too cold in winter": false,
-  "Humid": false,
-  "Dry": false,
-  "Noisy System": true,
-  comfort_notes: "",
-  "Mold": false,
-  "Allergens": false,
-  "Indoor air quality": true,
-  "Asbestos": false,
-  health_safety_notes: "Too noisy",
-  "Improve comfort": false,
-  "Improve health & safety": false,
-  "Increase home value": true,
-  "Lower bills": false,
-  "Reduce emissions": false,
-  goals_notes: "Reduce 20db",
+interface ObjectivesProps {
+  currentProject: Project;
 }
 
-const Objectives = ({currentProject}) => {
-  const [data] = useState<MockData>(currentProject?.data || {})
+const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
+  const [data] = useState(currentProject?.data || {})
   return (
     <>
       <form className="objectives">

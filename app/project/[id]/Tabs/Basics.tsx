@@ -1,31 +1,51 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import ModelStore from "@/app/stores/modelStore";
 import { AddPhotoAlternate } from "@mui/icons-material";
 import { Button, Divider, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { set } from "mobx";
-import { useEffect, useState } from "react";
+import { Project } from "@/types/types";
 
-const Basics = ({ currentProject }) => {
-  const [data, setData] = useState({});
+interface BasicsProps {
+  currentProject: Project
+}
+
+const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
+  const [data, setData] = useState({
+    squareFootage: 0,
+    roomCount: 0,
+    bathroomCount: 0,
+    stories: 0,
+    yearBuilt: new Date(),
+    basementType: '',
+  });
 
   useEffect(() => {
     if (currentProject?.data) {
-      setData(currentProject.data)
+      setData(currentProject.data as {
+      squareFootage: number;
+      roomCount: number;
+      bathroomCount: number;
+      stories: number;
+      yearBuilt: Date;
+      basementType: string;
+    })
     }
   }, [currentProject])
 
-  const handleInputChange = async (inputName, value) => {
+const handleInputChange = async (inputName: string, value: string | number) => {
+  if (currentProject && currentProject.id) {
     setData((prevData) => ({
       ...prevData,
       [inputName]: value,
     }));
 
     await ModelStore.patchProjectData(currentProject.id, { ...data, [inputName]: value });
-  };
+  }
+};
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

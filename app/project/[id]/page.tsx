@@ -34,14 +34,22 @@ const EditProjectModal: React.FC<{
 }> = observer(({ open, onClose, project }) => {
 
   const { currentProject, patchProject } = useProjectContext();
-  const projectInfo = currentProject as Project;
+  const [projectFields, setProjectFields] = useState({
+    ...currentProject,
+  });
 
   const handleDataChange = (fieldName: keyof Project, value: string) => {
-    projectInfo[fieldName] = value;
+    setProjectFields((prevFields) => ({
+      ...prevFields,
+      [fieldName]: value,
+    }));
   };
 
   const onConfirm = () => {
-    patchProject(projectInfo);
+    const updatedProject: Project = {
+      ...projectFields,
+    };
+    patchProject(updatedProject);
     onClose();
   }
 
@@ -82,7 +90,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Client Name"
               variant="outlined"
-              value={projectInfo?.homeownerName}
+              value={projectFields?.homeownerName}
               required
               placeholder='Client Name'
             />
@@ -93,7 +101,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Project Name"
               variant="outlined"
-              value={projectInfo?.name}
+              value={projectFields?.name}
               required
               placeholder='Project Name'
             />
@@ -106,7 +114,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Project Address"
               variant="outlined"
-              value={projectInfo?.homeownerAddress}
+              value={projectFields?.homeownerAddress}
               required
               placeholder='Project Address'
             />
@@ -119,7 +127,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Client Email Address"
               variant="outlined"
-              value={projectInfo?.homeownerEmail}
+              value={projectFields?.homeownerEmail}
               required
               placeholder='Client Email Address'
             />
@@ -132,7 +140,7 @@ const EditProjectModal: React.FC<{
               id="outlined-basic"
               label="Client Phone Number"
               variant="outlined"
-              value={projectInfo?.homeownerPhone}
+              value={projectFields?.homeownerPhone}
               required
               placeholder='Client Phone Number'
             />
@@ -278,7 +286,7 @@ const DataCollection = observer(() => {
             <Button variant="outlined">Plans</Button>
             <Button variant="outlined">Present</Button>
           </div>
-          <div>
+          {currentProject ? <div>
             <Tabs sx={{ background: '#FAFAFA' }}
               variant="fullWidth" value={value} onChange={handleChange}>
               <Tab label="Basics" />
@@ -296,7 +304,7 @@ const DataCollection = observer(() => {
             {renderTabContent(4, <Appliances />)}
             {renderTabContent(5, <Electrical />)}
             {renderTabContent(6, <Photos />)}
-          </div>
+          </div> : null}
         </div>
       </Container>
     </>

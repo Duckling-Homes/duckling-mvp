@@ -1,4 +1,4 @@
-import { NewProject, Project } from '@/types/types';
+import { NewProject, Project, ProjectData } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
 import customFetch from '../helpers/customFetch';
 
@@ -27,11 +27,13 @@ export class _ModelStore {
           const data = await response.json();
           const projectsWithFormattedDate = data.map((project: Project) => ({
             ...project,
-            createdAt: new Date(project.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }),
+            createdAt: project.createdAt
+              ? new Date(project.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : undefined,
           }));
 
           for (const proj of projectsWithFormattedDate) {
@@ -96,25 +98,28 @@ export class _ModelStore {
 
     // TODO: Need to build offline path for this guy
     patchProject = async (project: Project) => {
-        try {
-            const response = await customFetch(`/api/projects/${project.id}`, {
-             method: 'PATCH',
-             body: JSON.stringify(project),
-            });
-    
-            if (!response.ok) {
-            throw new Error('Failed to update project');
-            }
+      try {
+        if (project.id) {
+          const response = await customFetch(`/api/projects/${project.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(project),
+          });
 
-            const found = this.getProject(project.id);
-            Object.assign(found, project);
-    
-        } catch (error) {
-            console.error('Error updating project:', error);
+          if (!response.ok) {
+            throw new Error('Failed to update project');
+          }
+
+          const found = this.getProject(project.id);
+          Object.assign(found, project);
+        } else {
+          console.error('Project ID is undefined; cannot update project.');
         }
+      } catch (error) {
+        console.error('Error updating project:', error);
+      }
     }
 
-    patchProjectData = async (projectId: string, projectData: Project) => {
+    patchProjectData = async (projectId: string, projectData: ProjectData) => {
       try {
         const response = await customFetch(`/api/projects/${projectId}/data`, {
           method: 'POST',
