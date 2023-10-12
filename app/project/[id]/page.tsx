@@ -160,7 +160,7 @@ const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
-  const { currentProject, fetchProject, patchProject } = useProjectContext();
+  const { currentProject, fetchProject } = useProjectContext();
   const { deleteProject } = useProjectListContext();
   const router = useRouter()
   const { id } = useParams()
@@ -273,7 +273,7 @@ const DataCollection = observer(() => {
             <Button variant="outlined">Plans</Button>
             <Button variant="outlined">Present</Button>
           </div>
-          <div>
+          {currentProject?.data ? <div>
             <Tabs sx={{ background: '#FAFAFA' }}
               variant="fullWidth" value={value} onChange={handleChange}>
               <Tab label="Basics" />
@@ -284,14 +284,14 @@ const DataCollection = observer(() => {
               <Tab label="Electrical" />
               <Tab label="Photos" />
             </Tabs>
-            {renderTabContent(0, <Basics />)}
-            {renderTabContent(1, <Objectives />)}
+            {renderTabContent(0, <Basics projectData={currentProject.data} />)}
+            {renderTabContent(1, <Objectives projectData={currentProject.data} />)}
             {renderTabContent(2, <Envelope />)}
             {renderTabContent(3, <Rooms />)}
             {renderTabContent(4, <Appliances />)}
             {renderTabContent(5, <Electrical />)}
             {renderTabContent(6, <Photos />)}
-          </div>
+          </div> : null}
         </div>
       </Container>
     </>

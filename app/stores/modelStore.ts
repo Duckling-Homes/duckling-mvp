@@ -43,11 +43,20 @@ export class _ModelStore {
     }
 
     getProject = async (projectId: string) => {
-        if (this.projects.length === 0) {
-            await this.loadProjects();
+      try {
+        const response = await customFetch(`/api/projects/${projectId}`, {
+          method: 'GET',
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to fetch project');
         }
 
-        return this.projectsByID.get(projectId);
+        const data = await response.json();
+        return data
+      } catch (error) {
+        console.error('Error fetching project:', error);
+      }
     }
 
     // TODO: Need to build offline path for this guy - may require generating id

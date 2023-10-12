@@ -59,8 +59,8 @@ const MOCK_DATA: MockData = {
   goals_notes: "Reduce 20db",
 }
 
-const Objectives = ({ }) => {
-  const [data] = useState<MockData>(MOCK_DATA)
+const Objectives = ({projectData}) => {
+  const [data] = useState<MockData>(projectData)
   return (
     <>
       <form className="objectives">
@@ -79,7 +79,7 @@ const Objectives = ({ }) => {
                   onClick={() => console.log(issue)}
                   label={issue}
                   key={i}
-                  color={data[issue] ? "primary" : "default"}
+                  color={data.comfortIssueTags.includes(issue) ? "primary" : "default"}
                 />
               ))
             }
@@ -90,7 +90,7 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Comfort Notes'
             multiline
-            value={data.comfort_notes}
+            value={data.comfortIssueNotes}
           />
         </FormGroup>
         <FormGroup>
@@ -108,7 +108,7 @@ const Objectives = ({ }) => {
                   onClick={() => console.log(issue)}
                   label={issue}
                   key={i}
-                  color={data[issue] ? "primary" : "default"}
+                  color={data.healthSafetyIssueTags.includes(issue) ? "primary" : "default"}
                 />
               ))
             }
@@ -119,7 +119,7 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Health & Safety Notes'
             multiline
-            value={data.health_safety_notes}
+            value={data.healthSafetyIssueNotes}
           />
         </FormGroup>
         <FormGroup>
@@ -137,7 +137,7 @@ const Objectives = ({ }) => {
                   onClick={() => console.log(goal)}
                   label={goal}
                   key={i}
-                  color={data[goal] ? "primary" : "default"}
+                  color={data.homeownerGoalsTags.includes(goal) ? "primary" : "default"}
                 />
               ))
             }
@@ -148,7 +148,7 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Goals Notes'
             multiline
-            value={data.goals_notes}
+            value={data.homeownerGoalsNotes}
           />
         </FormGroup>
       </form>

@@ -17,8 +17,8 @@ const MOCK_PROJECT = {
   basement_type: 'Finished',
 }
 
-const Basics = ({ }) => {
-  const [data] = useState(MOCK_PROJECT)
+const Basics = ({ projectData }) => {
+  const [data] = useState(projectData)
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -39,7 +39,7 @@ const Basics = ({ }) => {
             variant="outlined"
             placeholder='Square Footage'
             type="number"
-            value={data.square_footage}
+            value={data.squareFootage}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
               if (activeElement) {
@@ -53,7 +53,7 @@ const Basics = ({ }) => {
             variant="outlined"
             placeholder='Number of Rooms'
             type="number"
-            value={data.room_count}
+            value={data.roomCount}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
               if (activeElement) {
@@ -67,7 +67,7 @@ const Basics = ({ }) => {
             variant="outlined"
             placeholder='Number of Bathrooms'
             type="number"
-            value={data.bathroom_count}
+            value={data.bathroomCount}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
               if (activeElement) {
@@ -81,7 +81,7 @@ const Basics = ({ }) => {
             variant="outlined"
             placeholder='Stories'
             type="number"
-            value={data.stories}
+            value={data.storiesCount}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
               if (activeElement) {
@@ -102,7 +102,7 @@ const Basics = ({ }) => {
               labelId="basement-type-label"
               id="basement-type-select"
               label="Basement Type"
-              value={data.basement_type}
+              value={data.basementType}
             >
               <MenuItem value={'Finished'}>Finished</MenuItem>
               <MenuItem value={'Unfinished'}>Unfinished</MenuItem>
