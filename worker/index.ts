@@ -10,24 +10,8 @@ const imageRoute = new Route(({ request }) => {
   cacheName: 'images'
 }));
 
-// Handle scripts:
-const scriptsRoute = new Route(({ request }) => {
-  return request.destination === 'script';
-}, new CacheFirst({
-  cacheName: 'scripts'
-}));
-
-// Handle styles:
-const stylesRoute = new Route(({ request }) => {
-  return request.destination === 'style';
-}, new CacheFirst({
-  cacheName: 'styles'
-}));
-
-// Register routes
+// // Register routes
 registerRoute(imageRoute);
-registerRoute(scriptsRoute);
-registerRoute(stylesRoute);
 
 // Offline Caching  - require server response served back with X-Is-Cacheable: 'true'
 // TODO: Add expiry?
