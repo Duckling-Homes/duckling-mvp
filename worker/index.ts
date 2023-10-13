@@ -9,8 +9,6 @@ const imageRoute = new Route(({ request }) => {
 }, new StaleWhileRevalidate({
   cacheName: 'images'
 }));
-
-// // Register routes
 registerRoute(imageRoute);
 
 // Offline Caching  - require server response served back with X-Is-Cacheable: 'true'
