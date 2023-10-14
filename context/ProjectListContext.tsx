@@ -27,7 +27,7 @@ export const ProjectListProvider: React.FC<{
 }> = observer(({ children }) => {
 
   useEffect(() => {
-    ModelStore.loadProjects();
+    ModelStore.initialLoad();
   }, []);
 
   async function createProject(newProject: NewProject) {

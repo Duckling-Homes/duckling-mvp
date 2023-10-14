@@ -1,6 +1,7 @@
 import { NewProject, Project } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
 import customFetch from '../helpers/customFetch';
+import { v4 as uuidv4 } from 'uuid';
 
 // Note: Today, just using 1 ModelStore to store all state for all objects for simplicity
 // In the future we may want to split by Object type.
@@ -16,8 +17,14 @@ export class _ModelStore {
         return Array.from(this.projectsByID.values())
     }
 
-    loadProjects = async () => {
-        console.log('Fetching project')
+    initialLoad = async () => {
+        console.log('Fetching project');
+
+        if (this.projectsByID.size > 0) {
+          console.log("skipping because already loaded");
+          return;
+        }
+        
         try {
           const response = await customFetch("/api/projects/");
           if (!response.ok) {
@@ -43,16 +50,13 @@ export class _ModelStore {
     }
 
     getProject = async (projectId: string) => {
-        if (this.projects.length === 0) {
-            await this.loadProjects();
-        }
-
         return this.projectsByID.get(projectId);
     }
 
-    // TODO: Need to build offline path for this guy - may require generating id
     createProject = async (newProject: NewProject) => {
         try {
+            newProject.id = uuidv4();
+        
             const response = await customFetch("/api/projects/", {
               method: 'POST',
               body: JSON.stringify(newProject),
@@ -62,16 +66,22 @@ export class _ModelStore {
               throw new Error('Failed to create project');
             }
 
-            await this.loadProjects();
+            const project = await response.json();
+            this.projectsByID.set(project.id, project);
+
           } catch (error) {
+            
             if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-              console.error("FAILED TO FETCH"); 
+              // ok
+              const project : Project = { ...newProject, createdAt: '-1'} as Project;
+              this.projectsByID.set(project.id, project);
+              console.info("Network error, will retry later");
+              return;
             }
             console.error('Error creating project:', error);
           }
     }
 
-    // TODO: Need to build offline path for this guy
     deleteProject = async (projectId: string) => {
         try {
           const response = await customFetch(`/api/projects/${projectId}`, {
@@ -84,11 +94,18 @@ export class _ModelStore {
     
           this.projectsByID.delete(projectId);
         } catch (error) {
+
+          if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+            // ok
+            this.projectsByID.delete(projectId);
+            console.info("Network error, will retry later");
+            return;
+          }
+
           console.error('Error deleting project:', error);
         }
     }
 
-    // TODO: Need to build offline path for this guy
     patchProject = async (project: Project) => {
         try {
             const response = await customFetch(`/api/projects/${project.id}`, {
@@ -97,16 +114,27 @@ export class _ModelStore {
             });
     
             if (!response.ok) {
-            throw new Error('Failed to update project');
+              throw new Error('Failed to update project');
             }
-
             const found = this.getProject(project.id);
             Object.assign(found, project);
-    
+  
         } catch (error) {
+
+          if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+            // ok
+            const found = this.getProject(project.id);
+            Object.assign(found, project);
+            console.info("Network error, will retry later");
+            return;
+          }
+
             console.error('Error updating project:', error);
+            throw error;
         }
     }
+
+
 }
 
 const ModelStore = new _ModelStore();

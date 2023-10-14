@@ -10,6 +10,7 @@ export interface Project {
 }
 
 export interface NewProject {
+  id?: string,
   name: string;
   homeownerName: string;
   homeownerPhone: string;
