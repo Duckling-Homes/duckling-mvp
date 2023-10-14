@@ -58,12 +58,15 @@ export class _ModelStore {
               body: JSON.stringify(newProject),
             });
       
-            if (!response.ok) {
+            if (!response?.ok) {
               throw new Error('Failed to create project');
             }
 
             await this.loadProjects();
           } catch (error) {
+            if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+              console.error("FAILED TO FETCH"); 
+            }
             console.error('Error creating project:', error);
           }
     }
