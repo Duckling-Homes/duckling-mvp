@@ -5,6 +5,10 @@
 // per discussion https://github.com/shadowwalker/next-pwa/issues/424
 const withPWA = require('@ducanh2912/next-pwa').default({
     dest: 'public',
+    fallbacks: {
+        document: "/~offline"
+    },
+    cacheOnFrontEndNav: true,
 })
 
 const nextConfig = {};
