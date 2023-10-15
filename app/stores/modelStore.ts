@@ -20,7 +20,7 @@ export class _ModelStore {
     }
 
     loadProjects = async () => {
-        console.log('Fetching project')
+        console.log('Fetching projects')
         try {
           const response = await customFetch("/api/projects/");
           if (!response.ok) {
@@ -42,6 +42,7 @@ export class _ModelStore {
           for (const proj of projectsWithFormattedDate) {
             this.projectsByID.set(proj.id, proj);
           }
+          console.log(this.projectsByID)
         } catch (error) {
           console.error('Error fetching projects:', error);
         }

@@ -22,8 +22,13 @@ const  Home = observer(() => {
   const device = checkDeviceType();
 
   useEffect(() => {
-    setFilteredProjects(projects)
-  }, [projects]);
+    ModelStore.loadProjects();
+  }, [])
+
+  useEffect(() => {
+    setFilteredProjects(projects);
+    console.log(projects);
+  }, [projects]); 
 
   function searchData(searchValue: string) {
     if (searchValue === '') {

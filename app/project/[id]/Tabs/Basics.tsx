@@ -8,7 +8,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Project } from "@/types/types";
-
+import { debounce } from "lodash"
 interface BasicsProps {
   currentProject: Project
 }
@@ -67,7 +67,8 @@ const handleInputChange = async (inputName: string, value: string | number) => {
             placeholder='Square Footage'
             type="number"
             value={data.squareFootage || ''}
-            onChange={(e) => handleInputChange('squareFootage', parseInt(e.target.value))}
+            // onChange={(e) => debounce(handleInputChange('squareFootage', parseInt(e.target.value)), 150)}
+            onChange={(e) => debounce(console.log('aaaaa'), 150)}
             onWheel={() => {
               const activeElement = document.activeElement as HTMLInputElement;
               if (activeElement) {
