@@ -27,6 +27,7 @@ export interface ProjectData {
 }
 
 export interface NewProject {
+  id?: string,
   name: string;
   homeownerName: string;
   homeownerPhone: string;
