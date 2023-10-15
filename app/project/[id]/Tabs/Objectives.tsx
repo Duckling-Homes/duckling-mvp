@@ -1,8 +1,9 @@
 "use client";
 
+import ModelStore from "@/app/stores/modelStore";
 import { Project } from "@/types/types";
 import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const COMFORT_ISSUES = [
   "Drafty",
@@ -35,7 +36,34 @@ interface ObjectivesProps {
 }
 
 const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
-  const [data] = useState(currentProject?.data || {})
+  const [data, setData] = useState<Project["data"]>({
+    comfortIssueNotes: "",
+    comfortIssueTags: [],
+    healthSafetyIssueNotes: "",
+    healthSafetyIssueTags: [],
+    homeownerGoalsNotes: "",
+    homeownerGoalsTags: []
+  });
+
+  useEffect(() => {
+    if (currentProject?.data) {
+      setData(currentProject.data);
+    }
+  }, [currentProject]);
+
+  const handleTextChange = (inputName: string, value: string) => {
+    if (currentProject && currentProject.id) {
+      const updatedData = { ...data, [inputName]: value };
+      setData(updatedData);
+    }
+  }
+
+  const projectUpdate = async () => {
+    if (currentProject && currentProject.id) {
+      await ModelStore.patchProjectData(currentProject.id, data);
+    }
+  };
+
   return (
     <>
       <form className="objectives">
@@ -51,10 +79,10 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
             {
               COMFORT_ISSUES.map((issue, i) => (
                 <Chip
-                  onClick={() => console.log(issue)}
+                  // onClick={() => handleInputChange(issue)}
                   label={issue}
                   key={i}
-                  color={data.comfortIssueTags?.includes(issue) ? "primary" : "default"}
+                  color={data?.comfortIssueTags?.includes(issue) ? "primary" : "default"}
                 />
               ))
             }
@@ -65,7 +93,9 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
             variant="outlined"
             placeholder='Comfort Notes'
             multiline
-            value={data.comfortIssueNotes}
+            onChange={(e) => handleTextChange('comfortIssueNotes', e.target.value)}
+            onBlur={projectUpdate}
+            value={data?.comfortIssueNotes}
           />
         </FormGroup>
         <FormGroup>
@@ -83,7 +113,7 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
                   onClick={() => console.log(issue)}
                   label={issue}
                   key={i}
-                  color={data.healthSafetyIssueTags?.includes(issue) ? "primary" : "default"}
+                  color={data?.healthSafetyIssueTags?.includes(issue) ? "primary" : "default"}
                 />
               ))
             }
@@ -94,7 +124,9 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
             variant="outlined"
             placeholder='Health & Safety Notes'
             multiline
-            value={data.healthSafetyIssueNotes}
+            onChange={(e) => handleTextChange('healthSafetyIssueNotes', e.target.value)}
+            onBlur={projectUpdate}
+            value={data?.healthSafetyIssueNotes}
           />
         </FormGroup>
         <FormGroup>
@@ -112,7 +144,7 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
                   onClick={() => console.log(goal)}
                   label={goal}
                   key={i}
-                  color={data.homeownerGoalsTags?.includes(goal) ? "primary" : "default"}
+                  color={data?.homeownerGoalsTags?.includes(goal) ? "primary" : "default"}
                 />
               ))
             }
@@ -123,7 +155,9 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
             variant="outlined"
             placeholder='Goals Notes'
             multiline
-            value={data.homeownerGoalsNotes}
+            onChange={(e) => handleTextChange('homeownerGoalsNotes', e.target.value)}
+            onBlur={projectUpdate}
+            value={data?.homeownerGoalsNotes}
           />
         </FormGroup>
       </form>
