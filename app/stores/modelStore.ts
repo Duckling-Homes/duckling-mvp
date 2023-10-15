@@ -95,40 +95,42 @@ export class _ModelStore {
       this.projectsByID.set(project.id, project);
 
     } catch (error) {
-      
       if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
         // ok
-        const project : Project = { ...newProject, createdAt: '-1'} as Project;
-        this.projectsByID.set(project.id, project);
-        console.info("Network error, will retry later");
+        const project: Project = { ...newProject, createdAt: '-1' } as Project;
+        if (project.id) {
+          this.projectsByID.set(project.id, project);
+          console.info("Network error, will retry later");
+        } else {
+          console.error("Project ID is undefined");
+        }
         return;
       }
-      console.error('Error creating project:', error);
     }
   }
 
   deleteProject = async (projectId: string) => {
-      try {
-        const response = await customFetch(`/api/projects/${projectId}`, {
-          method: 'DELETE',
-        });
-  
-        if (!response.ok) {
-          throw new Error('Failed to delete project');
-        }
-  
-        this.projectsByID.delete(projectId);
-      } catch (error) {
+    try {
+      const response = await customFetch(`/api/projects/${projectId}`, {
+        method: 'DELETE',
+      });
 
-        if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-          // ok
-          this.projectsByID.delete(projectId);
-          console.info("Network error, will retry later");
-          return;
-        }
-
-        console.error('Error deleting project:', error);
+      if (!response.ok) {
+        throw new Error('Failed to delete project');
       }
+
+      this.projectsByID.delete(projectId);
+    } catch (error) {
+
+      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+        // ok
+        this.projectsByID.delete(projectId);
+        console.info("Network error, will retry later");
+        return;
+      }
+
+      console.error('Error deleting project:', error);
+    }
   }
 
   patchProject = async (project: Project) => {
@@ -141,17 +143,27 @@ export class _ModelStore {
       if (!response.ok) {
         throw new Error('Failed to update project');
       }
-      const found = this.fetchProject(project.id);
-      Object.assign(found, project);
+
+      if (project.id) {
+        const found = this.fetchProject(project.id);
+        Object.assign(found, project);
+      } else {
+        console.error("Project ID is undefined");
+      }
 
     } catch (error) {
 
       if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
         // ok
-        const found = this.fetchProject(project.id);
-        Object.assign(found, project);
-        console.info("Network error, will retry later");
-        return;
+        if (project.id) {
+          const found = this.fetchProject(project.id);
+          Object.assign(found, project);
+          console.info("Network error, will retry later");
+          return;
+        } else {
+          console.error("Project ID is undefined");
+          return; 
+        }
       }
 
       console.error('Error updating project:', error);
