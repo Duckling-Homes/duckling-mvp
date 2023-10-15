@@ -1,9 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import ModelStore from "@/app/stores/modelStore";
 import { Project } from "@/types/types";
 import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
 
 const COMFORT_ISSUES = [
   "Drafty",
@@ -31,11 +31,7 @@ const GOALS = [
   "Reduce Emissions",
 ]
 
-interface ObjectivesProps {
-  currentProject: Project;
-}
-
-const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
+const Objectives: React.FC<{ currentProject: Project }> = ({ currentProject }) => {
   const [data, setData] = useState<Project["data"]>({
     comfortIssueNotes: "",
     comfortIssueTags: [],
@@ -58,9 +54,24 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
     }
   }
 
-  const projectUpdate = async () => {
-    if (currentProject && currentProject.id) {
-      await ModelStore.patchProjectData(currentProject.id, data);
+  const handleChipChange = (inputName: string, value: string) => {
+    let array = data ? data[inputName] as string[] : [];
+
+    if (array && array.includes(value)) {
+      array = array.filter(item => item !== value);
+    } else {
+      array.push(value);
+    }
+
+    const updatedData = { ...data, [inputName]: array }
+  
+    setData(updatedData)  
+    projectUpdate(updatedData);
+  }
+
+  const projectUpdate = async (projectData = data) => {
+    if (currentProject && currentProject.id && projectData) {
+      await ModelStore.patchProjectData(currentProject.id, projectData);
     }
   };
 
@@ -79,7 +90,7 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
             {
               COMFORT_ISSUES.map((issue, i) => (
                 <Chip
-                  // onClick={() => handleInputChange(issue)}
+                  onClick={() => handleChipChange('comfortIssueTags', issue)}
                   label={issue}
                   key={i}
                   color={data?.comfortIssueTags?.includes(issue) ? "primary" : "default"}
@@ -94,7 +105,7 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
             placeholder='Comfort Notes'
             multiline
             onChange={(e) => handleTextChange('comfortIssueNotes', e.target.value)}
-            onBlur={projectUpdate}
+            onBlur={() => projectUpdate()}
             value={data?.comfortIssueNotes}
           />
         </FormGroup>
@@ -125,7 +136,7 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
             placeholder='Health & Safety Notes'
             multiline
             onChange={(e) => handleTextChange('healthSafetyIssueNotes', e.target.value)}
-            onBlur={projectUpdate}
+            onBlur={() => projectUpdate()}
             value={data?.healthSafetyIssueNotes}
           />
         </FormGroup>
@@ -156,7 +167,7 @@ const Objectives: React.FC<ObjectivesProps> = ({ currentProject }) => {
             placeholder='Goals Notes'
             multiline
             onChange={(e) => handleTextChange('homeownerGoalsNotes', e.target.value)}
-            onBlur={projectUpdate}
+            onBlur={() => projectUpdate()}
             value={data?.homeownerGoalsNotes}
           />
         </FormGroup>

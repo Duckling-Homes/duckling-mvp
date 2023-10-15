@@ -23,6 +23,7 @@ export interface ProjectData {
   healthSafetyIssueNotes?: string,
   homeownerGoalsTags?: string[],
   homeownerGoalsNotes?: string,
+  [key: string]: number | string | string[] | undefined;
 }
 
 export interface NewProject {
