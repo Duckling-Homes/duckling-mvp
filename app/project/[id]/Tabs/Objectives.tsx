@@ -121,7 +121,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({ currentProject }) =
             {
               HEALTH_SAFETY.map((issue, i) => (
                 <Chip
-                  onClick={() => console.log(issue)}
+                  onClick={() => handleChipChange('healthSafetyIssueTags', issue)}
                   label={issue}
                   key={i}
                   color={data?.healthSafetyIssueTags?.includes(issue) ? "primary" : "default"}
@@ -152,7 +152,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({ currentProject }) =
             {
               GOALS.map((goal, i) => (
                 <Chip
-                  onClick={() => console.log(goal)}
+                  onClick={() => handleChipChange('homeownerGoalsTags', goal)}
                   label={goal}
                   key={i}
                   color={data?.homeownerGoalsTags?.includes(goal) ? "primary" : "default"}
