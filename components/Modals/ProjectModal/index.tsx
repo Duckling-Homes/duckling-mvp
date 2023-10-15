@@ -1,15 +1,8 @@
+import React, { useState } from 'react';
+import { Project } from '@/types/types';
 import { Check, Close } from '@mui/icons-material';
 import { Button, FormControl, IconButton, Modal, TextField } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react';
-
-type Project = {
-  name: string;
-  homeownerName: string;
-  homeownerPhone: string;
-  homeownerEmail: string;
-  homeownerAddress: string;
-};
 
 type ProjectModalProps = {
   open: boolean;

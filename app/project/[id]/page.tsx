@@ -29,11 +29,11 @@ import ProjectModal from "@/components/Modals/ProjectModal";
 const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
-  const [value, setValue] = useState<number>(0); //TODO: rename this please
+  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   const { currentProject, fetchProject, clearCurrentProject, patchProject } = useProjectContext();
   const { deleteProject } = useProjectListContext();
-  const router = useRouter()
-  const { id } = useParams()
+  const router = useRouter();
+  const { id } = useParams();
 
   useEffect(() => {
     if (typeof id === 'string') {
@@ -52,13 +52,13 @@ const DataCollection = observer(() => {
 
   }, [id]);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-  }
-
   const renderTabContent = (index: number, component: JSX.Element) => (
     <div hidden={value !== index}>{component}</div>
   )
+
+  function handleChangeTab(event: React.SyntheticEvent, newValue: number) {
+    setCurrentTabIndex(newValue)
+  }
 
   async function handleDeleteProject(projectId: string) {
     await deleteProject(projectId);
@@ -66,7 +66,7 @@ const DataCollection = observer(() => {
     router.push('/')
   }
 
-  const onConfirm = (updatedProject: Project) => {
+  function handleUpdateProject(updatedProject: Project) {
     patchProject(updatedProject);
   }
 
@@ -77,7 +77,7 @@ const DataCollection = observer(() => {
           open={openModal}
           project={currentProject}
           onClose={() => setOpenModal(false)}
-          onConfirm={(updatedProject) => onConfirm(updatedProject)}
+          onConfirm={(updatedProject) => handleUpdateProject(updatedProject)}
         />
       )}
       {currentProject && (
@@ -153,7 +153,7 @@ const DataCollection = observer(() => {
           </div>
           {currentProject ? <div>
             <Tabs sx={{ background: '#FAFAFA' }}
-              variant="fullWidth" value={value} onChange={handleChange}>
+              variant="fullWidth" value={currentTabIndex} onChange={handleChangeTab}>
               <Tab label="Basics" />
               <Tab label="Objectives" />
               <Tab label="Envelope" />
