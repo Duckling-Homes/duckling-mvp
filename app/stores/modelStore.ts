@@ -5,8 +5,9 @@ import customFetch from '../helpers/customFetch';
 // Note: Today, just using 1 ModelStore to store all state for all objects for simplicity
 // In the future we may want to split by Object type.
 export class _ModelStore {
-
+    // TODO: Make two modelStore?
     projectsByID: Map<string, Project> = observable.map(new Map());
+    currentProject: Project | null = null;
 
     constructor() {
       makeAutoObservable(this);
@@ -44,21 +45,25 @@ export class _ModelStore {
         }
     }
 
-    getProject = async (projectId: string) => {
+    fetchProject = async (projectId: string) => {
       try {
         const response = await customFetch(`/api/projects/${projectId}`, {
           method: 'GET',
         });
-  
+
         if (!response.ok) {
           throw new Error('Failed to fetch project');
         }
 
         const data = await response.json();
-        return data
+        this.currentProject = data;
       } catch (error) {
         console.error('Error fetching project:', error);
       }
+    }
+
+    clearCurrentProject() {
+      this.currentProject = null;
     }
 
     // TODO: Need to build offline path for this guy - may require generating id

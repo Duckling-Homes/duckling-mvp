@@ -25,35 +25,31 @@ import { useProjectListContext } from "@/context/ProjectListContext";
 import { useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
 import ProjectModal from "@/components/Modals/ProjectModal";
+import ModelStore from "@/app/stores/modelStore";
 
 const DataCollection = observer(() => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [deleteModal, setDeleteModal] = useState<boolean>(false);
+  const [openModal, setOpenModal]             = useState<boolean>(false);
+  const [deleteModal, setDeleteModal]         = useState<boolean>(false);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
-  const { currentProject, fetchProject, clearCurrentProject, patchProject } = useProjectContext();
+  const { patchProject } = useProjectContext();
   const { deleteProject } = useProjectListContext();
+  const currentProject = ModelStore.currentProject;
   const router = useRouter();
   const { id } = useParams();
 
   useEffect(() => {
     if (typeof id === 'string') {
-      fetchProject(id)
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      ModelStore.fetchProject(id)
     }
 
     return () => {
-      clearCurrentProject();
+      ModelStore.clearCurrentProject();
     };
 
   }, [id]);
 
   const renderTabContent = (index: number, component: JSX.Element) => (
-    <div hidden={value !== index}>{component}</div>
+    <div hidden={currentTabIndex !== index}>{component}</div>
   )
 
   function handleChangeTab(event: React.SyntheticEvent, newValue: number) {

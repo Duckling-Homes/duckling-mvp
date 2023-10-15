@@ -24,7 +24,7 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = observer(({ ch
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
 
   async function fetchProject(projectId: string) {
-    const project = await ModelStore.getProject(projectId);
+    const project = await ModelStore.fetchProject(projectId);
     if (!project) {
          throw new Error("Failed to fetch project");
     }
