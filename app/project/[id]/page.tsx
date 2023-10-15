@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useEffect, useState } from "react";
-import { Button, FormControl, IconButton, Modal, Tab, Tabs, TextField } from "@mui/material";
-import { CalendarMonth, Check, Close, Delete, Edit, Home, Person } from "@mui/icons-material";
+import { Button, Tab, Tabs } from "@mui/material";
+import { CalendarMonth, Delete, Edit, Home, Person } from "@mui/icons-material";
 import Image from "next/image";
 import { Container } from "@/components/Container";
 import PlaceHolderPhoto from '../../assets/placeholder-image.png';
@@ -24,151 +24,13 @@ import DeleteProjectModal from "@/components/Modals/DeleteProject";
 import { useProjectListContext } from "@/context/ProjectListContext";
 import { useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
-
-// TODO: Definitely transform this into a component
-
-const EditProjectModal: React.FC<{
-  open: boolean;
-  onClose: () => void;
-  project: Project;
-}> = observer(({ open, onClose, project }) => {
-
-  const { currentProject, patchProject } = useProjectContext();
-  const [projectFields, setProjectFields] = useState({
-    ...currentProject,
-  });
-
-  const handleDataChange = (fieldName: keyof Project, value: string) => {
-    setProjectFields((prevFields) => ({
-      ...prevFields,
-      [fieldName]: value,
-    }));
-  };
-
-  const onConfirm = () => {
-    const updatedProject: Project = {
-      ...projectFields,
-    };
-    patchProject(updatedProject);
-    onClose();
-  }
-
-  const handleClose = () => {
-    onClose();
-  }
-
-  return (
-    <Modal
-      open={open}
-      className="createModal"
-      onClose={() => handleClose()}
-      aria-labelledby="modal-title"
-      aria-describedby="modal-description"
-    >
-      <div className="createModal__content">
-        <div className="createModal__header">
-          <p>{project?.name}</p>
-          <IconButton
-            sx={{
-              borderRadius: '4px',
-              border: '1px solid #2196F3',
-              color: '#2196F3',
-              padding: '4px 10px',
-            }}
-            onClick={onClose}
-            aria-label="close">
-            <Close />
-          </IconButton>
-        </div>
-        <form className='createModal__form'>
-          <FormControl>
-            <TextField
-              onChange={
-                ({ target }) => handleDataChange('homeownerName', target.value)
-              }
-              fullWidth
-              id="outlined-basic"
-              label="Client Name"
-              variant="outlined"
-              value={projectFields?.homeownerName}
-              required
-              placeholder='Client Name'
-            />
-          </FormControl>
-          <FormControl>
-            <TextField
-              onChange={({ target }) => handleDataChange('name', target.value)}
-              id="outlined-basic"
-              label="Project Name"
-              variant="outlined"
-              value={projectFields?.name}
-              required
-              placeholder='Project Name'
-            />
-          </FormControl>
-          <FormControl>
-            <TextField
-              onChange={
-                ({ target }) => handleDataChange('homeownerAddress', target.value)
-              }
-              id="outlined-basic"
-              label="Project Address"
-              variant="outlined"
-              value={projectFields?.homeownerAddress}
-              required
-              placeholder='Project Address'
-            />
-          </FormControl>
-          <FormControl>
-            <TextField
-              onChange={
-                ({ target }) => handleDataChange('homeownerEmail', target.value)
-              }
-              id="outlined-basic"
-              label="Client Email Address"
-              variant="outlined"
-              value={projectFields?.homeownerEmail}
-              required
-              placeholder='Client Email Address'
-            />
-          </FormControl>
-          <FormControl>
-            <TextField
-              onChange={
-                ({ target }) => handleDataChange('homeownerPhone', target.value)
-              }
-              id="outlined-basic"
-              label="Client Phone Number"
-              variant="outlined"
-              value={projectFields?.homeownerPhone}
-              required
-              placeholder='Client Phone Number'
-            />
-          </FormControl>
-        </form>
-        <div className="createModal__footer">
-          <Button
-            variant='contained'
-            startIcon={<Check />}
-            onClick={onConfirm}
-            // disabled={!isSaveButtonEnabled}
-            size='small'
-            sx={{
-              marginLeft: 'auto'
-            }}
-            color='primary'>Save
-          </Button>
-        </div>
-      </div>
-    </Modal>
-  );
-});
+import ProjectModal from "@/components/Modals/ProjectModal";
 
 const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0); //TODO: rename this please
-  const { currentProject, fetchProject, clearCurrentProject } = useProjectContext();
+  const { currentProject, fetchProject, clearCurrentProject, patchProject } = useProjectContext();
   const { deleteProject } = useProjectListContext();
   const router = useRouter()
   const { id } = useParams()
@@ -204,15 +66,18 @@ const DataCollection = observer(() => {
     router.push('/')
   }
 
+  const onConfirm = (updatedProject: Project) => {
+    patchProject(updatedProject);
+  }
+
   return (
     <>
       {currentProject && (
-        <EditProjectModal
+        <ProjectModal
           open={openModal}
           project={currentProject}
           onClose={() => setOpenModal(false)}
-          aria-labelledby="modal-title"
-          aria-describedby="modal-description"
+          onConfirm={(updatedProject) => onConfirm(updatedProject)}
         />
       )}
       {currentProject && (

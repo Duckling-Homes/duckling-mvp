@@ -1,5 +1,6 @@
 import { Check, Close } from '@mui/icons-material';
 import { Button, FormControl, IconButton, Modal, TextField } from '@mui/material';
+import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
 
 type Project = {
@@ -17,7 +18,7 @@ type ProjectModalProps = {
   project?: Project;
 };
 
-const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose, onConfirm, project }) => {
+const ProjectModal: React.FC<ProjectModalProps> = observer(({ open, onClose, onConfirm, project }) => {
   const initialProjectData: Project = {
     name: '',
     homeownerName: '',
@@ -41,7 +42,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose, onConfirm, p
     setProjectData(initialProjectData);
   };
 
-  const isSaveButtonEnabled = Object.values(projectData).every(Boolean);
+  const isSaveButtonEnabled = Object.values(projectData).every((value) => value !== '');
 
   const onConfirmClick = () => {
     onConfirm(projectData);
@@ -160,6 +161,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose, onConfirm, p
       </div>
     </Modal>
   );
-};
+});
 
 export default ProjectModal;
