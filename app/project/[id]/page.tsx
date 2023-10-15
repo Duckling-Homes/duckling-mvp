@@ -16,24 +16,20 @@ import {
   Rooms,
 } from './Tabs/index'
 import { Project } from "@/types/types";
-import { useProjectContext } from "@/context/ProjectContext";
 import { useParams } from "next/navigation";
-
-import './style.scss'
 import DeleteProjectModal from "@/components/Modals/DeleteProject";
-import { useProjectListContext } from "@/context/ProjectListContext";
 import { useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
 import ProjectModal from "@/components/Modals/ProjectModal";
 import ModelStore from "@/app/stores/modelStore";
 
+import './style.scss'
+
 const DataCollection = observer(() => {
   const [openModal, setOpenModal]             = useState<boolean>(false);
   const [deleteModal, setDeleteModal]         = useState<boolean>(false);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
-  const { patchProject } = useProjectContext();
-  const { deleteProject } = useProjectListContext();
-  const currentProject = ModelStore.currentProject;
+
   const router = useRouter();
   const { id } = useParams();
 
@@ -57,29 +53,29 @@ const DataCollection = observer(() => {
   }
 
   async function handleDeleteProject(projectId: string) {
-    await deleteProject(projectId);
+    await ModelStore.deleteProject(projectId);
     setDeleteModal(false);
     router.push('/')
   }
 
   function handleUpdateProject(updatedProject: Project) {
-    patchProject(updatedProject);
+    ModelStore.patchProject(updatedProject);
   }
 
   return (
     <>
-      {currentProject && (
+      {ModelStore.currentProject && (
         <ProjectModal
           open={openModal}
-          project={currentProject}
+          project={ModelStore.currentProject}
           onClose={() => setOpenModal(false)}
           onConfirm={(updatedProject) => handleUpdateProject(updatedProject)}
         />
       )}
-      {currentProject && (
+      {ModelStore.currentProject && (
         <DeleteProjectModal
           open={deleteModal}
-          project={currentProject}
+          project={ModelStore.currentProject}
           onClose={() => setDeleteModal(false)}
           onConfirm={handleDeleteProject}
           aria-labelledby="modal-title"
@@ -99,17 +95,17 @@ const DataCollection = observer(() => {
               </Button>
             </div>
             <div className="dataCollection__projectInfo">
-              <p className="dataCollection__title">{currentProject?.name}</p>
+              <p className="dataCollection__title">{ModelStore.currentProject?.name}</p>
               <div className="dataCollection__infoWrapper">
                 <span className="dataCollection__info">
-                  <Home />{currentProject?.homeownerAddress}
+                  <Home />{ModelStore.currentProject?.homeownerAddress}
                 </span>
                 <span className="dataCollection__info">
-                  <Person />{currentProject?.homeownerName}
+                  <Person />{ModelStore.currentProject?.homeownerName}
                 </span>
                 <span className="dataCollection__info">
                   {/* TODO: make this beautiful */}
-                  <CalendarMonth />{currentProject?.createdAt}
+                  <CalendarMonth />{ModelStore.currentProject?.createdAt}
                 </span>
               </div>
             </div>
@@ -147,7 +143,7 @@ const DataCollection = observer(() => {
             <Button variant="outlined">Plans</Button>
             <Button variant="outlined">Present</Button>
           </div>
-          {currentProject ? <div>
+          {ModelStore.currentProject ? <div>
             <Tabs sx={{ background: '#FAFAFA' }}
               variant="fullWidth" value={currentTabIndex} onChange={handleChangeTab}>
               <Tab label="Basics" />
@@ -158,8 +154,8 @@ const DataCollection = observer(() => {
               <Tab label="Electrical" />
               <Tab label="Photos" />
             </Tabs>
-            {renderTabContent(0, <Basics currentProject={currentProject}/>)}
-            {renderTabContent(1, <Objectives currentProject={currentProject} />)}
+            {renderTabContent(0, <Basics currentProject={ModelStore.currentProject}/>)}
+            {renderTabContent(1, <Objectives currentProject={ModelStore.currentProject} />)}
             {renderTabContent(2, <Envelope />)}
             {renderTabContent(3, <Rooms />)}
             {renderTabContent(4, <Appliances />)}

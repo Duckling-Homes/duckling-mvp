@@ -10,7 +10,9 @@ export class _ModelStore {
     currentProject: Project | null = null;
 
     constructor() {
-      makeAutoObservable(this);
+      makeAutoObservable(this, {
+        currentProject: observable,
+      });
     }
 
     get projects () {
@@ -57,6 +59,7 @@ export class _ModelStore {
 
         const data = await response.json();
         this.currentProject = data;
+        return this.currentProject;
       } catch (error) {
         console.error('Error fetching project:', error);
       }
@@ -114,7 +117,7 @@ export class _ModelStore {
             throw new Error('Failed to update project');
           }
 
-          const found = this.getProject(project.id);
+          const found = this.fetchProject(project.id);
           Object.assign(found, project);
         } else {
           console.error('Project ID is undefined; cannot update project.');

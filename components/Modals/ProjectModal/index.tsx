@@ -39,7 +39,9 @@ const ProjectModal: React.FC<ProjectModalProps> = observer(({ open, onClose, onC
 
   const onConfirmClick = () => {
     onConfirm(projectData);
-    resetState();
+    if (!project) {
+      resetState();
+    }
     onClose();
   };
 
