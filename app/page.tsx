@@ -23,7 +23,7 @@ const  Home = observer(() => {
   const projects = ModelStore.projects;
 
   useEffect(() => {
-    ModelStore.loadProjects();
+    ModelStore.initialLoad();
   }, [])
 
   useEffect(() => {

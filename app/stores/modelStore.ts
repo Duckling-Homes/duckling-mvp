@@ -178,7 +178,6 @@ export class _ModelStore {
   }
 
   fetchOrganization = async (organizationId: string) => {
-    console.log(organizationId)
     try {
       if (organizationId) {
         const response = await customFetch(`/api/organizations/${organizationId}`, {
@@ -191,6 +190,7 @@ export class _ModelStore {
 
         const data = await response.json();
         this.organization = data;
+        return data;
       } else {
         console.error('Organization ID is undefined');
       }

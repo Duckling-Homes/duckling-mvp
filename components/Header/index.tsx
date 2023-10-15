@@ -11,11 +11,12 @@ import Link from "next/link";
 
 import "./styles.scss";
 import ModelStore from "@/app/stores/modelStore";
+import { Organization } from "@/types/types";
 
 const Header = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl]         = useState<null | HTMLElement>(null);
+  const [organization, setOrganization] = useState<null | Organization>(ModelStore.organization);
 
-  const organization = ModelStore.organization
   const open         = Boolean(anchorEl);
   const { signOut }  = useClerk();
   const { user }     = useUser();
@@ -24,9 +25,10 @@ const Header = () => {
     if (organization || !user) return;
 
     const organizationId = user?.publicMetadata.organization_id as string | undefined;
-    console.log(organizationId)
+
     if (organizationId) {
-      ModelStore.fetchOrganization(organizationId);
+      ModelStore.fetchOrganization(organizationId)
+        .then((data) => setOrganization(data))
     }
   }, [organization, user]);
 
