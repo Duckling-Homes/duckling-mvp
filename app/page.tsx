@@ -7,7 +7,6 @@ import { Button, TextField } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Link from "next/link";
 import { NewProject, Project } from "@/types/types";
-import { useProjectListContext } from "@/context/ProjectListContext";
 import { observer } from "mobx-react-lite";
 import ModelStore from "./stores/modelStore";
 import { Container } from "@/components/Container";
@@ -16,9 +15,6 @@ import ProjectModal from "@/components/Modals/ProjectModal";
 import './style.scss'
 
 const  Home = observer(() => {
-  const {
-    createProject,
-  } = useProjectListContext();
 
   const projects = ModelStore.projects;
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
@@ -48,8 +44,8 @@ const  Home = observer(() => {
     setFilteredProjects(result)
   }
 
-  async function handleCreate(newProject: NewProject) {
-    await createProject(newProject);
+  async function handleCreate(newProject: Project) {
+    await ModelStore.createProject(newProject);
     setOpenModal(false)
   }
 
@@ -104,7 +100,7 @@ const  Home = observer(() => {
     <main>
       <ProjectModal
         open={openModal}
-        onConfirm={(newProject: NewProject) => handleCreate(newProject)}
+        onConfirm={(newProject: Project) => handleCreate(newProject)}
         onClose={() => setOpenModal(false)}
       />
       <Container>
