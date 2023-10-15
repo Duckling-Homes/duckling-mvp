@@ -33,3 +33,7 @@ export interface NewProject {
   homeownerEmail: string;
   homeownerAddress: string;
 }
+
+export interface Organization {
+  name: string;
+}

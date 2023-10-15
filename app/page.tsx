@@ -6,7 +6,7 @@ import { checkDeviceType } from "@/hooks/checkDeviceType";
 import { Button, TextField } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Link from "next/link";
-import { NewProject, Project } from "@/types/types";
+import { Project } from "@/types/types";
 import { observer } from "mobx-react-lite";
 import ModelStore from "./stores/modelStore";
 import { Container } from "@/components/Container";
@@ -14,12 +14,13 @@ import ProjectModal from "@/components/Modals/ProjectModal";
 
 import './style.scss'
 
-const  Home = observer(() => {
 
-  const projects = ModelStore.projects;
+const  Home = observer(() => {
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const device = checkDeviceType();
+  const [openModal, setOpenModal]              = useState<boolean>(false);
+
+  const device   = checkDeviceType();
+  const projects = ModelStore.projects;
 
   useEffect(() => {
     ModelStore.loadProjects();
@@ -27,7 +28,6 @@ const  Home = observer(() => {
 
   useEffect(() => {
     setFilteredProjects(projects);
-    console.log(projects);
   }, [projects]); 
 
   function searchData(searchValue: string) {

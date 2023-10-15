@@ -3,18 +3,32 @@
 import { HomeOutlined, MenuOutlined } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 
-import { useClerk } from "@clerk/nextjs";
-import { useState } from "react";
+import { useClerk, useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
 import { checkDeviceType } from "../../hooks/checkDeviceType";
 import CustomMenu from "../Menu";
 import Link from "next/link";
 
 import "./styles.scss";
+import ModelStore from "@/app/stores/modelStore";
 
 const Header = () => {
-  const { signOut } = useClerk();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+
+  const organization = ModelStore.organization
+  const open         = Boolean(anchorEl);
+  const { signOut }  = useClerk();
+  const { user }     = useUser();
+
+  useEffect(() => {
+    if (!organization || !user) return;
+
+    const organizationId = user?.publicMetadata.organization_id as string | undefined;
+    
+    if (organizationId) {
+      ModelStore.fetchOrganization(organizationId);
+    }
+  }, [organization, user]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -45,7 +59,7 @@ const Header = () => {
           </IconButton>
         </Link>
       )}
-      <p>Main Street HVAC & Electric</p>
+      <p>{organization?.name}</p>
       <IconButton
         sx={{
           borderRadius: "4px",

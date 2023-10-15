@@ -1,4 +1,4 @@
-import { NewProject, Project, ProjectData } from '@/types/types';
+import { NewProject, Organization, Project, ProjectData } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
 import customFetch from '../helpers/customFetch';
 
@@ -8,6 +8,7 @@ export class _ModelStore {
     // TODO: Make two modelStore?
     projectsByID: Map<string, Project> = observable.map(new Map());
     currentProject: Project | null = null;
+    organization: Organization | null = null;
 
     constructor() {
       makeAutoObservable(this, {
@@ -20,7 +21,6 @@ export class _ModelStore {
     }
 
     loadProjects = async () => {
-        console.log('Fetching projects')
         try {
           const response = await customFetch("/api/projects/");
           if (!response.ok) {
@@ -42,7 +42,6 @@ export class _ModelStore {
           for (const proj of projectsWithFormattedDate) {
             this.projectsByID.set(proj.id, proj);
           }
-          console.log(this.projectsByID)
         } catch (error) {
           console.error('Error fetching projects:', error);
         }
@@ -143,6 +142,29 @@ export class _ModelStore {
         return data
       } catch (error) {
           console.error('Error updating project:', error);
+      }
+    }
+
+    fetchOrganization = async (organizationId: string) => {
+      console.log(organizationId)
+      try {
+        if (organizationId) {
+          const response = await customFetch(`/api/organizations/${organizationId}`, {
+            method: 'GET',
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch organization');
+          }
+
+          const data = await response.json();
+          console.log(data)
+          this.organization = data;
+        } else {
+          console.error('Organization ID is undefined');
+        }
+      } catch (error) {
+        console.error('Error fetching Organization:', error);
       }
     }
 }
