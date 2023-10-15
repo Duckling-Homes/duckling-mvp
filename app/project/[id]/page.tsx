@@ -30,8 +30,9 @@ const DataCollection = observer(() => {
   const [deleteModal, setDeleteModal]         = useState<boolean>(false);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
 
-  const router = useRouter();
-  const { id } = useParams();
+  const currentProject = ModelStore.currentProject;
+  const router         = useRouter();
+  const { id }         = useParams();
 
   useEffect(() => {
     if (typeof id === 'string') {
@@ -64,18 +65,18 @@ const DataCollection = observer(() => {
 
   return (
     <>
-      {ModelStore.currentProject && (
+      {currentProject && (
         <ProjectModal
           open={openModal}
-          project={ModelStore.currentProject}
+          project={currentProject}
           onClose={() => setOpenModal(false)}
           onConfirm={(updatedProject) => handleUpdateProject(updatedProject)}
         />
       )}
-      {ModelStore.currentProject && (
+      {currentProject && (
         <DeleteProjectModal
           open={deleteModal}
-          project={ModelStore.currentProject}
+          project={currentProject}
           onClose={() => setDeleteModal(false)}
           onConfirm={handleDeleteProject}
           aria-labelledby="modal-title"
@@ -95,17 +96,17 @@ const DataCollection = observer(() => {
               </Button>
             </div>
             <div className="dataCollection__projectInfo">
-              <p className="dataCollection__title">{ModelStore.currentProject?.name}</p>
+              <p className="dataCollection__title">{currentProject?.name}</p>
               <div className="dataCollection__infoWrapper">
                 <span className="dataCollection__info">
-                  <Home />{ModelStore.currentProject?.homeownerAddress}
+                  <Home />{currentProject?.homeownerAddress}
                 </span>
                 <span className="dataCollection__info">
-                  <Person />{ModelStore.currentProject?.homeownerName}
+                  <Person />{currentProject?.homeownerName}
                 </span>
                 <span className="dataCollection__info">
                   {/* TODO: make this beautiful */}
-                  <CalendarMonth />{ModelStore.currentProject?.createdAt}
+                  <CalendarMonth />{currentProject?.createdAt}
                 </span>
               </div>
             </div>
@@ -143,7 +144,7 @@ const DataCollection = observer(() => {
             <Button variant="outlined">Plans</Button>
             <Button variant="outlined">Present</Button>
           </div>
-          {ModelStore.currentProject ? <div>
+          {currentProject ? <div>
             <Tabs sx={{ background: '#FAFAFA' }}
               variant="fullWidth" value={currentTabIndex} onChange={handleChangeTab}>
               <Tab label="Basics" />
@@ -154,8 +155,8 @@ const DataCollection = observer(() => {
               <Tab label="Electrical" />
               <Tab label="Photos" />
             </Tabs>
-            {renderTabContent(0, <Basics currentProject={ModelStore.currentProject}/>)}
-            {renderTabContent(1, <Objectives currentProject={ModelStore.currentProject} />)}
+            {renderTabContent(0, <Basics currentProject={currentProject}/>)}
+            {renderTabContent(1, <Objectives currentProject={currentProject} />)}
             {renderTabContent(2, <Envelope />)}
             {renderTabContent(3, <Rooms />)}
             {renderTabContent(4, <Appliances />)}
