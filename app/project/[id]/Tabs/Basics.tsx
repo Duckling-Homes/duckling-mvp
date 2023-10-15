@@ -3,49 +3,55 @@
 import React, { useEffect, useState } from "react";
 import ModelStore from "@/app/stores/modelStore";
 import { AddPhotoAlternate } from "@mui/icons-material";
-import { Button, Divider, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Button,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Project } from "@/types/types";
-import { debounce } from "lodash"
+import dayjs from "dayjs";
+
 interface BasicsProps {
   currentProject: Project
 }
 
 const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
-  const [data, setData] = useState({
+  const [data, setData] = useState<Project["data"]>({
     squareFootage: 0,
     roomCount: 0,
     bathroomCount: 0,
     stories: 0,
-    yearBuilt: new Date(),
+    yearBuilt: 0,
     basementType: '',
   });
 
   useEffect(() => {
     if (currentProject?.data) {
-      setData(currentProject.data as {
-      squareFootage: number;
-      roomCount: number;
-      bathroomCount: number;
-      stories: number;
-      yearBuilt: Date;
-      basementType: string;
-    })
+      setData(currentProject.data);
     }
-  }, [currentProject])
+  }, [currentProject]);
 
-const handleInputChange = async (inputName: string, value: string | number) => {
-  if (currentProject && currentProject.id) {
-    setData((prevData) => ({
-      ...prevData,
-      [inputName]: value,
-    }));
+  const handleInputChange = async (inputName: string, value: string | number) => {
+    if (currentProject && currentProject.id) {
+      const updatedData = { ...data, [inputName]: value };
+      setData(updatedData);
+      await ModelStore.patchProjectData(currentProject.id, updatedData);
+    }
+  };
 
-    await ModelStore.patchProjectData(currentProject.id, { ...data, [inputName]: value });
-  }
-};
+  const blurActiveElement = () => {
+    const activeElement = document.activeElement as HTMLInputElement;
+    if (activeElement) {
+      activeElement.blur();
+    }
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -66,15 +72,9 @@ const handleInputChange = async (inputName: string, value: string | number) => {
             variant="outlined"
             placeholder='Square Footage'
             type="number"
-            value={data.squareFootage || ''}
-            // onChange={(e) => debounce(handleInputChange('squareFootage', parseInt(e.target.value)), 150)}
-            onChange={(e) => debounce(console.log('aaaaa'), 150)}
-            onWheel={() => {
-              const activeElement = document.activeElement as HTMLInputElement;
-              if (activeElement) {
-                activeElement.blur();
-              }
-            }}
+            value={data?.squareFootage || ''}
+            onChange={(e) => handleInputChange('squareFootage', parseInt(e.target.value))}
+            onWheel={blurActiveElement}
           />
           <TextField
             id="outlined-basic"
@@ -82,14 +82,9 @@ const handleInputChange = async (inputName: string, value: string | number) => {
             variant="outlined"
             placeholder='Number of Rooms'
             type="number"
-            value={data.roomCount || ''}
+            value={data?.roomCount || ''}
             onChange={(e) => handleInputChange('roomCount', parseInt(e.target.value))}
-            onWheel={() => {
-              const activeElement = document.activeElement as HTMLInputElement;
-              if (activeElement) {
-                activeElement.blur();
-              }
-            }}
+            onWheel={blurActiveElement}
           />
           <TextField
             id="outlined-basic"
@@ -97,14 +92,9 @@ const handleInputChange = async (inputName: string, value: string | number) => {
             variant="outlined"
             placeholder='Number of Bathrooms'
             type="number"
-            value={data.bathroomCount || ''}
+            value={data?.bathroomCount || ''}
             onChange={(e) => handleInputChange('bathroomCount', parseInt(e.target.value))}
-            onWheel={() => {
-              const activeElement = document.activeElement as HTMLInputElement;
-              if (activeElement) {
-                activeElement.blur();
-              }
-            }}
+            onWheel={blurActiveElement}
           />
           <TextField
             id="outlined-basic"
@@ -114,19 +104,15 @@ const handleInputChange = async (inputName: string, value: string | number) => {
             type="number"
             value={data?.stories || ''}
             onChange={(e) => handleInputChange('stories', parseInt(e.target.value))}
-            onWheel={() => {
-              const activeElement = document.activeElement as HTMLInputElement;
-              if (activeElement) {
-                activeElement.blur();
-              }
-            }}
+            onWheel={blurActiveElement}
           />
           <DatePicker
-            label={"Year Built"}
+            label="Year Built"
             openTo="year"
             views={['year']}
-            // value={data.year_built}
-            // maxDate={TODAY}
+            onChange={(e) => handleInputChange('yearBuilt', e!.year())}
+            value={data && typeof data.yearBuilt === 'number' ? dayjs(new Date(data.yearBuilt, 0)) : dayjs()}
+            maxDate={dayjs()}
           />
           <FormControl fullWidth>
             <InputLabel id="basement-type-label">Basement Type</InputLabel>

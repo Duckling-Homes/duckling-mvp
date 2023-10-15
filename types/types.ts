@@ -15,7 +15,7 @@ export interface ProjectData {
   roomCount?: number,
   bathroomCount?: number,
   stories?: number,
-  yearBuilt?: Date,
+  yearBuilt?: number,
   basementType?: string,
   comfortIssueTags?: string[],
   comfortIssueNotes?: string,
