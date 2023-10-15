@@ -58,7 +58,11 @@ const DeleteProjectModal: React.FC<{
           <Button
             variant='contained'
             startIcon={<Delete />}
-            onClick={() => onConfirm(project.id)}
+            onClick={() => {
+              if (project.id) {
+                onConfirm(project.id);
+              }
+            }}
             disabled={projectNameConfirmation !== project.name}
             size='small'
             sx={{

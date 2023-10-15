@@ -1,24 +1,57 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+import ModelStore from "@/app/stores/modelStore";
 import { AddPhotoAlternate } from "@mui/icons-material";
-import { Button, Divider, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Button,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useState } from "react";
+import { Project } from "@/types/types";
+import dayjs from "dayjs";
 
-const MOCK_PROJECT = {
-  square_footage: '2500',
-  room_count: '8',
-  bathroom_count: '2',
-  bedroom_count: '3',
-  stories: '2',
-  year_built: '1975',
-  basement_type: 'Finished',
+interface BasicsProps {
+  currentProject: Project
 }
 
-const Basics = ({ }) => {
-  const [data] = useState(MOCK_PROJECT)
+const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
+  const [data, setData] = useState<Project["data"]>({
+    squareFootage: 0,
+    roomCount: 0,
+    bathroomCount: 0,
+    stories: 0,
+    yearBuilt: 0,
+    basementType: '',
+  });
+
+  useEffect(() => {
+    if (currentProject?.data) {
+      setData(currentProject.data);
+    }
+  }, [currentProject]);
+
+  const handleInputChange = async (inputName: string, value: string | number) => {
+    if (currentProject && currentProject.id) {
+      const updatedData = { ...data, [inputName]: value };
+      setData(updatedData);
+      await ModelStore.patchProjectData(currentProject.id, updatedData);
+    }
+  };
+
+  const blurActiveElement = () => {
+    const activeElement = document.activeElement as HTMLInputElement;
+    if (activeElement) {
+      activeElement.blur();
+    }
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -39,13 +72,9 @@ const Basics = ({ }) => {
             variant="outlined"
             placeholder='Square Footage'
             type="number"
-            value={data.square_footage}
-            onWheel={() => {
-              const activeElement = document.activeElement as HTMLInputElement;
-              if (activeElement) {
-                activeElement.blur();
-              }
-            }}
+            value={data?.squareFootage || ''}
+            onChange={(e) => handleInputChange('squareFootage', parseInt(e.target.value))}
+            onWheel={blurActiveElement}
           />
           <TextField
             id="outlined-basic"
@@ -53,13 +82,9 @@ const Basics = ({ }) => {
             variant="outlined"
             placeholder='Number of Rooms'
             type="number"
-            value={data.room_count}
-            onWheel={() => {
-              const activeElement = document.activeElement as HTMLInputElement;
-              if (activeElement) {
-                activeElement.blur();
-              }
-            }}
+            value={data?.roomCount || ''}
+            onChange={(e) => handleInputChange('roomCount', parseInt(e.target.value))}
+            onWheel={blurActiveElement}
           />
           <TextField
             id="outlined-basic"
@@ -67,13 +92,9 @@ const Basics = ({ }) => {
             variant="outlined"
             placeholder='Number of Bathrooms'
             type="number"
-            value={data.bathroom_count}
-            onWheel={() => {
-              const activeElement = document.activeElement as HTMLInputElement;
-              if (activeElement) {
-                activeElement.blur();
-              }
-            }}
+            value={data?.bathroomCount || ''}
+            onChange={(e) => handleInputChange('bathroomCount', parseInt(e.target.value))}
+            onWheel={blurActiveElement}
           />
           <TextField
             id="outlined-basic"
@@ -81,20 +102,17 @@ const Basics = ({ }) => {
             variant="outlined"
             placeholder='Stories'
             type="number"
-            value={data.stories}
-            onWheel={() => {
-              const activeElement = document.activeElement as HTMLInputElement;
-              if (activeElement) {
-                activeElement.blur();
-              }
-            }}
+            value={data?.stories || ''}
+            onChange={(e) => handleInputChange('stories', parseInt(e.target.value))}
+            onWheel={blurActiveElement}
           />
           <DatePicker
-            label={"Year Built"}
+            label="Year Built"
             openTo="year"
             views={['year']}
-            // value={data.year_built}
-            // maxDate={TODAY}
+            onChange={(e) => handleInputChange('yearBuilt', e!.year())}
+            value={data && typeof data.yearBuilt === 'number' ? dayjs(new Date(data.yearBuilt, 0)) : dayjs()}
+            maxDate={dayjs()}
           />
           <FormControl fullWidth>
             <InputLabel id="basement-type-label">Basement Type</InputLabel>
@@ -102,7 +120,8 @@ const Basics = ({ }) => {
               labelId="basement-type-label"
               id="basement-type-select"
               label="Basement Type"
-              value={data.basement_type}
+              value={data?.basementType || ''}
+              onChange={(e) => handleInputChange('basementType', e.target.value)}
             >
               <MenuItem value={'Finished'}>Finished</MenuItem>
               <MenuItem value={'Unfinished'}>Unfinished</MenuItem>

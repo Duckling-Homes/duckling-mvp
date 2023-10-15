@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import ModelStore from "@/app/stores/modelStore";
+import { Project } from "@/types/types";
 import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
-import { useState } from "react";
 
 const COMFORT_ISSUES = [
   "Drafty",
@@ -29,38 +31,50 @@ const GOALS = [
   "Reduce Emissions",
 ]
 
-type MockData = {
-  [key: string]: boolean | string; // Define the type of keys in MOCK_DATA
-  comfort_notes: string;
-  health_safety_notes: string;
-  goals_notes: string;
-};
+const Objectives: React.FC<{ currentProject: Project }> = ({ currentProject }) => {
+  const [data, setData] = useState<Project["data"]>({
+    comfortIssueNotes: "",
+    comfortIssueTags: [],
+    healthSafetyIssueNotes: "",
+    healthSafetyIssueTags: [],
+    homeownerGoalsNotes: "",
+    homeownerGoalsTags: []
+  });
 
-const MOCK_DATA: MockData = {
-  "Drafty": true,
-  "Too hot in summer": false,
-  "Too cold in summer": false,
-  "Too hot in winter": false,
-  "Too cold in winter": false,
-  "Humid": false,
-  "Dry": false,
-  "Noisy System": true,
-  comfort_notes: "",
-  "Mold": false,
-  "Allergens": false,
-  "Indoor air quality": true,
-  "Asbestos": false,
-  health_safety_notes: "Too noisy",
-  "Improve comfort": false,
-  "Improve health & safety": false,
-  "Increase home value": true,
-  "Lower bills": false,
-  "Reduce emissions": false,
-  goals_notes: "Reduce 20db",
-}
+  useEffect(() => {
+    if (currentProject?.data) {
+      setData(currentProject.data);
+    }
+  }, [currentProject]);
 
-const Objectives = ({ }) => {
-  const [data] = useState<MockData>(MOCK_DATA)
+  const handleTextChange = (inputName: string, value: string) => {
+    if (currentProject && currentProject.id) {
+      const updatedData = { ...data, [inputName]: value };
+      setData(updatedData);
+    }
+  }
+
+  const handleChipChange = (inputName: string, value: string) => {
+    let array = data ? data[inputName] as string[] : [];
+
+    if (array && array.includes(value)) {
+      array = array.filter(item => item !== value);
+    } else {
+      array.push(value);
+    }
+
+    const updatedData = { ...data, [inputName]: array }
+  
+    setData(updatedData)  
+    projectUpdate(updatedData);
+  }
+
+  const projectUpdate = async (projectData = data) => {
+    if (currentProject && currentProject.id && projectData) {
+      await ModelStore.patchProjectData(currentProject.id, projectData);
+    }
+  };
+
   return (
     <>
       <form className="objectives">
@@ -76,10 +90,10 @@ const Objectives = ({ }) => {
             {
               COMFORT_ISSUES.map((issue, i) => (
                 <Chip
-                  onClick={() => console.log(issue)}
+                  onClick={() => handleChipChange('comfortIssueTags', issue)}
                   label={issue}
                   key={i}
-                  color={data[issue] ? "primary" : "default"}
+                  color={data?.comfortIssueTags?.includes(issue) ? "primary" : "default"}
                 />
               ))
             }
@@ -90,7 +104,9 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Comfort Notes'
             multiline
-            value={data.comfort_notes}
+            onChange={(e) => handleTextChange('comfortIssueNotes', e.target.value)}
+            onBlur={() => projectUpdate()}
+            value={data?.comfortIssueNotes}
           />
         </FormGroup>
         <FormGroup>
@@ -105,10 +121,10 @@ const Objectives = ({ }) => {
             {
               HEALTH_SAFETY.map((issue, i) => (
                 <Chip
-                  onClick={() => console.log(issue)}
+                  onClick={() => handleChipChange('healthSafetyIssueTags', issue)}
                   label={issue}
                   key={i}
-                  color={data[issue] ? "primary" : "default"}
+                  color={data?.healthSafetyIssueTags?.includes(issue) ? "primary" : "default"}
                 />
               ))
             }
@@ -119,7 +135,9 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Health & Safety Notes'
             multiline
-            value={data.health_safety_notes}
+            onChange={(e) => handleTextChange('healthSafetyIssueNotes', e.target.value)}
+            onBlur={() => projectUpdate()}
+            value={data?.healthSafetyIssueNotes}
           />
         </FormGroup>
         <FormGroup>
@@ -134,10 +152,10 @@ const Objectives = ({ }) => {
             {
               GOALS.map((goal, i) => (
                 <Chip
-                  onClick={() => console.log(goal)}
+                  onClick={() => handleChipChange('homeownerGoalsTags', goal)}
                   label={goal}
                   key={i}
-                  color={data[goal] ? "primary" : "default"}
+                  color={data?.homeownerGoalsTags?.includes(goal) ? "primary" : "default"}
                 />
               ))
             }
@@ -148,7 +166,9 @@ const Objectives = ({ }) => {
             variant="outlined"
             placeholder='Goals Notes'
             multiline
-            value={data.goals_notes}
+            onChange={(e) => handleTextChange('homeownerGoalsNotes', e.target.value)}
+            onBlur={() => projectUpdate()}
+            value={data?.homeownerGoalsNotes}
           />
         </FormGroup>
       </form>

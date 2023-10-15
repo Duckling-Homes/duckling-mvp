@@ -5,7 +5,6 @@ import { Metadata } from "next";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.scss";
-import { Providers } from "./providers";
 // import ducklingTheme from "./style/theme/theme" // Here whenever we decide to move to our own theme
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,9 +22,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <Providers>
-            {children}
-          </Providers>
+          {children}
         </body>
       </html>
     </ClerkProvider>
