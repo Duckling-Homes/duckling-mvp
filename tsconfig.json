@@ -26,7 +26,7 @@
       "@/*": [
         "./*"
       ],
-      "lodash": ["node_modules/lodash/index.d.ts"]
+      "lodash": ["./node_modules/lodash/index.d.ts"]
     }
   },
   "include": [

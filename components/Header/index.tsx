@@ -21,10 +21,10 @@ const Header = () => {
   const { user }     = useUser();
 
   useEffect(() => {
-    if (!organization || !user) return;
+    if (organization || !user) return;
 
     const organizationId = user?.publicMetadata.organization_id as string | undefined;
-    
+    console.log(organizationId)
     if (organizationId) {
       ModelStore.fetchOrganization(organizationId);
     }

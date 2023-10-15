@@ -1,4 +1,4 @@
-import { NewProject, Organization, Project, ProjectData } from '@/types/types';
+import { Organization, Project, ProjectData } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
 import customFetch from '../helpers/customFetch';
 
@@ -70,7 +70,7 @@ export class _ModelStore {
     }
 
     // TODO: Need to build offline path for this guy - may require generating id
-    createProject = async (newProject: NewProject) => {
+    createProject = async (newProject: Project) => {
         try {
             const response = await customFetch("/api/projects/", {
               method: 'POST',
@@ -158,7 +158,6 @@ export class _ModelStore {
           }
 
           const data = await response.json();
-          console.log(data)
           this.organization = data;
         } else {
           console.error('Organization ID is undefined');
