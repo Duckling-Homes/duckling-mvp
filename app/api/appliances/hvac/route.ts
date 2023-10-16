@@ -1,5 +1,4 @@
 import { createHVACAppliance } from '@/app/utils/repositories/appliances/hvac'
-import { createOtherAppliance } from '@/app/utils/repositories/appliances/other'
 import { getProject } from '@/app/utils/repositories/project'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
