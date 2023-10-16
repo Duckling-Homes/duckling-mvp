@@ -8,17 +8,20 @@ import { v4 as uuidv4 } from 'uuid';
 export class _ModelStore {
   // TODO: Make two modelStore?
   projectsByID: Map<string, Project> = observable.map(new Map());
-  currentProject: Project | null = null;
+  currentProjectID: string | null = null;
   organization: Organization | null = null;
 
   constructor() {
     makeAutoObservable(this, {
-      currentProject: observable,
     });
   }
 
   get projects () {
     return Array.from(this.projectsByID.values())
+  }
+
+  get currentProject (): Project {
+    return this.projectsByID.get(this.currentProjectID!)!
   }
 
   initialLoad = async () => {
@@ -66,7 +69,7 @@ export class _ModelStore {
       }
 
       const data = await response.json();
-      this.currentProject = data;
+      this.currentProjectID = data.id;
       return this.currentProject;
     } catch (error) {
       console.error('Error fetching project:', error);
@@ -74,7 +77,7 @@ export class _ModelStore {
   }
 
   clearCurrentProject() {
-    this.currentProject = null;
+    this.currentProjectID = null;
   }
 
   // TODO: Need to build offline path for this guy - may require generating id
@@ -147,6 +150,7 @@ export class _ModelStore {
       if (project.id) {
         const found = this.fetchProject(project.id);
         Object.assign(found, project);
+        this.projectsByID.set(project.id, project);
       } else {
         console.error("Project ID is undefined");
       }
@@ -158,6 +162,7 @@ export class _ModelStore {
         if (project.id) {
           const found = this.fetchProject(project.id);
           Object.assign(found, project);
+          this.projectsByID.set(project.id, project);
           console.info("Network error, will retry later");
           return;
         } else {
