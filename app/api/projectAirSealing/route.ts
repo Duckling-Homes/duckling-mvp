@@ -1,5 +1,5 @@
 import { getProject } from '@/app/utils/repositories/project'
-import { createProjectAirSealing } from '@/app/utils/repositories/projectAirSealing'
+import { createProjectAirSealing } from '@/app/utils/repositories/envelopes/projectAirSealing'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 

@@ -3,7 +3,7 @@ import {
   getProjectInsulationById,
   updateProjectInsulation,
   validateProjectInsulationPermission,
-} from '@/app/utils/repositories/projectInsulation'
+} from '@/app/utils/repositories/envelopes/projectInsulation'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 

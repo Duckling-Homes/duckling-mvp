@@ -1,7 +1,4 @@
-import { getProjectCooktopAppliances } from '@/app/utils/repositories/appliances/cooktop'
-import { getProjectHVACAppliances } from '@/app/utils/repositories/appliances/hvac'
-import { getProjectOtherAppliances } from '@/app/utils/repositories/appliances/other'
-import { getProjectWaterHeaterAppliances } from '@/app/utils/repositories/appliances/waterHeater'
+import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
 import { getProject } from '@/app/utils/repositories/project'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
@@ -21,32 +18,6 @@ export const GET = withErrorHandler(
       )
     }
 
-    const hvacAppliances = (await getProjectHVACAppliances(params.id)).map(
-      (hvac) => {
-        return { ...hvac, type: 'HVAC' }
-      }
-    )
-    const waterHeaterAppliances = (
-      await getProjectWaterHeaterAppliances(params.id)
-    ).map((waterHeater) => {
-      return { ...waterHeater, type: 'WaterHeater' }
-    })
-    const cooktopAppliances = (
-      await getProjectCooktopAppliances(params.id)
-    ).map((cooktop) => {
-      return { ...cooktop, type: 'Cooktop' }
-    })
-    const otherAppliances = (await getProjectOtherAppliances(params.id)).map(
-      (other) => {
-        return { ...other, type: 'Other' }
-      }
-    )
-
-    return NextResponse.json([
-      ...hvacAppliances,
-      ...waterHeaterAppliances,
-      ...cooktopAppliances,
-      ...otherAppliances,
-    ])
+    return NextResponse.json(await getProjectAppliances(params.id))
   }
 )
