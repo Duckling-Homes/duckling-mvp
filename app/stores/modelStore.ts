@@ -56,6 +56,13 @@ export class _ModelStore {
   }
 
   fetchProject = async (projectId: string) => {
+    if (this.projectsByID.has(projectId)) {
+      const proj = this.projectsByID.get(projectId);
+      this.currentProject = proj!;
+      console.log("EARLY RETURN");
+      return proj;
+    }
+
     try {
       const response = await customFetch(`/api/projects/${projectId}`, {
         method: 'GET',
