@@ -3,6 +3,11 @@
 import ChipManager from "@/components/ChipManager";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
+import HVACForm from "./AppliancesForms/HVACForm";
+import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
+import CooktopForm from "./AppliancesForms/CooktopForm";
+import DefaultForm from "./AppliancesForms/DefaultForm";
+import { ProjectAppliance } from "@/types/types";
 
 const TYPES = [
   "HVAC",
@@ -14,27 +19,6 @@ const TYPES = [
   "Cooktop",
   "Oven",
   "Other",
-]
-
-// const HVAC_TYPES = [
-//   "Heating",
-//   "Cooling",
-//   "Heat Pump"
-// ]
-
-const HVAC_SYSTEMS = [
-  { name: "Furnace", parent: "Heating" },
-  { name: "Boiler", parent: "Heating" },
-  { name: "Baseboard", parent: "Heating" },
-  { name: "Stove", parent: "Heating" },
-  { name: "Solar Thermal", parent: "Heating" },
-  { name: "Other", parent: "Heating" },
-  { name: "Central Air Conditioner", parent: "Cooling" },
-  { name: "Mini- Split", parent: "Cooling" },
-  { name: "Other", parent: "Cooling" },
-  { name: "Mini - Split", parent: "Heat Pump" },
-  { name: "Central", parent: "Heat Pump" },
-  { name: "Other", parent: "Heat Pump" },
 ]
 
 const MOCK_DATA = [
@@ -98,19 +82,26 @@ const MOCK_DATA = [
   },
 ];
 
-interface Appliance {
-  id: string;
-  name: string;
-  type: string;
-  location?: string;
-  condition?: string;
-  notes: string;
-  leakiness?: string;
-}
-
 const Appliances = () => {
-  const [appliances, setAppliances] = useState<Appliance[]>(MOCK_DATA);
-  const [currentAppliance, setCurrentAppliance] = useState<Appliance>(MOCK_DATA[0]);
+  const [appliances, setAppliances] = useState<ProjectAppliance[]>(MOCK_DATA);
+  const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({
+    id: '',
+    name: '',
+    type: '',
+    hvac_system_type: '',
+    havc_system: '',
+    fuel: '',
+    age: 0,
+    manufacturer: '',
+    model_number: '',
+    serial_number: '',
+    heating_capacity: 0,
+    cooling_capacity: 0,
+    tank_volume: 0,
+    location: '',
+    notes: '',
+    is_indution: false,
+  });
 
 
   function deleteAppliance(applianceId: string) {
@@ -145,6 +136,27 @@ const Appliances = () => {
     setCurrentAppliance(newAppliance);
   }
 
+  const handleInputChange = async (inputName: string, value: string | number) => {
+    const updatedData = { ...currentAppliance, [inputName]: value };
+    setCurrentAppliance(updatedData);
+  };
+
+  const renderForm = () => {
+    switch(currentAppliance.type) {
+      case 'HVAC':
+        return (<HVACForm />);
+      case 'Water Heater':
+        return (<WaterHeaterForm />);
+      case 'Cooktop':
+        return (<CooktopForm />);
+      default:
+        if (currentAppliance.type) {
+          return (<DefaultForm />);
+        } else {
+          return (null);
+        }
+    }
+  }
   
   return (
     <div
@@ -162,7 +174,7 @@ const Appliances = () => {
         currentChip={currentAppliance.id}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
-      <div style={{
+      {currentAppliance && <div style={{
         width: '100%',
       }}>
         <form style={{
@@ -177,48 +189,18 @@ const Appliances = () => {
               id="type-select"
               label="Type"
               value={currentAppliance.type}
-              // onChange={({ target }) => setApplianceType(target.value)}
+              onChange={({ target }) => handleInputChange('type', target.value)}
             >
               {
                 TYPES.map((type, i) => (
-                  <MenuItem key={i} value={i}>{type}</MenuItem>
+                  <MenuItem key={i} value={type}>{type}</MenuItem>
                 ))
               }
             </Select>
           </FormControl>
-          <FormControl fullWidth>
-            <InputLabel id="type-label">Type</InputLabel>
-            <Select
-              labelId="type-label"
-              id="type-select"
-              label="Type"
-              value={currentAppliance.type}
-              // onChange={({ target }) => setApplianceType(target.value)}
-            >
-              {
-                TYPES.map((type, i) => (
-                  <MenuItem key={i} value={i}>{type}</MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>
-          <FormControl fullWidth hidden={currentAppliance.type !== ''}>
-            <InputLabel id="type-label">HVAC System Type</InputLabel>
-            <Select
-              labelId="type-label"
-              id="type-select"
-              label="HVAC System Type"
-            >
-              {
-                HVAC_SYSTEMS.map((system, i) => (
-                  system.parent === currentAppliance.type &&
-                  <MenuItem key={i} value={i}>{system.name}</MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>
+          {renderForm()}
         </form>
-      </div>
+      </div>}
     </div>
   )
 }

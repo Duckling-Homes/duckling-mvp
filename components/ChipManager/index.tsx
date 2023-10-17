@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { Add } from "@mui/icons-material";
 import { Button, Chip, Modal } from "@mui/material";
+import { ProjectAppliance, ProjectElectrical, ProjectEnvelope, ProjectRoom } from "@/types/types";
 
 import './style.scss'
 
-interface Chip {
-  id: string;
-  name: string;
-}
-
 interface ChipManagerProps {
-  chips: Chip[];
+  chips: (
+    ProjectRoom |
+    ProjectAppliance |
+    ProjectEnvelope |
+    ProjectElectrical)[];
   currentChip: string;
   chipType: string;
   onChipClick: (i: number) => void;
@@ -98,9 +98,12 @@ const ChipManager: React.FC<ChipManagerProps> = ({
             }}
             color={chip.id === currentChip ? "primary" : "default"}
             onClick={() => onChipClick(i)}
-            onDelete={() => setDeleteEnvelope(chip)} />
-        ))
-        }
+            onDelete={() => setDeleteEnvelope({
+              id: chip.id,
+              name: chip.name || "Unknown Name" // Handle if name is optional
+            })}
+          />
+        ))}
         <Button
           variant="contained"
           size="small"
