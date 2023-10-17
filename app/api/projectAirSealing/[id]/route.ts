@@ -3,7 +3,7 @@ import {
   getProjectAirSealingById,
   updateProjectAirSealing,
   validateProjectAirSealingPermission,
-} from '@/app/utils/repositories/projectAirSealing'
+} from '@/app/utils/repositories/envelopes/projectAirSealing'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 

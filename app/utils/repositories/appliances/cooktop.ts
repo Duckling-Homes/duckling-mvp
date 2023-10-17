@@ -49,13 +49,13 @@ export async function validateCooktopProject(
   organizationId: string,
   id: string
 ) {
-  const hvac = await prisma.hVAC.findUnique({
+  const cooktop = await prisma.cooktop.findUnique({
     where: { id },
     include: {
       project: true,
     },
   })
-  if (!hvac || hvac.project.organizationId != organizationId) {
-    throw new Error('hvac appliance not found')
+  if (!cooktop || cooktop.project.organizationId != organizationId) {
+    throw new Error('cooktop appliance not found')
   }
 }

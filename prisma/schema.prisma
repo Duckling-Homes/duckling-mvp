@@ -53,6 +53,11 @@ model Project {
   waterHeaters      WaterHeater[]
   cooktops          Cooktop[]
   otherAppliances   OtherAppliance[]
+  electricalPanels  ElectricalPanel[]
+  solar             Solar[]
+  batteries         Battery[]
+  generators        Generator[]
+  evChargers        EvCharger[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -195,6 +200,109 @@ model OtherAppliance {
   serialNumber      String?
   location          String?
   notes             String?
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model ElectricalPanel {
+  id                    String @id @default(uuid())
+  panelType             String?
+  panelAmperageRating   String?
+  availableNewCircuits  String?
+  total15AmpCircuits    String?
+  total20AmpCircuits    String?
+  total30AmpCircuits    String?
+  total40AmpCircuits    String?
+  total50AmpCircuits    String?
+  total60AmpCircuits    String?
+  total70AmpCircuits    String?
+  notes                 String?
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Solar {
+  id                String @id @default(uuid())
+  location          String?
+  ownership         String?
+  moduleType        String?
+  tracking          String?
+  arrayOrientation  String?
+  arrayTilt         String?
+  maxPowerOutput    String?
+  numberOfPanels    Int?
+  yearInstalled     Int?
+  annualOutput      String?
+  notes             String?
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Battery {
+  id                String @id @default(uuid())
+  totalCapacity     String?
+  ratedPowerOutput  String?
+  ratedPeakOutput   String?
+  voltage           String?
+  gridConnected     String?
+  manufacturer      String?
+  modelNumber       String?
+  serialNumber      String?
+  notes             String?
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model EvCharger {
+  id                    String @id @default(uuid())
+  chargingLevel         String?
+  amperage              String?
+  acPowerSourceVolatge  String?
+  maxChargingPower      String?
+  manufacturer          String?
+  modelNumber           String?
+  serialNumber          String?
+  notes                 String?
+
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Generator {
+  id                      String @id @default(uuid())
+  generatorType           String?
+  fuelType                String?
+  ratedContinuousWattage  String?
+  ratedPeakWattage        String?
+  voltage                 Int?
+  numberOfPhases          Int?
+  transferSwitch          String?
+  connection              String?
+  yearInstalled           Int?
+  manufacturer            String?
+  modelNumber             String?
+  serialNumber            String?
+  location                String?
+  notes                   String?
 
   projectId  String
   project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)

@@ -1,10 +1,10 @@
+import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
 import { getProject } from '@/app/utils/repositories/project'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
-import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
 
 /**
- * Fetch envelopes for a project
+ * Fetch electrical for a project
  */
 export const GET = withErrorHandler(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
@@ -18,6 +18,6 @@ export const GET = withErrorHandler(
       )
     }
 
-    return NextResponse.json(await getProjectEnvelopes(params.id))
+    return NextResponse.json(await getProjectElectrical(params.id))
   }
 )

@@ -6,6 +6,10 @@ import {
 } from '../../../utils/repositories/project'
 import { NextRequest, NextResponse } from 'next/server'
 import { getProjectData } from '../../../utils/repositories/projectData'
+import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
+import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
+import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
+import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
 
 /**
  * Get project by id
@@ -24,10 +28,19 @@ export const GET = withErrorHandler(
     }
 
     const projectData = await getProjectData(params.id)
+    // Update this for everything else on here ig...
+    const rooms = await getProjectRooms(params.id)
+    const envelopes = await getProjectEnvelopes(params.id)
+    const appliances = await getProjectAppliances(params.id)
+    const electrical = await getProjectElectrical(params.id)
 
     return NextResponse.json({
       ...project,
       data: projectData,
+      rooms,
+      envelopes,
+      appliances,
+      electrical,
     })
   }
 )
