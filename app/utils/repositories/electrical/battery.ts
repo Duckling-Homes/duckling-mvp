@@ -40,7 +40,7 @@ export async function deleteProjectBattery(id: string) {
   })
 }
 
-export async function getProjectBatterys(projectId: string) {
+export async function getProjectBatteries(projectId: string) {
   return await prisma.battery.findMany({
     where: { projectId },
   })
