@@ -1,13 +1,26 @@
+import { createProjectSolar } from '@/app/utils/repositories/electrical/solar'
 import { getProject } from '@/app/utils/repositories/project'
-import { createProjectAirSealing } from '@/app/utils/repositories/projectAirSealing'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
- * Create project air sealing
+ * Create project solar
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
-  const { name, leakinessDescription, notes, projectId } = await req.json()
+  const {
+    location,
+    ownership,
+    moduleType,
+    tracking,
+    arrayOrientation,
+    arrayTilt,
+    maxPowerOutput,
+    numberOfPanels,
+    yearInstalled,
+    annualOutput,
+    notes,
+    projectId,
+  } = await req.json()
   const orgContext = req.headers.get('organization-context')
   const project = await getProject(projectId)
 
@@ -15,9 +28,17 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     return NextResponse.json({ message: `Project not found` }, { status: 404 })
   }
   return NextResponse.json(
-    await createProjectAirSealing({
-      name,
-      leakinessDescription,
+    await createProjectSolar({
+      location,
+      ownership,
+      moduleType,
+      tracking,
+      arrayOrientation,
+      arrayTilt,
+      maxPowerOutput,
+      numberOfPanels,
+      yearInstalled,
+      annualOutput,
       notes,
       projectId,
     })
