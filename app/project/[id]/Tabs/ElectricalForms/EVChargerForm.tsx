@@ -1,7 +1,6 @@
 "use client";
 
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
 
 const CHARGING_LEVELS = [
   "Level 1",
@@ -10,7 +9,6 @@ const CHARGING_LEVELS = [
 ]
 
 const EVChargerForm = () => {
-  const [data, setData] = useState({})
   
   return (
     <>

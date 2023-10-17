@@ -1,7 +1,7 @@
 "use client";
 
 import ChipManager from "@/components/ChipManager";
-import { ProjectRoom } from "@/types/types";
+import { Project, ProjectRoom } from "@/types/types";
 import { Chip, FormControl, FormGroup, FormLabel, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -45,8 +45,12 @@ const ROOM_FLOORS = [
   "Other",
 ]
 
-const Rooms = ({ currentProject }) => {
-  const [rooms, setRooms] = useState([]);
+interface RoomsProps {
+  currentProject: Project
+}
+
+const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
+  const [rooms, setRooms] = useState<ProjectRoom[]>([]);
   const [currentRoom, setCurrentRoom] = useState<ProjectRoom>({
     id: "",
     name: "",
@@ -117,7 +121,7 @@ const Rooms = ({ currentProject }) => {
     }
   }
 
-  async function patchRoom(room) {
+  async function patchRoom(room: ProjectRoom) {
     if (currentRoom && currentRoom.id) {
       try {
         await fetch(`/api/projectRooms/${currentRoom.id}`, {

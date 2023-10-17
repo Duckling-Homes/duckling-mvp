@@ -1,7 +1,6 @@
 "use client";
 
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
 
 const FUEL = [
   "Natural gas",
@@ -11,7 +10,6 @@ const FUEL = [
 ]
 
 const GeneratorForm = () => {
-  const [data, setData] = useState({})
   
   return (
     <>

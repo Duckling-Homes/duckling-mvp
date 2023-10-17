@@ -1,6 +1,6 @@
 "use client";
 
-import ChipManager from "@/components/ChipManager";
+// import ChipManager from "@/components/ChipManager";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
 import ElectricalPanelForm from "./ElectricalForms/ElectricalPanelForm";
@@ -18,7 +18,6 @@ const TYPES = [
 ]
 
 const Electrical = () => {
-  const [appliances, setAppliances] = useState({});
   const [currentElectrical, setCurrentElectrical] = useState({
     type: ''
   });
@@ -79,7 +78,7 @@ const Electrical = () => {
           </FormControl>
           {renderForm()}
         </form>
-      </div>}
+      </div>
     </div>
   )
 }

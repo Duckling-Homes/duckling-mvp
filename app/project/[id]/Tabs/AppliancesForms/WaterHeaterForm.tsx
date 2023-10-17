@@ -1,7 +1,6 @@
 "use client";
 
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
 
 const SYSTEM_TYPE = [
   "Storage Water Heater",
@@ -19,7 +18,6 @@ const FUEL = [
 ];
 
 const WaterHeaterForm = () => {
-  const [data, setData] = useState({})
   
   return (
     <>

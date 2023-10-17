@@ -1,10 +1,8 @@
 "use client";
 
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
 
 const ElectricalPanelForm = () => {
-  const [data, setData] = useState({})
 
   return (
     <>

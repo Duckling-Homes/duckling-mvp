@@ -5,8 +5,9 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
 import HVACForm from "./AppliancesForms/HVACForm";
 import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
-import CooktopForm from "./AppliancesForms/CookTopForm";
+import CooktopForm from "./AppliancesForms/CooktopForm";
 import DefaultForm from "./AppliancesForms/DefaultForm";
+import { ProjectAppliance } from "@/types/types";
 
 const TYPES = [
   "HVAC",
@@ -18,21 +19,6 @@ const TYPES = [
   "Cooktop",
   "Oven",
   "Other",
-]
-
-const HVAC_SYSTEMS = [
-  { name: "Furnace", parent: "Heating" },
-  { name: "Boiler", parent: "Heating" },
-  { name: "Baseboard", parent: "Heating" },
-  { name: "Stove", parent: "Heating" },
-  { name: "Solar Thermal", parent: "Heating" },
-  { name: "Other", parent: "Heating" },
-  { name: "Central Air Conditioner", parent: "Cooling" },
-  { name: "Mini- Split", parent: "Cooling" },
-  { name: "Other", parent: "Cooling" },
-  { name: "Mini - Split", parent: "Heat Pump" },
-  { name: "Central", parent: "Heat Pump" },
-  { name: "Other", parent: "Heat Pump" },
 ]
 
 const MOCK_DATA = [
@@ -96,20 +82,25 @@ const MOCK_DATA = [
   },
 ];
 
-interface Appliance {
-  id: string;
-  name: string;
-  type: string;
-  location?: string;
-  condition?: string;
-  notes: string;
-  leakiness?: string;
-}
-
 const Appliances = () => {
-  const [appliances, setAppliances] = useState<Appliance[]>(MOCK_DATA);
-  const [currentAppliance, setCurrentAppliance] = useState({
-    type: ''
+  const [appliances, setAppliances] = useState<ProjectAppliance[]>(MOCK_DATA);
+  const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({
+    id: '',
+    name: '',
+    type: '',
+    hvac_system_type: '',
+    havc_system: '',
+    fuel: '',
+    age: 0,
+    manufacturer: '',
+    model_number: '',
+    serial_number: '',
+    heating_capacity: 0,
+    cooling_capacity: 0,
+    tank_volume: 0,
+    location: '',
+    notes: '',
+    is_indution: false,
   });
 
 

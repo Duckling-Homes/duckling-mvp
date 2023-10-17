@@ -1,7 +1,6 @@
 "use client";
 
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
 
 const FUEL = [
   "Electricity",
@@ -12,7 +11,6 @@ const FUEL = [
 ];
 
 const CooktopForm = () => {
-  const [data, setData] = useState({})
   
   return (
     <>
