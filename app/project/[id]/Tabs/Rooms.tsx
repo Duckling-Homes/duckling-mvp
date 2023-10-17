@@ -1,38 +1,26 @@
 "use client";
 
 import ChipManager from "@/components/ChipManager";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
+import { ProjectRoom } from "@/types/types";
+import { Chip, FormControl, FormGroup, FormLabel, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { useEffect, useState } from "react";
 
-const ROOMS = [
-  {
-    id: "4fe31a3c-cbe2-4020-b2b5-e0996169ffd7",
-    project_id: "ee30fb58-ee45-4efc-a302-9774133515dc",
-    name: "Main Bedroom",
-    type: "Bedroom",
-    width: 15,
-    length: 20,
-    ceiling_height: 8,
-    floor: "Second Floor",
-    usage: "Frequent",
-    comfort_issues_tags: "",
-    safety_issues_tags: "",
-    notes: ""
-  },
-  {
-    id: "80687ee9-4ea7-4e62-8cec-fab5e7ad3057",
-    project_id: "ee30fb58-ee45-4efc-a302-9774133515dc",
-    name: "Living Room",
-    type: "Living Room",
-    width: 30,
-    length: 10,
-    ceiling_height: 10,
-    floor: "Ground Floor",
-    usage: "Sometimes",
-    comfort_issues_tags: "",
-    safety_issues_tags: "",
-    notes: ""
-  }
+const COMFORT_ISSUES = [
+  "Drafty",
+  "Too hot in summer",
+  "Too cold in summer",
+  "Too hot in winter",
+  "Too cold in winter",
+  "Humid",
+  "Dry",
+  "Noisy System",
+]
+
+const HEALTH_SAFETY = [
+  "Mold",
+  "Allergens",
+  "Indoor air quality",
+  "Asbestos",
 ]
 
 const ROOM_TYPES = [
@@ -46,6 +34,7 @@ const ROOM_TYPES = [
   "Basement",
   "Other",
 ];
+
 //TODO: check these values
 const ROOM_FLOORS = [
   "Basement",
@@ -56,47 +45,117 @@ const ROOM_FLOORS = [
   "Other",
 ]
 
-const Rooms = () => {
-  const [rooms, setRooms] = useState(ROOMS);
-  const [currentRoom, setCurrentRoom] = useState(ROOMS[0]);
+const Rooms = ({ currentProject }) => {
+  const [rooms, setRooms] = useState([]);
+  const [currentRoom, setCurrentRoom] = useState<ProjectRoom>({
+    id: "",
+    name: "",
+    type: "",
+    width: 0,
+    length: 0,
+    ceilingHeight: 0,
+    floor: "",
+    usage: "",
+    comfortIssueTags: [],
+    safetyIssueTags: [],
+    notes: "",
+  });
 
-  function deleteRoom(roomId: string) {
-    const newRooms = rooms.filter(r => r.id !== roomId);
-    setRooms(newRooms);
-    setCurrentRoom(newRooms[0] || {});
+  useEffect(() => {
+    if (currentProject && currentProject.id) {
+      try {
+        fetch(`/api/projects/${currentProject.id}/rooms`, {
+          method: 'GET',
+        })
+          .then(response => response.json())
+          .then(response => {
+            if (Array.isArray(response)) {
+              setRooms(response)
+              setCurrentRoom(response[0])
+            }
+          })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }, [currentProject])
+
+  async function deleteRoom(roomId: string) {
+    try {
+      await fetch(`/api/projectRooms/${roomId}`, {
+        method: 'DELETE',
+      })
+
+      const newRooms = rooms.filter(r => r.id !== roomId);
+      setRooms(newRooms);
+      setCurrentRoom(newRooms[0] || {});
+      
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  function generateUID() {
-    const randomNumber = Math.random();
-    const base36String = randomNumber.toString(36).substr(2, 9);
-    const timestamp = Date.now().toString(36).substr(2, 5);
-    const uid = base36String + timestamp;
+  async function createRoom() {
+    try {
+      const response = await fetch('/api/projectRooms', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: "New Room",
+          projectId: currentProject.id
+        })
+      })
 
-    return uid;
+      const newRoom = await response.json();
+      const newRoomList = [...rooms, newRoom];
+
+      console.log(newRoomList)
+      setRooms(newRoomList);
+      setCurrentRoom(newRoom);
+      
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  async function patchRoom(room) {
+    if (currentRoom && currentRoom.id) {
+      try {
+        await fetch(`/api/projectRooms/${currentRoom.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            ...room,
+            projectId: currentProject.id
+          })
+        })
+        
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
+  const handleChipChange = (inputName: string, value: string) => {
+    let array = currentRoom ? currentRoom[inputName] as string[] : [];
+
+    if (array && array.includes(value)) {
+      array = array.filter(item => item !== value);
+    } else {
+      array.push(value);
+    }
+
+    const updatedRoom = { ...currentRoom, [inputName]: array }
+  
+    setCurrentRoom(updatedRoom)  
+    patchRoom(updatedRoom);
+  }
+
+  const handleInputChange = async (inputName: string, value: string | number) => {
+    if (currentRoom && currentRoom.id) {
+      const updatedRoom = { ...currentRoom, [inputName]: value };
+      setCurrentRoom(updatedRoom);
+      patchRoom(updatedRoom);
+    }
   };
-
-  function createRoom() {
-
-    const newRoom = {
-      id: generateUID(),
-      project_id: "ee30fb58-ee45-4efc-a302-9774133515dc",
-      name: "New Room",
-      type: "",
-      width: 0,
-      length: 0,
-      ceiling_height: 0,
-      floor: "",
-      usage: "",
-      comfort_issues_tags: "",
-      safety_issues_tags: "",
-      notes: ""
-    };
-
-    const newRoomList = [...rooms, newRoom];
-    setRooms(newRoomList);
-    setCurrentRoom(newRoom);
-    console.log(currentRoom);
-  }
 
   return (
     <div
@@ -131,6 +190,7 @@ const Rooms = () => {
               id="outlined-basic"
               label="Room Name"
               value={currentRoom.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
               variant="outlined"
               placeholder='Name'
               fullWidth
@@ -145,6 +205,7 @@ const Rooms = () => {
                 id="room-type-select"
                 label="Room Type"
                 value={currentRoom.type}
+                onChange={(e) => handleInputChange('type', e.target.value)}
               >
                 {ROOM_TYPES.map((roomType, i) => (
                   <MenuItem key={i} value={roomType}>{roomType}</MenuItem>
@@ -156,24 +217,30 @@ const Rooms = () => {
               label="Width"
               variant="outlined"
               value={currentRoom.width}
+              onChange={(e) => handleInputChange('width', parseInt(e.target.value))}
               placeholder='Width'
               fullWidth
+              type="number"
             />
             <TextField
               id="outlined-basic"
               label="Length"
               variant="outlined"
               value={currentRoom.length}
+              onChange={(e) => handleInputChange('length', parseInt(e.target.value))}
               placeholder='Length'
               fullWidth
+              type="number"
             />
             <TextField
               id="outlined-basic"
               label="Ceiling Height"
               variant="outlined"
-              value={currentRoom.ceiling_height}
+              onChange={(e) => handleInputChange('ceilingHeight', parseInt(e.target.value))}
+              value={currentRoom.ceilingHeight}
               placeholder='Ceiling Height'
               fullWidth
+              type="number"
             />
             <FormControl fullWidth>
               <InputLabel id="width-label">
@@ -184,12 +251,75 @@ const Rooms = () => {
                 id="width-select"
                 label="Floor"
                 value={currentRoom.floor}
+                onChange={(e) => handleInputChange('floor', e.target.value)}
               >
                 {ROOM_FLOORS.map((floor, i) => (
                   <MenuItem key={i} value={floor}>{floor}</MenuItem>
                 ))}
               </Select>
             </FormControl>
+            <FormControl>
+              <FormLabel component="legend">Usage</FormLabel>
+              <ToggleButtonGroup
+                value={currentRoom.usage}
+                exclusive
+                color="primary"
+                onChange={(e, value) => handleInputChange('usage', value)}
+                aria-label="usage"
+              >
+                <ToggleButton value="rare" aria-label="left aligned">
+                  Rare
+                </ToggleButton>
+                <ToggleButton value="regular" aria-label="centered">
+                  Regular
+                </ToggleButton>
+                <ToggleButton value="frequent" aria-label="right aligned">
+                  Frequent
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </FormControl>
+            <FormGroup>
+              <FormLabel>Comfort Issues</FormLabel>
+              <div style={{
+                display: 'flex',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginTop: '12px',
+                marginBottom: '24px',
+              }}>
+                {
+                  COMFORT_ISSUES.map((issue, i) => (
+                    <Chip
+                      onClick={() => handleChipChange('comfortIssueTags', issue)}
+                      label={issue}
+                      key={i}
+                      color={currentRoom?.comfortIssueTags?.includes(issue) ? "primary" : "default"}
+                    />
+                  ))
+                }
+              </div>
+            </FormGroup>
+            <FormGroup>
+              <FormLabel>Health & Safety Issues</FormLabel>
+              <div style={{
+                display: 'flex',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginTop: '12px',
+                marginBottom: '24px',
+              }}>
+                {
+                  HEALTH_SAFETY.map((issue, i) => (
+                    <Chip
+                      onClick={() => handleChipChange('safetyIssueTags', issue)}
+                      label={issue}
+                      key={i}
+                      color={currentRoom?.safetyIssueTags?.includes(issue) ? "primary" : "default"}
+                    />
+                  ))
+                }
+              </div>
+            </FormGroup>
           </div>
         </form> : <></>}
       </div>
