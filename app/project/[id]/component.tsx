@@ -16,7 +16,6 @@ import {
   Rooms,
 } from './Tabs/index'
 import { Project } from "@/types/types";
-import { useParams } from "next/navigation";
 import DeleteProjectModal from "@/components/Modals/DeleteProject";
 import { useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
@@ -25,19 +24,29 @@ import ModelStore from "@/app/stores/modelStore";
 
 import './style.scss'
 
-const DataCollection = observer(() => {
+type Props = {
+  id?: string
+};
+
+export const DataCollection: React.FC<Props> = observer(({id}) => {
   const [openModal, setOpenModal]             = useState<boolean>(false);
   const [deleteModal, setDeleteModal]         = useState<boolean>(false);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
 
   const currentProject = ModelStore.currentProject;
   const router         = useRouter();
-  const { id }         = useParams();
+  // const { id: idFromParams }         = useParams();
 
   useEffect(() => {
-    if (typeof id === 'string') {
-      ModelStore.fetchProject(id)
-    }
+    // if (!id && idFromParams) {
+    //   id = idFromParams as string;
+    // }
+
+    // if (typeof id === 'string') {
+    //   ModelStore.fetchProject(id)
+    // }
+
+    ModelStore.fetchProject(id as string);
 
     return () => {
       ModelStore.clearCurrentProject();
@@ -167,6 +176,4 @@ const DataCollection = observer(() => {
       </Container>
     </>
   )
-})
-
-export default DataCollection
+});

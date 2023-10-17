@@ -13,11 +13,15 @@ import { Container } from "@/components/Container";
 import ProjectModal from "@/components/Modals/ProjectModal";
 
 import './style.scss'
+import { useSearchParams } from "next/navigation";
+import { DataCollection } from "./project/[id]/component";
 
 
 const  Home = observer(() => {
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [openModal, setOpenModal]              = useState<boolean>(false);
+
+  const searchParams = useSearchParams();
 
   const device   = checkDeviceType();
   const projects = ModelStore.projects;
@@ -25,6 +29,14 @@ const  Home = observer(() => {
   useEffect(() => {
     ModelStore.initialLoad();
   }, [])
+
+  // useEffect(() => {
+  //   console.log("SEARCH", searchParams);
+  //   const projectID = searchParams.get('projectID');
+  //   if (projectID) {
+  //     ModelStore.fetchProject(projectID);
+  //   }
+  // }, [searchParams]);
 
   useEffect(() => {
     setFilteredProjects(projects);
@@ -66,7 +78,7 @@ const  Home = observer(() => {
         <div style={{
           padding: '16px'
         }}>
-          <Link href={`/project/${params.id}`} passHref>
+          <Link href={`/?projectID=${params.id}`} passHref>
             <Button
               variant="contained"
               size="small"
@@ -88,7 +100,7 @@ const  Home = observer(() => {
         <div style={{
           padding: '16px'
         }}>
-          <Link href={`/project/${params.id}`} passHref>
+          <Link href={`/?projectID=${params.id}`} passHref>
             <Button
               variant="contained"
               size="small"
@@ -100,6 +112,10 @@ const  Home = observer(() => {
       ),
     },
   ]
+
+    if (searchParams.get("projectID")) {
+      return <DataCollection id={searchParams.get("projectID") as string}/>
+    }
 
   return (
     <main>
