@@ -3,7 +3,10 @@
 import ChipManager from "@/components/ChipManager";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
-import HVACForm from "./AppliancesForms.tsx/hvacForm";
+import HVACForm from "./AppliancesForms/HVACForm";
+import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
+import CooktopForm from "./AppliancesForms/CookTopForm";
+import DefaultForm from "./AppliancesForms/DefaultForm";
 
 const TYPES = [
   "HVAC",
@@ -16,12 +19,6 @@ const TYPES = [
   "Oven",
   "Other",
 ]
-
-// const HVAC_TYPES = [
-//   "Heating",
-//   "Cooling",
-//   "Heat Pump"
-// ]
 
 const HVAC_SYSTEMS = [
   { name: "Furnace", parent: "Heating" },
@@ -148,11 +145,27 @@ const Appliances = () => {
     setCurrentAppliance(newAppliance);
   }
 
-    const handleInputChange = async (inputName: string, value: string | number) => {
-      const updatedData = { ...currentAppliance, [inputName]: value };
-      setCurrentAppliance(updatedData);
+  const handleInputChange = async (inputName: string, value: string | number) => {
+    const updatedData = { ...currentAppliance, [inputName]: value };
+    setCurrentAppliance(updatedData);
   };
 
+  const renderForm = () => {
+    switch(currentAppliance.type) {
+      case 'HVAC':
+        return (<HVACForm />);
+      case 'Water Heater':
+        return (<WaterHeaterForm />);
+      case 'Cooktop':
+        return (<CooktopForm />);
+      default:
+        if (currentAppliance.type) {
+          return (<DefaultForm />);
+        } else {
+          return (null);
+        }
+    }
+  }
   
   return (
     <div
@@ -194,7 +207,7 @@ const Appliances = () => {
               }
             </Select>
           </FormControl>
-          {currentAppliance.type === 'HVAC' && <HVACForm />}
+          {renderForm()}
         </form>
       </div>}
     </div>
