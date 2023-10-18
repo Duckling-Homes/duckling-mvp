@@ -25,7 +25,8 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "lodash": ["./node_modules/lodash/index.d.ts"]
     }
   },
   "include": [
