@@ -28,7 +28,6 @@ export const GET = withErrorHandler(
     }
 
     const projectData = await getProjectData(params.id)
-    // Update this for everything else on here ig...
     const rooms = await getProjectRooms(params.id)
     const envelopes = await getProjectEnvelopes(params.id)
     const appliances = await getProjectAppliances(params.id)
