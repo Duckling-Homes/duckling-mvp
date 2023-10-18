@@ -1,34 +1,43 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { checkDeviceType } from "@/hooks/checkDeviceType";
-import { Button, TextField } from "@mui/material";
-import { Add } from "@mui/icons-material";
-import Link from "next/link";
-import { Project } from "@/types/types";
-import { observer } from "mobx-react-lite";
-import ModelStore from "./stores/modelStore";
-import { Container } from "@/components/Container";
-import ProjectModal from "@/components/Modals/ProjectModal";
+import { Container } from '@/components/Container'
+import ProjectModal from '@/components/Modals/ProjectModal'
+import { checkDeviceType } from '@/hooks/checkDeviceType'
+import { Project } from '@/types/types'
+import { useUser } from '@clerk/nextjs'
+import { Add } from '@mui/icons-material'
+import { Button, TextField } from '@mui/material'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { observer } from 'mobx-react-lite'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import ModelStore from './stores/modelStore'
 
 import './style.scss'
 
+const Home = observer(() => {
+  const { isLoaded, isSignedIn, user } = useUser()
+  const { push } = useRouter()
 
-const  Home = observer(() => {
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-  const [openModal, setOpenModal]              = useState<boolean>(false);
+  if (!user?.publicMetadata?.organization_id) {
+    // redirect to /api/assign
+    push('/api/assign')
+  }
 
-  const device   = checkDeviceType();
-  const projects = ModelStore.projects;
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
+  const [openModal, setOpenModal] = useState<boolean>(false)
+
+  const device = checkDeviceType()
+  const projects = ModelStore.projects
 
   useEffect(() => {
-    ModelStore.initialLoad();
+    ModelStore.initialLoad()
   }, [])
 
   useEffect(() => {
-    setFilteredProjects(projects);
-  }, [projects]); 
+    setFilteredProjects(projects)
+  }, [projects])
 
   function searchData(searchValue: string) {
     if (searchValue === '') {
@@ -50,7 +59,7 @@ const  Home = observer(() => {
   }
 
   async function handleCreate(newProject: Project) {
-    await ModelStore.createProject(newProject);
+    await ModelStore.createProject(newProject)
     setOpenModal(false)
   }
 
@@ -63,14 +72,13 @@ const  Home = observer(() => {
       field: 'edit',
       headerName: '',
       renderCell: (params) => (
-        <div style={{
-          padding: '16px'
-        }}>
+        <div
+          style={{
+            padding: '16px',
+          }}
+        >
           <Link href={`/project/${params.id}`} passHref>
-            <Button
-              variant="contained"
-              size="small"
-            >
+            <Button variant="contained" size="small">
               Edit
             </Button>
           </Link>
@@ -85,14 +93,13 @@ const  Home = observer(() => {
       field: 'edit',
       headerName: '',
       renderCell: (params) => (
-        <div style={{
-          padding: '16px'
-        }}>
+        <div
+          style={{
+            padding: '16px',
+          }}
+        >
           <Link href={`/project/${params.id}`} passHref>
-            <Button
-              variant="contained"
-              size="small"
-            >
+            <Button variant="contained" size="small">
               Edit
             </Button>
           </Link>
@@ -150,6 +157,6 @@ const  Home = observer(() => {
       </Container>
     </main>
   )
-});
+})
 
-export default Home;
+export default Home
