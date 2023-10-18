@@ -17,7 +17,7 @@ const TYPES = [
   "Generator",
 ]
 
-const Electrical = () => {
+const Electrical = ({ currentProject }) => {
   const [currentElectrical, setCurrentElectrical] = useState({
     type: ''
   });

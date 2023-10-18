@@ -158,8 +158,6 @@ const Envelope = ({ currentProject }) => {
     }
   }
 
-
-
   return (
     <div
       style={{
