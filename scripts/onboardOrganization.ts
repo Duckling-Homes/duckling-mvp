@@ -1,7 +1,5 @@
 #!/usr/bin/env -S ts-node -P ./scripts/tsconfig.json
-
-// Import required modules and functions
-import { createUser } from '../app/utils/repositories/user'; // Adjust this path based on your project structure
+import { createUser } from '../app/utils/repositories/user';
 import { PrismaClient, Prisma } from '@prisma/client';
 
 /**
@@ -20,7 +18,6 @@ const main = async (): Promise<void> => {
     process.exit(1);
   }
 
-  // Deconstruct command-line arguments
   const [databaseEndpoint, orgName, emailList] = args;
   const emails = emailList.split(',');
 
@@ -45,7 +42,7 @@ const main = async (): Promise<void> => {
   if (existingOrg) {
     console.log(`Organization '${orgName}' already exists with ID: ${existingOrg.id}.`);
   } else {
-    // Create a new organization
+    // Create a new organization if we don't have an existing one
     existingOrg = await prisma.organization.create({
       data: { name: orgName },
     });
