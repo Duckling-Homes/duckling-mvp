@@ -21,7 +21,7 @@ export async function getProjectAppliances(projectId: string) {
   )
   const otherAppliances = (await getProjectOtherAppliances(projectId)).map(
     (other) => {
-      return { ...other, type: 'Other' }
+      return { ...other }
     }
   )
 
