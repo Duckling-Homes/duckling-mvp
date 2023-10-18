@@ -6,37 +6,11 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
-  TextField,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-
-const MOCK_DATA = [
-  {
-    id: 'b7ea34e5-036a-49a3-9a35-f7f3b18ffcf6',
-    name: 'Attic Insulation',
-    type: 'insulation',
-    location: 'attic',
-    condition: 'poor',
-    notes: 'We estimate this insulation is R9',
-  },
-  {
-    id: 'a64f1239-6f39-48c2-a4f3-1db48eef2a9e',
-    name: 'Basement Insulation',
-    type: 'insulation',
-    location: 'basement',
-    condition: 'fair',
-    notes: 'We estimate this insulation is R18',
-  },
-  {
-    id: '0cb3ca24-5b85-4a02-9c1f-0e849f91e9e7',
-    name: 'Air sealing',
-    type: 'air-sealing',
-    leakiness: 'leaky',
-    notes: 'Blower door results - 6 ACH50',
-  },
-];
-
+import InsulationForm from './EnvelopesForms/InsulationForm'
+import AirSealingForm from './EnvelopesForms/AirSealingForm'
+import { ProjectEnvelope } from '@/types/types'
 interface Envelope {
   name: string
   type: string
@@ -47,11 +21,10 @@ interface Envelope {
   id: string
 }
 
-const Envelope = () => {
-  const [envelopes, setEnvelopes] = useState<Envelope[]>(MOCK_DATA)
-  const [currentEnvelope, setCurrentEnvelope] = useState<Envelope>(MOCK_DATA[0])
-  const [envelopeData, setEnvelopeData] = useState<Envelope>({
-    id: '0',
+const Envelope = ({ currentProject }) => {
+  const [envelopes, setEnvelopes] = useState<Envelope[]>([])
+  const [currentEnvelope, setCurrentEnvelope] = useState<Envelope>({
+    id: '',
     type: '',
     name: '',
     location: '',
@@ -60,56 +33,131 @@ const Envelope = () => {
     condition: '',
   })
 
-  const handleChange = (event: SelectChangeEvent) => {
-    const { name, value } = event.target
-    setEnvelopeData({ ...envelopeData, [name]: value })
-  }
-
   useEffect(() => {
-    if (currentEnvelope) {
-      setEnvelopeData({
-        type: currentEnvelope.type,
-        name: currentEnvelope.name,
-        notes: currentEnvelope.notes,
-        location: currentEnvelope.location || '',
-        condition: currentEnvelope.condition || '',
-        leakiness: currentEnvelope.leakiness || '',
-        id: currentEnvelope.id,
-      })
+    if (currentProject && currentProject.envelopes) {
+      setEnvelopes(currentProject.envelopes)
+      setCurrentEnvelope(currentProject.envelopes[0])
     }
-  }, [currentEnvelope])
+  }, [currentProject])
 
-  function deleteEnvelope(envelopeId: string) {
-    const newRooms = envelopes.filter(r => r.id !== envelopeId);
-    setEnvelopes(newRooms);
-    setCurrentEnvelope(newRooms[0] || {});
+  const handleTypeChange = (name: string, value: string) => {
+    const updatedEnvelope = {...currentEnvelope, [name]: value}
+    console.log(updatedEnvelope)
+    handlePostEnvelope(updatedEnvelope, value)
   }
-
-  function generateUID() {
-    const randomNumber = Math.random();
-    const base36String = randomNumber.toString(36).substr(2, 9);
-    const timestamp = Date.now().toString(36).substr(2, 5);
-    const uid = base36String + timestamp;
-
-    return uid;
-  };
 
   function createEnvelope() {
-
     const newEnvelope = {
-      id: generateUID(),
-      project_id: "ee30fb58-ee45-4efc-a302-9774133515dc",
-      name: "New Envelope",
-      type: '',
-      location: '',
-      condition: '',
-      notes: '',
+      id: '',
+      name: 'New Envelope'
     };
 
     const newEnvelopeList = [...envelopes, newEnvelope];
     setEnvelopes(newEnvelopeList);
     setCurrentEnvelope(newEnvelope);
   }
+
+  async function handlePostEnvelope(updatedEnvelope: ProjectEnvelope, type: string) {
+    try {
+      const data = await fetch(`/api/project${type}`, {
+        method: 'POST',
+        body: JSON.stringify({
+            ...updatedEnvelope,
+            projectId: currentProject.id
+          })
+      });
+
+      if (data.ok) {
+        console.log('New envelope created successfully.');
+        setCurrentEnvelope(updatedEnvelope)
+      } else {
+        throw new Error('Failed to create a new envelope.');
+      }
+    } catch (error) {
+      console.error('Error creating a new envelope:', error);
+      throw error;
+    }
+  }
+
+  async function deleteEnvelope(envelopeId: string) {
+    const envelopeToDelete = envelopes.find(envelope => envelope.id === envelopeId);
+
+    if (envelopeToDelete) {
+      try {
+        const response = await fetch(`/api/project${envelopeToDelete.type}/${envelopeId}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          console.log('Old envelope deleted successfully.');
+          const newEnvelopeList = envelopes.filter(r => r.id !== envelopeId);
+          setEnvelopes(newEnvelopeList);
+          setCurrentEnvelope(newEnvelopeList[0] || {});
+        } else {
+          throw new Error('Failed to delete the old envelope.');
+        }
+      } catch (error) {
+        console.error('Error deleting the old envelope:', error);
+        throw error;
+      }
+    }
+  }
+
+  function handleInputChange(inputName: string, value: string) {
+    if (currentEnvelope && currentEnvelope.id) {
+      const updatedEnvelope = { ...currentEnvelope, [inputName]: value };
+      setCurrentEnvelope(updatedEnvelope);
+      patchEnvelope(updatedEnvelope);
+    }
+  }
+
+  async function patchEnvelope(updatedEnvelope: ProjectEnvelope) {
+    if (updatedEnvelope && updatedEnvelope.id) {
+      try {
+        const data = await fetch(`/api/project${updatedEnvelope.type}/${updatedEnvelope.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            ...updatedEnvelope,
+            projectId: currentProject.id
+          })
+        });
+
+        if (data.ok) {
+          const response = await data.json();
+          response.type = updatedEnvelope.type;
+
+          // Update the envelopes and the currentEnvelope
+          const updatedEnvelopes = envelopes.map((envelope) => {
+            if (envelope.id === updatedEnvelope.id) {
+              return { ...envelope, ...updatedEnvelope };
+            }
+            return envelope;
+          });
+
+          setEnvelopes(updatedEnvelopes);
+          setCurrentEnvelope(response);
+          console.log(response);
+        } else {
+          throw new Error('Failed to update the envelope.');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+
+  const renderForm = () => {
+    switch(currentEnvelope?.type) {
+      case 'Insulation':
+        return (<InsulationForm onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
+      case 'Air Sealing':
+        return (<AirSealingForm onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
+      default:
+          return (null);
+    }
+  }
+
 
 
   return (
@@ -124,7 +172,7 @@ const Envelope = () => {
         onCreate={createEnvelope}
         onDelete={deleteEnvelope}
         chips={envelopes}
-        currentChip={currentEnvelope.id}
+        currentChip={currentEnvelope?.id}
         chipType="Envelope"
         onChipClick={(i: number) => setCurrentEnvelope(envelopes[i])}
       />
@@ -146,119 +194,15 @@ const Envelope = () => {
               labelId="envelope-type-label"
               id="envelope-type-select"
               label="Type"
-              value={currentEnvelope.type}
-              onChange={handleChange}
+              value={currentEnvelope?.type}
+              disabled={currentEnvelope?.type ? true : false}
+              onChange={(e) => handleTypeChange('type', e.target.value)}
             >
-              <MenuItem value={'insulation'}>Insulation</MenuItem>
-              <MenuItem value={'air-sealing'}>Air Sealing</MenuItem>
+              <MenuItem value={'Insulation'}>Insulation</MenuItem>
+              <MenuItem value={'AirSealing'}>Air Sealing</MenuItem>
             </Select>
           </FormControl>
-          {currentEnvelope.type === 'insulation' ? (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-              }}
-            >
-              <TextField
-                id="outlined-basic"
-                label="Name"
-                value={currentEnvelope.name}
-                variant="outlined"
-                placeholder="Name"
-                fullWidth
-              />
-              <FormControl fullWidth>
-                <InputLabel id="insolation-location-label">
-                  Insulation Location
-                </InputLabel>
-                <Select
-                  labelId="insolation-location-label"
-                  id="insolation-location-select"
-                  label="Insulation Location"
-                  value={currentEnvelope.location}
-                >
-                  <MenuItem value={'attic'}>Attic</MenuItem>
-                  <MenuItem value={'basement'}>Basement</MenuItem>
-                  <MenuItem value={'crawlspace'}>Crawlspace</MenuItem>
-                  <MenuItem value={'wall'}>Wall</MenuItem>
-                  <MenuItem value={'floor'}>Floor</MenuItem>
-                  <MenuItem value={'other'}>Other</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl fullWidth>
-                <InputLabel id="leakiness-description-label">
-                  Insulation Condition
-                </InputLabel>
-                <Select
-                  labelId="insulation-condition-label"
-                  id="insulatiom-condition-select"
-                  label="Insulation Condition"
-                  value={currentEnvelope.condition}
-                >
-                  <MenuItem value={'none'}>None</MenuItem>
-                  <MenuItem value={'good'}>Good</MenuItem>
-                  <MenuItem value={'fair'}>Fair</MenuItem>
-                  <MenuItem value={'poor'}>Poor</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                id="outlined-basic"
-                label="User Notes"
-                variant="outlined"
-                value={currentEnvelope.notes}
-                placeholder="User Notes"
-                fullWidth
-                multiline
-              />
-            </div>
-          ) : currentEnvelope.type === 'air-sealing' ? (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-              }}
-            >
-              <TextField
-                id="outlined-basic"
-                label="Name"
-                variant="outlined"
-                placeholder="Name"
-                value={currentEnvelope.name}
-                fullWidth
-              />
-              <FormControl fullWidth>
-                <InputLabel id="leakiness-description-label">
-                  Leakiness Description
-                </InputLabel>
-                <Select
-                  labelId="leakiness-description-label"
-                  id="leakiness-description-select"
-                  label="Leakiness Description"
-                  value={currentEnvelope.leakiness}
-                >
-                  <MenuItem value={'very-tight'}>Very Tight</MenuItem>
-                  <MenuItem value={'tight'}>Tight</MenuItem>
-                  <MenuItem value={'average'}>Average</MenuItem>
-                  <MenuItem value={'leaky'}>Leaky</MenuItem>
-                  <MenuItem value={'very leaky'}>Very Leaky</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label="User Notes"
-                variant="outlined"
-                placeholder="User Notes"
-                value={currentEnvelope.notes}
-                multiline
-              />
-            </div>
-          ) : (
-            <></>
-          )}
+          {renderForm()}
         </form>
       </div>
     </div>

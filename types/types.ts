@@ -8,6 +8,7 @@ export interface Project {
   homeownerAddress?: string;
   createdAt?: string;
   data?: ProjectData;
+  rooms?: ProjectRoom[];
 }
 
 export interface ProjectData {

@@ -2,6 +2,7 @@ import * as React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import { Menu } from '@mui/material';
 import { checkDeviceType } from '@/hooks/checkDeviceType';
+import Link from 'next/link';
 
 interface CustomMenuProps {
   open: boolean;
@@ -26,9 +27,11 @@ export default function CustomMenu({
       }}
     >
       {device === 'phone' &&
-        <MenuItem onClick={handleSignout}>
-          Projects List
-        </MenuItem>
+        <Link href="/" passHref>
+          <MenuItem>
+            Projects List
+          </MenuItem>
+        </Link>
       }
       <MenuItem onClick={handleSignout}>Logout</MenuItem>
     </Menu>
