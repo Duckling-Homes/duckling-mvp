@@ -4,26 +4,24 @@ import { Container } from '@/components/Container'
 import ProjectModal from '@/components/Modals/ProjectModal'
 import { checkDeviceType } from '@/hooks/checkDeviceType'
 import { Project } from '@/types/types'
-import { useUser } from '@clerk/nextjs'
 import { Add } from '@mui/icons-material'
 import { Button, TextField } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { observer } from 'mobx-react-lite'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import ModelStore from './stores/modelStore'
 
 import './style.scss'
 
 const Home = observer(() => {
-  const { user } = useUser()
-  const { push } = useRouter()
+  // const { user } = useUser()
+  // const { push } = useRouter()
 
-  if (!user?.publicMetadata?.organization_id) {
-    // redirect to /api/assign
-    push('/api/assign')
-  }
+  // if (!user?.publicMetadata?.organization_id) {
+  //   // redirect to /api/assign
+  //   push('/api/assign')
+  // }
 
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
