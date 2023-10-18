@@ -6,6 +6,7 @@ export async function createOtherAppliance(
 ) {
   return await prisma.otherAppliance.create({
     data: {
+      type: otherApplianceData.type,
       fuel: otherApplianceData.fuel,
       age: otherApplianceData.age,
       manufacturer: otherApplianceData.manufacturer,
