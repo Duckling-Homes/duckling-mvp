@@ -54,8 +54,8 @@ const main = async (): Promise<void> => {
     const newUser: Prisma.UserUncheckedCreateInput = {
       email,
       organizationId: existingOrg.id,
-      firstName: '',  // Placeholder, update as needed
-      lastName: '',   // Placeholder, update as needed
+      firstName: '',
+      lastName: '',
     };
 
     await createUser(newUser);
