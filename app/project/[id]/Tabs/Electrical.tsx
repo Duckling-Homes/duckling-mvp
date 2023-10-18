@@ -51,8 +51,8 @@ const Electrical = ({ currentProject }) => {
   }
 
   async function handlePostElectrical(updatedElectrical: ProjectElectrical, type: string) {
-    const api = type === 'electricalpanel' ? 'panel' : type
-    
+    const api = type === 'electricalpanel' ? 'panel' : (type === 'evcharger' ? 'evCharger' : type);
+
     try {
       const data = await fetch(`/api/electrical/${api}`, {
         method: 'POST',
@@ -86,6 +86,32 @@ const Electrical = ({ currentProject }) => {
     }
   }
 
+  async function deleteElectrical(electricalId: string) {
+    const electricalToDelete = electricals.find(electrical => electrical.id === electricalId);
+
+    if (electricalToDelete) {
+      const api = electricalToDelete.type.toLowerCase() === 'electricalpanel' ? 'panel' : (electricalToDelete.type.toLowerCase() === 'evcharger' ? 'evCharger' : electricalToDelete.type.toLowerCase());
+
+      try {
+        const response = await fetch(`/api/electrical/${api}/${electricalId}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          console.log('Electrical deleted successfully.');
+          const newElectricalsList = electricals.filter(r => r.id !== electricalId);
+          setElectricals(newElectricalsList);
+          setCurrentElectrical(newElectricalsList[0] || {});
+        } else {
+          throw new Error('Failed to delete the electrical.');
+        }
+      } catch (error) {
+        console.error('Error deleting the electrical:', error);
+        throw error;
+      }
+    }
+  }
+
   const renderForm = () => {
     switch(currentElectrical?.type) {
       case 'Electrical Panel':
@@ -112,7 +138,7 @@ const Electrical = ({ currentProject }) => {
       }}
     >
       <ChipManager
-        onDelete={() => console.log('aheuhea')}
+        onDelete={deleteElectrical}
         onCreate={createElectrical}
         chipType="Electrical"
         chips={electricals}
@@ -133,7 +159,7 @@ const Electrical = ({ currentProject }) => {
               labelId="type-label"
               id="type-select"
               label="Type"
-              value={currentElectrical?.type.toLowerCase()}
+              value={currentElectrical?.type?.toLowerCase()}
               onChange={({ target }) => handleTypeChange('type', target.value)}
             >
               {
