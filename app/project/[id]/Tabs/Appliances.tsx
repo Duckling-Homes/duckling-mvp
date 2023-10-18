@@ -10,15 +10,15 @@ import DefaultForm from "./AppliancesForms/DefaultForm";
 import { ProjectAppliance } from "@/types/types";
 
 const TYPES = [
-  {name: "HVAC", value: "Hvac"},
-  {name: "Water Heater", value: 'WaterHeater'},
-  {name: "Refrigerator", value: "Refrigerator"},
-  {name: "Washing Machine", value: "WashingMachine"},
-  {name: "Dryer", value: "Dryer"},
-  {name: "Dishwasher", value: "Dishwasher"},
-  {name: "Cooktop", value: "Cooktop"},
-  {name: "Oven", value: "Oven"},
-  {name: "Other", value: "Other"}
+  {name: "HVAC", value: "hvac"},
+  {name: "Water Heater", value: 'waterheater'},
+  {name: "Refrigerator", value: "refrigerator"},
+  {name: "Washing Machine", value: "washingMachine"},
+  {name: "Dryer", value: "dryer"},
+  {name: "Dishwasher", value: "dishwasher"},
+  {name: "Cooktop", value: "cooktop"},
+  {name: "Oven", value: "oven"},
+  {name: "Other", value: "other"}
 ]
 
 const Appliances = ({ currentProject }) => {
@@ -221,12 +221,12 @@ const Appliances = ({ currentProject }) => {
 
 
   const renderForm = () => {
-    switch(currentAppliance?.type) {
-      case 'Hvac':
+    switch(currentAppliance?.type?.toLowerCase()) {
+      case 'hvac':
         return (<HVACForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
-      case 'WaterHeater':
+      case 'waterheater':
         return (<WaterHeaterForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
-      case 'Cooktop':
+      case 'cooktop':
         return (<CooktopForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       default:
         if (currentAppliance?.type) {
@@ -268,7 +268,7 @@ const Appliances = ({ currentProject }) => {
               id="type-select"
               label="Type"
               disabled={currentAppliance?.type ? true : false}
-              value={currentAppliance?.type}
+              value={(currentAppliance?.type)?.toLowerCase()}
               onChange={({ target }) => handleTypeChange('type', target.value)}
             >
               {

@@ -28,6 +28,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           labelId="type-label"
           id="type-select"
           label="HVAC System Type"
+          onChange={(e) => onChange('systemType', e.target.value)}
+          value={currentAppliance?.systemType}
         >
           {
             SYSTEM_TYPE.map((type, i) => (
@@ -43,6 +45,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           labelId="fuel-label"
           id="fuel-select"
           label="Fuel"
+          onChange={(e) => onChange('fuel', e.target.value)}
+          value={currentAppliance?.fuel}
         >
           {
             FUEL.map((fuel, i) => (
@@ -59,6 +63,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Age'
           type="number"
+          onChange={(e) => onChange('age', parseInt(e.target.value))}
+          value={currentAppliance?.age}
         />
       </FormControl>
       {/* manufacturer */}
@@ -69,6 +75,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Manufacturer'
           type="text"
+          onChange={(e) => onChange('manufacturer', e.target.value)}
+          value={currentAppliance?.manufacturer}
         />
       </FormControl>
       {/* model number */}
@@ -79,6 +87,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Model Number'
           type="text"
+          onChange={(e) => onChange('modelNumber', e.target.value)}
+          value={currentAppliance?.modelNumber}
         />
       </FormControl>
       {/* serial number */}
@@ -89,6 +99,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Serial Number'
           type="text"
+          onChange={(e) => onChange('serialNumber', e.target.value)}
+          value={currentAppliance?.serialNumber}
         />
       </FormControl>
       {/* Tank Volume */}
@@ -99,6 +111,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder="Tank Volume"
           type="text"
+          onChange={(e) => onChange('tankVolume', parseInt(e.target.value))}
+          value={currentAppliance?.tankVolume}
         />
       </FormControl>
       {/* location */}
@@ -109,6 +123,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Location'
           type="text"
+          onChange={(e) => onChange('location', e.target.value)}
+          value={currentAppliance?.location}
         />
       </FormControl>
       {/* notes */}
@@ -119,6 +135,8 @@ const WaterHeaterForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentAppliance?.notes}
         />
       </FormControl>
     </>
