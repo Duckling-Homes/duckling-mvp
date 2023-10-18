@@ -41,16 +41,16 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
 
   // get the public org
   const demoOrg = await createDemoOrgIfItDoesNotExist()
+  const email = clerkUser.emailAddresses[0].emailAddress
 
   const userInDb = await prisma.user.findUnique({
     where: {
-      id: userId,
+      email,
     },
   })
 
   // if user is not in the database, create them and add them to the public org
   if (!userInDb) {
-    const email = clerkUser.emailAddresses[0].emailAddress
     await prisma.user.create({
       data: {
         id: userId,

@@ -1,44 +1,44 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient({
+export const seedPrisma = new PrismaClient({
   datasources: {
     db: {
-      url: "postgresql://admin:admin@localhost:5447/postgres"
-    }
-  }
-});
+      url: 'postgresql://admin:admin@localhost:5447/postgres',
+    },
+  },
+})
 
 const run = async () => {
-  const uuid = "a4b5aa52-274d-4b1e-8f6b-3828f74c72d3";
-  const name = "GreenEarth Initiatives";
+  const uuid = 'a4b5aa52-274d-4b1e-8f6b-3828f74c72d3'
+  const name = 'GreenEarth Initiatives'
 
   // Check if organization already exists
-  const existingOrganization = await prisma.organization.findUnique({
+  const existingOrganization = await seedPrisma.organization.findUnique({
     where: {
-      id: uuid
-    }
-  });
+      id: uuid,
+    },
+  })
 
   if (existingOrganization) {
-    console.log("Organization already exists.");
-    return;
+    console.log('Organization already exists.')
+    return
   }
 
   // Create a new organization if it doesn't exist
-  const newOrganization = await prisma.organization.create({
+  const newOrganization = await seedPrisma.organization.create({
     data: {
       id: uuid,
-      name
-    }
-  });
+      name,
+    },
+  })
 
-  console.log(`Organization created with ID: ${newOrganization.id}`);
-};
+  console.log(`Organization created with ID: ${newOrganization.id}`)
+}
 
 run()
   .catch((e) => {
-    throw e;
+    throw e
   })
   .finally(async () => {
-    await prisma.$disconnect();
-  });
+    await seedPrisma.$disconnect()
+  })
