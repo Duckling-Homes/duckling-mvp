@@ -17,7 +17,7 @@ import ModelStore from './stores/modelStore'
 import './style.scss'
 
 const Home = observer(() => {
-  const { isLoaded, isSignedIn, user } = useUser()
+  const { user } = useUser()
   const { push } = useRouter()
 
   if (!user?.publicMetadata?.organization_id) {
