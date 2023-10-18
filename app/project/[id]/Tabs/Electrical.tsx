@@ -12,10 +12,10 @@ import ChipManager from "@/components/ChipManager";
 import { ProjectElectrical } from "@/types/types";
 
 const TYPES = [
-  {name: "Electrical Panel", value: "panel"},
+  {name: "Electrical Panel", value: "electricalpanel"},
   {name: "Solar", value: "solar"},
   {name: "Battery", value: "battery"},
-  {name: "EV Charger", value: "evCharger"},
+  {name: "EV Charger", value: "evcharger"},
   {name: "Generator", value: "generator"}
 ]
 
@@ -51,9 +51,10 @@ const Electrical = ({ currentProject }) => {
   }
 
   async function handlePostElectrical(updatedElectrical: ProjectElectrical, type: string) {
-
+    const api = type === 'electricalpanel' ? 'panel' : type
+    
     try {
-      const data = await fetch(`/api/electrical/${type}`, {
+      const data = await fetch(`/api/electrical/${api}`, {
         method: 'POST',
         body: JSON.stringify({
             ...updatedElectrical,
@@ -132,7 +133,7 @@ const Electrical = ({ currentProject }) => {
               labelId="type-label"
               id="type-select"
               label="Type"
-              value={currentElectrical?.type}
+              value={currentElectrical?.type.toLowerCase()}
               onChange={({ target }) => handleTypeChange('type', target.value)}
             >
               {
