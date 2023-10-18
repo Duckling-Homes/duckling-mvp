@@ -22,6 +22,8 @@ const DefaultForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Manufacturer'
           type="text"
+          onChange={(e) => onChange('manufacturer', e.target.value)}
+          value={currentAppliance?.manufacturer}
         />
       </FormControl>
       {/* model number */}
@@ -32,6 +34,8 @@ const DefaultForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Model Number'
           type="text"
+          onChange={(e) => onChange('modelNumber', e.target.value)}
+          value={currentAppliance?.modelNumber}
         />
       </FormControl>
       {/* serial number */}
@@ -42,6 +46,8 @@ const DefaultForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Serial Number'
           type="text"
+         onChange={(e) => onChange('serialNumber', e.target.value)}
+          value={currentAppliance?.serialNumber}
         />
       </FormControl>
       {/* fuel */}
@@ -51,6 +57,8 @@ const DefaultForm = ({ onChange, currentAppliance }) => {
           labelId="fuel-label"
           id="fuel-select"
           label="Fuel"
+          onChange={(e) => onChange('fuel', e.target.value)}
+          value={currentAppliance?.fuel}
         >
           {
             FUEL.map((fuel, i) => (
@@ -67,6 +75,8 @@ const DefaultForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Age'
           type="number"
+          onChange={(e) => onChange('age', parseInt(e.target.value))}
+          value={currentAppliance?.age}
         />
       </FormControl>
       {/* location */}
@@ -77,6 +87,8 @@ const DefaultForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Location'
           type="text"
+          onChange={(e) => onChange('location', e.target.value)}
+          value={currentAppliance?.location}
         />
       </FormControl>
       {/* notes */}
@@ -87,6 +99,8 @@ const DefaultForm = ({ onChange, currentAppliance }) => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentAppliance?.notes}
         />
       </FormControl>
     </>
