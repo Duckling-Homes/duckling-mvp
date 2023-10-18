@@ -77,7 +77,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
   // if user is in the database, update the org id in clerk
   await clerkClient.users.updateUser(userId, {
     publicMetadata: {
-      organization_id: clerkUser,
+      organization_id: userInDb.organizationId,
     },
   })
 
