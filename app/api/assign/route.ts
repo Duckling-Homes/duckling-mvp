@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const createDemoOrgIfItDoesNotExist = async () => {
   const name = 'DEMO_ORGANIZATION'
-  var org = await prisma.organization.findFirst({
+  let org = await prisma.organization.findFirst({
     where: {
       name,
     },
