@@ -40,7 +40,7 @@ const ORIENTATIONS = [
   "Southwest",
 ]
 
-const SolarPanelForm = () => {
+const SolarPanelForm = ({ currentElectrical, onChange }) => {
   
   return (
     <>

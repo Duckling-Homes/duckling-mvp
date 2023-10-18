@@ -3,7 +3,7 @@
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 
-const BatteryForm = () => {
+const BatteryForm = ({ currentElectrical, onChange }) => {
   
   return (
     <>

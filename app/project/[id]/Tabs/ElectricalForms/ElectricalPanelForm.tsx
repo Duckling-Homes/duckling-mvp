@@ -2,7 +2,7 @@
 
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
-const ElectricalPanelForm = () => {
+const ElectricalPanelForm = ({ currentElectrical, onChange }) => {
 
   return (
     <>
@@ -13,6 +13,8 @@ const ElectricalPanelForm = () => {
           labelId="type-label"
           id="type-select"
           label="Panel Type"
+          value={currentElectrical?.panelType}
+          onChange={(e) => onChange('panelType', e.target.value)}
         >
           <MenuItem value={'Main Panel'}>Main Panel</MenuItem>
           <MenuItem value={'Sub-Panel'}>Sub-Panel</MenuItem>
@@ -25,7 +27,8 @@ const ElectricalPanelForm = () => {
           label="Amperage Rating"
           variant="outlined"
           placeholder='Amperage Rating'
-          type="number"
+          value={currentElectrical?.panelAmperageRating}
+          onChange={(e) => onChange('panelAmperageRating', e.target.value)}
         />
       </FormControl>
       {/* Available Slot for New Circuits */}
@@ -36,6 +39,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Available Slot for New Circuits'
           type="text"
+          value={currentElectrical?.availableNewCircuits}
+          onChange={(e) => onChange('availableNewCircuits', e.target.value)}
         />
       </FormControl>
       {/* Total 15 Amp Circuits */}
@@ -46,6 +51,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Total 15 Amp Circuits'
           type="text"
+          value={currentElectrical?.total15AmpCircuits}
+          onChange={(e) => onChange('total15AmpCircuits', e.target.value)}
         />
       </FormControl>
       {/* Total 20 Amp Circuits */}
@@ -56,6 +63,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Total 20 Amp Circuits'
           type="text"
+          value={currentElectrical?.total20AmpCircuits}
+          onChange={(e) => onChange('total20AmpCircuits', e.target.value)}
         />
       </FormControl>
       {/* Total 30 Amp Circuits */}
@@ -66,6 +75,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Total 30 Amp Circuits'
           type="text"
+          value={currentElectrical?.total30AmpCircuits}
+          onChange={(e) => onChange('total30AmpCircuits', e.target.value)}
         />
       </FormControl>
       {/* Total 40 Amp Circuits */}
@@ -76,6 +87,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Total 40 Amp Circuits'
           type="text"
+          value={currentElectrical?.total40AmpCircuits}
+          onChange={(e) => onChange('total40AmpCircuits', e.target.value)}
         />
       </FormControl>
       {/* Total 50 Amp Circuits */}
@@ -86,6 +99,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Total 50 Amp Circuits'
           type="text"
+          value={currentElectrical?.total50AmpCircuits}
+          onChange={(e) => onChange('total50AmpCircuits', e.target.value)}
         />
       </FormControl>
       {/* Total 60 Amp Circuits */}
@@ -96,6 +111,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Total 60 Amp Circuits'
           type="text"
+          value={currentElectrical?.total60AmpCircuits}
+          onChange={(e) => onChange('total60AmpCircuits', e.target.value)}
         />
       </FormControl>
       {/* Total 70 Amp Circuits */}
@@ -106,6 +123,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Total 70 Amp Circuits'
           type="text"
+          value={currentElectrical?.total70AmpCircuits}
+          onChange={(e) => onChange('total70AmpCircuits', e.target.value)}
         />
       </FormControl>
       {/* Notes */}
@@ -116,6 +135,8 @@ const ElectricalPanelForm = () => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          value={currentElectrical?.notes}
+          onChange={(e) => onChange('notes', e.target.value)}
         />
       </FormControl>
     </>

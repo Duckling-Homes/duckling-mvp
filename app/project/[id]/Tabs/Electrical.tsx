@@ -112,18 +112,64 @@ const Electrical = ({ currentProject }) => {
     }
   }
 
+  async function patchElectrical(updatedElectrical) {
+    const api = updatedElectrical.type.toLowerCase() === 'electricalpanel' ? 'panel' : (updatedElectrical.type.toLowerCase() === 'evcharger' ? 'evCharger' : updatedElectrical.type.toLowerCase());
+
+    if (updatedElectrical) {
+      try {
+        const data = await fetch(`/api/electrical/${api}/${updatedElectrical.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            ...updatedElectrical,
+            projectId: currentProject.id
+          })
+        });
+
+        if (data.ok) {
+          const response = await data.json();
+          response.type = updatedElectrical.type;
+
+          const updatedElectricals = electricals.map((electrical) => {
+            if (electrical.id === updatedElectrical.id) {
+              return { ...electrical, ...updatedElectrical };
+            }
+            return electrical;
+          });
+
+          setElectricals(updatedElectricals);
+          setCurrentElectrical(response);
+          console.log(response);
+        } else {
+          throw new Error('Failed to update the appliance.');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  function handleInputChange(inputName: string, value: string) {
+    console.log('inputName')
+    if (currentElectrical) {
+      const updatedElectrical = { ...currentElectrical, [inputName]: value };
+      setCurrentElectrical(updatedElectrical);
+      patchElectrical(updatedElectrical);
+    }
+  }
+
+
   const renderForm = () => {
-    switch(currentElectrical?.type) {
-      case 'Electrical Panel':
-        return (<ElectricalPanelForm />);
-      case 'Solar':
-        return (<SolarPanelForm />);
-      case 'Battery':
-        return (<BatteryForm />);
-      case 'EV Charger':
-        return (<EVChargerForm />);
-      case 'Generator':
-        return (<GeneratorForm />);
+    switch(currentElectrical?.type.toLowerCase()) {
+      case 'electricalpanel':
+        return (<ElectricalPanelForm onChange={handleInputChange} currentElectrical={currentElectrical} />);
+      case 'solar':
+        return (<SolarPanelForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+      case 'battery':
+        return (<BatteryForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+      case 'evcharger':
+        return (<EVChargerForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+      case 'generator':
+        return (<GeneratorForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       default:
         return null;
     }

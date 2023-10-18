@@ -8,7 +8,7 @@ const CHARGING_LEVELS = [
   "Level 3",
 ]
 
-const EVChargerForm = () => {
+const EVChargerForm = ({ currentElectrical, onChange }) => {
   
   return (
     <>

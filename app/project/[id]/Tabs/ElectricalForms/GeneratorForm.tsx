@@ -9,7 +9,7 @@ const FUEL = [
   "Gasoline",
 ]
 
-const GeneratorForm = () => {
+const GeneratorForm = ({ currentElectrical, onChange }) => {
   
   return (
     <>
