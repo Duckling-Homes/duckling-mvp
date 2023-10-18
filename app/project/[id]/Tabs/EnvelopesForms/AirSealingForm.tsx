@@ -25,6 +25,7 @@ const AirSealingForm = ({ onChange, currentEnvelope }) => {
           variant="outlined"
           placeholder="Name"
           value={currentEnvelope?.name}
+          onChange={(e) => onChange('name', e.target.value)}
           fullWidth
         />
         <FormControl fullWidth>
@@ -35,13 +36,14 @@ const AirSealingForm = ({ onChange, currentEnvelope }) => {
             labelId="leakiness-description-label"
             id="leakiness-description-select"
             label="Leakiness Description"
-            value={currentEnvelope?.leakiness}
+            value={currentEnvelope?.leakinessDescription}
+            onChange={(e) => onChange('leakinessDescription', e.target.value)}
           >
-            <MenuItem value={'very-tight'}>Very Tight</MenuItem>
+            <MenuItem value={'veryTight'}>Very Tight</MenuItem>
             <MenuItem value={'tight'}>Tight</MenuItem>
             <MenuItem value={'average'}>Average</MenuItem>
             <MenuItem value={'leaky'}>Leaky</MenuItem>
-            <MenuItem value={'very leaky'}>Very Leaky</MenuItem>
+            <MenuItem value={'veryLeaky'}>Very Leaky</MenuItem>
           </Select>
         </FormControl>
         <TextField
@@ -51,6 +53,7 @@ const AirSealingForm = ({ onChange, currentEnvelope }) => {
           variant="outlined"
           placeholder="User Notes"
           value={currentEnvelope?.notes}
+          onChange={(e) => onChange('notes', e.target.value)}
           multiline
         />
       </div>

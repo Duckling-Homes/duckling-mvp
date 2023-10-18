@@ -151,7 +151,7 @@ const Envelope = ({ currentProject }) => {
     switch(currentEnvelope?.type) {
       case 'Insulation':
         return (<InsulationForm onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
-      case 'Air Sealing':
+      case 'AirSealing':
         return (<AirSealingForm onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
       default:
           return (null);
