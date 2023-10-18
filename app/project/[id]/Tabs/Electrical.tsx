@@ -159,7 +159,7 @@ const Electrical = ({ currentProject }) => {
 
 
   const renderForm = () => {
-    switch(currentElectrical?.type.toLowerCase()) {
+    switch(currentElectrical?.type?.toLowerCase()) {
       case 'electricalpanel':
         return (<ElectricalPanelForm onChange={handleInputChange} currentElectrical={currentElectrical} />);
       case 'solar':
@@ -207,6 +207,7 @@ const Electrical = ({ currentProject }) => {
               label="Type"
               value={currentElectrical?.type?.toLowerCase()}
               onChange={({ target }) => handleTypeChange('type', target.value)}
+              disabled={currentElectrical?.type ? true : false}
             >
               {
                 TYPES.map((type, i) => (
