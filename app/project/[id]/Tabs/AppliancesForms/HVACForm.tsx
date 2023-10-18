@@ -31,7 +31,7 @@ const FUEL = [
   { name: "Other", parent: "all" },
 ];
 
-const HVACForm = () => {
+const HVACForm = ({ onChange, currentAppliance }) => {
   
   return (
     <>
@@ -41,6 +41,8 @@ const HVACForm = () => {
           labelId="type-label"
           id="type-select"
           label="HVAC System Type"
+          onChange={(e) => onChange('hvacSystemType', e.target.value)}
+          value={currentAppliance?.hvacSystemType}
         >
           {
             HVAC_TYPES.map((type, i) => (
@@ -55,6 +57,8 @@ const HVACForm = () => {
           labelId="ystem-label"
           id="system-select"
           label="HVAC System"
+          onChange={(e) => onChange('havcSystem', e.target.value)}
+          value={currentAppliance?.havcSystem}
         >
           {
             HVAC_SYSTEMS.map((system, i) => (
@@ -69,6 +73,8 @@ const HVACForm = () => {
           labelId="fuel-label"
           id="fuel-select"
           label="Fuel"
+          onChange={(e) => onChange('fuel', e.target.value)}
+          value={currentAppliance?.fuel}
         >
           {
             FUEL.map((fuel, i) => (
@@ -85,6 +91,8 @@ const HVACForm = () => {
           variant="outlined"
           placeholder='Age'
           type="number"
+          onChange={(e) => onChange('age', parseInt(e.target.value))}
+          value={currentAppliance?.age}
         />
       </FormControl>
       {/* manufacturer */}
@@ -95,6 +103,8 @@ const HVACForm = () => {
           variant="outlined"
           placeholder='Manufacturer'
           type="text"
+          onChange={(e) => onChange('manufacturer', e.target.value)}
+          value={currentAppliance?.manufacturer}
         />
       </FormControl>
       {/* model number */}
@@ -105,6 +115,8 @@ const HVACForm = () => {
           variant="outlined"
           placeholder='Model Number'
           type="text"
+          onChange={(e) => onChange('modelNumber', e.target.value)}
+          value={currentAppliance?.modelNumber}
         />
       </FormControl>
       {/* serial number */}
@@ -115,6 +127,8 @@ const HVACForm = () => {
           variant="outlined"
           placeholder='Serial Number'
           type="text"
+          onChange={(e) => onChange('serialNumber', e.target.value)}
+          value={currentAppliance?.serialNumber}
         />
       </FormControl>
       {/* heating */}
@@ -125,6 +139,8 @@ const HVACForm = () => {
           variant="outlined"
           placeholder='Heating Capacity'
           type="text"
+          onChange={(e) => onChange('heatingCapacity', parseInt(e.target.value))}
+          value={currentAppliance?.heatingCapacity}
         />
       </FormControl>
       {/* cooling capacity */}
@@ -135,6 +151,8 @@ const HVACForm = () => {
           variant="outlined"
           placeholder='Cooling Capacity'
           type="text"
+          onChange={(e) => onChange('coolingCapacity', parseInt(e.target.value))}
+          value={currentAppliance?.coolingCapacity}
         />
       </FormControl>
       {/* location */}
@@ -145,6 +163,8 @@ const HVACForm = () => {
           variant="outlined"
           placeholder='Location'
           type="text"
+          onChange={(e) => onChange('location', e.target.value)}
+          value={currentAppliance?.location}
         />
       </FormControl>
       {/* notes */}
@@ -155,6 +175,8 @@ const HVACForm = () => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentAppliance?.notes}
         />
       </FormControl>
     </>

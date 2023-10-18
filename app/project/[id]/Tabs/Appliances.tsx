@@ -135,7 +135,20 @@ const Appliances = ({ currentProject }) => {
 
       if (data.ok) {
         console.log('New appliance created successfully.');
-        setCurrentAppliance(updatedAppliance)
+
+        const updatedAppliances = appliances.map((appliance) => {
+          if (appliance.id === updatedAppliance.id) {
+            return { ...appliance, ...updatedAppliance };
+          }
+          return appliance;
+        });
+
+        setAppliances(updatedAppliances);
+
+        const response = await data.json()
+        const createdAppliance = {...response, type: updatedAppliance.type}
+        console.log(response)
+        setCurrentAppliance(createdAppliance)
       } else {
         throw new Error('Failed to create a new appliance.');
       }
@@ -145,23 +158,79 @@ const Appliances = ({ currentProject }) => {
     }
   }
 
+  async function patchAppliance(updatedAppliance) {
+    let api = ''
+    console.log(updatedAppliance)
 
-  const handleInputChange = async (inputName: string, value: string | number) => {
-    const updatedData = { ...currentAppliance, [inputName]: value };
-    setCurrentAppliance(updatedData);
-  };
+    switch(updatedAppliance.type.toLowerCase()) {
+      case 'hvac':
+        api = 'hvac';
+        break;
+      case 'cooktop':
+        api = 'cooktop';
+        break;
+      case 'waterheater':
+        api = 'waterHeater';
+        break;
+      default:
+        api = 'other';
+        break;
+    }
+
+    if (updatedAppliance) {
+      try {
+        const data = await fetch(`/api/appliances/${api}/${updatedAppliance.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            ...updatedAppliance,
+            projectId: currentProject.id
+          })
+        });
+
+        if (data.ok) {
+          const response = await data.json();
+          response.type = updatedAppliance.type;
+
+          const updatedAppliances = appliances.map((appliance) => {
+            if (appliance.id === updatedAppliance.id) {
+              return { ...appliance, ...updatedAppliance };
+            }
+            return appliance;
+          });
+
+          setAppliances(updatedAppliances);
+          setCurrentAppliance(response);
+          console.log(response);
+        } else {
+          throw new Error('Failed to update the appliance.');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  function handleInputChange(inputName: string, value: string) {
+    console.log('inputName')
+    if (currentAppliance) {
+      const updatedAppliance = { ...currentAppliance, [inputName]: value };
+      setCurrentAppliance(updatedAppliance);
+      patchAppliance(updatedAppliance);
+    }
+  }
+
 
   const renderForm = () => {
     switch(currentAppliance?.type) {
       case 'Hvac':
-        return (<HVACForm />);
+        return (<HVACForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       case 'WaterHeater':
-        return (<WaterHeaterForm />);
+        return (<WaterHeaterForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       case 'Cooktop':
-        return (<CooktopForm />);
+        return (<CooktopForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       default:
         if (currentAppliance?.type) {
-          return (<DefaultForm />);
+          return (<DefaultForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
         } else {
           return (null);
         }

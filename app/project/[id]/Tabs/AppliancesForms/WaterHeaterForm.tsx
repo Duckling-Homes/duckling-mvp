@@ -17,7 +17,7 @@ const FUEL = [
   "Other",
 ];
 
-const WaterHeaterForm = () => {
+const WaterHeaterForm = ({ onChange, currentAppliance }) => {
   
   return (
     <>

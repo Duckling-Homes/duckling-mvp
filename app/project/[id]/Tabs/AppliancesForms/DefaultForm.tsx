@@ -10,7 +10,7 @@ const FUEL = [
   "Other",
 ];
 
-const DefaultForm = () => {
+const DefaultForm = ({ onChange, currentAppliance }) => {
   
   return (
     <>

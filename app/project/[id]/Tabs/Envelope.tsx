@@ -126,7 +126,6 @@ const Envelope = ({ currentProject }) => {
           const response = await data.json();
           response.type = updatedEnvelope.type;
 
-          // Update the envelopes and the currentEnvelope
           const updatedEnvelopes = envelopes.map((envelope) => {
             if (envelope.id === updatedEnvelope.id) {
               return { ...envelope, ...updatedEnvelope };
