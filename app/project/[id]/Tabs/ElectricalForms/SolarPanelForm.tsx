@@ -57,7 +57,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           labelId="location-label"
           id="location-select"
           label="Location"
-          value={currentElectrical?.localtion}
+          value={currentElectrical?.location}
           onChange={(e) => onChange('location', e.target.value)}
         >
           {

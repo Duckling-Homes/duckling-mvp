@@ -1,6 +1,5 @@
 import { Organization, Project, ProjectData } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
-import customFetch from '../helpers/customFetch';
 import { v4 as uuidv4 } from 'uuid';
 
 // Note: Today, just using 1 ModelStore to store all state for all objects for simplicity
@@ -30,7 +29,7 @@ export class _ModelStore {
     }
     
     try {
-      const response = await customFetch("/api/projects/");
+      const response = await fetch("/api/projects/");
       if (!response.ok) {
         throw new Error('Failed to fetch projects');
       }
@@ -57,7 +56,7 @@ export class _ModelStore {
 
   fetchProject = async (projectId: string) => {
     try {
-      const response = await customFetch(`/api/projects/${projectId}`, {
+      const response = await fetch(`/api/projects/${projectId}`, {
         method: 'GET',
       });
 
@@ -82,7 +81,7 @@ export class _ModelStore {
     try {
       newProject.id = uuidv4();
   
-      const response = await customFetch("/api/projects/", {
+      const response = await fetch("/api/projects/", {
         method: 'POST',
         body: JSON.stringify(newProject),
       });
@@ -111,7 +110,7 @@ export class _ModelStore {
 
   deleteProject = async (projectId: string) => {
     try {
-      const response = await customFetch(`/api/projects/${projectId}`, {
+      const response = await fetch(`/api/projects/${projectId}`, {
         method: 'DELETE',
       });
 
@@ -135,7 +134,7 @@ export class _ModelStore {
 
   patchProject = async (project: Project) => {
     try {
-      const response = await customFetch(`/api/projects/${project.id}`, {
+      const response = await fetch(`/api/projects/${project.id}`, {
         method: 'PATCH',
         body: JSON.stringify(project),
       });
@@ -173,7 +172,7 @@ export class _ModelStore {
 
   patchProjectData = async (projectId: string, projectData: ProjectData) => {
     try {
-      const response = await customFetch(`/api/projects/${projectId}/data`, {
+      const response = await fetch(`/api/projects/${projectId}/data`, {
         method: 'POST',
         body: JSON.stringify(projectData),
       });
@@ -192,7 +191,7 @@ export class _ModelStore {
   fetchOrganization = async (organizationId: string) => {
     try {
       if (organizationId) {
-        const response = await customFetch(`/api/organizations/${organizationId}`, {
+        const response = await fetch(`/api/organizations/${organizationId}`, {
           method: 'GET',
         });
 

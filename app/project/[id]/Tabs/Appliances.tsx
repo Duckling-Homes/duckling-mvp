@@ -8,6 +8,7 @@ import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
 import CooktopForm from "./AppliancesForms/CooktopForm";
 import DefaultForm from "./AppliancesForms/DefaultForm";
 import { Project, ProjectAppliance } from "@/types/types";
+import { v4 as uuidv4 } from 'uuid';
 
 const TYPES = [
   {name: "HVAC", value: "hvac"},
@@ -99,8 +100,22 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   function createAppliance() {
 
     const newAppliance = {
-      id: '',
+      id: uuidv4(),
       name: "New Appliance",
+      type: '',
+      hvacSystemType: '',
+      havcSystem: '',
+      fuel: '',
+      age: 0,
+      manufacturer: '',
+      modelNumber: '',
+      serialNumber: '',
+      heatingCapacity: 0,
+      coolingCapacity: 0,
+      tankVolume: 0,
+      location: '',
+      notes: '',
+      isInduction: false,
     };
 
     const newApplianceList = [...appliances, newAppliance];
@@ -114,6 +129,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   }
 
   async function handlePostAppliance(updatedAppliance: ProjectAppliance, type: string) {
+
     let api = ''
     switch(type.toLowerCase()) {
       case 'hvac':
@@ -131,6 +147,9 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     }
 
     try {
+      const oldId = updatedAppliance.id;
+      delete updatedAppliance.id;
+
       const data = await fetch(`/api/appliances/${api}`, {
         method: 'POST',
         body: JSON.stringify({
@@ -140,21 +159,17 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       });
 
       if (data.ok) {
-        console.log('New appliance created successfully.');
-
+        const response = await data.json()
+        const createdAppliance = {...response, type: updatedAppliance.type}
         const updatedAppliances = appliances.map((appliance) => {
-          if (appliance.id === updatedAppliance.id) {
-            return { ...appliance, ...updatedAppliance };
+          if (appliance.id === oldId) {
+            return { ...appliance, ...createdAppliance };
           }
           return appliance;
         });
 
         setAppliances(updatedAppliances);
-
-        const response = await data.json()
-        const createdAppliance = {...response, type: updatedAppliance.type}
-        console.log(response)
-        setCurrentAppliance(createdAppliance)
+        setCurrentAppliance(createdAppliance);
       } else {
         throw new Error('Failed to create a new appliance.');
       }
@@ -259,10 +274,10 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         onCreate={createAppliance}
         chipType="Appliance"
         chips={appliances}
-        currentChip={currentAppliance?.id}
+        currentChip={currentAppliance?.id || ''}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
-      {currentAppliance && <div style={{
+      {currentAppliance?.id && <div style={{
         width: '100%',
       }}>
         <form style={{

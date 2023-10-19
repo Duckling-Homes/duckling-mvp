@@ -99,8 +99,8 @@ const ChipManager: React.FC<ChipManagerProps> = ({
             color={chip.id === currentChip ? "primary" : "default"}
             onClick={() => onChipClick(i)}
             onDelete={() => setDeleteEnvelope({
-              id: chip.id,
-              name: chip.name || "Unknown Name" // Handle if name is optional
+              id: chip.id || '',
+              name: chip.name || "Unknown Name"
             })}
           />
         ))}

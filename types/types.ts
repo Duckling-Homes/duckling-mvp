@@ -41,7 +41,7 @@ export interface NewProject {
 }
 
 export interface ProjectEnvelope {
-  id: string;
+  id?: string;
   name?: string;
   type?: string;
   leakinessDescription?: string;
@@ -55,7 +55,7 @@ export interface ProjectEnvelope {
 }
 
 export interface ProjectRoom {
-  id: string;
+  id?: string;
   name?: string;
   type?: string;
   width?: number;
@@ -73,7 +73,7 @@ export interface ProjectRoom {
 }
 
 export interface ProjectAppliance {
-  id: string;
+  id?: string;
   name?: string;
   type?: string;
   systemType?: string;
@@ -94,26 +94,49 @@ export interface ProjectAppliance {
 
 
 export interface ProjectElectrical {
-  id: string;
+  id?: string;
   name?: string;
   type?: string;
-  generatorType?: string;
-  gridConnected?: boolean;
   panelType?: string;
-  chargingLevel?: string;
-  fuelType?: string;
+  panelAmperageRating?: string;
+  availableNewCircuits?: string;
+  total15AmpCircuits?: string;
+  total20AmpCircuits?: string;
+  total30AmpCircuits?: string;
+  total40AmpCircuits?: string;
+  total50AmpCircuits?: string;
+  total60AmpCircuits?: string;
+  total70AmpCircuits?: string;
   notes?: string;
+  ownership?: string;
+  moduleType?: string;
+  tracking?: string;
+  arrayOrientation?: string;
+  arrayTilt?: string;
+  maxPowerOutput?: string;
+  numberOfPanels?: number;
+  annualOutput?: string;
+  chargingLevel?: string;
+  amperage?: string;
+  acPowerSourceVolatge?: string;
+  maxChargingPower?: string;
+  totalCapacity?: string;
+  ratedPowerOutput?: string;
+  ratedPeakOutput?: string;
+  gridConnected?: string;
+  generatorType?: string;
+  fuelType?: string;
+  ratedContinuousWattage?: string;
+  ratedPeakWattage?: string;
+  voltage?: string | number;
   numberOfPhases?: number;
   transferSwitch?: string;
   connection?: string;
-  arrayOrientation?: string;
-  tracking?: string;
-  moduleType?: string;
-  ownership?: string;
-  localtion?: string;
-  projectId?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  yearInstalled?: number;
+  manufacturer?: string;
+  modelNumber?: string;
+  serialNumber?: string;
+  location?: string;
   [key: string]: number | string | string[] | boolean | undefined;
 }
 export interface Organization {
