@@ -19,7 +19,8 @@ const createDemoOrgIfItDoesNotExist = async () => {
     console.log("Organization already exists.");
     return existingOrganization;
   }
-
+  
+  console.log("Creating Demo Org")
   return await prisma.organization.create({
     data: {
       id: uuid,
