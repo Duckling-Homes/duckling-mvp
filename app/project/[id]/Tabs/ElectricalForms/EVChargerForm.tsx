@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const CHARGING_LEVELS = [
@@ -8,7 +9,12 @@ const CHARGING_LEVELS = [
   "Level 3",
 ]
 
-const EVChargerForm = () => {
+interface EVChargerFormProps {
+  currentElectrical: ProjectElectrical;
+  onChange: (name: string, value: string | number | boolean) => void;
+}
+
+const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChange }) => {
   
   return (
     <>
@@ -19,6 +25,8 @@ const EVChargerForm = () => {
           labelId="charging-level-label"
           id="charging-level-select"
           label="Charging Level"
+          value={currentElectrical?.chargingLevel}
+          onChange={(e) => onChange('chargingLevel', e.target.value)}
         >
           {
             CHARGING_LEVELS.map((level, i) => (
@@ -34,7 +42,8 @@ const EVChargerForm = () => {
           label="Amperage"
           variant="outlined"
           placeholder='Amperage'
-          type="number"
+          value={currentElectrical?.amperage}
+          onChange={(e) => onChange('amperage', e.target.value)}
         />
       </FormControl>
       {/* AC Power Source Voltage */}
@@ -45,6 +54,8 @@ const EVChargerForm = () => {
           variant="outlined"
           placeholder='AC Power Source Voltage'
           type="text"
+          value={currentElectrical?.acPowerSourceVolatge}
+          onChange={(e) => onChange('acPowerSourceVolatge', e.target.value)}
         />
       </FormControl>
       {/* Max Charging Power */}
@@ -55,6 +66,8 @@ const EVChargerForm = () => {
           variant="outlined"
           placeholder='Max Charging Power'
           type="text"
+          value={currentElectrical?.maxChargingPower}
+          onChange={(e) => onChange('maxChargingPower', e.target.value)}
         />
       </FormControl>
       {/* Manufacturer */}
@@ -65,6 +78,8 @@ const EVChargerForm = () => {
           variant="outlined"
           placeholder='Manufacturer'
           type="text"
+          value={currentElectrical?.manufacturer}
+          onChange={(e) => onChange('manufacturer', e.target.value)}
         />
       </FormControl>
       {/* Model Number */}
@@ -75,6 +90,8 @@ const EVChargerForm = () => {
           variant="outlined"
           placeholder='Model Number'
           type="text"
+          value={currentElectrical?.modelNumber}
+          onChange={(e) => onChange('modelNumber', e.target.value)}
         />
       </FormControl>
       {/* Serial Number */}
@@ -85,6 +102,8 @@ const EVChargerForm = () => {
           variant="outlined"
           placeholder='Serial Number'
           type="text"
+          value={currentElectrical?.serialNumber}
+          onChange={(e) => onChange('serialNumber', e.target.value)}
         />
       </FormControl>
       {/* notes */}
@@ -95,6 +114,8 @@ const EVChargerForm = () => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          value={currentElectrical?.notes}
+          onChange={(e) => onChange('notes', e.target.value)}
         />
       </FormControl>
     </>

@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const LOCATIONS = [
@@ -40,7 +41,12 @@ const ORIENTATIONS = [
   "Southwest",
 ]
 
-const SolarPanelForm = () => {
+interface SolarPanelFormProps {
+  currentElectrical: ProjectElectrical;
+  onChange: (name: string, value: string | number | boolean) => void;
+}
+
+const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onChange }) => {
   
   return (
     <>
@@ -51,6 +57,8 @@ const SolarPanelForm = () => {
           labelId="location-label"
           id="location-select"
           label="Location"
+          value={currentElectrical?.localtion}
+          onChange={(e) => onChange('location', e.target.value)}
         >
           {
             LOCATIONS.map((location, i) => (
@@ -66,6 +74,8 @@ const SolarPanelForm = () => {
           labelId="ownership-label"
           id="ownership-select"
           label="Ownership"
+          value={currentElectrical?.ownership}
+          onChange={(e) => onChange('ownership', e.target.value)}
         >
           {
             OWNERSHIPS.map((ownership, i) => (
@@ -81,6 +91,8 @@ const SolarPanelForm = () => {
           labelId="module-type-label"
           id="module-type-select"
           label="Module Type"
+          value={currentElectrical?.moduleType}
+          onChange={(e) => onChange('moduleType', e.target.value)}
         >
           {
             MODULE_TYPES.map((type, i) => (
@@ -96,6 +108,8 @@ const SolarPanelForm = () => {
           labelId="tracking-label"
           id="tracking-select"
           label="Tracking"
+          value={currentElectrical?.tracking}
+          onChange={(e) => onChange('tracking', e.target.value)}
         >
           {
             TRACKINGS.map((tracking, i) => (
@@ -111,6 +125,8 @@ const SolarPanelForm = () => {
           labelId="orientation-label"
           id="orientation-select"
           label="Orientation"
+          value={currentElectrical?.arrayOrientation}
+          onChange={(e) => onChange('arrayOrientation', e.target.value)}
         >
           {
             ORIENTATIONS.map((orientation, i) => (
@@ -127,6 +143,8 @@ const SolarPanelForm = () => {
           variant="outlined"
           placeholder='Tilt'
           type="text"
+          value={currentElectrical?.arrayTilt}
+          onChange={(e) => onChange('arrayTilt', e.target.value)}
         />
       </FormControl>
       {/* Max Output */}
@@ -137,6 +155,8 @@ const SolarPanelForm = () => {
           variant="outlined"
           placeholder='Max Output'
           type="text"
+          value={currentElectrical?.maxPowerOutput}
+          onChange={(e) => onChange('maxPowerOutput', e.target.value)}
         />
       </FormControl>
       {/* Number of Panels */}
@@ -147,6 +167,8 @@ const SolarPanelForm = () => {
           variant="outlined"
           placeholder='Number of Panels'
           type="text"
+          value={currentElectrical?.numberOfPanels}
+          onChange={(e) => onChange('numberOfPanels', parseInt(e.target.value))}
         />
       </FormControl>
       {/* Year Installed */}
@@ -157,6 +179,8 @@ const SolarPanelForm = () => {
           variant="outlined"
           placeholder='Year Installed'
           type="text"
+          value={currentElectrical?.yearInstalled}
+          onChange={(e) => onChange('yearInstalled', parseInt(e.target.value))}
         />
       </FormControl>
       {/* Annual Output */}
@@ -167,6 +191,8 @@ const SolarPanelForm = () => {
           variant="outlined"
           placeholder='Annual Output'
           type="text"
+          value={currentElectrical?.annualOutput}
+          onChange={(e) => onChange('annualOutput', e.target.value)}
         />
       </FormControl>
       {/* Notes */}
@@ -177,6 +203,8 @@ const SolarPanelForm = () => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          value={currentElectrical?.notes}
+          onChange={(e) => onChange('notes', e.target.value)}
         />
       </FormControl>
     </>

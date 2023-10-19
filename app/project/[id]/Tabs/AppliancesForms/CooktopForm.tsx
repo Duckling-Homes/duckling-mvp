@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectAppliance } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const FUEL = [
@@ -10,7 +11,12 @@ const FUEL = [
   "Other",
 ];
 
-const CooktopForm = () => {
+interface CooktopFormProps {
+  onChange: (key: string, value: string | number | boolean) => void;
+  currentAppliance: ProjectAppliance;
+}
+
+const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance }) => {
   
   return (
     <>
@@ -22,6 +28,8 @@ const CooktopForm = () => {
           variant="outlined"
           placeholder='Manufacturer'
           type="text"
+          onChange={(e) => onChange('manufacturer', e.target.value)}
+          value={currentAppliance?.manufacturer}
         />
       </FormControl>
       {/* model number */}
@@ -32,6 +40,8 @@ const CooktopForm = () => {
           variant="outlined"
           placeholder='Model Number'
           type="text"
+          onChange={(e) => onChange('modelNumber', e.target.value)}
+          value={currentAppliance?.modelNumber}
         />
       </FormControl>
       {/* serial number */}
@@ -42,6 +52,8 @@ const CooktopForm = () => {
           variant="outlined"
           placeholder='Serial Number'
           type="text"
+          onChange={(e) => onChange('serialNumber', e.target.value)}
+          value={currentAppliance?.serialNumber}
         />
       </FormControl>
       {/* fuel */}
@@ -51,6 +63,8 @@ const CooktopForm = () => {
           labelId="fuel-label"
           id="fuel-select"
           label="Fuel"
+          onChange={(e) => onChange('fuel', e.target.value)}
+          value={currentAppliance?.fuel}
         >
           {
             FUEL.map((fuel, i) => (
@@ -66,6 +80,8 @@ const CooktopForm = () => {
           labelId="induction-label"
           id="induction-select"
           label="Is Induction?"
+          onChange={(e) => onChange('isInduction', e.target.value === 'true')}
+          value={currentAppliance?.isInduction ? 'true' : 'false'}
         >
           <MenuItem value={'true'}>Yes</MenuItem>
           <MenuItem value={'false'}>No</MenuItem>
@@ -79,6 +95,8 @@ const CooktopForm = () => {
           variant="outlined"
           placeholder='Age'
           type="number"
+          onChange={(e) => onChange('age', parseInt(e.target.value))}
+          value={currentAppliance?.age}
         />
       </FormControl>
       {/* location */}
@@ -89,6 +107,8 @@ const CooktopForm = () => {
           variant="outlined"
           placeholder='Location'
           type="text"
+          onChange={(e) => onChange('location', e.target.value)}
+          value={currentAppliance?.location}
         />
       </FormControl>
       {/* notes */}
@@ -99,6 +119,8 @@ const CooktopForm = () => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentAppliance?.notes}
         />
       </FormControl>
     </>

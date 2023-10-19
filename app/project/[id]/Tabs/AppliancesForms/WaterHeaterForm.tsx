@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectAppliance } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const SYSTEM_TYPE = [
@@ -17,7 +18,13 @@ const FUEL = [
   "Other",
 ];
 
-const WaterHeaterForm = () => {
+
+interface WaterHeaterFormProps {
+  onChange: (key: string, value: string | number | boolean) => void;
+  currentAppliance: ProjectAppliance;
+}
+
+const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppliance }) => {
   
   return (
     <>
@@ -28,6 +35,8 @@ const WaterHeaterForm = () => {
           labelId="type-label"
           id="type-select"
           label="HVAC System Type"
+          onChange={(e) => onChange('systemType', e.target.value)}
+          value={currentAppliance?.systemType}
         >
           {
             SYSTEM_TYPE.map((type, i) => (
@@ -43,6 +52,8 @@ const WaterHeaterForm = () => {
           labelId="fuel-label"
           id="fuel-select"
           label="Fuel"
+          onChange={(e) => onChange('fuel', e.target.value)}
+          value={currentAppliance?.fuel}
         >
           {
             FUEL.map((fuel, i) => (
@@ -59,6 +70,8 @@ const WaterHeaterForm = () => {
           variant="outlined"
           placeholder='Age'
           type="number"
+          onChange={(e) => onChange('age', parseInt(e.target.value))}
+          value={currentAppliance?.age}
         />
       </FormControl>
       {/* manufacturer */}
@@ -69,6 +82,8 @@ const WaterHeaterForm = () => {
           variant="outlined"
           placeholder='Manufacturer'
           type="text"
+          onChange={(e) => onChange('manufacturer', e.target.value)}
+          value={currentAppliance?.manufacturer}
         />
       </FormControl>
       {/* model number */}
@@ -79,6 +94,8 @@ const WaterHeaterForm = () => {
           variant="outlined"
           placeholder='Model Number'
           type="text"
+          onChange={(e) => onChange('modelNumber', e.target.value)}
+          value={currentAppliance?.modelNumber}
         />
       </FormControl>
       {/* serial number */}
@@ -89,6 +106,8 @@ const WaterHeaterForm = () => {
           variant="outlined"
           placeholder='Serial Number'
           type="text"
+          onChange={(e) => onChange('serialNumber', e.target.value)}
+          value={currentAppliance?.serialNumber}
         />
       </FormControl>
       {/* Tank Volume */}
@@ -99,6 +118,8 @@ const WaterHeaterForm = () => {
           variant="outlined"
           placeholder="Tank Volume"
           type="text"
+          onChange={(e) => onChange('tankVolume', parseInt(e.target.value))}
+          value={currentAppliance?.tankVolume}
         />
       </FormControl>
       {/* location */}
@@ -109,6 +130,8 @@ const WaterHeaterForm = () => {
           variant="outlined"
           placeholder='Location'
           type="text"
+          onChange={(e) => onChange('location', e.target.value)}
+          value={currentAppliance?.location}
         />
       </FormControl>
       {/* notes */}
@@ -119,6 +142,8 @@ const WaterHeaterForm = () => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentAppliance?.notes}
         />
       </FormControl>
     </>
