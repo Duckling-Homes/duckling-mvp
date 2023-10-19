@@ -14,7 +14,7 @@ const TYPES = [
   {name: "HVAC", value: "hvac"},
   {name: "Water Heater", value: 'waterheater'},
   {name: "Refrigerator", value: "refrigerator"},
-  {name: "Washing Machine", value: "washingMachine"},
+  {name: "Washing Machine", value: "washingmachine"},
   {name: "Dryer", value: "dryer"},
   {name: "Dishwasher", value: "dishwasher"},
   {name: "Cooktop", value: "cooktop"},
@@ -75,25 +75,33 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       }
     };
 
+    if (!applianceToDelete) {
+      return;
+    }
 
-    if (applianceToDelete) {
-      try {
-        const response = await fetch(`/api/appliances/${api}/${applianceId}`, {
-          method: 'DELETE',
-        });
+    if (!applianceToDelete.type) {
+      const newApplianceList = appliances.filter(r => r.id !== applianceId);
+      setAppliances(newApplianceList);
+      setCurrentAppliance(newApplianceList[0] || {});
+      return;
+    }
 
-        if (response.ok) {
-          console.log('Appliance deleted successfully.');
-          const newApplianceList = appliances.filter(r => r.id !== applianceId);
-          setAppliances(newApplianceList);
-          setCurrentAppliance(newApplianceList[0] || {});
-        } else {
-          throw new Error('Failed to delete the appliance.');
-        }
-      } catch (error) {
-        console.error('Error deleting the appliance:', error);
-        throw error;
+    try {
+      const response = await fetch(`/api/appliances/${api}/${applianceId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Appliance deleted successfully.');
+        const newApplianceList = appliances.filter(r => r.id !== applianceId);
+        setAppliances(newApplianceList);
+        setCurrentAppliance(newApplianceList[0] || {});
+      } else {
+        throw new Error('Failed to delete the appliance.');
       }
+    } catch (error) {
+      console.error('Error deleting the appliance:', error);
+      throw error;
     }
   }
 
@@ -179,7 +187,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     }
   }
 
-  async function patchAppliance(updatedAppliance: ProjectAppliance) {
+  async function patchAppliance(updatedAppliance = currentAppliance) {
     let api = ''
     console.log(updatedAppliance)
 
@@ -239,7 +247,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     if (currentAppliance) {
       const updatedAppliance = { ...currentAppliance, [inputName]: value };
       setCurrentAppliance(updatedAppliance);
-      patchAppliance(updatedAppliance);
     }
   }
 
@@ -247,14 +254,14 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   const renderForm = () => {
     switch(currentAppliance?.type?.toLowerCase()) {
       case 'hvac':
-        return (<HVACForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (<HVACForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       case 'waterheater':
-        return (<WaterHeaterForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (<WaterHeaterForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       case 'cooktop':
-        return (<CooktopForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (<CooktopForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       default:
         if (currentAppliance?.type) {
-          return (<DefaultForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+          return (<DefaultForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
         } else {
           return (null);
         }

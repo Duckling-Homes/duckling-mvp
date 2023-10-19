@@ -13,9 +13,10 @@ const FUEL = [
 interface GeneratorFormProps {
   currentElectrical: ProjectElectrical;
   onChange: (name: string, value: string | number | boolean) => void;
+  onUpdate: () => void;
 }
 
-const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChange }) => {
+const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChange, onUpdate }) => {
   
   return (
     <>
@@ -28,6 +29,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           label="Generator Type"
           value={currentElectrical?.generatorType}
           onChange={(e) => onChange('generatorType', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           <MenuItem value={'Standby'}>Standby</MenuItem>
           <MenuItem value={'Portable'}>Portable</MenuItem>
@@ -42,6 +44,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           label="Fuel Type"
           value={currentElectrical?.fuelType}
           onChange={(e) => onChange('fuelType', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           {
             FUEL.map((fuel, i) => (
@@ -56,9 +59,11 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           id="outlined-basic"
           label="Rated Continuous Wattage"
           variant="outlined"
+          type="number"
           placeholder='Rated Continuous Wattage'
           value={currentElectrical?.ratedContinuousWattage}
-          onChange={(e) => onChange('ratedContinuousWattage', e.target.value)}
+          onChange={(e) => onChange('ratedContinuousWattage', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Rated Peak Wattage */}
@@ -68,9 +73,10 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           label="Rated Peak Wattage"
           variant="outlined"
           placeholder='Rated Peak Wattage'
-          type="text"
+          type="number"
           value={currentElectrical?.ratedPeakWattage}
-          onChange={(e) => onChange('ratedPeakWattage', e.target.value)}
+          onChange={(e) => onChange('ratedPeakWattage', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Voltage */}
@@ -83,6 +89,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           type="number"
           value={currentElectrical?.voltage}
           onChange={(e) => onChange('voltage', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Number of Phases */}
@@ -92,8 +99,9 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           labelId="number-phases-label"
           id="number-phases-select"
           label="Number of Phases"
-          value={currentElectrical?.numberOfPhases?.toString()}
-          onChange={(e) => onChange('numberOfPhases', parseInt(e.target.value))}
+          value={currentElectrical?.numberOfPhases}
+          onChange={(e) => onChange('numberOfPhases', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           <MenuItem value={'1'}>1-Phase</MenuItem>
           <MenuItem value={'3'}>3-Phase</MenuItem>
@@ -108,6 +116,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           label="Transfer Switch"
           value={currentElectrical?.transferSwitch}
           onChange={(e) => onChange('transferSwitch', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           <MenuItem value='Automatic'>Automatic</MenuItem>
           <MenuItem value='Manual'>Manual</MenuItem>
@@ -122,6 +131,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           label="Connection Method"
           value={currentElectrical?.connection}
           onChange={(e) => onChange('connection', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           <MenuItem value='Interlock'>Interlock</MenuItem>
           <MenuItem value='Main Panel'>Main Panel</MenuItem>
@@ -139,6 +149,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           type="text"
           value={currentElectrical?.location}
           onChange={(e) => onChange('location', e.target.value)}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Year Installed */}
@@ -151,6 +162,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           type="text"
           value={currentElectrical?.yearInstalled}
           onChange={(e) => onChange('yearInstalled', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Manufacturer */}
@@ -163,6 +175,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           type="text"
           value={currentElectrical?.manufacturer}
           onChange={(e) => onChange('manufacturer', e.target.value)}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Model Number */}
@@ -175,6 +188,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           type="text"
           value={currentElectrical?.modelNumber}
           onChange={(e) => onChange('modelNumber', e.target.value)}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Serial Number */}
@@ -187,6 +201,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           type="text"
           value={currentElectrical?.serialNumber}
           onChange={(e) => onChange('serialNumber', e.target.value)}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* notes */}
@@ -199,6 +214,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           type="text"
           value={currentElectrical?.notes}
           onChange={(e) => onChange('notes', e.target.value)}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
     </>

@@ -30,37 +30,37 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
     id: "",
     type: '',
     panelType: '',
-    panelAmperageRating: '',
-    availableNewCircuits: '',
-    total15AmpCircuits: '',
-    total20AmpCircuits: '',
-    total30AmpCircuits: '',
-    total40AmpCircuits: '',
-    total50AmpCircuits: '',
-    total60AmpCircuits: '',
-    total70AmpCircuits: '',
+    panelAmperageRating: 0,
+    availableNewCircuits: 0,
+    total15AmpCircuits: 0,
+    total20AmpCircuits: 0,
+    total30AmpCircuits: 0,
+    total40AmpCircuits: 0,
+    total50AmpCircuits: 0,
+    total60AmpCircuits: 0,
+    total70AmpCircuits: 0,
     notes: '',
     ownership: '',
     moduleType: '',
     tracking: '',
     arrayOrientation: '',
-    arrayTilt: '',
-    maxPowerOutput: '',
+    arrayTilt: 0,
+    maxPowerOutput: 0,
     numberOfPanels: 0,
-    annualOutput: '',
+    annualOutput: 0,
     chargingLevel: '',
-    amperage: '',
-    acPowerSourceVolatge: '',
-    maxChargingPower: '',
-    totalCapacity: '',
-    ratedPowerOutput: '',
-    ratedPeakOutput: '',
+    amperage: 0,
+    acPowerSourceVolatge: 0,
+    maxChargingPower: 0,
+    totalCapacity: 0,
+    ratedPowerOutput: 0,
+    ratedPeakOutput: 0,
     gridConnected: '',
     generatorType: '',
     fuelType: '',
-    ratedContinuousWattage: '',
-    ratedPeakWattage: '',
-    numberOfPhases: 0,
+    ratedContinuousWattage: 0,
+    ratedPeakWattage: 0,
+    numberOfPhases: '',
     transferSwitch: '',
     connection: '',
     yearInstalled: 0,
@@ -84,37 +84,37 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
       name: "New Electrical",
       type: '',
       panelType: '',
-      panelAmperageRating: '',
-      availableNewCircuits: '',
-      total15AmpCircuits: '',
-      total20AmpCircuits: '',
-      total30AmpCircuits: '',
-      total40AmpCircuits: '',
-      total50AmpCircuits: '',
-      total60AmpCircuits: '',
-      total70AmpCircuits: '',
+      panelAmperageRating: 0,
+      availableNewCircuits: 0,
+      total15AmpCircuits: 0,
+      total20AmpCircuits: 0,
+      total30AmpCircuits: 0,
+      total40AmpCircuits: 0,
+      total50AmpCircuits: 0,
+      total60AmpCircuits: 0,
+      total70AmpCircuits: 0,
       notes: '',
       ownership: '',
       moduleType: '',
       tracking: '',
       arrayOrientation: '',
-      arrayTilt: '',
-      maxPowerOutput: '',
+      arrayTilt: 0,
+      maxPowerOutput: 0,
       numberOfPanels: 0,
-      annualOutput: '',
+      annualOutput: 0,
       chargingLevel: '',
-      amperage: '',
-      acPowerSourceVolatge: '',
-      maxChargingPower: '',
-      totalCapacity: '',
-      ratedPowerOutput: '',
-      ratedPeakOutput: '',
+      amperage: 0,
+      acPowerSourceVolatge: 0,
+      maxChargingPower: 0,
+      totalCapacity: 0,
+      ratedPowerOutput: 0,
+      ratedPeakOutput: 0,
       gridConnected: '',
       generatorType: '',
       fuelType: '',
-      ratedContinuousWattage: '',
-      ratedPeakWattage: '',
-      numberOfPhases: 0,
+      ratedContinuousWattage: 0,
+      ratedPeakWattage: 0,
+      numberOfPhases: '',
       transferSwitch: '',
       connection: '',
       yearInstalled: 0,
@@ -173,30 +173,39 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
   async function deleteElectrical(electricalId: string) {
     const electricalToDelete = electricals.find(electrical => electrical.id === electricalId);
 
-    if (electricalToDelete && electricalToDelete.type) {
-      const api = electricalToDelete.type.toLowerCase() === 'electricalpanel' ? 'panel' : (electricalToDelete.type.toLowerCase() === 'evcharger' ? 'evCharger' : electricalToDelete.type.toLowerCase());
+    if (!electricalToDelete) {
+      return;
+    }
 
-      try {
-        const response = await fetch(`/api/electrical/${api}/${electricalId}`, {
-          method: 'DELETE',
-        });
+    if (!electricalToDelete.type) {
+      const newElectricalList = electricals.filter(r => r.id !== electricalId);
+      setElectricals(newElectricalList);
+      setCurrentElectrical(newElectricalList[0] || {});
+      return;
+    }
 
-        if (response.ok) {
-          console.log('Electrical deleted successfully.');
-          const newElectricalsList = electricals.filter(r => r.id !== electricalId);
-          setElectricals(newElectricalsList);
-          setCurrentElectrical(newElectricalsList[0] || {});
-        } else {
-          throw new Error('Failed to delete the electrical.');
-        }
-      } catch (error) {
-        console.error('Error deleting the electrical:', error);
-        throw error;
+    const api = electricalToDelete.type.toLowerCase() === 'electricalpanel' ? 'panel' : (electricalToDelete.type.toLowerCase() === 'evcharger' ? 'evCharger' : electricalToDelete.type.toLowerCase());
+
+    try {
+      const response = await fetch(`/api/electrical/${api}/${electricalId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Electrical deleted successfully.');
+        const newElectricalsList = electricals.filter(r => r.id !== electricalId);
+        setElectricals(newElectricalsList);
+        setCurrentElectrical(newElectricalsList[0] || {});
+      } else {
+        throw new Error('Failed to delete the electrical.');
       }
+    } catch (error) {
+      console.error('Error deleting the electrical:', error);
+      throw error;
     }
   }
 
-  async function patchElectrical(updatedElectrical: ProjectElectrical) {
+  async function patchElectrical(updatedElectrical = currentElectrical) {
     if (!updatedElectrical.type) {
       return
     }
@@ -242,22 +251,21 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
         [inputName]: value,
       };
       setCurrentElectrical(updatedElectrical);
-      patchElectrical(updatedElectrical);
     }
   }
 
   const renderForm = () => {
     switch(currentElectrical?.type?.toLowerCase()) {
       case 'electricalpanel':
-        return (<ElectricalPanelForm onChange={handleInputChange} currentElectrical={currentElectrical} />);
+        return (<ElectricalPanelForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical} />);
       case 'solar':
-        return (<SolarPanelForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (<SolarPanelForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       case 'battery':
-        return (<BatteryForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (<BatteryForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       case 'evcharger':
-        return (<EVChargerForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (<EVChargerForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       case 'generator':
-        return (<GeneratorForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (<GeneratorForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       default:
         return null;
     }

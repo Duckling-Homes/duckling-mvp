@@ -11,10 +11,11 @@ import {
 
 interface AirSealingFormProps {
   onChange: (inputName: string, value: string) => void;
+  onUpdate: () => void;
   currentEnvelope: ProjectEnvelope;
 }
 
-const AirSealingForm: React.FC<AirSealingFormProps> = ({ onChange, currentEnvelope }) => {
+const AirSealingForm: React.FC<AirSealingFormProps> = ({ onChange, currentEnvelope, onUpdate }) => {
 
   return (
     <>
@@ -32,6 +33,7 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({ onChange, currentEnvelo
           placeholder="Name"
           value={currentEnvelope?.name}
           onChange={(e) => onChange('name', e.target.value)}
+          onBlur={() => onUpdate()}
           fullWidth
         />
         <FormControl fullWidth>
@@ -43,7 +45,10 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({ onChange, currentEnvelo
             id="leakiness-description-select"
             label="Leakiness Description"
             value={currentEnvelope?.leakinessDescription}
-            onChange={(e) => onChange('leakinessDescription', e.target.value)}
+            onChange={(e) => {
+              onChange('leakinessDescription', e.target.value)
+              onUpdate()
+            }}
           >
             <MenuItem value={'veryTight'}>Very Tight</MenuItem>
             <MenuItem value={'tight'}>Tight</MenuItem>
@@ -60,6 +65,7 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({ onChange, currentEnvelo
           placeholder="User Notes"
           value={currentEnvelope?.notes}
           onChange={(e) => onChange('notes', e.target.value)}
+          onBlur={() => onUpdate()}
           multiline
         />
       </div>

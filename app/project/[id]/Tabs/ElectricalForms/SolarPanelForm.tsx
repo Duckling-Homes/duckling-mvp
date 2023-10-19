@@ -44,9 +44,10 @@ const ORIENTATIONS = [
 interface SolarPanelFormProps {
   currentElectrical: ProjectElectrical;
   onChange: (name: string, value: string | number | boolean) => void;
+  onUpdate: () => void;
 }
 
-const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onChange }) => {
+const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onChange, onUpdate }) => {
   
   return (
     <>
@@ -59,6 +60,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Location"
           value={currentElectrical?.location}
           onChange={(e) => onChange('location', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           {
             LOCATIONS.map((location, i) => (
@@ -76,6 +78,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Ownership"
           value={currentElectrical?.ownership}
           onChange={(e) => onChange('ownership', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           {
             OWNERSHIPS.map((ownership, i) => (
@@ -93,6 +96,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Module Type"
           value={currentElectrical?.moduleType}
           onChange={(e) => onChange('moduleType', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           {
             MODULE_TYPES.map((type, i) => (
@@ -110,6 +114,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Tracking"
           value={currentElectrical?.tracking}
           onChange={(e) => onChange('tracking', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           {
             TRACKINGS.map((tracking, i) => (
@@ -127,6 +132,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Orientation"
           value={currentElectrical?.arrayOrientation}
           onChange={(e) => onChange('arrayOrientation', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           {
             ORIENTATIONS.map((orientation, i) => (
@@ -142,9 +148,10 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Tilt"
           variant="outlined"
           placeholder='Tilt'
-          type="text"
+          type="number"
           value={currentElectrical?.arrayTilt}
-          onChange={(e) => onChange('arrayTilt', e.target.value)}
+          onChange={(e) => onChange('arrayTilt', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Max Output */}
@@ -154,9 +161,10 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Max Output"
           variant="outlined"
           placeholder='Max Output'
-          type="text"
+          type="number"
           value={currentElectrical?.maxPowerOutput}
-          onChange={(e) => onChange('maxPowerOutput', e.target.value)}
+          onChange={(e) => onChange('maxPowerOutput', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Number of Panels */}
@@ -169,6 +177,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           type="text"
           value={currentElectrical?.numberOfPanels}
           onChange={(e) => onChange('numberOfPanels', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Year Installed */}
@@ -181,6 +190,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           type="text"
           value={currentElectrical?.yearInstalled}
           onChange={(e) => onChange('yearInstalled', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Annual Output */}
@@ -190,9 +200,10 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Annual Output"
           variant="outlined"
           placeholder='Annual Output'
-          type="text"
+          type="number"
           value={currentElectrical?.annualOutput}
-          onChange={(e) => onChange('annualOutput', e.target.value)}
+          onChange={(e) => onChange('annualOutput', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Notes */}
@@ -205,6 +216,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           type="text"
           value={currentElectrical?.notes}
           onChange={(e) => onChange('notes', e.target.value)}
+          onBlur={() => onUpdate()}
         />
       </FormControl>
     </>
