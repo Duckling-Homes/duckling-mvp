@@ -193,7 +193,7 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
         onCreate={createEnvelope}
         onDelete={deleteEnvelope}
         chips={envelopes}
-        currentChip={currentEnvelope?.id}
+        currentChip={currentEnvelope?.id || ''}
         chipType="Envelope"
         onChipClick={(i: number) => {
           console.log(envelopes)

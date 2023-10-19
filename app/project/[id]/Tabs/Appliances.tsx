@@ -274,7 +274,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         onCreate={createAppliance}
         chipType="Appliance"
         chips={appliances}
-        currentChip={currentAppliance?.id}
+        currentChip={currentAppliance?.id || ''}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
       {currentAppliance?.id && <div style={{

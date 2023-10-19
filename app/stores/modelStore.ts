@@ -1,6 +1,5 @@
 import { Organization, Project, ProjectData } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
-import customFetch from '../helpers/customFetch';
 import { v4 as uuidv4 } from 'uuid';
 
 // Note: Today, just using 1 ModelStore to store all state for all objects for simplicity

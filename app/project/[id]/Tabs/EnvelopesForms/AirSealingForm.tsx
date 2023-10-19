@@ -33,7 +33,6 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({ onChange, currentEnvelo
           value={currentEnvelope?.name}
           onChange={(e) => onChange('name', e.target.value)}
           fullWidth
-          inputLabelProps={{shrink: true}}
         />
         <FormControl fullWidth>
           <InputLabel id="leakiness-description-label">
@@ -62,7 +61,6 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({ onChange, currentEnvelo
           value={currentEnvelope?.notes}
           onChange={(e) => onChange('notes', e.target.value)}
           multiline
-          inputLabelProps={{shrink: true}}
         />
       </div>
     </>

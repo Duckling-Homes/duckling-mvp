@@ -276,7 +276,7 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
         onCreate={createElectrical}
         chipType="Electrical"
         chips={electricals}
-        currentChip={currentElectrical?.id}
+        currentChip={currentElectrical?.id || ''}
         onChipClick={(i: number) => setCurrentElectrical(electricals[i])}
       />
      {currentElectrical?.id && <div style={{

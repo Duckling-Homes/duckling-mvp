@@ -185,7 +185,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
         chips={rooms}
         onDelete={deleteRoom}
         onCreate={createRoom}
-        currentChip={currentRoom?.id}
+        currentChip={currentRoom?.id || ''}
         chipType="Room"
         onChipClick={(i: number) => setCurrentRoom(rooms[i])}
       />
