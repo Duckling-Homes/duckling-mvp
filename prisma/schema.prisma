@@ -225,7 +225,7 @@ model ElectricalPanel {
   total50AmpCircuits    Int?
   total60AmpCircuits    Int?
   total70AmpCircuits    Int?
-  location                 String?
+  location              String?
   notes                 String?
 
   projectId  String
