@@ -10,6 +10,7 @@ import EVChargerForm from "./ElectricalForms/EVChargerForm";
 import GeneratorForm from "./ElectricalForms/GeneratorForm";
 import ChipManager from "@/components/ChipManager";
 import { Project, ProjectElectrical } from "@/types/types";
+import { v4 as uuidv4 } from 'uuid';
 
 const TYPES = [
   {name: "Electrical Panel", value: "electricalpanel"},
@@ -28,6 +29,45 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
   const [currentElectrical, setCurrentElectrical] = useState<ProjectElectrical>({
     id: "",
     type: '',
+    panelType: '',
+    panelAmperageRating: '',
+    availableNewCircuits: '',
+    total15AmpCircuits: '',
+    total20AmpCircuits: '',
+    total30AmpCircuits: '',
+    total40AmpCircuits: '',
+    total50AmpCircuits: '',
+    total60AmpCircuits: '',
+    total70AmpCircuits: '',
+    notes: '',
+    ownership: '',
+    moduleType: '',
+    tracking: '',
+    arrayOrientation: '',
+    arrayTilt: '',
+    maxPowerOutput: '',
+    numberOfPanels: 0,
+    annualOutput: '',
+    chargingLevel: '',
+    amperage: '',
+    acPowerSourceVolatge: '',
+    maxChargingPower: '',
+    totalCapacity: '',
+    ratedPowerOutput: '',
+    ratedPeakOutput: '',
+    gridConnected: '',
+    generatorType: '',
+    fuelType: '',
+    ratedContinuousWattage: '',
+    ratedPeakWattage: '',
+    numberOfPhases: 0,
+    transferSwitch: '',
+    connection: '',
+    yearInstalled: 0,
+    manufacturer: '',
+    modelNumber: '',
+    serialNumber: '',
+    location: '',
   });
 
   useEffect(() => {
@@ -40,8 +80,47 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
   function createElectrical() {
 
     const newElectrical = {
-      id: '',
+      id: uuidv4(),
       name: "New Electrical",
+      panelType: '',
+      panelAmperageRating: '',
+      availableNewCircuits: '',
+      total15AmpCircuits: '',
+      total20AmpCircuits: '',
+      total30AmpCircuits: '',
+      total40AmpCircuits: '',
+      total50AmpCircuits: '',
+      total60AmpCircuits: '',
+      total70AmpCircuits: '',
+      notes: '',
+      ownership: '',
+      moduleType: '',
+      tracking: '',
+      arrayOrientation: '',
+      arrayTilt: '',
+      maxPowerOutput: '',
+      numberOfPanels: 0,
+      annualOutput: '',
+      chargingLevel: '',
+      amperage: '',
+      acPowerSourceVolatge: '',
+      maxChargingPower: '',
+      totalCapacity: '',
+      ratedPowerOutput: '',
+      ratedPeakOutput: '',
+      gridConnected: '',
+      generatorType: '',
+      fuelType: '',
+      ratedContinuousWattage: '',
+      ratedPeakWattage: '',
+      numberOfPhases: 0,
+      transferSwitch: '',
+      connection: '',
+      yearInstalled: 0,
+      manufacturer: '',
+      modelNumber: '',
+      serialNumber: '',
+      location: '',
     };
 
     const newElectricalsList = [...electricals, newElectrical];
@@ -199,7 +278,7 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
         currentChip={currentElectrical?.id}
         onChipClick={(i: number) => setCurrentElectrical(electricals[i])}
       />
-      <div style={{
+     {currentElectrical?.id && <div style={{
         width: '100%',
       }}>
         <form style={{
@@ -226,7 +305,7 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
           </FormControl>
           {renderForm()}
         </form>
-      </div>
+      </div>}
     </div>
   )
 }

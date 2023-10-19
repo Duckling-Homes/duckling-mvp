@@ -277,7 +277,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         currentChip={currentAppliance?.id}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
-      {currentAppliance.id && <div style={{
+      {currentAppliance?.id && <div style={{
         width: '100%',
       }}>
         <form style={{
