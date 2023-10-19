@@ -179,7 +179,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     }
   }
 
-  async function patchAppliance(updatedAppliance: ProjectAppliance) {
+  async function patchAppliance(updatedAppliance = currentAppliance) {
     let api = ''
     console.log(updatedAppliance)
 
@@ -239,7 +239,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     if (currentAppliance) {
       const updatedAppliance = { ...currentAppliance, [inputName]: value };
       setCurrentAppliance(updatedAppliance);
-      patchAppliance(updatedAppliance);
     }
   }
 
@@ -247,14 +246,14 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   const renderForm = () => {
     switch(currentAppliance?.type?.toLowerCase()) {
       case 'hvac':
-        return (<HVACForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (<HVACForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       case 'waterheater':
-        return (<WaterHeaterForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (<WaterHeaterForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       case 'cooktop':
-        return (<CooktopForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (<CooktopForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
       default:
         if (currentAppliance?.type) {
-          return (<DefaultForm onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+          return (<DefaultForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
         } else {
           return (null);
         }

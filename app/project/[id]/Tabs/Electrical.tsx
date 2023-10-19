@@ -196,7 +196,7 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
     }
   }
 
-  async function patchElectrical(updatedElectrical: ProjectElectrical) {
+  async function patchElectrical(updatedElectrical = currentElectrical) {
     if (!updatedElectrical.type) {
       return
     }
@@ -242,22 +242,21 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
         [inputName]: value,
       };
       setCurrentElectrical(updatedElectrical);
-      patchElectrical(updatedElectrical);
     }
   }
 
   const renderForm = () => {
     switch(currentElectrical?.type?.toLowerCase()) {
       case 'electricalpanel':
-        return (<ElectricalPanelForm onChange={handleInputChange} currentElectrical={currentElectrical} />);
+        return (<ElectricalPanelForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical} />);
       case 'solar':
-        return (<SolarPanelForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (<SolarPanelForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       case 'battery':
-        return (<BatteryForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (<BatteryForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       case 'evcharger':
-        return (<EVChargerForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (<EVChargerForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       case 'generator':
-        return (<GeneratorForm onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (<GeneratorForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
       default:
         return null;
     }

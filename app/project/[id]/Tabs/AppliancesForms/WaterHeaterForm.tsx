@@ -21,10 +21,11 @@ const FUEL = [
 
 interface WaterHeaterFormProps {
   onChange: (key: string, value: string | number | boolean) => void;
+  onUpdate: () => void;
   currentAppliance: ProjectAppliance;
 }
 
-const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppliance }) => {
+const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppliance, onUpdate }) => {
   
   return (
     <>
@@ -36,6 +37,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           id="type-select"
           label="HVAC System Type"
           onChange={(e) => onChange('systemType', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.systemType}
         >
           {
@@ -53,6 +55,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           id="fuel-select"
           label="Fuel"
           onChange={(e) => onChange('fuel', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.fuel}
         >
           {
@@ -71,6 +74,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           placeholder='Age'
           type="number"
           onChange={(e) => onChange('age', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.age}
         />
       </FormControl>
@@ -83,6 +87,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           placeholder='Manufacturer'
           type="text"
           onChange={(e) => onChange('manufacturer', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.manufacturer}
         />
       </FormControl>
@@ -95,6 +100,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           placeholder='Model Number'
           type="text"
           onChange={(e) => onChange('modelNumber', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.modelNumber}
         />
       </FormControl>
@@ -107,6 +113,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           placeholder='Serial Number'
           type="text"
           onChange={(e) => onChange('serialNumber', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.serialNumber}
         />
       </FormControl>
@@ -119,6 +126,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           placeholder="Tank Volume"
           type="text"
           onChange={(e) => onChange('tankVolume', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.tankVolume}
         />
       </FormControl>
@@ -131,6 +139,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           placeholder='Location'
           type="text"
           onChange={(e) => onChange('location', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.location}
         />
       </FormControl>
@@ -143,6 +152,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppl
           placeholder='Notes'
           type="text"
           onChange={(e) => onChange('notes', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.notes}
         />
       </FormControl>

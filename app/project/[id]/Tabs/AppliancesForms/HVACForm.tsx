@@ -34,10 +34,11 @@ const FUEL = [
 
 interface HVACFormProps {
   onChange: (key: string, value: string | number | boolean) => void;
+  onUpdate: () => void;
   currentAppliance: ProjectAppliance;
 }
 
-const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
+const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdate }) => {
   
   return (
     <>
@@ -48,6 +49,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           id="type-select"
           label="HVAC System Type"
           onChange={(e) => onChange('hvacSystemType', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.hvacSystemType}
         >
           {
@@ -64,6 +66,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           id="system-select"
           label="HVAC System"
           onChange={(e) => onChange('havcSystem', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.havcSystem}
         >
           {
@@ -80,6 +83,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           id="fuel-select"
           label="Fuel"
           onChange={(e) => onChange('fuel', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.fuel}
         >
           {
@@ -98,6 +102,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           placeholder='Age'
           type="number"
           onChange={(e) => onChange('age', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.age}
         />
       </FormControl>
@@ -110,6 +115,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           placeholder='Manufacturer'
           type="text"
           onChange={(e) => onChange('manufacturer', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.manufacturer}
         />
       </FormControl>
@@ -122,6 +128,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           placeholder='Model Number'
           type="text"
           onChange={(e) => onChange('modelNumber', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.modelNumber}
         />
       </FormControl>
@@ -134,6 +141,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           placeholder='Serial Number'
           type="text"
           onChange={(e) => onChange('serialNumber', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.serialNumber}
         />
       </FormControl>
@@ -146,6 +154,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           placeholder='Heating Capacity'
           type="text"
           onChange={(e) => onChange('heatingCapacity', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.heatingCapacity}
         />
       </FormControl>
@@ -158,6 +167,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           placeholder='Cooling Capacity'
           type="text"
           onChange={(e) => onChange('coolingCapacity', parseInt(e.target.value))}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.coolingCapacity}
         />
       </FormControl>
@@ -170,6 +180,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           placeholder='Location'
           type="text"
           onChange={(e) => onChange('location', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.location}
         />
       </FormControl>
@@ -182,6 +193,7 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
           placeholder='Notes'
           type="text"
           onChange={(e) => onChange('notes', e.target.value)}
+          onBlur={() => onUpdate()}
           value={currentAppliance?.notes}
         />
       </FormControl>
