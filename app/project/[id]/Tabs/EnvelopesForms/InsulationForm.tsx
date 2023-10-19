@@ -11,10 +11,11 @@ import {
 
 interface InsulationFormProps {
   onChange: (inputName: string, value: string) => void;
+  onUpdate: () => void;
   currentEnvelope: ProjectEnvelope;
 }
 
-const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelope }) => {
+const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelope, onUpdate }) => {
 
   return (
     <>
@@ -23,6 +24,7 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
         label="Name"
         value={currentEnvelope?.name}
         onChange={(e) => onChange('name', e.target.value)}
+        onBlur={() => onUpdate()}
         variant="outlined"
         placeholder="Name"
         fullWidth
@@ -37,6 +39,7 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
           label="Insulation Location"
           value={currentEnvelope?.insulationLocation}
           onChange={(e) => onChange('insulationLocation', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           <MenuItem value={'attic'}>Attic</MenuItem>
           <MenuItem value={'basement'}>Basement</MenuItem>
@@ -56,6 +59,7 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
           label="Insulation Condition"
           value={currentEnvelope?.insulationCondition}
           onChange={(e) => onChange('insulationCondition', e.target.value)}
+          onBlur={() => onUpdate()}
         >
           <MenuItem value={'none'}>None</MenuItem>
           <MenuItem value={'good'}>Good</MenuItem>
@@ -69,6 +73,7 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
         variant="outlined"
         value={currentEnvelope?.notes}
         onChange={(e) => onChange('notes', e.target.value)}
+        onBlur={() => onUpdate()}
         placeholder="User Notes"
         fullWidth
         multiline

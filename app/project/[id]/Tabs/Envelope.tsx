@@ -132,11 +132,11 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
     if (currentEnvelope && currentEnvelope.id) {
       const updatedEnvelope = { ...currentEnvelope, [inputName]: value };
       setCurrentEnvelope(updatedEnvelope);
-      patchEnvelope(updatedEnvelope);
     }
   }
 
-  async function patchEnvelope(updatedEnvelope: ProjectEnvelope) {
+  async function patchEnvelope(updatedEnvelope = currentEnvelope) {
+    console.log('caiu aqui')
     if (updatedEnvelope && updatedEnvelope.id) {
       try {
         const data = await fetch(`/api/project${updatedEnvelope.type}/${updatedEnvelope.id}`, {
@@ -173,9 +173,9 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
   const renderForm = () => {
     switch(currentEnvelope?.type) {
       case 'Insulation':
-        return (<InsulationForm onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
+        return (<InsulationForm onUpdate={() => patchEnvelope()} onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
       case 'AirSealing':
-        return (<AirSealingForm onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
+        return (<AirSealingForm onUpdate={() => patchEnvelope()} onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
       default:
           return (null);
     }
