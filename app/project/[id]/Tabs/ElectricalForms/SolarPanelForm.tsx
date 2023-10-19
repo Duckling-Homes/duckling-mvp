@@ -148,9 +148,9 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Tilt"
           variant="outlined"
           placeholder='Tilt'
-          type="text"
+          type="number"
           value={currentElectrical?.arrayTilt}
-          onChange={(e) => onChange('arrayTilt', e.target.value)}
+          onChange={(e) => onChange('arrayTilt', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -161,9 +161,9 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Max Output"
           variant="outlined"
           placeholder='Max Output'
-          type="text"
+          type="number"
           value={currentElectrical?.maxPowerOutput}
-          onChange={(e) => onChange('maxPowerOutput', e.target.value)}
+          onChange={(e) => onChange('maxPowerOutput', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -200,9 +200,9 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onCh
           label="Annual Output"
           variant="outlined"
           placeholder='Annual Output'
-          type="text"
+          type="number"
           value={currentElectrical?.annualOutput}
-          onChange={(e) => onChange('annualOutput', e.target.value)}
+          onChange={(e) => onChange('annualOutput', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>

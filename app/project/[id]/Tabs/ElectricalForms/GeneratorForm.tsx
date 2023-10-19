@@ -59,9 +59,10 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           id="outlined-basic"
           label="Rated Continuous Wattage"
           variant="outlined"
+          type="number"
           placeholder='Rated Continuous Wattage'
           value={currentElectrical?.ratedContinuousWattage}
-          onChange={(e) => onChange('ratedContinuousWattage', e.target.value)}
+          onChange={(e) => onChange('ratedContinuousWattage', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -72,9 +73,9 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           label="Rated Peak Wattage"
           variant="outlined"
           placeholder='Rated Peak Wattage'
-          type="text"
+          type="number"
           value={currentElectrical?.ratedPeakWattage}
-          onChange={(e) => onChange('ratedPeakWattage', e.target.value)}
+          onChange={(e) => onChange('ratedPeakWattage', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -98,8 +99,8 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           labelId="number-phases-label"
           id="number-phases-select"
           label="Number of Phases"
-          value={currentElectrical?.numberOfPhases?.toString()}
-          onChange={(e) => onChange('numberOfPhases', parseInt(e.target.value))}
+          value={currentElectrical?.numberOfPhases}
+          onChange={(e) => onChange('numberOfPhases', e.target.value)}
           onBlur={() => onUpdate()}
         >
           <MenuItem value={'1'}>1-Phase</MenuItem>

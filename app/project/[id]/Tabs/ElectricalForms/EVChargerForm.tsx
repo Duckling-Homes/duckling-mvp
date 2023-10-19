@@ -44,8 +44,9 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChan
           label="Amperage"
           variant="outlined"
           placeholder='Amperage'
+          type="number"
           value={currentElectrical?.amperage}
-          onChange={(e) => onChange('amperage', e.target.value)}
+          onChange={(e) => onChange('amperage', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -56,9 +57,9 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChan
           label="AC Power Source Voltage"
           variant="outlined"
           placeholder='AC Power Source Voltage'
-          type="text"
+          type="number"
           value={currentElectrical?.acPowerSourceVolatge}
-          onChange={(e) => onChange('acPowerSourceVolatge', e.target.value)}
+          onChange={(e) => onChange('acPowerSourceVolatge', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -69,9 +70,9 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChan
           label="Max Charging Power"
           variant="outlined"
           placeholder='Max Charging Power'
-          type="text"
+          type="number"
           value={currentElectrical?.maxChargingPower}
-          onChange={(e) => onChange('maxChargingPower', e.target.value)}
+          onChange={(e) => onChange('maxChargingPower', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>

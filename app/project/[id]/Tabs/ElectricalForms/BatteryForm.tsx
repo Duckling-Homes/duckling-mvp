@@ -22,7 +22,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
           placeholder='Total Capacity'
           type="number"
           value={currentElectrical?.totalCapacity}
-          onChange={(e) => onChange('totalCapacity', e.target.value)}
+          onChange={(e) => onChange('totalCapacity', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -33,9 +33,9 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
           label="Rated Power Output"
           variant="outlined"
           placeholder='Rated Power Output'
-          type="text"
+          type="number"
           value={currentElectrical?.ratedPowerOutput}
-          onChange={(e) => onChange('ratedPowerOutput', e.target.value)}
+          onChange={(e) => onChange('ratedPowerOutput', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -46,9 +46,9 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
           label="Peak Power Output"
           variant="outlined"
           placeholder='Peak Power Output'
-          type="text"
+          type="number"
           value={currentElectrical?.ratedPeakOutput}
-          onChange={(e) => onChange('ratedPeakOutput', e.target.value)}
+          onChange={(e) => onChange('ratedPeakOutput', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -59,9 +59,9 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
           label="Voltage"
           variant="outlined"
           placeholder='Voltage'
-          type="text"
+          type="number"
           value={currentElectrical?.voltage}
-          onChange={(e) => onChange('voltage', e.target.value)}
+          onChange={(e) => onChange('voltage', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>

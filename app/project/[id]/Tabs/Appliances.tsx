@@ -14,7 +14,7 @@ const TYPES = [
   {name: "HVAC", value: "hvac"},
   {name: "Water Heater", value: 'waterheater'},
   {name: "Refrigerator", value: "refrigerator"},
-  {name: "Washing Machine", value: "washingMachine"},
+  {name: "Washing Machine", value: "washingmachine"},
   {name: "Dryer", value: "dryer"},
   {name: "Dishwasher", value: "dishwasher"},
   {name: "Cooktop", value: "cooktop"},
