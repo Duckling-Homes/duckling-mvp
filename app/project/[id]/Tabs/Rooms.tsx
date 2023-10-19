@@ -81,7 +81,6 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
       const newRooms = rooms.filter(r => r.id !== roomId);
       setRooms(newRooms);
       setCurrentRoom(newRooms[0] || {});
-      
     } catch (error) {
       console.error(error)
     }
@@ -93,7 +92,16 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
         method: 'POST',
         body: JSON.stringify({
           name: "New Room",
-          projectId: currentProject.id
+          projectId: currentProject.id,
+          type: "",
+          width: 0,
+          length: 0,
+          ceilingHeight: 0,
+          floor: "",
+          usage: "",
+          comfortIssueTags: [],
+          safetyIssueTags: [],
+          notes: "",
         })
       })
 
@@ -108,17 +116,33 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
     }
   }
 
-  async function patchRoom(room: ProjectRoom) {
+  async function patchRoom(updatedRoom: ProjectRoom) {
     console.log(rooms)
     if (currentRoom && currentRoom.id) {
       try {
-        await fetch(`/api/projectRooms/${currentRoom.id}`, {
+        const data = await fetch(`/api/projectRooms/${currentRoom.id}`, {
           method: 'PATCH',
           body: JSON.stringify({
-            ...room,
+            ...updatedRoom,
             projectId: currentProject.id
           })
         })
+
+        if (data.ok) {
+          const response = await data.json();
+
+          const updatedRooms = rooms.map((room) => {
+            if (room.id === updatedRoom.id) {
+              return { ...room, ...updatedRoom };
+            }
+            return room;
+          });
+
+          setRooms(updatedRooms);
+          setCurrentRoom(response);
+        } else {
+          throw new Error('Failed to update room.');
+        }
         
       } catch (error) {
         console.error(error)
@@ -168,7 +192,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
       <div style={{
         width: '100%',
       }}>
-        {currentRoom ? <form style={{
+        {currentRoom?.id ? <form style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
