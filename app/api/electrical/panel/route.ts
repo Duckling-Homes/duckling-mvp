@@ -18,6 +18,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     total50AmpCircuits,
     total60AmpCircuits,
     total70AmpCircuits,
+    location,
     notes,
     projectId,
   } = await req.json()
@@ -39,6 +40,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       total50AmpCircuits,
       total60AmpCircuits,
       total70AmpCircuits,
+      location,
       notes,
       projectId,
     })
