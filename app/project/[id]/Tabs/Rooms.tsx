@@ -66,21 +66,9 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   });
 
   useEffect(() => {
-    if (currentProject && currentProject.id) {
-      try {
-        fetch(`/api/projects/${currentProject.id}/rooms`, {
-          method: 'GET',
-        })
-          .then(response => response.json())
-          .then(response => {
-            if (Array.isArray(response)) {
-              setRooms(response)
-              setCurrentRoom(response[0])
-            }
-          })
-      } catch (error) {
-        console.error(error)
-      }
+    if (currentProject && currentProject.rooms) {
+      setRooms(currentProject.rooms)
+      setCurrentRoom(currentProject.rooms[0])
     }
   }, [currentProject])
 

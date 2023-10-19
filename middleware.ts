@@ -9,6 +9,10 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url });
     }
 
+    if (req.nextUrl.pathname.startsWith('/api/assign')) {
+      return // don't do anything for the assign route
+    }
+
     if (req.nextUrl.pathname.startsWith("/api")) {
       // if this is an api route, add this header so our back end can tenantize its apis
       if ((auth.sessionClaims?.metadata as any)?.organization_id) {

@@ -155,13 +155,20 @@ const DataCollection = observer(() => {
               <Tab label="Electrical" />
               <Tab label="Photos" />
             </Tabs>
-            {renderTabContent(0, <Basics currentProject={currentProject}/>)}
-            {renderTabContent(1, <Objectives currentProject={currentProject} />)}
-            {renderTabContent(2, <Envelope />)}
-            {renderTabContent(3, <Rooms currentProject={currentProject} />)}
-            {renderTabContent(4, <Appliances />)}
-            {renderTabContent(5, <Electrical />)}
-            {renderTabContent(6, <Photos />)}
+            {renderTabContent(0,
+              <Basics currentProject={currentProject}/>)}
+            {renderTabContent(1,
+              <Objectives currentProject={currentProject} />)}
+            {renderTabContent(2,
+              <Envelope currentProject={currentProject} />)}
+            {renderTabContent(3,
+              <Rooms currentProject={currentProject} />)}
+            {renderTabContent(4,
+              <Appliances currentProject={currentProject} />)}
+            {renderTabContent(5,
+              <Electrical currentProject={currentProject} />)}
+            {renderTabContent(6,
+              <Photos />)}
           </div> : null}
         </div>
       </Container>

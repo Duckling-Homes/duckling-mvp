@@ -1,9 +1,14 @@
 "use client";
 
+import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
+interface BatteryFormProps {
+  currentElectrical: ProjectElectrical;
+  onChange: (key: string, value: number | string | boolean) => void;
+}
 
-const BatteryForm = () => {
+const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange }) => {
   
   return (
     <>
@@ -15,6 +20,8 @@ const BatteryForm = () => {
           variant="outlined"
           placeholder='Total Capacity'
           type="number"
+          value={currentElectrical?.totalCapacity}
+          onChange={(e) => onChange('totalCapacity', e.target.value)}
         />
       </FormControl>
       {/* Rated Power Output */}
@@ -25,6 +32,8 @@ const BatteryForm = () => {
           variant="outlined"
           placeholder='Rated Power Output'
           type="text"
+          value={currentElectrical?.ratedPowerOutput}
+          onChange={(e) => onChange('ratedPowerOutput', e.target.value)}
         />
       </FormControl>
       {/* Peak Power Output */}
@@ -35,6 +44,8 @@ const BatteryForm = () => {
           variant="outlined"
           placeholder='Peak Power Output'
           type="text"
+          value={currentElectrical?.ratedPeakOutput}
+          onChange={(e) => onChange('ratedPeakOutput', e.target.value)}
         />
       </FormControl>
       {/* Voltage */}
@@ -45,6 +56,8 @@ const BatteryForm = () => {
           variant="outlined"
           placeholder='Voltage'
           type="text"
+          value={currentElectrical?.voltage}
+          onChange={(e) => onChange('voltage', e.target.value)}
         />
       </FormControl>
       {/* Grid Connected */}
@@ -54,6 +67,8 @@ const BatteryForm = () => {
           labelId="grid-connected-label"
           id="grid-connected-select"
           label="Grid Connected"
+          value={currentElectrical?.gridConnected ? 'true' : 'false'}
+          onChange={(e) => onChange('gridConnected', e.target.value === 'true')}
         >
           <MenuItem value={'true'}>Yes</MenuItem>
           <MenuItem value={'false'}>No</MenuItem>
@@ -67,6 +82,8 @@ const BatteryForm = () => {
           variant="outlined"
           placeholder='Manufacturer'
           type="text"
+          value={currentElectrical?.manufacturer}
+          onChange={(e) => onChange('manufacturer', e.target.value)}
         />
       </FormControl>
       {/* Model Number */}
@@ -77,6 +94,8 @@ const BatteryForm = () => {
           variant="outlined"
           placeholder='Model Number'
           type="text"
+          value={currentElectrical?.modelNumber}
+          onChange={(e) => onChange('modelNumber', e.target.value)}
         />
       </FormControl>
       {/* Serial Number */}
@@ -87,6 +106,8 @@ const BatteryForm = () => {
           variant="outlined"
           placeholder='Serial Number'
           type="text"
+          value={currentElectrical?.serialNumber}
+          onChange={(e) => onChange('serialNumber', e.target.value)}
         />
       </FormControl>
       {/* notes */}
@@ -97,6 +118,8 @@ const BatteryForm = () => {
           variant="outlined"
           placeholder='Notes'
           type="text"
+          value={currentElectrical?.notes}
+          onChange={(e) => onChange('notes', e.target.value)}
         />
       </FormControl>
     </>

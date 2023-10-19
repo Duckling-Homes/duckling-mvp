@@ -90,7 +90,7 @@ const ChipManager: React.FC<ChipManagerProps> = ({
       }}>
         {chips.map((chip, i) => (
           <Chip
-            label={chip.name}
+            label={chip.name || `${chip.type} ${i + 1}` }
             key={i}
             sx={{
               width: '197px',
