@@ -102,6 +102,20 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     const newAppliance = {
       id: uuidv4(),
       name: "New Appliance",
+      type: '',
+      hvacSystemType: '',
+      havcSystem: '',
+      fuel: '',
+      age: 0,
+      manufacturer: '',
+      modelNumber: '',
+      serialNumber: '',
+      heatingCapacity: 0,
+      coolingCapacity: 0,
+      tankVolume: 0,
+      location: '',
+      notes: '',
+      isInduction: false,
     };
 
     const newApplianceList = [...appliances, newAppliance];
@@ -263,7 +277,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         currentChip={currentAppliance?.id}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
-      {currentAppliance && <div style={{
+      {currentAppliance.id && <div style={{
         width: '100%',
       }}>
         <form style={{
