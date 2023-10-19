@@ -26,6 +26,7 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
         variant="outlined"
         placeholder="Name"
         fullWidth
+        inputLabelProps={{shrink: true}}
       />
       <FormControl fullWidth>
         <InputLabel id="insolation-location-label">
@@ -72,6 +73,7 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
         placeholder="User Notes"
         fullWidth
         multiline
+        inputLabelProps={{shrink: true}}
       />
     </> 
   )

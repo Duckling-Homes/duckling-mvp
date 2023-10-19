@@ -24,7 +24,9 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
     type: '',
     name: '',
     location: '',
-    leakiness: '',
+    leakinessDescription: '',
+    insulationLocation: '',
+    insulationCondition: '',
     notes: '',
     condition: '',
   })
@@ -44,7 +46,14 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
   function createEnvelope() {
     const newEnvelope = {
       id: uuidv4(),
-      name: 'New Envelope'
+      name: 'New Envelope',
+      type: '',
+      location: '',
+      leakinessDescription: '',
+      insulationLocation: '',
+      insulationCondition: '',
+      notes: '',
+      condition: '',
     };
 
     const newEnvelopeList = [...envelopes, newEnvelope];
@@ -186,7 +195,10 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
         chips={envelopes}
         currentChip={currentEnvelope?.id}
         chipType="Envelope"
-        onChipClick={(i: number) => setCurrentEnvelope(envelopes[i])}
+        onChipClick={(i: number) => {
+          console.log(envelopes)
+          setCurrentEnvelope(envelopes[i])
+        }}
       />
       <div
         style={{
@@ -210,6 +222,7 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
               disabled={currentEnvelope?.type ? true : false}
               onChange={(e) => handleTypeChange(e.target.value)}
             >
+              <MenuItem value={''} disabled={true}>Select Type</MenuItem>
               <MenuItem value={'Insulation'}>Insulation</MenuItem>
               <MenuItem value={'AirSealing'}>Air Sealing</MenuItem>
             </Select>

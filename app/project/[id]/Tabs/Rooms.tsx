@@ -100,7 +100,6 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
       const newRoom = await response.json();
       const newRoomList = [...rooms, newRoom];
 
-      console.log(newRoomList)
       setRooms(newRoomList);
       setCurrentRoom(newRoom);
       
@@ -110,6 +109,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   }
 
   async function patchRoom(room: ProjectRoom) {
+    console.log(rooms)
     if (currentRoom && currentRoom.id) {
       try {
         await fetch(`/api/projectRooms/${currentRoom.id}`, {
@@ -181,7 +181,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
             <TextField
               id="outlined-basic"
               label="Room Name"
-              value={currentRoom.name}
+              value={currentRoom?.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               variant="outlined"
               placeholder='Name'
@@ -196,7 +196,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                 labelId="room-type-label"
                 id="room-type-select"
                 label="Room Type"
-                value={currentRoom.type}
+                value={currentRoom?.type}
                 onChange={(e) => handleInputChange('type', e.target.value)}
               >
                 {ROOM_TYPES.map((roomType, i) => (
@@ -208,7 +208,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               id="outlined-basic"
               label="Width"
               variant="outlined"
-              value={currentRoom.width}
+              value={currentRoom?.width}
               onChange={(e) => handleInputChange('width', parseInt(e.target.value))}
               placeholder='Width'
               fullWidth
@@ -218,7 +218,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               id="outlined-basic"
               label="Length"
               variant="outlined"
-              value={currentRoom.length}
+              value={currentRoom?.length}
               onChange={(e) => handleInputChange('length', parseInt(e.target.value))}
               placeholder='Length'
               fullWidth
@@ -229,7 +229,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               label="Ceiling Height"
               variant="outlined"
               onChange={(e) => handleInputChange('ceilingHeight', parseInt(e.target.value))}
-              value={currentRoom.ceilingHeight}
+              value={currentRoom?.ceilingHeight}
               placeholder='Ceiling Height'
               fullWidth
               type="number"
@@ -242,7 +242,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                 labelId="width-label"
                 id="width-select"
                 label="Floor"
-                value={currentRoom.floor}
+                value={currentRoom?.floor}
                 onChange={(e) => handleInputChange('floor', e.target.value)}
               >
                 {ROOM_FLOORS.map((floor, i) => (
@@ -253,7 +253,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
             <FormControl>
               <FormLabel component="legend">Usage</FormLabel>
               <ToggleButtonGroup
-                value={currentRoom.usage}
+                value={currentRoom?.usage}
                 exclusive
                 color="primary"
                 onChange={(e, value) => handleInputChange('usage', value)}
