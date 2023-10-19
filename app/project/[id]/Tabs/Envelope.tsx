@@ -205,7 +205,7 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
           width: '100%',
         }}
       >
-        {currentEnvelope && <form
+        {currentEnvelope?.id && <form
           style={{
             display: 'flex',
             flexDirection: 'column',

@@ -75,25 +75,33 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       }
     };
 
+    if (!applianceToDelete) {
+      return;
+    }
 
-    if (applianceToDelete) {
-      try {
-        const response = await fetch(`/api/appliances/${api}/${applianceId}`, {
-          method: 'DELETE',
-        });
+    if (!applianceToDelete.type) {
+      const newApplianceList = appliances.filter(r => r.id !== applianceId);
+      setAppliances(newApplianceList);
+      setCurrentAppliance(newApplianceList[0] || {});
+      return;
+    }
 
-        if (response.ok) {
-          console.log('Appliance deleted successfully.');
-          const newApplianceList = appliances.filter(r => r.id !== applianceId);
-          setAppliances(newApplianceList);
-          setCurrentAppliance(newApplianceList[0] || {});
-        } else {
-          throw new Error('Failed to delete the appliance.');
-        }
-      } catch (error) {
-        console.error('Error deleting the appliance:', error);
-        throw error;
+    try {
+      const response = await fetch(`/api/appliances/${api}/${applianceId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Appliance deleted successfully.');
+        const newApplianceList = appliances.filter(r => r.id !== applianceId);
+        setAppliances(newApplianceList);
+        setCurrentAppliance(newApplianceList[0] || {});
+      } else {
+        throw new Error('Failed to delete the appliance.');
       }
+    } catch (error) {
+      console.error('Error deleting the appliance:', error);
+      throw error;
     }
   }
 

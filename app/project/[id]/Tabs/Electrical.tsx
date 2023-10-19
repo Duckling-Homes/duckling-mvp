@@ -173,26 +173,35 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
   async function deleteElectrical(electricalId: string) {
     const electricalToDelete = electricals.find(electrical => electrical.id === electricalId);
 
-    if (electricalToDelete && electricalToDelete.type) {
-      const api = electricalToDelete.type.toLowerCase() === 'electricalpanel' ? 'panel' : (electricalToDelete.type.toLowerCase() === 'evcharger' ? 'evCharger' : electricalToDelete.type.toLowerCase());
+    if (!electricalToDelete) {
+      return;
+    }
 
-      try {
-        const response = await fetch(`/api/electrical/${api}/${electricalId}`, {
-          method: 'DELETE',
-        });
+    if (!electricalToDelete.type) {
+      const newElectricalList = electricals.filter(r => r.id !== electricalId);
+      setElectricals(newElectricalList);
+      setCurrentElectrical(newElectricalList[0] || {});
+      return;
+    }
 
-        if (response.ok) {
-          console.log('Electrical deleted successfully.');
-          const newElectricalsList = electricals.filter(r => r.id !== electricalId);
-          setElectricals(newElectricalsList);
-          setCurrentElectrical(newElectricalsList[0] || {});
-        } else {
-          throw new Error('Failed to delete the electrical.');
-        }
-      } catch (error) {
-        console.error('Error deleting the electrical:', error);
-        throw error;
+    const api = electricalToDelete.type.toLowerCase() === 'electricalpanel' ? 'panel' : (electricalToDelete.type.toLowerCase() === 'evcharger' ? 'evCharger' : electricalToDelete.type.toLowerCase());
+
+    try {
+      const response = await fetch(`/api/electrical/${api}/${electricalId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Electrical deleted successfully.');
+        const newElectricalsList = electricals.filter(r => r.id !== electricalId);
+        setElectricals(newElectricalsList);
+        setCurrentElectrical(newElectricalsList[0] || {});
+      } else {
+        throw new Error('Failed to delete the electrical.');
       }
+    } catch (error) {
+      console.error('Error deleting the electrical:', error);
+      throw error;
     }
   }
 

@@ -25,8 +25,8 @@ const DeleteModal: React.FC<{
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  envelopeName?: string;
-}> = ({ open, onClose, onConfirm, envelopeName }) => {
+  chipName?: string;
+}> = ({ open, onClose, onConfirm, chipName }) => {
   return (
     <Modal
       open={open}
@@ -37,7 +37,9 @@ const DeleteModal: React.FC<{
     >
       <div className="deleteModal__content">
         <p>
-          Are you sure you want to delete envelope: {envelopeName}?
+          {chipName
+            ? `Are you sure you want to delete envelope: ${chipName}?`
+            : 'Are you sure you want to delete this envelope?'}
         </p>
         <div>
           <Button onClick={onClose}>Cancel</Button>
@@ -81,7 +83,7 @@ const ChipManager: React.FC<ChipManagerProps> = ({
           name: "",
         })}
         onConfirm={handleDeleteClick}
-        envelopeName={deleteEnvelope.name}
+        chipName={deleteEnvelope.name}
       />
       <div style={{
         display: 'flex',
@@ -99,7 +101,7 @@ const ChipManager: React.FC<ChipManagerProps> = ({
             color={chip.id === currentChip ? "primary" : "default"}
             onClick={() => onChipClick(i)}
             onDelete={() => setDeleteEnvelope({
-              id: chip.id || '',
+              id: chip.id,
               name: chip.name || "Unknown Name"
             })}
           />
