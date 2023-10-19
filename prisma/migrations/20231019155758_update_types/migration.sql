@@ -25,11 +25,6 @@
   - You are about to drop the `ProjectOwner` table. If the table is not empty, all the data it contains will be lost.
 
 */
--- DropForeignKey
-ALTER TABLE "ProjectOwner" DROP CONSTRAINT "ProjectOwner_projectId_fkey";
-
--- DropForeignKey
-ALTER TABLE "ProjectOwner" DROP CONSTRAINT "ProjectOwner_userId_fkey";
 
 -- AlterTable
 ALTER TABLE "Battery" DROP COLUMN "totalCapacity",
@@ -84,6 +79,3 @@ DROP COLUMN "maxPowerOutput",
 ADD COLUMN     "maxPowerOutput" INTEGER,
 DROP COLUMN "annualOutput",
 ADD COLUMN     "annualOutput" INTEGER;
-
--- DropTable
-DROP TABLE "ProjectOwner";
