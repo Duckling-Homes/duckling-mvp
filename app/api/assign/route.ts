@@ -28,7 +28,13 @@ const createDemoOrgIfItDoesNotExist = async () => {
   });
 }
 
-// GET request handler
+/**
+ * This endpoint is called during sign in and sign up. It redirects to the home page.
+ *
+ * In the process below, it assigns a user to an organization.
+ *
+ * This route is not protected by authMiddleware org ID check.
+ */
 export const GET = withErrorHandler(async (req: NextRequest) => {
   const { userId } = getAuth(req);
 
