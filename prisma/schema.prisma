@@ -216,15 +216,16 @@ model OtherAppliance {
 model ElectricalPanel {
   id                    String @id @default(uuid())
   panelType             String?
-  panelAmperageRating   String?
-  availableNewCircuits  String?
-  total15AmpCircuits    String?
-  total20AmpCircuits    String?
-  total30AmpCircuits    String?
-  total40AmpCircuits    String?
-  total50AmpCircuits    String?
-  total60AmpCircuits    String?
-  total70AmpCircuits    String?
+  panelAmperageRating   Int?
+  availableNewCircuits  Int?
+  total15AmpCircuits    Int?
+  total20AmpCircuits    Int?
+  total30AmpCircuits    Int?
+  total40AmpCircuits    Int?
+  total50AmpCircuits    Int?
+  total60AmpCircuits    Int?
+  total70AmpCircuits    Int?
+  location                 String?
   notes                 String?
 
   projectId  String
@@ -241,11 +242,11 @@ model Solar {
   moduleType        String?
   tracking          String?
   arrayOrientation  String?
-  arrayTilt         String?
-  maxPowerOutput    String?
+  arrayTilt         Int?
+  maxPowerOutput    Int?
   numberOfPanels    Int?
   yearInstalled     Int?
-  annualOutput      String?
+  annualOutput      Int?
   notes             String?
 
   projectId  String
@@ -257,10 +258,10 @@ model Solar {
 
 model Battery {
   id                String @id @default(uuid())
-  totalCapacity     String?
-  ratedPowerOutput  String?
-  ratedPeakOutput   String?
-  voltage           String?
+  totalCapacity     Int?
+  ratedPowerOutput  Int?
+  ratedPeakOutput   Int?
+  voltage           Int?
   gridConnected     String?
   manufacturer      String?
   modelNumber       String?
@@ -277,9 +278,9 @@ model Battery {
 model EvCharger {
   id                    String @id @default(uuid())
   chargingLevel         String?
-  amperage              String?
-  acPowerSourceVolatge  String?
-  maxChargingPower      String?
+  amperage              Int?
+  acPowerSourceVolatge  Int?
+  maxChargingPower      Int?
   manufacturer          String?
   modelNumber           String?
   serialNumber          String?
@@ -296,10 +297,10 @@ model Generator {
   id                      String @id @default(uuid())
   generatorType           String?
   fuelType                String?
-  ratedContinuousWattage  String?
-  ratedPeakWattage        String?
+  ratedContinuousWattage  Int?
+  ratedPeakWattage        Int?
   voltage                 Int?
-  numberOfPhases          Int?
+  numberOfPhases          String?
   transferSwitch          String?
   connection              String?
   yearInstalled           Int?

@@ -16,6 +16,7 @@ export async function createProjectElectricalPanel(
       total50AmpCircuits: panelData.total50AmpCircuits,
       total60AmpCircuits: panelData.total60AmpCircuits,
       total70AmpCircuits: panelData.total70AmpCircuits,
+      location: panelData.location,
       notes: panelData.notes,
       project: {
         connect: {
