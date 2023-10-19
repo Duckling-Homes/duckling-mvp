@@ -4,23 +4,29 @@ import { clerkClient } from '@clerk/nextjs'
 import { getAuth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
+// Function to create demo organization if it doesn't exist
 const createDemoOrgIfItDoesNotExist = async () => {
-  const name = 'DEMO_ORGANIZATION'
-  let org = await prisma.organization.findFirst({
+  const uuid = "a4b5aa52-274d-4b1e-8f6b-3828f74c72d3";
+  const name = "GreenEarth Initiatives";
+
+  const existingOrganization = await prisma.organization.findUnique({
     where: {
+      id: uuid
+    }
+  });
+
+  if (existingOrganization) {
+    console.log("Organization already exists.");
+    return existingOrganization;
+  }
+  
+  console.log("Creating Demo Org")
+  return await prisma.organization.create({
+    data: {
+      id: uuid,
       name,
     },
-  })
-
-  if (!org) {
-    org = await prisma.organization.create({
-      data: {
-        name,
-      },
-    })
-  }
-
-  return org
+  });
 }
 
 /**
@@ -31,55 +37,61 @@ const createDemoOrgIfItDoesNotExist = async () => {
  * This route is not protected by authMiddleware org ID check.
  */
 export const GET = withErrorHandler(async (req: NextRequest) => {
-  const { userId } = getAuth(req)
-  if (!userId) return NextResponse.redirect(new URL('/sign-in', req.url))
+  const { userId } = getAuth(req);
 
-  const clerkUser = await clerkClient.users.getUser(userId)
-  if (clerkUser.publicMetadata.organization_id) {
-    return NextResponse.redirect(new URL('/', req.url))
-  }
+  // Redirect if the user is not authenticated
+  if (!userId) return NextResponse.redirect(new URL('/sign-in', req.url));
 
-  // get the public org
-  const demoOrg = await createDemoOrgIfItDoesNotExist()
-  const email = clerkUser.emailAddresses[0].emailAddress
+  // Get user from Clerk
+  const clerkUser = await clerkClient.users.getUser(userId);
+  const email = clerkUser.emailAddresses[0].emailAddress;
 
+  // Look up the user in the local database
   const userInDb = await prisma.user.findUnique({
     where: {
       email,
     },
-  })
+  });
 
-  // if user is not in the database, create them and add them to the public org
-  if (!userInDb) {
+  // Create or get demo organization
+  const demoOrg = await createDemoOrgIfItDoesNotExist();
+
+  // User exists in the local database
+  if (userInDb) {
+    // Check if organization ID is already in the public metadata
+    if (clerkUser.publicMetadata.organization_id) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+
+    // Update Clerk's user metadata with the organization ID
+    await clerkClient.users.updateUser(userId, {
+      publicMetadata: {
+        organization_id: userInDb.organizationId,
+      },
+    });
+  } else {
+    // User doesn't exist, so create them and add them to the demo organization
     await prisma.user.create({
       data: {
         id: userId,
         email,
         firstName: clerkUser.firstName ?? '',
-        lastName: clerkUser.lastName ?? '',
+        lastName: clerkUser.lastName ?? '',  
         organization: {
           connect: {
             id: demoOrg.id,
           },
         },
       },
-    })
+    });
 
+    // Update Clerk's user metadata with the demo organization ID
     await clerkClient.users.updateUser(userId, {
       publicMetadata: {
         organization_id: demoOrg.id,
       },
-    })
-
-    return NextResponse.redirect(new URL('/', req.url))
+    });
   }
 
-  // if user is in the database, update the org id in clerk
-  await clerkClient.users.updateUser(userId, {
-    publicMetadata: {
-      organization_id: userInDb.organizationId,
-    },
-  })
-
-  return NextResponse.redirect(new URL('/', req.url))
-})
+  return NextResponse.redirect(new URL('/', req.url));
+});

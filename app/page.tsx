@@ -13,15 +13,31 @@ import { useEffect, useState } from 'react'
 import ModelStore from './stores/modelStore'
 
 import './style.scss'
+import { useUser } from '@clerk/nextjs'
 
 const Home = observer(() => {
-  // const { user } = useUser()
-  // const { push } = useRouter()
+  const { user } = useUser()
 
-  // if (!user?.publicMetadata?.organization_id) {
-  //   // redirect to /api/assign
-  //   push('/api/assign')
-  // }
+  useEffect(() => {
+    // Check if user's publicMetadata has the organization_id
+    if (user && !user?.publicMetadata?.organization_id) {
+      console.log("User has no organization_id: Hitting Assign route")
+      // Make a call to /api/assign
+      fetch('/api/assign', {
+        method: 'GET',
+        headers: {
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    }
+  }, [user])
 
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
