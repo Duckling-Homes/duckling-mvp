@@ -67,8 +67,8 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange }
           labelId="grid-connected-label"
           id="grid-connected-select"
           label="Grid Connected"
-          value={currentElectrical?.gridConnected ? 'true' : 'false'}
-          onChange={(e) => onChange('gridConnected', e.target.value === 'true')}
+          value={currentElectrical?.gridConnected}
+          onChange={(e) => onChange('gridConnected', e.target.value)}
         >
           <MenuItem value={'true'}>Yes</MenuItem>
           <MenuItem value={'false'}>No</MenuItem>

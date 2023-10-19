@@ -129,6 +129,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   }
 
   async function handlePostAppliance(updatedAppliance: ProjectAppliance, type: string) {
+
     let api = ''
     switch(type.toLowerCase()) {
       case 'hvac':
@@ -160,7 +161,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       if (data.ok) {
         const response = await data.json()
         const createdAppliance = {...response, type: updatedAppliance.type}
-
         const updatedAppliances = appliances.map((appliance) => {
           if (appliance.id === oldId) {
             return { ...appliance, ...createdAppliance };

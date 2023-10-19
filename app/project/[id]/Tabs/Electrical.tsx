@@ -82,6 +82,7 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
     const newElectrical = {
       id: uuidv4(),
       name: "New Electrical",
+      type: '',
       panelType: '',
       panelAmperageRating: '',
       availableNewCircuits: '',
@@ -137,6 +138,8 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
     const api = type === 'electricalpanel' ? 'panel' : (type === 'evcharger' ? 'evCharger' : type);
 
     try {
+      const oldId = updatedElectrical.id;
+      delete updatedElectrical.id;
       const data = await fetch(`/api/electrical/${api}`, {
         method: 'POST',
         body: JSON.stringify({
@@ -146,19 +149,17 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
       });
 
       if (data.ok) {
-        console.log('New appliance created successfully.');
+        const response = await data.json()
+        const createdElectrical = {...response, type: updatedElectrical.type}
 
         const updatedElectricals = electricals.map((electrical) => {
-          if (electrical.id === updatedElectrical.id) {
-            return { ...electrical, ...updatedElectrical };
+          if (electrical.id === oldId) {
+            return { ...electrical, ...createdElectrical };
           }
           return electrical;
         });
 
         setElectricals(updatedElectricals);
-
-        const response = await data.json()
-        const createdElectrical = {...response, type: updatedElectrical.type}
         setCurrentElectrical(createdElectrical)
       } else {
         throw new Error('Failed to create a new appliance.');
