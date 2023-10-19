@@ -10,20 +10,15 @@ import {
 import { useEffect, useState } from 'react'
 import InsulationForm from './EnvelopesForms/InsulationForm'
 import AirSealingForm from './EnvelopesForms/AirSealingForm'
-import { ProjectEnvelope } from '@/types/types'
-interface Envelope {
-  name: string
-  type: string
-  location?: string
-  condition?: string
-  leakiness?: string
-  notes: string
-  id: string
+import { Project, ProjectEnvelope } from '@/types/types'
+
+interface EnvelopeProps {
+  currentProject: Project;
 }
 
-const Envelope = ({ currentProject }) => {
-  const [envelopes, setEnvelopes] = useState<Envelope[]>([])
-  const [currentEnvelope, setCurrentEnvelope] = useState<Envelope>({
+const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
+  const [envelopes, setEnvelopes] = useState<ProjectEnvelope[]>([])
+  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>({
     id: '',
     type: '',
     name: '',

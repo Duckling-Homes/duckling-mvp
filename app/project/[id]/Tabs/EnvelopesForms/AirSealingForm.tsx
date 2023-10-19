@@ -1,5 +1,6 @@
 'use client'
 
+import { ProjectEnvelope } from '@/types/types';
 import {
   FormControl,
   InputLabel,
@@ -8,7 +9,12 @@ import {
   TextField,
 } from '@mui/material'
 
-const AirSealingForm = ({ onChange, currentEnvelope }) => {
+interface AirSealingFormProps {
+  onChange: (inputName: string, value: string) => void;
+  currentEnvelope: ProjectEnvelope;
+}
+
+const AirSealingForm: React.FC<AirSealingFormProps> = ({ onChange, currentEnvelope }) => {
 
   return (
     <>

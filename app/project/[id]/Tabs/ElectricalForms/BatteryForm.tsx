@@ -1,9 +1,14 @@
 "use client";
 
+import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
+interface BatteryFormProps {
+  currentElectrical: ProjectElectrical;
+  onChange: (key: string, value: number | string | boolean) => void;
+}
 
-const BatteryForm = ({ currentElectrical, onChange }) => {
+const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange }) => {
   
   return (
     <>
@@ -62,8 +67,8 @@ const BatteryForm = ({ currentElectrical, onChange }) => {
           labelId="grid-connected-label"
           id="grid-connected-select"
           label="Grid Connected"
-          value={currentElectrical?.gridConnected}
-          onChange={(e) => onChange('gridConnected', e.target.value)}
+          value={currentElectrical?.gridConnected ? 'true' : 'false'}
+          onChange={(e) => onChange('gridConnected', e.target.value === 'true')}
         >
           <MenuItem value={'true'}>Yes</MenuItem>
           <MenuItem value={'false'}>No</MenuItem>

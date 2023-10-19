@@ -1,8 +1,14 @@
 "use client";
 
+import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
-const ElectricalPanelForm = ({ currentElectrical, onChange }) => {
+interface ElectricalPanelFormProps {
+  currentElectrical: ProjectElectrical;
+  onChange: (name: string, value: string | number | boolean) => void;
+}
+
+const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({ currentElectrical, onChange }) => {
 
   return (
     <>

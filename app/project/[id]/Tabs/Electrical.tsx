@@ -9,7 +9,7 @@ import BatteryForm from "./ElectricalForms/BatteryForm";
 import EVChargerForm from "./ElectricalForms/EVChargerForm";
 import GeneratorForm from "./ElectricalForms/GeneratorForm";
 import ChipManager from "@/components/ChipManager";
-import { ProjectElectrical } from "@/types/types";
+import { Project, ProjectElectrical } from "@/types/types";
 
 const TYPES = [
   {name: "Electrical Panel", value: "electricalpanel"},
@@ -19,9 +19,13 @@ const TYPES = [
   {name: "Generator", value: "generator"}
 ]
 
-const Electrical = ({ currentProject }) => {
-  const [electricals, setElectricals] = useState([])
-  const [currentElectrical, setCurrentElectrical] = useState({
+interface ElectricalProps {
+  currentProject: Project;
+}
+
+const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
+  const [electricals, setElectricals] = useState<ProjectElectrical[]>([])
+  const [currentElectrical, setCurrentElectrical] = useState<ProjectElectrical>({
     id: "",
     type: '',
   });
@@ -89,7 +93,7 @@ const Electrical = ({ currentProject }) => {
   async function deleteElectrical(electricalId: string) {
     const electricalToDelete = electricals.find(electrical => electrical.id === electricalId);
 
-    if (electricalToDelete) {
+    if (electricalToDelete && electricalToDelete.type) {
       const api = electricalToDelete.type.toLowerCase() === 'electricalpanel' ? 'panel' : (electricalToDelete.type.toLowerCase() === 'evcharger' ? 'evCharger' : electricalToDelete.type.toLowerCase());
 
       try {
@@ -112,7 +116,10 @@ const Electrical = ({ currentProject }) => {
     }
   }
 
-  async function patchElectrical(updatedElectrical) {
+  async function patchElectrical(updatedElectrical: ProjectElectrical) {
+    if (!updatedElectrical.type) {
+      return
+    }
     const api = updatedElectrical.type.toLowerCase() === 'electricalpanel' ? 'panel' : (updatedElectrical.type.toLowerCase() === 'evcharger' ? 'evCharger' : updatedElectrical.type.toLowerCase());
 
     if (updatedElectrical) {
@@ -148,15 +155,16 @@ const Electrical = ({ currentProject }) => {
     }
   }
 
-  function handleInputChange(inputName: string, value: string) {
-    console.log('inputName')
+  function handleInputChange(inputName: string, value: string | number | boolean) {
     if (currentElectrical) {
-      const updatedElectrical = { ...currentElectrical, [inputName]: value };
+      const updatedElectrical: ProjectElectrical = {
+        ...currentElectrical,
+        [inputName]: value,
+      };
       setCurrentElectrical(updatedElectrical);
       patchElectrical(updatedElectrical);
     }
   }
-
 
   const renderForm = () => {
     switch(currentElectrical?.type?.toLowerCase()) {

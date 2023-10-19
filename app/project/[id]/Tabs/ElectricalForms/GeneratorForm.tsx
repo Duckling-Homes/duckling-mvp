@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const FUEL = [
@@ -9,7 +10,12 @@ const FUEL = [
   "Gasoline",
 ]
 
-const GeneratorForm = ({ currentElectrical, onChange }) => {
+interface GeneratorFormProps {
+  currentElectrical: ProjectElectrical;
+  onChange: (name: string, value: string | number | boolean) => void;
+}
+
+const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChange }) => {
   
   return (
     <>
@@ -86,7 +92,7 @@ const GeneratorForm = ({ currentElectrical, onChange }) => {
           labelId="number-phases-label"
           id="number-phases-select"
           label="Number of Phases"
-          value={currentElectrical?.numberOfPhases.toString()}
+          value={currentElectrical?.numberOfPhases?.toString()}
           onChange={(e) => onChange('numberOfPhases', parseInt(e.target.value))}
         >
           <MenuItem value={'1'}>1-Phase</MenuItem>

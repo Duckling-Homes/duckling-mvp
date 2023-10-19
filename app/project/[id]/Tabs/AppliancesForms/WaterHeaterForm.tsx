@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectAppliance } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const SYSTEM_TYPE = [
@@ -17,7 +18,13 @@ const FUEL = [
   "Other",
 ];
 
-const WaterHeaterForm = ({ onChange, currentAppliance }) => {
+
+interface WaterHeaterFormProps {
+  onChange: (key: string, value: string | number | boolean) => void;
+  currentAppliance: ProjectAppliance;
+}
+
+const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({ onChange, currentAppliance }) => {
   
   return (
     <>

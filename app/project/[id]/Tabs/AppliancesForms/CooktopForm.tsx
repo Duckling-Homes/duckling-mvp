@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectAppliance } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const FUEL = [
@@ -10,7 +11,12 @@ const FUEL = [
   "Other",
 ];
 
-const CooktopForm = ({ onChange, currentAppliance }) => {
+interface CooktopFormProps {
+  onChange: (key: string, value: string | number | boolean) => void;
+  currentAppliance: ProjectAppliance;
+}
+
+const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance }) => {
   
   return (
     <>

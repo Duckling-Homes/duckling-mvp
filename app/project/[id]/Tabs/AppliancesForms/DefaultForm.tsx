@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectAppliance } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const FUEL = [
@@ -10,7 +11,13 @@ const FUEL = [
   "Other",
 ];
 
-const DefaultForm = ({ onChange, currentAppliance }) => {
+
+interface DefaultFormProps {
+  onChange: (key: string, value: string | number | boolean) => void;
+  currentAppliance: ProjectAppliance;
+}
+
+const DefaultForm: React.FC<DefaultFormProps> = ({ onChange, currentAppliance }) => {
   
   return (
     <>

@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectAppliance } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const HVAC_TYPES = [
@@ -31,7 +32,12 @@ const FUEL = [
   { name: "Other", parent: "all" },
 ];
 
-const HVACForm = ({ onChange, currentAppliance }) => {
+interface HVACFormProps {
+  onChange: (key: string, value: string | number | boolean) => void;
+  currentAppliance: ProjectAppliance;
+}
+
+const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance }) => {
   
   return (
     <>

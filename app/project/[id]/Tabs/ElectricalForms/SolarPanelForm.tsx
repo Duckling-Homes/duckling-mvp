@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const LOCATIONS = [
@@ -40,7 +41,12 @@ const ORIENTATIONS = [
   "Southwest",
 ]
 
-const SolarPanelForm = ({ currentElectrical, onChange }) => {
+interface SolarPanelFormProps {
+  currentElectrical: ProjectElectrical;
+  onChange: (name: string, value: string | number | boolean) => void;
+}
+
+const SolarPanelForm: React.FC<SolarPanelFormProps> = ({ currentElectrical, onChange }) => {
   
   return (
     <>

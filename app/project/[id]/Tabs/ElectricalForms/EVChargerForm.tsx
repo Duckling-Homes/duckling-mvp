@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const CHARGING_LEVELS = [
@@ -8,7 +9,12 @@ const CHARGING_LEVELS = [
   "Level 3",
 ]
 
-const EVChargerForm = ({ currentElectrical, onChange }) => {
+interface EVChargerFormProps {
+  currentElectrical: ProjectElectrical;
+  onChange: (name: string, value: string | number | boolean) => void;
+}
+
+const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChange }) => {
   
   return (
     <>

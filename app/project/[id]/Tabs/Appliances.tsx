@@ -7,7 +7,7 @@ import HVACForm from "./AppliancesForms/HVACForm";
 import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
 import CooktopForm from "./AppliancesForms/CooktopForm";
 import DefaultForm from "./AppliancesForms/DefaultForm";
-import { ProjectAppliance } from "@/types/types";
+import { Project, ProjectAppliance } from "@/types/types";
 
 const TYPES = [
   {name: "HVAC", value: "hvac"},
@@ -20,26 +20,29 @@ const TYPES = [
   {name: "Oven", value: "oven"},
   {name: "Other", value: "other"}
 ]
+interface AppliancesProps {
+  currentProject: Project;
+}
 
-const Appliances = ({ currentProject }) => {
+const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   const [appliances, setAppliances] = useState<ProjectAppliance[]>([]);
   const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({
     id: '',
     name: '',
     type: '',
-    hvac_system_type: '',
-    havc_system: '',
+    hvacSystemType: '',
+    havcSystem: '',
     fuel: '',
     age: 0,
     manufacturer: '',
-    model_number: '',
-    serial_number: '',
-    heating_capacity: 0,
-    cooling_capacity: 0,
-    tank_volume: 0,
+    modelNumber: '',
+    serialNumber: '',
+    heatingCapacity: 0,
+    coolingCapacity: 0,
+    tankVolume: 0,
     location: '',
     notes: '',
-    is_indution: false,
+    isInduction: false,
   });
 
   useEffect(() => {
@@ -52,22 +55,25 @@ const Appliances = ({ currentProject }) => {
 
   async function deleteAppliance(applianceId: string) {
     const applianceToDelete = appliances.find(appliance => appliance.id === applianceId);
+    let api = '';
 
-    let api = ''
-    switch(applianceToDelete.type.toLowerCase()) {
-      case 'hvac':
-        api = 'hvac';
-        break;
-      case 'cooktop':
-        api = 'cooktop';
-        break;
-      case 'waterheater':
-        api = 'waterHeater';
-        break;
-      default:
-        api = 'other';
-        break;
-    }
+    if (applianceToDelete?.type) {
+      switch(applianceToDelete.type.toLowerCase()) {
+        case 'hvac':
+          api = 'hvac';
+          break;
+        case 'cooktop':
+          api = 'cooktop';
+          break;
+        case 'waterheater':
+          api = 'waterHeater';
+          break;
+        default:
+          api = 'other';
+          break;
+      }
+    };
+
 
     if (applianceToDelete) {
       try {
@@ -158,24 +164,27 @@ const Appliances = ({ currentProject }) => {
     }
   }
 
-  async function patchAppliance(updatedAppliance) {
+  async function patchAppliance(updatedAppliance: ProjectAppliance) {
     let api = ''
     console.log(updatedAppliance)
 
-    switch(updatedAppliance.type.toLowerCase()) {
-      case 'hvac':
-        api = 'hvac';
-        break;
-      case 'cooktop':
-        api = 'cooktop';
-        break;
-      case 'waterheater':
-        api = 'waterHeater';
-        break;
-      default:
-        api = 'other';
-        break;
+    if (updatedAppliance.type) {
+      switch(updatedAppliance.type.toLowerCase()) {
+        case 'hvac':
+          api = 'hvac';
+          break;
+        case 'cooktop':
+          api = 'cooktop';
+          break;
+        case 'waterheater':
+          api = 'waterHeater';
+          break;
+        default:
+          api = 'other';
+          break;
+      }
     }
+
 
     if (updatedAppliance) {
       try {
@@ -210,7 +219,7 @@ const Appliances = ({ currentProject }) => {
     }
   }
 
-  function handleInputChange(inputName: string, value: string) {
+  function handleInputChange(inputName: string, value: string | number | boolean) {
     console.log('inputName')
     if (currentAppliance) {
       const updatedAppliance = { ...currentAppliance, [inputName]: value };
