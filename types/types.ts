@@ -41,7 +41,7 @@ export interface NewProject {
 }
 
 export interface ProjectEnvelope {
-  id: string;
+  id?: string;
   name?: string;
   type?: string;
   leakinessDescription?: string;
@@ -55,7 +55,7 @@ export interface ProjectEnvelope {
 }
 
 export interface ProjectRoom {
-  id: string;
+  id?: string;
   name?: string;
   type?: string;
   width?: number;
@@ -73,7 +73,7 @@ export interface ProjectRoom {
 }
 
 export interface ProjectAppliance {
-  id: string;
+  id?: string;
   name?: string;
   type?: string;
   systemType?: string;
@@ -94,7 +94,7 @@ export interface ProjectAppliance {
 
 
 export interface ProjectElectrical {
-  id: string;
+  id?: string;
   name?: string;
   type?: string;
   generatorType?: string;

@@ -6,11 +6,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
-} from '@mui/material'
-import { useEffect, useState } from 'react'
-import InsulationForm from './EnvelopesForms/InsulationForm'
-import AirSealingForm from './EnvelopesForms/AirSealingForm'
-import { Project, ProjectEnvelope } from '@/types/types'
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import InsulationForm from './EnvelopesForms/InsulationForm';
+import AirSealingForm from './EnvelopesForms/AirSealingForm';
+import { Project, ProjectEnvelope } from '@/types/types';
+import { v4 as uuidv4 } from 'uuid';
 
 interface EnvelopeProps {
   currentProject: Project;
@@ -35,15 +36,14 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
     }
   }, [currentProject])
 
-  const handleTypeChange = (name: string, value: string) => {
-    const updatedEnvelope = {...currentEnvelope, [name]: value}
-    console.log(updatedEnvelope)
+  const handleTypeChange = (value: string) => {
+    const updatedEnvelope = {...currentEnvelope, type: value}
     handlePostEnvelope(updatedEnvelope, value)
   }
 
   function createEnvelope() {
     const newEnvelope = {
-      id: '',
+      id: uuidv4(),
       name: 'New Envelope'
     };
 
@@ -54,6 +54,8 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
 
   async function handlePostEnvelope(updatedEnvelope: ProjectEnvelope, type: string) {
     try {
+      const oldId = updatedEnvelope.id;
+      delete updatedEnvelope.id;
       const data = await fetch(`/api/project${type}`, {
         method: 'POST',
         body: JSON.stringify({
@@ -63,8 +65,18 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
       });
 
       if (data.ok) {
-        console.log('New envelope created successfully.');
-        setCurrentEnvelope(updatedEnvelope)
+        const response = await data.json()
+        const createdEnvelope = {...response, type: updatedEnvelope.type}
+
+        const updatedEnvelopes = envelopes.map((envelope) => {
+          if (envelope.id === oldId) {
+            return { ...envelope, ...createdEnvelope };
+          }
+          return envelope;
+        });
+
+        setEnvelopes(updatedEnvelopes);
+        setCurrentEnvelope(createdEnvelope);
       } else {
         throw new Error('Failed to create a new envelope.');
       }
@@ -77,24 +89,33 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
   async function deleteEnvelope(envelopeId: string) {
     const envelopeToDelete = envelopes.find(envelope => envelope.id === envelopeId);
 
-    if (envelopeToDelete) {
-      try {
-        const response = await fetch(`/api/project${envelopeToDelete.type}/${envelopeId}`, {
-          method: 'DELETE',
-        });
+    if (!envelopeToDelete) {
+      return;
+    }
 
-        if (response.ok) {
-          console.log('Old envelope deleted successfully.');
-          const newEnvelopeList = envelopes.filter(r => r.id !== envelopeId);
-          setEnvelopes(newEnvelopeList);
-          setCurrentEnvelope(newEnvelopeList[0] || {});
-        } else {
-          throw new Error('Failed to delete the old envelope.');
-        }
-      } catch (error) {
-        console.error('Error deleting the old envelope:', error);
-        throw error;
+    if (!envelopeToDelete.type) {
+      const newEnvelopeList = envelopes.filter(r => r.id !== envelopeId);
+      setEnvelopes(newEnvelopeList);
+      setCurrentEnvelope(newEnvelopeList[0] || {});
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/project${envelopeToDelete.type}/${envelopeId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Old envelope deleted successfully.');
+        const newEnvelopeList = envelopes.filter(r => r.id !== envelopeId);
+        setEnvelopes(newEnvelopeList);
+        setCurrentEnvelope(newEnvelopeList[0] || {});
+      } else {
+        throw new Error('Failed to delete the old envelope.');
       }
+    } catch (error) {
+      console.error('Error deleting the old envelope:', error);
+      throw error;
     }
   }
 
@@ -140,7 +161,6 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
     }
   }
 
-
   const renderForm = () => {
     switch(currentEnvelope?.type) {
       case 'Insulation':
@@ -173,7 +193,7 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
           width: '100%',
         }}
       >
-        <form
+        {currentEnvelope && <form
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -188,14 +208,14 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
               label="Type"
               value={currentEnvelope?.type}
               disabled={currentEnvelope?.type ? true : false}
-              onChange={(e) => handleTypeChange('type', e.target.value)}
+              onChange={(e) => handleTypeChange(e.target.value)}
             >
               <MenuItem value={'Insulation'}>Insulation</MenuItem>
               <MenuItem value={'AirSealing'}>Air Sealing</MenuItem>
             </Select>
           </FormControl>
           {renderForm()}
-        </form>
+        </form>}
       </div>
     </div>
   )
