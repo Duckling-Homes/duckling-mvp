@@ -9,14 +9,9 @@ export interface _Object {
 
 export interface _Request {
   id?: number;
-  params: {
-    method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE',
-    url: string,
-    headers: unknown,
-    body: string,
-  }
+  url: string;
+  options?: RequestInit;
   added: number;
-  processed: boolean;
 }
 
 export class DucklingDexie extends Dexie {
@@ -27,11 +22,12 @@ export class DucklingDexie extends Dexie {
         super('DucklingDexie');
         this.version(1).stores({
             objects: 'id, type',
-            requests: '++id, added, processed'
-        })
+            requests: '++id, added'
+        });
     }
 
     putObject = async (obj: _Object) => {
+        obj.json = JSON.parse(JSON.stringify(obj.json));
         return this.objects.put(obj, obj.id);
     }
 
@@ -39,7 +35,12 @@ export class DucklingDexie extends Dexie {
         return this.objects.delete(objID);
     }
 
-    enqueueRequest = async (req: _Request) => {
+    enqueueRequest = async (url: string, options?: RequestInit) => {
+        const req = {
+            url,
+            options,
+            added: Date.now(),
+        }
         return this.requests.put(req);
     }
 

@@ -4,36 +4,103 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
 
 
-// Data Sync Manager
+// Data Sync Manager - Data Access Layer
 class APISyncManager {
 
+  /**
+   * 
+   * NOTE: ONLY READS ARE ALLOWED TO FETCH DATA DIRECTLY
+   */
 
-  constructor() {
-
-  }
-
-  get isOnline () {
-    return navigator.onLine
-  }
-
-
-  // Implement all APIs with Offline fallback
+  // Projects -- READ --
   listProjects = async () => {
-    console.log("IS ONLINE?", this.isOnline);
     if (this.isOnline) {
       const response = await fetch("/api/projects/");
       const projectList: Project[] = await response.json();
+      // Clear all stored projects
       await db.objects.where('type').equals('Project').delete();
       await Promise.all(projectList.map((proj) => {
         db.putObject({ id: proj.id!, type: "Project", json: proj})
       }))
-      console.log("Populated index with", projectList);
-
     }
+
     const objs = await db.objects.where("type").equals("Project").toArray();
     return objs.map(obj => obj.json) as Project[];
   }
+
+  getProject = async (projectID: string) => {
+    if (this.isOnline) {
+      const response = await fetch(`/api/projects/${projectID}`, {
+        method: 'GET',
+      });
+      const proj: Project = await response.json();
+      await db.putObject({ id: proj.id!, type: "Project", json: proj});
+    }
+
+    const obj = await db.objects.where("id").equals(projectID).first();
+    return obj?.json as Project;
+  }
+
+
+  updateProject = async (project: Project) => {
+    await db.enqueueRequest(`/api/projects/${project.id}`, { method: 'PATCH', body: JSON.stringify(project)});
+    await db.putObject({ id: project.id!, type: "Project", json: project});
+    this.pushChanges();
+    return project;
+  }
+
+  createProject = async (project: Project) => {
+    if (!project.id) {
+      project.id = uuidv4();
+    }
+    await db.enqueueRequest("/api/projects/", { method: 'POST', body: JSON.stringify(project)});
+    await db.putObject({ id: project.id!, type: "Project", json: project});
+    this.pushChanges();
+    return project;
+  }
+
+  deleteProject = async (projectID: string) => {
+    await db.enqueueRequest(`/api/projects/${projectID}`, { method: 'DELETE' });
+    await db.removeObject(projectID);
+    this.pushChanges();
+  }
+
+  sync = async () => {
+    if (!this.isOnline) {
+      console.warn("Ignore sync, is offline...");
+      return;
+    }
+    await this.pushChanges();
+    await this.pullLatest();
+  }
+
+  private pushChanges = async () => {
+    if (!this.isOnline) return;
+
+    let nextReq;
+    do {
+      try {
+        nextReq = await db.peekNextRequest();
+        if (nextReq) {
+          await fetch(nextReq!.url, nextReq!.options);
+          await db.dequeueRequest(nextReq.id!);
+        }
+      } catch (err) {
+        console.error("REQUEST FAILED TO PUSH...", {nextReq, err});
+      }
+    } while (nextReq)
+  }
+
+  private pullLatest = async () => {
+    this.listProjects();
+  }
+
+
+  get isOnline () {
+    return navigator.onLine
+  }
 }
+
 
 // Note: Today, just using 1 ModelStore to store all state for all objects for simplicity
 // In the future we may want to split by Object type.
@@ -55,58 +122,27 @@ export class _ModelStore {
     return Array.from(this.projectsByID.values())
   }
 
+  // TODO: Remove this
   initialLoad = async () => {
-    console.log('Fetching project');
-    this.apiSyncManager.listProjects()
-    .then(res => console.log("LIST PROJECT RESULT", res));
-
-    if (this.projectsByID.size > 0) {
-      console.log("skipping because already loaded");
-      return;
-    }
-    
-    try {
-      const response = await fetch("/api/projects/");
-      if (!response.ok) {
-        throw new Error('Failed to fetch projects');
-      }
-
-      const data = await response.json();
-      const projectsWithFormattedDate = data.map((project: Project) => ({
-        ...project,
-        createdAt: project.createdAt
-          ? new Date(project.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })
-          : undefined,
-      }));
-
-      for (const proj of projectsWithFormattedDate) {
-        this.projectsByID.set(proj.id, proj);
-      }
-    } catch (error) {
-      console.error('Error fetching projects:', error);
+    await this.apiSyncManager.sync();
+    const projects = await this.apiSyncManager.listProjects();
+    for (const proj of projects) {
+      this.projectsByID.set(proj.id!, proj);
     }
   }
 
-  fetchProject = async (projectId: string) => {
-    try {
-      const response = await fetch(`/api/projects/${projectId}`, {
-        method: 'GET',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch project');
-      }
-
-      const data = await response.json();
-      this.currentProject = data;
-      return this.currentProject;
-    } catch (error) {
-      console.error('Error fetching project:', error);
+  setCurrentProject = async (projectId: string) => {
+    const project = await this.apiSyncManager.getProject(projectId);
+    const toUpdate = this.projectsByID.get(projectId);
+    if (toUpdate) {
+      Object.assign(toUpdate, project);
+    } else {
+      this.projectsByID.set(projectId, project);
     }
+
+    console.log("GOT", project);
+    this.currentProject = project;
+    return project;
   }
 
   clearCurrentProject() {
@@ -115,96 +151,26 @@ export class _ModelStore {
 
   // TODO: Need to build offline path for this guy - may require generating id
   createProject = async (newProject: Project) => {
-    try {
-      newProject.id = uuidv4();
-  
-      const response = await fetch("/api/projects/", {
-        method: 'POST',
-        body: JSON.stringify(newProject),
-      });
-
-      if (!response?.ok) {
-        throw new Error('Failed to create project');
-      }
-
-      const project = await response.json();
-      this.projectsByID.set(project.id, project);
-
-    } catch (error) {
-      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-        // ok
-        const project: Project = { ...newProject, createdAt: '-1' } as Project;
-        if (project.id) {
-          this.projectsByID.set(project.id, project);
-          console.info("Network error, will retry later");
-        } else {
-          console.error("Project ID is undefined");
-        }
-        return;
-      }
-    }
+    const created = await this.apiSyncManager.createProject(newProject);
+    this.projectsByID.set(created.id!, created);
+    return created;
   }
 
   deleteProject = async (projectId: string) => {
-    try {
-      const response = await fetch(`/api/projects/${projectId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete project');
-      }
-
-      this.projectsByID.delete(projectId);
-    } catch (error) {
-
-      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-        // ok
-        this.projectsByID.delete(projectId);
-        console.info("Network error, will retry later");
-        return;
-      }
-
-      console.error('Error deleting project:', error);
-    }
+    await this.apiSyncManager.deleteProject(projectId);
+    this.projectsByID.delete(projectId);
   }
 
   patchProject = async (project: Project) => {
-    try {
-      const response = await fetch(`/api/projects/${project.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(project),
-      });
+    const updated = await this.apiSyncManager.updateProject(project);
 
-      if (!response.ok) {
-        throw new Error('Failed to update project');
-      }
-
-      if (project.id) {
-        const found = this.fetchProject(project.id);
-        Object.assign(found, project);
-      } else {
-        console.error("Project ID is undefined");
-      }
-
-    } catch (error) {
-
-      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-        // ok
-        if (project.id) {
-          const found = this.fetchProject(project.id);
-          Object.assign(found, project);
-          console.info("Network error, will retry later");
-          return;
-        } else {
-          console.error("Project ID is undefined");
-          return; 
-        }
-      }
-
-      console.error('Error updating project:', error);
-      throw error;
+    if (this.currentProject?.id === project.id) {
+      this.currentProject = updated;
     }
+
+    this.projectsByID.set(updated.id!, updated);
+
+    return updated;
   }
 
   patchProjectData = async (projectId: string, projectData: ProjectData) => {
