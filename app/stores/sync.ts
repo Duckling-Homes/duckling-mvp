@@ -67,7 +67,7 @@ class ProjectSyncOperations {
       update = async (project: Project) => {
         await db.enqueueRequest(`/api/projects/${project.id}`, { method: 'PATCH', body: JSON.stringify(project)});
         await db.putObject({ id: project.id!, type: "Project", json: project});
-        SyncManager.pushChanges();
+        SyncAPI.pushChanges();
         return project;
       }
 
@@ -80,7 +80,7 @@ class ProjectSyncOperations {
             proj.data = data;
             return proj;
         })
-        SyncManager.pushChanges();
+        SyncAPI.pushChanges();
         return data;
       }
     
@@ -90,14 +90,14 @@ class ProjectSyncOperations {
         }
         await db.enqueueRequest("/api/projects/", { method: 'POST', body: JSON.stringify(project)});
         await db.putObject({ id: project.id!, type: "Project", json: project});
-        SyncManager.pushChanges();
+        SyncAPI.pushChanges();
         return project;
       }
     
       delete = async (projectID: string) => {
         await db.enqueueRequest(`/api/projects/${projectID}`, { method: 'DELETE' });
         await db.removeObject(projectID);
-        SyncManager.pushChanges();
+        SyncAPI.pushChanges();
       }
 
       _mutateDBProject = async (projectID: string, edit: (project: Project) => Project) => {
@@ -120,7 +120,7 @@ class ApplianceSyncOperations {
               })
         });
 
-        await SyncManager.projects._mutateDBProject(projectID, (proj) => {
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
             proj.appliances = proj.appliances ?? [];
             proj.appliances.push(appliance);
             return proj;
@@ -137,7 +137,7 @@ class ApplianceSyncOperations {
             })
         });
 
-        await SyncManager.projects._mutateDBProject(projectID, (proj) => {
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
             const idx = proj.appliances?.findIndex(app => app.id === appliance.id)
             if (idx) {
                 proj.appliances?.splice(idx, 1)
@@ -154,7 +154,7 @@ class ApplianceSyncOperations {
             method: 'DELETE',
         })
 
-        await SyncManager.projects._mutateDBProject(projectID, (proj) => {
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
             const idx = proj.appliances?.findIndex(app => app.id === applianceId)
             if (idx) {
                 proj.appliances?.splice(idx, 1)
@@ -276,8 +276,11 @@ class APISyncManager {
     }
   
     pullLatest = async () => {
-        await this.projects.list();
+        const projects = await this.projects.list();
+        projects.forEach(p => {
+            this.projects.get(p.id!)
+        })
     }
   }
 
-  export const SyncManager = new APISyncManager();
+  export const SyncAPI = new APISyncManager();
