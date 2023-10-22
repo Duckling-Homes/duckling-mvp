@@ -77,6 +77,7 @@ export class _ModelStore {
 
   fetchOrganization = async (organizationId: string) => {
     this.organization = await SyncManager.organizations.get(organizationId)
+    return this.organization;
   }
 }
 
