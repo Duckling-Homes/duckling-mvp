@@ -22,22 +22,22 @@ export class _ModelStore {
 
   // TODO: Remove this
   initialLoad = async () => {
+    SyncManager.setBackgroundSync(true, 15000);
     await SyncManager.sync();
-    const projects = await SyncManager.listProjects();
+    const projects = await SyncManager.projects.list();
     for (const proj of projects) {
       this.projectsByID.set(proj.id!, proj);
     }
   }
 
   setCurrentProject = async (projectId: string) => {
-    const project = await SyncManager.getProject(projectId);
+    const project = await SyncManager.projects.get(projectId);
     const toUpdate = this.projectsByID.get(projectId);
     if (toUpdate) {
       Object.assign(toUpdate, project);
     } else {
       this.projectsByID.set(projectId, project);
     }
-
     console.log("GOT", project);
     this.currentProject = project;
     return project;
@@ -49,18 +49,18 @@ export class _ModelStore {
 
   // TODO: Need to build offline path for this guy - may require generating id
   createProject = async (newProject: Project) => {
-    const created = await SyncManager.createProject(newProject);
+    const created = await SyncManager.projects.create(newProject);
     this.projectsByID.set(created.id!, created);
     return created;
   }
 
   deleteProject = async (projectId: string) => {
-    await SyncManager.deleteProject(projectId);
+    await SyncManager.projects.delete(projectId);
     this.projectsByID.delete(projectId);
   }
 
   patchProject = async (project: Project) => {
-    const updated = await SyncManager.updateProject(project);
+    const updated = await SyncManager.projects.update(project);
 
     if (this.currentProject?.id === project.id) {
       this.currentProject = updated;
@@ -140,15 +140,3 @@ export default ModelStore;
  * 
  * 
  */
-
-// class _ModelStore2 {
-
-//   projectsByID: Map<string, Project> = new Map()
-//   organization?: string;
-//   syncManager = new APISyncManager();
-
-//   constructor () {
-//     makeAutoObservable(this);
-//   }
-
-// }
