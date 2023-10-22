@@ -39,6 +39,7 @@
     "sass": "^1.68.0",
     "typescript": "5.2.2",
     "uuid": "^9.0.1",
+    "workbox": "^0.0.0",
     "yarn": "^1.22.19"
   },
   "devDependencies": {

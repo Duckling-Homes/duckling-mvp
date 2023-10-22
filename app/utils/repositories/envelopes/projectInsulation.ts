@@ -6,6 +6,7 @@ export async function createProjectInsulation(
 ) {
   return await prisma.projectInsulation.create({
     data: {
+      id: insulationData.id,
       name: insulationData.name,
       insulationLocation: insulationData.insulationLocation,
       insulationCondition: insulationData.insulationCondition,

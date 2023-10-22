@@ -112,7 +112,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       isInduction: false,
     };
 
-    const newApplianceList = [...appliances, newAppliance];
     setCurrentAppliance(newAppliance);
   }
 

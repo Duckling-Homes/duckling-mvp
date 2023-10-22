@@ -8,6 +8,7 @@ import { createProjectRoom } from '@/app/utils/repositories/projectRoom'
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
   const {
+    id,
     name,
     type,
     width,
@@ -30,6 +31,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
 
   return NextResponse.json(
     await createProjectRoom({
+      id,
       name,
       type,
       width,

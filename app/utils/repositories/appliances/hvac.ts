@@ -6,6 +6,7 @@ export async function createHVACAppliance(
 ) {
   return await prisma.hVAC.create({
     data: {
+      id: hvacData.id,
       hvacSystemType: hvacData.hvacSystemType,
       havcSystem: hvacData.havcSystem,
       fuel: hvacData.fuel,

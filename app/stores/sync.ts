@@ -218,7 +218,7 @@ class EnvelopeSyncOperations {
     }
 
     update = async (projectID: string, envelope: ProjectEnvelope) => {
-        await db.enqueueRequest(`/api/appliances/${envelope.type}/${envelope.id}`, {
+        await db.enqueueRequest(`/api/project${envelope.type}/${envelope.id}`, {
             method: 'PATCH',
             body: JSON.stringify({
               ...envelope,
@@ -239,7 +239,7 @@ class EnvelopeSyncOperations {
     }
 
     delete = async (projectID: string, envelopeType: string, envelopeID: string) => {
-        await db.enqueueRequest(`/api/appliances/${envelopeType}/${envelopeID}`, {
+        await db.enqueueRequest(`/api/project${envelopeType}/${envelopeID}`, {
             method: 'DELETE',
         })
         await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
