@@ -213,3 +213,27 @@ export class _ModelStore {
 
 const ModelStore = new _ModelStore();
 export default ModelStore;
+
+
+// Write Thru Cache.
+
+// Idea see if we can do it without service worker
+/// use navigator.onLine
+
+/****
+ * .backgroundSync:
+ *  if internet connected,
+ *  -> Write all pending updates
+ *  -> Pull all data down (pre-selected/pre-written): If internet, do fetches on the things that are 
+ * 
+ * .addProject
+ * .updateProject
+ * .removeProject
+ * .getProject
+ * .projects
+ * .organizations
+ * 
+ * 
+ * 
+ */
+
