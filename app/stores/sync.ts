@@ -117,9 +117,7 @@ class ProjectSyncOperations {
       }
     
       create = async (project: Project) => {
-        if (!project.id) {
-          project.id = uuidv4();
-        }
+        project.id = project.id ?? uuidv4();
         await db.enqueueRequest("/api/projects/", { method: 'POST', body: JSON.stringify(project)});
         await db.putObject({ id: project.id!, type: "Project", json: project});
         SyncAPI.pushChanges();
@@ -143,7 +141,7 @@ class ProjectSyncOperations {
 class ApplianceSyncOperations {
 
     create = async (projectID: string, applianceType: string, appliance: ProjectAppliance) => {
-        appliance.id = uuidv4();
+        appliance.id = appliance.id ?? uuidv4();
         await db.enqueueRequest(`/api/appliances/${applianceType}`, {
             method: 'POST',
             body: JSON.stringify({
@@ -200,7 +198,7 @@ class ApplianceSyncOperations {
 class EnvelopeSyncOperations {
 
     create = async (projectID: string, envelope: ProjectEnvelope) => {
-        envelope.id = uuidv4();
+        envelope.id = envelope.id ?? uuidv4();
         await db.enqueueRequest(`/api/project${envelope.type}`, {
             method: 'POST',
             body: JSON.stringify({
@@ -271,7 +269,7 @@ class ElectricalSyncOperations {
 class RoomSyncOperations {
 
     create = async (projectID: string, room: ProjectRoom) => {
-        room.id = uuidv4();
+        room.id = room.id ?? uuidv4();
         await db.enqueueRequest('/api/projectRooms', {
             method: 'POST',
             body: JSON.stringify(room)

@@ -61,7 +61,7 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
     const createdEnvelope = await ModelStore.createEnvelope(currentProject.id!, envelope);
     console.log("POST WAS CALLED", createdEnvelope.id);
     const updatedEnvelopes = envelopes.map((envelope) => {
-      if (envelope.id === "NEW") {
+      if (envelope.id === createdEnvelope.id) {
         return { ...envelope, ...createdEnvelope };
       }
       return envelope;
