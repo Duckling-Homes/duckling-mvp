@@ -1,4 +1,4 @@
-import { Organization, Project, ProjectAppliance, ProjectData } from '@/types/types';
+import { Organization, Project, ProjectAppliance, ProjectData, ProjectRoom } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
 import { SyncAPI } from './sync';
 
@@ -33,7 +33,7 @@ export class _ModelStore {
   }
 
   setCurrentProject = async (projectId: string) => {
-    const project = await this.getProject(projectId);
+    const project = await this.loadProject(projectId);
     this.currentProject = project;
     return project;
   }
@@ -42,7 +42,7 @@ export class _ModelStore {
     this.currentProject = null;
   }
 
-  getProject = async (projectID: string) => {
+  loadProject = async (projectID: string) => {
     const project = await SyncAPI.projects.get(projectID);
     if (this.currentProject?.id === projectID) {
       this.currentProject = project;
@@ -73,7 +73,7 @@ export class _ModelStore {
 
   patchProjectData = async (projectId: string, projectData: ProjectData) => {
     const data = await SyncAPI.projects.updateProjectData(projectId, projectData);
-    this.getProject(projectId);
+    this.loadProject(projectId);
     return data;
   }
 
@@ -84,19 +84,36 @@ export class _ModelStore {
 
   createAppliance = async (projectID: string, applianceType: string, appliance: ProjectAppliance) => {
     const created = await SyncAPI.appliances.create(projectID, applianceType, appliance);
-    await this.getProject(projectID);
+    await this.loadProject(projectID);
     return created;
   }
 
   updateAppliance = async (projectID: string, applianceType: string, appliance: ProjectAppliance) => {
     const updated = await SyncAPI.appliances.update(projectID, applianceType, appliance);
-    await this.getProject(projectID);
+    await this.loadProject(projectID);
     return updated;
   }
 
   deleteAppliance = async (projectID: string, applianceType: string, applianceId: string) => {
     await SyncAPI.appliances.delete(projectID, applianceType, applianceId);
-    await this.getProject(projectID);
+    await this.loadProject(projectID);
+  }
+
+  createRoom = async (projectID: string, room: ProjectRoom) => {
+    const created = await SyncAPI.rooms.create(projectID, room);
+    await this.loadProject(projectID);
+    return created;
+  }
+
+  updateRoom = async (projectID: string, room: ProjectRoom) => {
+    const updated = await SyncAPI.rooms.update(projectID, room);
+    await this.loadProject(projectID);
+    return updated;
+  }
+
+  deleteRoom = async (projectID: string, roomID: string) => {
+    await SyncAPI.rooms.delete(projectID, roomID);
+    await this.loadProject(projectID);
   }
 
 }

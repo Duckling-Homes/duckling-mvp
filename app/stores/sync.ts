@@ -13,7 +13,7 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
-import { Organization, Project, ProjectAppliance, ProjectData } from '@/types/types';
+import { Organization, Project, ProjectAppliance, ProjectData, ProjectRoom } from '@/types/types';
 import debounce from 'lodash/debounce';
 
 const isOnline = () => {
@@ -228,16 +228,55 @@ class ElectricalSyncOperations {
 }
 
 class RoomSyncOperations {
-    create = async () => {
 
+    create = async (projectID: string, room: ProjectRoom) => {
+        room.id = uuidv4();
+        await db.enqueueRequest('/api/projectRooms', {
+            method: 'POST',
+            body: JSON.stringify(room)
+        });
+
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            proj.rooms = proj.rooms ?? [];
+            proj.rooms.push(room);
+            return proj;
+        });
+
+        return room;
     }
 
-    update = async () => {
 
+    update = async (projectID: string, room: ProjectRoom) => {
+        await db.enqueueRequest(`/api/projectRooms/${room.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              room,
+              projectId: projectID
+            })
+        });
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            const idx = proj.rooms?.findIndex(r => r.id === room.id)
+            if (idx) {
+                proj.rooms?.splice(idx, 1)
+            }
+            proj.rooms?.push(room);
+            return proj;
+        });
+        return room;
     }
 
-    delete = async () => {
-        
+    delete = async (projectID: string, roomID: string) => {
+        await db.enqueueRequest(`/api/projectRooms/${roomID}`, {
+            method: 'DELETE',
+        })
+
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            const idx = proj.rooms?.findIndex(r => r.id === roomID)
+            if (idx) {
+                proj.rooms?.splice(idx, 1)
+            }
+            return proj;
+        });
     }
 }
 
