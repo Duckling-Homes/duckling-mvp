@@ -13,7 +13,7 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
-import { Organization, Project, ProjectAppliance, ProjectData, ProjectRoom } from '@/types/types';
+import { Organization, Project, ProjectAppliance, ProjectData, ProjectEnvelope, ProjectRoom } from '@/types/types';
 import debounce from 'lodash/debounce';
 
 const isOnline = () => {
@@ -198,16 +198,57 @@ class ApplianceSyncOperations {
 
 
 class EnvelopeSyncOperations {
-    create = async () => {
 
+    create = async (projectID: string, envelope: ProjectEnvelope) => {
+        envelope.id = uuidv4();
+        await db.enqueueRequest(`/api/project${envelope.type}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                ...envelope,
+                projectId: projectID
+              })
+        });
+
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            proj.envelopes = proj.envelopes ?? [];
+            proj.envelopes.push(envelope);
+            return proj;
+        });
+        return envelope;
     }
 
-    update = async () => {
+    update = async (projectID: string, envelope: ProjectEnvelope) => {
+        await db.enqueueRequest(`/api/appliances/${envelope.type}/${envelope.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              ...envelope,
+              projectId: projectID
+            })
+        });
 
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            const idx = proj.envelopes?.findIndex(env => env.id === envelope.id)
+            if (idx) {
+                proj.envelopes?.splice(idx, 1)
+            }
+            proj.envelopes?.push(envelope);
+            return proj;
+        });
+
+        return envelope;
     }
 
-    delete = async () => {
-        
+    delete = async (projectID: string, envelopeType: string, envelopeID: string) => {
+        await db.enqueueRequest(`/api/appliances/${envelopeType}/${envelopeID}`, {
+            method: 'DELETE',
+        })
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            const idx = proj.envelopes?.findIndex(env => env.id === envelopeID)
+            if (idx) {
+                proj.envelopes?.splice(idx, 1)
+            }
+            return proj;
+        });
     }
 
 }
