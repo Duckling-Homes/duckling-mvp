@@ -215,7 +215,10 @@ const ModelStore = new _ModelStore();
 export default ModelStore;
 
 
-// Write Thru Cache.
+// New implementation plan...
+// Screw workbox, will implement an indexdb queued loop
+// Everything writes to indexdb and a consumer offloads the writes
+// Essentially a write thru cache. **CQRS**
 
 // Idea see if we can do it without service worker
 /// use navigator.onLine
