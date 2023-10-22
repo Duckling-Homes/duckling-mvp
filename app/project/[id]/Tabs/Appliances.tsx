@@ -9,6 +9,7 @@ import CooktopForm from "./AppliancesForms/CooktopForm";
 import DefaultForm from "./AppliancesForms/DefaultForm";
 import { Project, ProjectAppliance } from "@/types/types";
 import { v4 as uuidv4 } from 'uuid';
+import ModelStore from "@/app/stores/modelStore";
 
 const TYPES = [
   {name: "HVAC", value: "hvac"},
@@ -86,23 +87,11 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       return;
     }
 
-    try {
-      const response = await fetch(`/api/appliances/${api}/${applianceId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        console.log('Appliance deleted successfully.');
-        const newApplianceList = appliances.filter(r => r.id !== applianceId);
-        setAppliances(newApplianceList);
-        setCurrentAppliance(newApplianceList[0] || {});
-      } else {
-        throw new Error('Failed to delete the appliance.');
-      }
-    } catch (error) {
-      console.error('Error deleting the appliance:', error);
-      throw error;
-    }
+    // TODO: interrogate if we need this appliance list...
+    await ModelStore.deleteAppliance(currentProject.id!, api, applianceId);
+    const newApplianceList = appliances.filter(r => r.id !== applianceId);
+    setAppliances(newApplianceList);
+    setCurrentAppliance(newApplianceList[0] || {});
   }
 
   function createAppliance() {
@@ -154,37 +143,9 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         break;
     }
 
-    try {
-      const oldId = updatedAppliance.id;
-      delete updatedAppliance.id;
-
-      const data = await fetch(`/api/appliances/${api}`, {
-        method: 'POST',
-        body: JSON.stringify({
-            ...updatedAppliance,
-            projectId: currentProject.id
-          })
-      });
-
-      if (data.ok) {
-        const response = await data.json()
-        const createdAppliance = {...response, type: updatedAppliance.type}
-        const updatedAppliances = appliances.map((appliance) => {
-          if (appliance.id === oldId) {
-            return { ...appliance, ...createdAppliance };
-          }
-          return appliance;
-        });
-
-        setAppliances(updatedAppliances);
-        setCurrentAppliance(createdAppliance);
-      } else {
-        throw new Error('Failed to create a new appliance.');
-      }
-    } catch (error) {
-      console.error('Error creating a new appliance:', error);
-      throw error;
-    }
+    const appliance = await ModelStore.createAppliance(currentProject.id!, api, updatedAppliance);
+    setAppliances([...appliances, appliance]);
+    setCurrentAppliance(appliance);
   }
 
   async function patchAppliance(updatedAppliance = currentAppliance) {
@@ -210,35 +171,17 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
 
 
     if (updatedAppliance) {
-      try {
-        const data = await fetch(`/api/appliances/${api}/${updatedAppliance.id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            ...updatedAppliance,
-            projectId: currentProject.id
-          })
-        });
 
-        if (data.ok) {
-          const response = await data.json();
-          response.type = updatedAppliance.type;
-
-          const updatedAppliances = appliances.map((appliance) => {
+      const updated = await ModelStore.updateAppliance(currentProject.id!, api, updatedAppliance);
+      const updatedAppliances = appliances.map((appliance) => {
             if (appliance.id === updatedAppliance.id) {
               return { ...appliance, ...updatedAppliance };
             }
-            return appliance;
-          });
+        return appliance;
+      });
 
-          setAppliances(updatedAppliances);
-          setCurrentAppliance(response);
-          console.log(response);
-        } else {
-          throw new Error('Failed to update the appliance.');
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      setAppliances(updatedAppliances);
+      setCurrentAppliance(updated);
     }
   }
 

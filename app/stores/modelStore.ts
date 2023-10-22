@@ -1,4 +1,4 @@
-import { Organization, Project, ProjectData } from '@/types/types';
+import { Organization, Project, ProjectAppliance, ProjectData } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
 import { SyncManager } from './sync';
 
@@ -30,19 +30,22 @@ export class _ModelStore {
   }
 
   setCurrentProject = async (projectId: string) => {
-    const project = await SyncManager.projects.get(projectId);
-    const toUpdate = this.projectsByID.get(projectId);
-    if (toUpdate) {
-      Object.assign(toUpdate, project);
-    } else {
-      this.projectsByID.set(projectId, project);
-    }
+    const project = await this.getProject(projectId);
     this.currentProject = project;
     return project;
   }
 
   clearCurrentProject() {
     this.currentProject = null;
+  }
+
+  getProject = async (projectID: string) => {
+    const project = await SyncManager.projects.get(projectID);
+    if (this.currentProject?.id === projectID) {
+      this.currentProject = project;
+    }
+    this.projectsByID.set(projectID, project);
+    return project;
   }
 
   createProject = async (newProject: Project) => {
@@ -67,18 +70,32 @@ export class _ModelStore {
 
   patchProjectData = async (projectId: string, projectData: ProjectData) => {
     const data = await SyncManager.projects.updateProjectData(projectId, projectData);
-    if (this.currentProject?.id === projectId) {
-      this.currentProject.data = data;
-    }
-    const project = this.projectsByID.get(projectId)!;
-    project.data = data;
-    this.projectsByID.set(projectId, project)
+    this.getProject(projectId);
+    return data;
   }
 
   fetchOrganization = async (organizationId: string) => {
     this.organization = await SyncManager.organizations.get(organizationId)
     return this.organization;
   }
+
+  createAppliance = async (projectID: string, applianceType: string, appliance: ProjectAppliance) => {
+    const created = await SyncManager.appliances.create(projectID, applianceType, appliance);
+    await this.getProject(projectID);
+    return created;
+  }
+
+  updateAppliance = async (projectID: string, applianceType: string, appliance: ProjectAppliance) => {
+    const updated = await SyncManager.appliances.update(projectID, applianceType, appliance);
+    await this.getProject(projectID);
+    return updated;
+  }
+
+  deleteAppliance = async (projectID: string, applianceType: string, applianceId: string) => {
+    await SyncManager.appliances.delete(projectID, applianceType, applianceId);
+    await this.getProject(projectID);
+  }
+
 }
 
 const ModelStore = new _ModelStore();

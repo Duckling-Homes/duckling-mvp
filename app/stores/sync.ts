@@ -12,7 +12,7 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
-import { Organization, Project, ProjectData } from '@/types/types';
+import { Organization, Project, ProjectAppliance, ProjectData } from '@/types/types';
 
 const isOnline = () => {
     return navigator?.onLine;
@@ -58,9 +58,9 @@ class ProjectSyncOperations {
           });
           const proj: Project = await response.json();
           await db.putObject({ id: proj.id!, type: "Project", json: proj});
-        }
-    
+        }    
         const obj = await db.objects.where("id").equals(projectID).first();
+        console.log("GOT", projectID, obj?.json);
         return obj?.json as Project;
       }
     
@@ -76,9 +76,10 @@ class ProjectSyncOperations {
             method: 'POST',
             body: JSON.stringify(data),
         });
-        const project = await this.get(projectID);
-        project.data = data;
-        db.putObject({ id: project.id!, type: "Project", json: project});
+        this._mutateDBProject(projectID, (proj) => {
+            proj.data = data;
+            return proj;
+        })
         SyncManager.pushChanges();
         return data;
       }
@@ -98,7 +99,116 @@ class ProjectSyncOperations {
         await db.removeObject(projectID);
         SyncManager.pushChanges();
       }
+
+      _mutateDBProject = async (projectID: string, edit: (project: Project) => Project) => {
+        const project = await this.get(projectID);
+        const edited = edit(project);
+        db.putObject({ id: project.id!, type: "Project", json: edited});
+      }
 }
+
+
+class ApplianceSyncOperations {
+
+    create = async (projectID: string, applianceType: string, appliance: ProjectAppliance) => {
+        appliance.id = uuidv4();
+        await db.enqueueRequest(`/api/appliances/${applianceType}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                ...appliance,
+                projectId: projectID
+              })
+        });
+
+        await SyncManager.projects._mutateDBProject(projectID, (proj) => {
+            proj.appliances = proj.appliances ?? [];
+            proj.appliances.push(appliance);
+            return proj;
+        });
+        return appliance
+    }
+
+    update = async (projectID: string, applianceType: string, appliance: ProjectAppliance) => {
+        await db.enqueueRequest(`/api/appliances/${applianceType}/${appliance.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              ...appliance,
+              projectId: projectID
+            })
+        });
+
+        await SyncManager.projects._mutateDBProject(projectID, (proj) => {
+            const idx = proj.appliances?.findIndex(app => app.id === appliance.id)
+            if (idx) {
+                proj.appliances?.splice(idx, 1)
+            }
+            proj.appliances?.push(appliance);
+            return proj;
+        });
+
+        return appliance;
+    }
+
+    delete = async (projectID: string, applianceType: string, applianceId: string) => {
+        await db.enqueueRequest(`/api/appliances/${applianceType}/${applianceId}`, {
+            method: 'DELETE',
+        })
+
+        await SyncManager.projects._mutateDBProject(projectID, (proj) => {
+            const idx = proj.appliances?.findIndex(app => app.id === applianceId)
+            if (idx) {
+                proj.appliances?.splice(idx, 1)
+            }
+            return proj;
+        });
+    }
+}
+
+
+class EnvelopeSyncOperations {
+    create = async () => {
+
+    }
+
+    update = async () => {
+
+    }
+
+    delete = async () => {
+        
+    }
+
+}
+
+class ElectricalSyncOperations {
+    create = async () => {
+
+    }
+
+    update = async () => {
+
+    }
+
+    delete = async () => {
+        
+    }
+
+}
+
+class RoomSyncOperations {
+    create = async () => {
+
+    }
+
+    update = async () => {
+
+    }
+
+    delete = async () => {
+        
+    }
+}
+
 
 /**
  * This is the interface to access and mutate data for our app.
@@ -127,6 +237,10 @@ class APISyncManager {
     // Sub-APIs
     organizations = new OrganizationSyncOperatsions();
     projects = new ProjectSyncOperations();
+    appliances = new ApplianceSyncOperations();
+    electrical = new ElectricalSyncOperations();
+    envelopes = new EnvelopeSyncOperations();
+    rooms = new RoomSyncOperations();
 
     sync = async () => {
       if (!isOnline()) {
