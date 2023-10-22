@@ -12,10 +12,26 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
-import { Project } from '@/types/types';
+import { Organization, Project, ProjectData } from '@/types/types';
 
 const isOnline = () => {
     return navigator?.onLine;
+}
+
+
+class OrganizationSyncOperatsions {
+    get = async (organizationID: string) => {
+        if (isOnline()) {
+            const response = await fetch(`/api/organizations/${organizationID}`, {
+                method: 'GET',
+              })
+            const org: Organization = await response.json();
+            await db.putObject({ id: organizationID, type: "Organizations", json: org});
+        }
+
+        const resp = await db.objects.where("id").equals(organizationID).first();
+        return resp?.json as Organization;
+    }
 }
 
 class ProjectSyncOperations {
@@ -53,6 +69,18 @@ class ProjectSyncOperations {
         await db.putObject({ id: project.id!, type: "Project", json: project});
         SyncManager.pushChanges();
         return project;
+      }
+
+      updateProjectData = async (projectID: string, data: ProjectData) => {
+        await db.enqueueRequest(`/api/projects/${projectID}/data`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+        const project = await this.get(projectID);
+        project.data = data;
+        db.putObject({ id: project.id!, type: "Project", json: project});
+        SyncManager.pushChanges();
+        return data;
       }
     
       create = async (project: Project) => {
@@ -97,6 +125,7 @@ class APISyncManager {
     bgSyncInterval: NodeJS.Timeout | null = null;
 
     // Sub-APIs
+    organizations = new OrganizationSyncOperatsions();
     projects = new ProjectSyncOperations();
 
     sync = async () => {
