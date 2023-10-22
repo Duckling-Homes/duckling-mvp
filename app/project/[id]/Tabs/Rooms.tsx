@@ -74,64 +74,43 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   }, [currentProject])
 
   async function deleteRoom(roomId: string) {
-    try {
-      // await fetch(`/api/projectRooms/${roomId}`, {
-      //   method: 'DELETE',
-      // })
-
-      await ModelStore.deleteRoom(currentProject.id!, roomId);
-
-      const newRooms = rooms.filter(r => r.id !== roomId);
-      setRooms(newRooms);
-      setCurrentRoom(newRooms[0] || {});
-    } catch (error) {
-      console.error(error)
-    }
+    await ModelStore.deleteRoom(currentProject.id!, roomId);
+    const newRooms = rooms.filter(r => r.id !== roomId);
+    setRooms(newRooms);
+    setCurrentRoom(newRooms[0] || {});
   }
 
   async function createRoom() {
-    try {
-      const response = await ModelStore.createRoom(currentProject.id!, {
-          name: "New Room",
-          projectId: currentProject.id,
-          type: "",
-          width: 0,
-          length: 0,
-          ceilingHeight: 0,
-          floor: "",
-          usage: "",
-          comfortIssueTags: [],
-          safetyIssueTags: [],
-          notes: "",
-      })
-      const newRoomList = [...rooms, response];
+    const response = await ModelStore.createRoom(currentProject.id!, {
+        name: "New Room",
+        projectId: currentProject.id,
+        type: "",
+        width: 0,
+        length: 0,
+        ceilingHeight: 0,
+        floor: "",
+        usage: "",
+        comfortIssueTags: [],
+        safetyIssueTags: [],
+        notes: "",
+    })
+    const newRoomList = [...rooms, response];
 
-      setRooms(newRoomList);
-      setCurrentRoom(response);
-      
-    } catch (error) {
-      console.error(error)
-    }
+    setRooms(newRoomList);
+    setCurrentRoom(response);
   }
 
   async function patchRoom(updatedRoom = currentRoom) {
     console.log(rooms)
-      try {
-
-        const response = await ModelStore.updateRoom(currentProject.id!, updatedRoom);
-        const updatedRooms = rooms.map((room) => {
-          if (room.id === updatedRoom.id) {
-            return { ...room, ...updatedRoom };
-          }
-          return room;
-        });
-        setRooms(updatedRooms);
-        setCurrentRoom(response);
-      
-      } catch (error) {
-        console.error(error)
+    const response = await ModelStore.updateRoom(currentProject.id!, updatedRoom);
+    const updatedRooms = rooms.map((room) => {
+      if (room.id === updatedRoom.id) {
+        return { ...room, ...updatedRoom };
       }
-    
+      return room;
+    });
+    setRooms(updatedRooms);
+    setCurrentRoom(response);
   }
 
   const handleChipChange = (inputName: string, value: string) => {
