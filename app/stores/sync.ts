@@ -30,7 +30,7 @@ const publishChanges = debounce(async () => {
         if (nextReq) {
           await fetch(nextReq!.url, nextReq!.options);
           await db.dequeueRequest(nextReq.id!);
-          console.log("Dequeued", nextReq.id);
+          console.log("Dequeued", nextReq.options?.method, nextReq.url, nextReq.id);
         }
       } catch (err) {
         console.error("REQUEST FAILED TO PUSH...", {nextReq, err});
@@ -249,10 +249,7 @@ class RoomSyncOperations {
     update = async (projectID: string, room: ProjectRoom) => {
         await db.enqueueRequest(`/api/projectRooms/${room.id}`, {
             method: 'PATCH',
-            body: JSON.stringify({
-              room,
-              projectId: projectID
-            })
+            body: JSON.stringify(room)
         });
         await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
             const idx = proj.rooms?.findIndex(r => r.id === room.id)
