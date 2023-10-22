@@ -1,6 +1,39 @@
 import { Organization, Project, ProjectData } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
 import { v4 as uuidv4 } from 'uuid';
+import { db } from './db';
+
+
+// Data Sync Manager
+class APISyncManager {
+
+
+  constructor() {
+
+  }
+
+  get isOnline () {
+    return navigator.onLine
+  }
+
+
+  // Implement all APIs with Offline fallback
+  listProjects = async () => {
+    console.log("IS ONLINE?", this.isOnline);
+    if (this.isOnline) {
+      const response = await fetch("/api/projects/");
+      const projectList: Project[] = await response.json();
+      await db.objects.where('type').equals('Project').delete();
+      await Promise.all(projectList.map((proj) => {
+        db.putObject({ id: proj.id!, type: "Project", json: proj})
+      }))
+      console.log("Populated index with", projectList);
+
+    }
+    const objs = await db.objects.where("type").equals("Project").toArray();
+    return objs.map(obj => obj.json) as Project[];
+  }
+}
 
 // Note: Today, just using 1 ModelStore to store all state for all objects for simplicity
 // In the future we may want to split by Object type.
@@ -9,6 +42,8 @@ export class _ModelStore {
   projectsByID: Map<string, Project> = observable.map(new Map());
   currentProject: Project | null = null;
   organization: Organization | null = null;
+
+  apiSyncManager = new APISyncManager();
 
   constructor() {
     makeAutoObservable(this, {
@@ -22,6 +57,8 @@ export class _ModelStore {
 
   initialLoad = async () => {
     console.log('Fetching project');
+    this.apiSyncManager.listProjects()
+    .then(res => console.log("LIST PROJECT RESULT", res));
 
     if (this.projectsByID.size > 0) {
       console.log("skipping because already loaded");
@@ -240,3 +277,14 @@ export default ModelStore;
  * 
  */
 
+// class _ModelStore2 {
+
+//   projectsByID: Map<string, Project> = new Map()
+//   organization?: string;
+//   syncManager = new APISyncManager();
+
+//   constructor () {
+//     makeAutoObservable(this);
+//   }
+
+// }

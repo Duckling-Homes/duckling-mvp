@@ -26,6 +26,7 @@
     "autoprefixer": "10.4.15",
     "aws-sdk": "^2.1472.0",
     "dayjs": "^1.11.10",
+    "dexie": "^3.2.4",
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.2",
     "lodash": "^4.17.21",
