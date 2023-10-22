@@ -1,13 +1,14 @@
 /**
- * This module maintains all code in regards to the "Sync Layer", the
- * main access point being the APISyncManager.
+ * This module maintains all code in regards to the "Sync Layer" 
+ * which serves to synchronize the changes between local db & remote,
+ * the main access point being the APISyncManager. 
  * 
  * 
  * Guiding principles:
  * - All reads and writes must use the objects db as the source of truth.
- * - Only reads can happen directly against the API. 
+ * - Only reads can happen directly against the API and should happen after publishing changes. 
  * - All writes must be queued against the outbound requests db.
- * - For syncs, flush the outbound requests before pulling in new data
+ * - For reading data, flush the outbound requests before pulling in new data.
  * 
  */
 import { v4 as uuidv4 } from 'uuid';
@@ -18,11 +19,32 @@ const isOnline = () => {
     return navigator?.onLine;
 }
 
+const publishChanges = async () => {
+    if (!isOnline()) return;
+  
+    let nextReq;
+    do {
+      try {
+        nextReq = await db.peekNextRequest();
+        if (nextReq) {
+          await fetch(nextReq!.url, nextReq!.options);
+          await db.dequeueRequest(nextReq.id!);
+        }
+      } catch (err) {
+        console.error("REQUEST FAILED TO PUSH...", {nextReq, err});
+      }
+    } while (nextReq)
+}
+
+const synchronizedFetch = async (url: string, options?: RequestInit) => {
+    await publishChanges();
+    return fetch(url, options);
+}
 
 class OrganizationSyncOperatsions {
     get = async (organizationID: string) => {
         if (isOnline()) {
-            const response = await fetch(`/api/organizations/${organizationID}`, {
+            const response = await synchronizedFetch(`/api/organizations/${organizationID}`, {
                 method: 'GET',
               })
             const org: Organization = await response.json();
@@ -38,30 +60,38 @@ class ProjectSyncOperations {
 
     list = async () => {
         if (isOnline()) {
-          const response = await fetch("/api/projects/");
-          const projectList: Project[] = await response.json();
-          // Clear all stored projects
-          await db.objects.where('type').equals('Project').delete();
-          await Promise.all(projectList.map((proj) => {
-            db.putObject({ id: proj.id!, type: "Project", json: proj})
-          }))
+            await this._doSyncList();
         }
-    
+
         const objs = await db.objects.where("type").equals("Project").toArray();
         return objs.map(obj => obj.json) as Project[];
+      }
+
+      _doSyncList = async () => {
+        const response = await synchronizedFetch("/api/projects/");
+        const projectList: Project[] = await response.json();
+        // Clear all stored projects
+        await db.objects.where('type').equals('Project').delete();
+        await Promise.all(projectList.map((proj) => {
+          db.putObject({ id: proj.id!, type: "Project", json: proj})
+        }))
       }
     
       get = async (projectID: string) => {
         if (isOnline()) {
-          const response = await fetch(`/api/projects/${projectID}`, {
-            method: 'GET',
-          });
-          const proj: Project = await response.json();
-          await db.putObject({ id: proj.id!, type: "Project", json: proj});
+            await this._doSyncGet(projectID);
         }    
         const obj = await db.objects.where("id").equals(projectID).first();
         console.log("GOT", projectID, obj?.json);
         return obj?.json as Project;
+      }
+
+      _doSyncGet = async (projectID: string) => {
+        const response = await synchronizedFetch(`/api/projects/${projectID}`, {
+            method: 'GET',
+          });
+          const proj: Project = await response.json();
+          await db.putObject({ id: proj.id!, type: "Project", json: proj});
       }
     
       update = async (project: Project) => {
@@ -257,23 +287,8 @@ class APISyncManager {
             this.bgSyncInterval = setInterval(this.sync, intervalMS)
         }
     }
-  
-    pushChanges = async () => {
-      if (!isOnline()) return;
-  
-      let nextReq;
-      do {
-        try {
-          nextReq = await db.peekNextRequest();
-          if (nextReq) {
-            await fetch(nextReq!.url, nextReq!.options);
-            await db.dequeueRequest(nextReq.id!);
-          }
-        } catch (err) {
-          console.error("REQUEST FAILED TO PUSH...", {nextReq, err});
-        }
-      } while (nextReq)
-    }
+
+    pushChanges = publishChanges;
   
     pullLatest = async () => {
         const projects = await this.projects.list();

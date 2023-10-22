@@ -1,4 +1,5 @@
 // Dexie (IndexedDB wrapper module declaration)
+// Table definitions
 import Dexie, { Table } from 'dexie';
 
 export interface _Object {
