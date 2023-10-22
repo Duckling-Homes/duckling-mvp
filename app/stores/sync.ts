@@ -14,12 +14,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
 import { Organization, Project, ProjectAppliance, ProjectData } from '@/types/types';
+import debounce from 'lodash/debounce';
 
 const isOnline = () => {
     return navigator?.onLine;
 }
 
-const publishChanges = async () => {
+const publishChanges = debounce(async () => {
     if (!isOnline()) return;
   
     let nextReq;
@@ -29,12 +30,13 @@ const publishChanges = async () => {
         if (nextReq) {
           await fetch(nextReq!.url, nextReq!.options);
           await db.dequeueRequest(nextReq.id!);
+          console.log("Dequeued", nextReq.id);
         }
       } catch (err) {
         console.error("REQUEST FAILED TO PUSH...", {nextReq, err});
       }
     } while (nextReq)
-}
+}, 200);
 
 const synchronizedFetch = async (url: string, options?: RequestInit) => {
     await publishChanges();

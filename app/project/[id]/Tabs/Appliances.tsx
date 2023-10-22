@@ -27,7 +27,7 @@ interface AppliancesProps {
 }
 
 const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
-  const [appliances, setAppliances] = useState<ProjectAppliance[]>([]);
+  const appliances = currentProject.appliances ?? [];
   const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({
     id: '',
     name: '',
@@ -49,13 +49,13 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
 
   useEffect(() => {
     if (currentProject && currentProject?.appliances) {
-      setAppliances(currentProject.appliances)
       setCurrentAppliance(currentProject.appliances[0])
     }
-  }, [currentProject])
+  }, [currentProject, currentProject?.appliances])
 
 
   async function deleteAppliance(applianceId: string) {
+    const appliances = currentProject.appliances ?? [];
     const applianceToDelete = appliances.find(appliance => appliance.id === applianceId);
     let api = '';
 
@@ -82,15 +82,12 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
 
     if (!applianceToDelete.type) {
       const newApplianceList = appliances.filter(r => r.id !== applianceId);
-      setAppliances(newApplianceList);
       setCurrentAppliance(newApplianceList[0] || {});
       return;
     }
 
-    // TODO: interrogate if we need this appliance list...
     await ModelStore.deleteAppliance(currentProject.id!, api, applianceId);
     const newApplianceList = appliances.filter(r => r.id !== applianceId);
-    setAppliances(newApplianceList);
     setCurrentAppliance(newApplianceList[0] || {});
   }
 
@@ -116,7 +113,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     };
 
     const newApplianceList = [...appliances, newAppliance];
-    setAppliances(newApplianceList);
     setCurrentAppliance(newAppliance);
   }
 
@@ -144,7 +140,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     }
 
     const appliance = await ModelStore.createAppliance(currentProject.id!, api, updatedAppliance);
-    setAppliances([...appliances, appliance]);
     setCurrentAppliance(appliance);
   }
 
@@ -171,16 +166,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
 
 
     if (updatedAppliance) {
-
       const updated = await ModelStore.updateAppliance(currentProject.id!, api, updatedAppliance);
-      const updatedAppliances = appliances.map((appliance) => {
-            if (appliance.id === updatedAppliance.id) {
-              return { ...appliance, ...updatedAppliance };
-            }
-        return appliance;
-      });
-
-      setAppliances(updatedAppliances);
       setCurrentAppliance(updated);
     }
   }
