@@ -1,6 +1,6 @@
 import { Organization, Project, ProjectAppliance, ProjectData, ProjectElectrical, ProjectEnvelope, ProjectRoom } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
-import { SyncAPI } from './sync';
+import { SyncAPI } from '../sync';
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -11,6 +11,7 @@ import { SyncAPI } from './sync';
  * properties so that UI components can get automatic updates on the changes.
  */
 export class _ModelStore {
+  
   projectsByID: Map<string, Project> = observable.map(new Map());
   currentProject: Project | null = null;
   organization: Organization | null = null;
@@ -24,7 +25,6 @@ export class _ModelStore {
   }
 
   init = async () => {
-    SyncAPI.setBackgroundSync(true, 15000);
     await SyncAPI.sync();
     const projects = await SyncAPI.projects.list();
     for (const proj of projects) {
