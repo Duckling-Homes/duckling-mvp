@@ -25,7 +25,7 @@ export class _ModelStore {
   }
 
   init = async () => {
-    SyncAPI.setBackgroundSync(true, 5000);
+    SyncAPI.setBackgroundSync(true, 5 * 60 * 1000);
     await SyncAPI.sync();
     const projects = await SyncAPI.projects.list();
     for (const proj of projects) {
