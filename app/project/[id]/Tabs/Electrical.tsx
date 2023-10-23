@@ -134,7 +134,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
   }
 
   async function patchElectrical(updatedElectrical = currentElectrical) {
-    if (!updatedElectrical.type) {
+    if (!updatedElectrical?.type) {
       return
     }
 
