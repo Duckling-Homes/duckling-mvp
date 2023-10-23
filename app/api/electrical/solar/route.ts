@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
   const {
+    id,
     location,
     ownership,
     moduleType,
@@ -29,6 +30,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   }
   return NextResponse.json(
     await createProjectSolar({
+      id,
       location,
       ownership,
       moduleType,

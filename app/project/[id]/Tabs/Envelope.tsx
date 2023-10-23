@@ -11,32 +11,27 @@ import { useEffect, useState } from 'react';
 import InsulationForm from './EnvelopesForms/InsulationForm';
 import AirSealingForm from './EnvelopesForms/AirSealingForm';
 import { Project, ProjectEnvelope } from '@/types/types';
-import { v4 as uuidv4 } from 'uuid';
+import ModelStore from '@/app/stores/modelStore';
+import { toJS } from 'mobx';
+import { observer } from 'mobx-react-lite';
 
 interface EnvelopeProps {
   currentProject: Project;
 }
 
-const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
+const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   const [envelopes, setEnvelopes] = useState<ProjectEnvelope[]>([])
-  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>({
-    id: '',
-    type: '',
-    name: '',
-    location: '',
-    leakinessDescription: '',
-    insulationLocation: '',
-    insulationCondition: '',
-    notes: '',
-    condition: '',
-  })
+  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>();
 
   useEffect(() => {
     if (currentProject && currentProject.envelopes) {
       setEnvelopes(currentProject.envelopes)
-      setCurrentEnvelope(currentProject.envelopes[0])
+
+      if (!currentEnvelope) {
+        setCurrentEnvelope(currentProject.envelopes[0])
+      }
     }
-  }, [currentProject])
+  }, [currentProject, currentProject.envelopes])
 
   const handleTypeChange = (value: string) => {
     const updatedEnvelope = {...currentEnvelope, type: value}
@@ -45,7 +40,7 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
 
   function createEnvelope() {
     const newEnvelope = {
-      id: uuidv4(),
+      id: 'NEW',
       name: 'New Envelope',
       type: '',
       location: '',
@@ -61,38 +56,19 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
     setCurrentEnvelope(newEnvelope);
   }
 
-  async function handlePostEnvelope(updatedEnvelope: ProjectEnvelope, type: string) {
-    try {
-      const oldId = updatedEnvelope.id;
-      delete updatedEnvelope.id;
-      const data = await fetch(`/api/project${type}`, {
-        method: 'POST',
-        body: JSON.stringify({
-            ...updatedEnvelope,
-            projectId: currentProject.id
-          })
-      });
-
-      if (data.ok) {
-        const response = await data.json()
-        const createdEnvelope = {...response, type: updatedEnvelope.type}
-
-        const updatedEnvelopes = envelopes.map((envelope) => {
-          if (envelope.id === oldId) {
-            return { ...envelope, ...createdEnvelope };
-          }
-          return envelope;
-        });
-
-        setEnvelopes(updatedEnvelopes);
-        setCurrentEnvelope(createdEnvelope);
-      } else {
-        throw new Error('Failed to create a new envelope.');
+  async function handlePostEnvelope(envelope: ProjectEnvelope, type: string) {
+    envelope.type = type;
+    const createdEnvelope = await ModelStore.createEnvelope(currentProject.id!, envelope);
+    console.log("POST WAS CALLED", createdEnvelope.id);
+    const updatedEnvelopes = envelopes.map((envelope) => {
+      if (envelope.id === createdEnvelope.id) {
+        return { ...envelope, ...createdEnvelope };
       }
-    } catch (error) {
-      console.error('Error creating a new envelope:', error);
-      throw error;
-    }
+      return envelope;
+    });
+    setEnvelopes(updatedEnvelopes);
+    setCurrentEnvelope(createdEnvelope);
+
   }
 
   async function deleteEnvelope(envelopeId: string) {
@@ -109,23 +85,11 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
       return;
     }
 
-    try {
-      const response = await fetch(`/api/project${envelopeToDelete.type}/${envelopeId}`, {
-        method: 'DELETE',
-      });
+    await ModelStore.deleteEnvelope(currentProject.id!, envelopeToDelete.type, envelopeId);
+    const newEnvelopeList = envelopes.filter(r => r.id !== envelopeId);
+    setEnvelopes(newEnvelopeList);
+    setCurrentEnvelope(newEnvelopeList[0] || {});
 
-      if (response.ok) {
-        console.log('Old envelope deleted successfully.');
-        const newEnvelopeList = envelopes.filter(r => r.id !== envelopeId);
-        setEnvelopes(newEnvelopeList);
-        setCurrentEnvelope(newEnvelopeList[0] || {});
-      } else {
-        throw new Error('Failed to delete the old envelope.');
-      }
-    } catch (error) {
-      console.error('Error deleting the old envelope:', error);
-      throw error;
-    }
   }
 
   function handleInputChange(inputName: string, value: string) {
@@ -138,35 +102,17 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
   async function patchEnvelope(updatedEnvelope = currentEnvelope) {
     console.log('caiu aqui')
     if (updatedEnvelope && updatedEnvelope.id) {
-      try {
-        const data = await fetch(`/api/project${updatedEnvelope.type}/${updatedEnvelope.id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            ...updatedEnvelope,
-            projectId: currentProject.id
-          })
+        const response = await ModelStore.updateEnvelope(currentProject.id!, updatedEnvelope);
+        response.type = updatedEnvelope.type;
+        const updatedEnvelopes = envelopes.map((envelope) => {
+          if (envelope.id === updatedEnvelope.id) {
+            return { ...envelope, ...updatedEnvelope };
+          }
+          return envelope;
         });
-
-        if (data.ok) {
-          const response = await data.json();
-          response.type = updatedEnvelope.type;
-
-          const updatedEnvelopes = envelopes.map((envelope) => {
-            if (envelope.id === updatedEnvelope.id) {
-              return { ...envelope, ...updatedEnvelope };
-            }
-            return envelope;
-          });
-
-          setEnvelopes(updatedEnvelopes);
-          setCurrentEnvelope(response);
-          console.log(response);
-        } else {
-          throw new Error('Failed to update the envelope.');
-        }
-      } catch (error) {
-        console.error(error);
-      }
+        setEnvelopes(updatedEnvelopes);
+        setCurrentEnvelope(response);
+        console.log(response);
     }
   }
 
@@ -196,7 +142,7 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
         currentChip={currentEnvelope?.id || ''}
         chipType="Envelope"
         onChipClick={(i: number) => {
-          console.log(envelopes)
+          console.log(toJS(envelopes[i]))
           setCurrentEnvelope(envelopes[i])
         }}
       />
@@ -232,6 +178,6 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
       </div>
     </div>
   )
-}
+})
 
 export default Envelope

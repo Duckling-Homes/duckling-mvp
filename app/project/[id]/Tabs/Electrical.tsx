@@ -11,6 +11,8 @@ import GeneratorForm from "./ElectricalForms/GeneratorForm";
 import ChipManager from "@/components/ChipManager";
 import { Project, ProjectElectrical } from "@/types/types";
 import { v4 as uuidv4 } from 'uuid';
+import ModelStore from "@/app/stores/modelStore";
+import { observer } from "mobx-react-lite";
 
 const TYPES = [
   {name: "Electrical Panel", value: "electricalpanel"},
@@ -24,58 +26,19 @@ interface ElectricalProps {
   currentProject: Project;
 }
 
-const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
+const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
   const [electricals, setElectricals] = useState<ProjectElectrical[]>([])
-  const [currentElectrical, setCurrentElectrical] = useState<ProjectElectrical>({
-    id: "",
-    type: '',
-    panelType: '',
-    panelAmperageRating: 0,
-    availableNewCircuits: 0,
-    total15AmpCircuits: 0,
-    total20AmpCircuits: 0,
-    total30AmpCircuits: 0,
-    total40AmpCircuits: 0,
-    total50AmpCircuits: 0,
-    total60AmpCircuits: 0,
-    total70AmpCircuits: 0,
-    notes: '',
-    ownership: '',
-    moduleType: '',
-    tracking: '',
-    arrayOrientation: '',
-    arrayTilt: 0,
-    maxPowerOutput: 0,
-    numberOfPanels: 0,
-    annualOutput: 0,
-    chargingLevel: '',
-    amperage: 0,
-    acPowerSourceVolatge: 0,
-    maxChargingPower: 0,
-    totalCapacity: 0,
-    ratedPowerOutput: 0,
-    ratedPeakOutput: 0,
-    gridConnected: '',
-    generatorType: '',
-    fuelType: '',
-    ratedContinuousWattage: 0,
-    ratedPeakWattage: 0,
-    numberOfPhases: '',
-    transferSwitch: '',
-    connection: '',
-    yearInstalled: 0,
-    manufacturer: '',
-    modelNumber: '',
-    serialNumber: '',
-    location: '',
-  });
+  const [currentElectrical, setCurrentElectrical] = useState<ProjectElectrical>();
 
   useEffect(() => {
     if (currentProject && currentProject?.electrical) {
       setElectricals(currentProject.electrical)
-      setCurrentElectrical(currentProject.electrical[0])
+
+      if (!currentElectrical) {
+        setCurrentElectrical(currentProject.electrical[0])
+      }
     }
-  }, [currentProject])
+  }, [currentProject, currentProject.electrical])
 
   function createElectrical() {
 
@@ -135,39 +98,17 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
   }
 
   async function handlePostElectrical(updatedElectrical: ProjectElectrical, type: string) {
-    const api = type === 'electricalpanel' ? 'panel' : (type === 'evcharger' ? 'evCharger' : type);
-
-    try {
-      const oldId = updatedElectrical.id;
-      delete updatedElectrical.id;
-      const data = await fetch(`/api/electrical/${api}`, {
-        method: 'POST',
-        body: JSON.stringify({
-            ...updatedElectrical,
-            projectId: currentProject.id
-          })
-      });
-
-      if (data.ok) {
-        const response = await data.json()
-        const createdElectrical = {...response, type: updatedElectrical.type}
-
-        const updatedElectricals = electricals.map((electrical) => {
-          if (electrical.id === oldId) {
-            return { ...electrical, ...createdElectrical };
-          }
-          return electrical;
-        });
-
-        setElectricals(updatedElectricals);
-        setCurrentElectrical(createdElectrical)
-      } else {
-        throw new Error('Failed to create a new appliance.');
+    updatedElectrical.type = type;
+    const response = await ModelStore.createElectrical(currentProject.id!, updatedElectrical);
+    const createdElectrical = {...response, type: updatedElectrical.type}
+    const updatedElectricals = electricals.map((electrical) => {
+      if (electrical.id === updatedElectrical.id) {
+        return { ...electrical, ...createdElectrical };
       }
-    } catch (error) {
-      console.error('Error creating a new appliance:', error);
-      throw error;
-    }
+      return electrical;
+    });
+    setElectricals(updatedElectricals);
+    setCurrentElectrical(createdElectrical)
   }
 
   async function deleteElectrical(electricalId: string) {
@@ -184,63 +125,33 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
       return;
     }
 
-    const api = electricalToDelete.type.toLowerCase() === 'electricalpanel' ? 'panel' : (electricalToDelete.type.toLowerCase() === 'evcharger' ? 'evCharger' : electricalToDelete.type.toLowerCase());
+    await ModelStore.deleteElectrical(currentProject.id!, electricalToDelete.type, electricalToDelete.id!)
+    console.log('Electrical deleted successfully.');
+    const newElectricalsList = electricals.filter(r => r.id !== electricalId);
+    setElectricals(newElectricalsList);
+    setCurrentElectrical(newElectricalsList[0] || {});
 
-    try {
-      const response = await fetch(`/api/electrical/${api}/${electricalId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        console.log('Electrical deleted successfully.');
-        const newElectricalsList = electricals.filter(r => r.id !== electricalId);
-        setElectricals(newElectricalsList);
-        setCurrentElectrical(newElectricalsList[0] || {});
-      } else {
-        throw new Error('Failed to delete the electrical.');
-      }
-    } catch (error) {
-      console.error('Error deleting the electrical:', error);
-      throw error;
-    }
   }
 
   async function patchElectrical(updatedElectrical = currentElectrical) {
-    if (!updatedElectrical.type) {
+    if (!updatedElectrical?.type) {
       return
     }
-    const api = updatedElectrical.type.toLowerCase() === 'electricalpanel' ? 'panel' : (updatedElectrical.type.toLowerCase() === 'evcharger' ? 'evCharger' : updatedElectrical.type.toLowerCase());
 
     if (updatedElectrical) {
-      try {
-        const data = await fetch(`/api/electrical/${api}/${updatedElectrical.id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            ...updatedElectrical,
-            projectId: currentProject.id
-          })
+        const response = await ModelStore.updateElectrical(currentProject.id!, updatedElectrical)
+        response.type = updatedElectrical.type;
+
+        const updatedElectricals = electricals.map((electrical) => {
+          if (electrical.id === updatedElectrical.id) {
+            return { ...electrical, ...updatedElectrical };
+          }
+          return electrical;
         });
 
-        if (data.ok) {
-          const response = await data.json();
-          response.type = updatedElectrical.type;
-
-          const updatedElectricals = electricals.map((electrical) => {
-            if (electrical.id === updatedElectrical.id) {
-              return { ...electrical, ...updatedElectrical };
-            }
-            return electrical;
-          });
-
-          setElectricals(updatedElectricals);
-          setCurrentElectrical(response);
-          console.log(response);
-        } else {
-          throw new Error('Failed to update the appliance.');
-        }
-      } catch (error) {
-        console.error(error);
-      }
+        setElectricals(updatedElectricals);
+        setCurrentElectrical(response);
+        console.log(response);
     }
   }
 
@@ -317,6 +228,6 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
       </div>}
     </div>
   )
-}
+})
 
 export default Electrical

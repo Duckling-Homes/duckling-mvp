@@ -23,26 +23,18 @@ interface BasicsProps {
 }
 
 const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
-  const [data, setData] = useState<Project["data"]>({
-    squareFootage: 0,
-    roomCount: 0,
-    bathroomCount: 0,
-    stories: 0,
-    yearBuilt: 0,
-    basementType: '',
-  });
+  const [data, setData] = useState<Project["data"]>();
 
   useEffect(() => {
-    if (currentProject?.data) {
+    if (!data && currentProject?.data) {
       setData(currentProject.data);
     }
-  }, [currentProject]);
+  }, [currentProject.data]);
 
   const handleInputChange = async (inputName: string, value: string | number) => {
     if (currentProject && currentProject.id) {
       const updatedData = { ...data, [inputName]: value };
-      setData(updatedData);
-      await ModelStore.patchProjectData(currentProject.id, updatedData);
+      setData(await ModelStore.patchProjectData(currentProject.id, updatedData));
     }
   };
 

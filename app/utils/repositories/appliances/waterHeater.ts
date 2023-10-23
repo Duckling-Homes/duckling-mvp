@@ -6,6 +6,7 @@ export async function createWaterHeaterAppliance(
 ) {
   return await prisma.waterHeater.create({
     data: {
+      id: waterHeaterData.id,
       tankVolume: waterHeaterData.tankVolume,
       systemType: waterHeaterData.systemType,
       fuel: waterHeaterData.fuel,

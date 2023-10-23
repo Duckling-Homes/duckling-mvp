@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
   const {
+    id,
     fuel,
     age,
     manufacturer,
@@ -26,6 +27,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   }
   return NextResponse.json(
     await createCooktopAppliance({
+      id,
       fuel,
       age,
       manufacturer,

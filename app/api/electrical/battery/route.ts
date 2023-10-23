@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
   const {
+    id,
     totalCapacity,
     ratedPowerOutput,
     ratedPeakOutput,
@@ -27,6 +28,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   }
   return NextResponse.json(
     await createProjectBattery({
+      id,
       totalCapacity,
       ratedPowerOutput,
       ratedPeakOutput,

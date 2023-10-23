@@ -6,6 +6,7 @@ export async function createProjectGenerator(
 ) {
   return await prisma.generator.create({
     data: {
+      id: generatorData.id,
       generatorType: generatorData.generatorType,
       fuelType: generatorData.fuelType,
       ratedContinuousWattage: generatorData.ratedContinuousWattage,

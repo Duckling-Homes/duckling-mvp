@@ -6,6 +6,7 @@ export async function createProjectElectricalPanel(
 ) {
   return await prisma.electricalPanel.create({
     data: {
+      id: panelData.id,
       panelType: panelData.panelType,
       panelAmperageRating: panelData.panelAmperageRating,
       availableNewCircuits: panelData.availableNewCircuits,

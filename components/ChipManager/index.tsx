@@ -6,6 +6,7 @@ import { Button, Chip, Modal } from "@mui/material";
 import { ProjectAppliance, ProjectElectrical, ProjectEnvelope, ProjectRoom } from "@/types/types";
 
 import './style.scss'
+import { observer } from "mobx-react-lite";
 
 interface ChipManagerProps {
   chips: (
@@ -50,7 +51,7 @@ const DeleteModal: React.FC<{
   );
 };
 
-const ChipManager: React.FC<ChipManagerProps> = ({
+const ChipManager: React.FC<ChipManagerProps> = observer(({
   chips,
   currentChip,
   chipType,
@@ -121,6 +122,6 @@ const ChipManager: React.FC<ChipManagerProps> = ({
     </>
 
   )
-}
+})
 
 export default ChipManager

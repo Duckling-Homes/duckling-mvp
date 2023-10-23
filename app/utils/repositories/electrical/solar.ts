@@ -6,6 +6,7 @@ export async function createProjectSolar(
 ) {
   return await prisma.solar.create({
     data: {
+      id: solarData.id,
       location: solarData.location,
       ownership: solarData.ownership,
       moduleType: solarData.moduleType,

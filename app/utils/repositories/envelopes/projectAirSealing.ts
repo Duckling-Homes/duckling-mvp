@@ -6,6 +6,7 @@ export async function createProjectAirSealing(
 ) {
   return await prisma.projectAirSealing.create({
     data: {
+      id: airSealingData.id,
       name: airSealingData.name,
       leakinessDescription: airSealingData.leakinessDescription,
       notes: airSealingData.notes,
