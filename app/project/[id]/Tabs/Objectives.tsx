@@ -32,20 +32,13 @@ const GOALS = [
 ]
 
 const Objectives: React.FC<{ currentProject: Project }> = ({ currentProject }) => {
-  const [data, setData] = useState<Project["data"]>({
-    comfortIssueNotes: "",
-    comfortIssueTags: [],
-    healthSafetyIssueNotes: "",
-    healthSafetyIssueTags: [],
-    homeownerGoalsNotes: "",
-    homeownerGoalsTags: []
-  });
+  const [data, setData] = useState<Project["data"]>();
 
   useEffect(() => {
-    if (currentProject?.data) {
+    if (!data && currentProject?.data) {
       setData(currentProject.data);
     }
-  }, [currentProject]);
+  }, [currentProject.data]);
 
   const handleTextChange = (inputName: string, value: string) => {
     if (currentProject && currentProject.id) {
@@ -71,7 +64,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({ currentProject }) =
 
   const projectUpdate = async (projectData = data) => {
     if (currentProject && currentProject.id && projectData) {
-      await ModelStore.patchProjectData(currentProject.id, projectData);
+      setData(await ModelStore.patchProjectData(currentProject.id, projectData));
     }
   };
 
