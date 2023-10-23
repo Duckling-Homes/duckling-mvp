@@ -11,7 +11,7 @@ import { SyncAPI } from '../sync';
  * properties so that UI components can get automatic updates on the changes.
  */
 export class _ModelStore {
-  
+
   projectsByID: Map<string, Project> = observable.map(new Map());
   currentProject: Project | null = null;
   organization: Organization | null = null;
@@ -25,6 +25,7 @@ export class _ModelStore {
   }
 
   init = async () => {
+    SyncAPI.setBackgroundSync(true, 5000);
     await SyncAPI.sync();
     const projects = await SyncAPI.projects.list();
     for (const proj of projects) {

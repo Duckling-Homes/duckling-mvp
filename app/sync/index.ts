@@ -36,6 +36,7 @@ import { RoomSyncOperations } from './operations/room';
 class _SyncAPI {
 
     bgSyncInterval: NodeJS.Timeout | null = null;
+    onNewChanges: () => void = () => {};
 
     // Define Sub-APIs
     organizations = new OrganizationSyncOperations();
@@ -55,7 +56,10 @@ class _SyncAPI {
     }
 
     pushChanges = async () => {
-      publishChanges()
+      const didChange = await publishChanges();
+      if (didChange) {
+        this.onNewChanges();
+      }
     };
   
     pullLatest = async () => {
@@ -75,4 +79,3 @@ class _SyncAPI {
   }
 
   export const SyncAPI = new _SyncAPI();
-  SyncAPI.setBackgroundSync(true, 15000);
