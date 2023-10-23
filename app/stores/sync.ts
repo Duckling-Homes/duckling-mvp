@@ -13,7 +13,7 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
-import { Organization, Project, ProjectAppliance, ProjectData, ProjectEnvelope, ProjectRoom } from '@/types/types';
+import { Organization, Project, ProjectAppliance, ProjectData, ProjectElectrical, ProjectEnvelope, ProjectRoom } from '@/types/types';
 import debounce from 'lodash/debounce';
 
 const isOnline = () => {
@@ -252,18 +252,72 @@ class EnvelopeSyncOperations {
 }
 
 class ElectricalSyncOperations {
-    create = async () => {
 
+    _typeToAPI = (type: string) => {
+        const lowered = type.toLowerCase();
+
+        switch (lowered) {
+            case 'electricalpanel':
+                return 'panel';
+            case 'evcharger':
+                return 'evCharger';
+            default:
+                return lowered;
+        }
     }
 
-    update = async () => {
+    create = async (projectID: string, electrical: ProjectElectrical) => {
+        electrical.id =  electrical.id ?? uuidv4();
+        await db.enqueueRequest(`/api/electrical/${this._typeToAPI(electrical.type!)}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                ... electrical,
+                projectId: projectID
+              })
+        });
 
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            proj.electrical = proj.electrical ?? [];
+            proj.electrical.push(electrical);
+            return proj;
+        });
+        return electrical;
     }
 
-    delete = async () => {
-        
+    update = async (projectID: string, electrical: ProjectElectrical) => {
+        await db.enqueueRequest(`/api/electrical/${this._typeToAPI(electrical.type!)}/${electrical.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              ...electrical,
+              projectId: projectID
+            })
+        });
+
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            const idx = proj.electrical?.findIndex(elec => elec.id === electrical.id)
+            if (idx) {
+                proj.electrical?.splice(idx, 1)
+            }
+            proj.electrical?.push(electrical);
+            return proj;
+        });
+
+        return electrical;
     }
 
+    delete = async (projectID: string, electricalType: string, electricalID: string,) => {
+        await db.enqueueRequest(`/api/electrical/${this._typeToAPI(electricalType!)}/${electricalID}`, {
+            method: 'DELETE',
+        });
+
+        await SyncAPI.projects._mutateDBProject(projectID, (proj) => {
+            const idx = proj.electrical?.findIndex(elec => elec.id === electricalID)
+            if (idx) {
+                proj.electrical?.splice(idx, 1)
+            }
+            return proj;
+        });
+    }
 }
 
 class RoomSyncOperations {

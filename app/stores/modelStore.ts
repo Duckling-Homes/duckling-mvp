@@ -1,4 +1,4 @@
-import { Organization, Project, ProjectAppliance, ProjectData, ProjectEnvelope, ProjectRoom } from '@/types/types';
+import { Organization, Project, ProjectAppliance, ProjectData, ProjectElectrical, ProjectEnvelope, ProjectRoom } from '@/types/types';
 import { makeAutoObservable, observable } from 'mobx';
 import { SyncAPI } from './sync';
 
@@ -130,6 +130,23 @@ export class _ModelStore {
 
   deleteEnvelope = async (projectID: string, envelopeType: string, envelopeID: string) => {
     await SyncAPI.envelopes.delete(projectID, envelopeType, envelopeID);
+    await this.loadProject(projectID);
+  }
+
+  createElectrical = async (projectID: string, electrical: ProjectElectrical) => {
+    const created = await SyncAPI.electrical.create(projectID, electrical);
+    await this.loadProject(projectID);
+    return created;
+  }
+
+  updateElectrical = async (projectID: string, electrical: ProjectElectrical) => {
+    const updated = await SyncAPI.electrical.update(projectID, electrical);
+    await this.loadProject(projectID);
+    return updated;
+  }
+
+  deleteElectrical = async (projectID: string, electricalType: string, electricalID: string) => {
+    await SyncAPI.electrical.delete(projectID, electricalType, electricalID);
     await this.loadProject(projectID);
   }
 
