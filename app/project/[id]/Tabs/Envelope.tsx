@@ -26,7 +26,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
 
   useEffect(() => {
     if (currentProject && currentProject.envelopes) {
-      console.log("ON SET", toJS(currentProject.envelopes))
       setEnvelopes(currentProject.envelopes)
 
       if (!currentEnvelope) {
