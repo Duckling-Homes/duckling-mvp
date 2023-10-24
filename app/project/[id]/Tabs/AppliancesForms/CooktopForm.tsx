@@ -1,13 +1,8 @@
 'use client'
 
-import { ProjectAppliance } from '@/types/types'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { TextInput } from "@/components/Inputs";
+import { ProjectAppliance } from "@/types/types";
+import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const FUEL = ['Electricity', 'Natural Gas', 'Propane', 'Fuel Oil', 'Other']
 
@@ -25,42 +20,33 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
   return (
     <>
       {/* manufacturer */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Manufacturer"
-          variant="outlined"
           placeholder="Manufacturer"
-          type="text"
-          onChange={(e) => onChange('manufacturer', e.target.value)}
+          onChange={(value) => onChange('manufacturer', value)}
           onBlur={() => onUpdate()}
-          value={currentAppliance?.manufacturer}
+          value={currentAppliance?.manufacturer || ''}
         />
       </FormControl>
       {/* model number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Model Number"
-          variant="outlined"
           placeholder="Model Number"
-          type="text"
-          onChange={(e) => onChange('modelNumber', e.target.value)}
+          onChange={(value) => onChange('modelNumber', value)}
           onBlur={() => onUpdate()}
-          value={currentAppliance?.modelNumber}
+          value={currentAppliance?.modelNumber || ''}
         />
       </FormControl>
       {/* serial number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Serial Number"
-          variant="outlined"
           placeholder="Serial Number"
-          type="text"
-          onChange={(e) => onChange('serialNumber', e.target.value)}
+          onChange={(value) => onChange('serialNumber', value)}
           onBlur={() => onUpdate()}
-          value={currentAppliance?.serialNumber}
+          value={currentAppliance?.serialNumber || ''}
         />
       </FormControl>
       {/* fuel */}
@@ -97,42 +83,34 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         </Select>
       </FormControl>
       {/* age */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Age"
-          variant="outlined"
           placeholder="Age"
           type="number"
-          onChange={(e) => onChange('age', parseInt(e.target.value))}
+          onChange={(value) => onChange('age', parseInt(value))}
           onBlur={() => onUpdate()}
-          value={currentAppliance?.age}
+          value={currentAppliance?.age || ''}
         />
       </FormControl>
       {/* location */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Location"
-          variant="outlined"
           placeholder="Location"
-          type="text"
-          onChange={(e) => onChange('location', e.target.value)}
+          onChange={(value) => onChange('location', value)}
           onBlur={() => onUpdate()}
-          value={currentAppliance?.location}
+          value={currentAppliance?.location || ''}
         />
       </FormControl>
       {/* notes */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Notes"
-          variant="outlined"
           placeholder="Notes"
-          type="text"
-          onChange={(e) => onChange('notes', e.target.value)}
+          onChange={(value) => onChange('notes', value)}
           onBlur={() => onUpdate()}
-          value={currentAppliance?.notes}
+          value={currentAppliance?.notes || ''}
         />
       </FormControl>
     </>
