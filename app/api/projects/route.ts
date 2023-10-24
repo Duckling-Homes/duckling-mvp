@@ -13,12 +13,14 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     homeownerPhone,
     homeownerEmail,
     homeownerAddress,
+    id,
   } = await req.json()
 
   const orgContext = req.headers.get('organization-context')
 
   return NextResponse.json(
     await createProject({
+      id,
       name,
       homeownerName,
       homeownerPhone,
