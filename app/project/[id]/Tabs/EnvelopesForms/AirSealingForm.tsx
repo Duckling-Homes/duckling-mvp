@@ -1,6 +1,7 @@
 'use client'
 
-import { ProjectEnvelope } from '@/types/types'
+import { TextInput } from '@/components/Inputs';
+import { ProjectEnvelope } from '@/types/types';
 import {
   FormControl,
   InputLabel,
@@ -29,15 +30,12 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({
           gap: '24px',
         }}
       >
-        <TextField
-          id="outlined-basic"
+        <TextInput
           label="Name"
-          variant="outlined"
           placeholder="Name"
-          value={currentEnvelope?.name}
-          onChange={(e) => onChange('name', e.target.value)}
+          value={currentEnvelope?.name || ''}
+          onChange={(value) => onChange('name', value)}
           onBlur={() => onUpdate()}
-          fullWidth
         />
         <FormControl fullWidth>
           <InputLabel id="leakiness-description-label">
@@ -60,16 +58,13 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({
             <MenuItem value={'veryLeaky'}>Very Leaky</MenuItem>
           </Select>
         </FormControl>
-        <TextField
-          fullWidth
-          id="outlined-basic"
+        <TextInput
           label="User Notes"
-          variant="outlined"
           placeholder="User Notes"
-          value={currentEnvelope?.notes}
-          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentEnvelope?.notes || ''}
+          onChange={(value) => onChange('notes', value)}
           onBlur={() => onUpdate()}
-          multiline
+          multiline={true}
         />
       </div>
     </>

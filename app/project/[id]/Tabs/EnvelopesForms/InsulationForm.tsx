@@ -1,12 +1,12 @@
 'use client'
 
-import { ProjectEnvelope } from '@/types/types'
+import { TextInput } from '@/components/Inputs';
+import { ProjectEnvelope } from '@/types/types';
 import {
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  TextField,
 } from '@mui/material'
 
 interface InsulationFormProps {
@@ -22,15 +22,12 @@ const InsulationForm: React.FC<InsulationFormProps> = ({
 }) => {
   return (
     <>
-      <TextField
-        id="outlined-basic"
+      <TextInput
         label="Name"
-        value={currentEnvelope?.name}
-        onChange={(e) => onChange('name', e.target.value)}
-        onBlur={() => onUpdate()}
-        variant="outlined"
         placeholder="Name"
-        fullWidth
+        value={currentEnvelope?.name || ''}
+        onChange={(value) => onChange('name', value)}
+        onBlur={() => onUpdate()}
       />
       <FormControl fullWidth>
         <InputLabel id="insolation-location-label">
@@ -70,16 +67,13 @@ const InsulationForm: React.FC<InsulationFormProps> = ({
           <MenuItem value={'poor'}>Poor</MenuItem>
         </Select>
       </FormControl>
-      <TextField
-        id="outlined-basic"
+      <TextInput
         label="User Notes"
-        variant="outlined"
-        value={currentEnvelope?.notes}
-        onChange={(e) => onChange('notes', e.target.value)}
-        onBlur={() => onUpdate()}
         placeholder="User Notes"
-        fullWidth
-        multiline
+        value={currentEnvelope?.notes || ''}
+        onChange={(value) => onChange('notes', value)}
+        onBlur={() => onUpdate()}
+        multiline={true}
       />
     </>
   )
