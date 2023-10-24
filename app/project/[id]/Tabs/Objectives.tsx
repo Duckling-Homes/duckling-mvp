@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import ModelStore from '@/app/stores/modelStore'
-import { Project } from '@/types/types'
-import { Chip, FormGroup, FormLabel, TextField } from '@mui/material'
+import { useEffect, useState } from "react";
+import ModelStore from "@/app/stores/modelStore";
+import { Project } from "@/types/types";
+import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
+import { TextInput } from "@/components/Inputs";
 
 const COMFORT_ISSUES = [
   'Drafty',
@@ -92,17 +93,15 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               />
             ))}
           </div>
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Comfort Notes"
-            variant="outlined"
             placeholder="Comfort Notes"
-            multiline
-            onChange={(e) =>
-              handleTextChange('comfortIssueNotes', e.target.value)
+            onChange={
+              (value) => handleTextChange('comfortIssueNotes', value as string)
             }
             onBlur={() => projectUpdate()}
-            value={data?.comfortIssueNotes}
+            value={data?.comfortIssueNotes || ''}
+            multiline={true}
           />
         </FormGroup>
         <FormGroup>
@@ -129,17 +128,15 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               />
             ))}
           </div>
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Health & Safety Notes"
-            variant="outlined"
             placeholder="Health & Safety Notes"
-            multiline
-            onChange={(e) =>
-              handleTextChange('healthSafetyIssueNotes', e.target.value)
+            onChange={
+              (value) => handleTextChange('healthSafetyIssueNotes', value as string)
             }
             onBlur={() => projectUpdate()}
-            value={data?.healthSafetyIssueNotes}
+            value={data?.healthSafetyIssueNotes || ''}
+            multiline={true}
           />
         </FormGroup>
         <FormGroup>
@@ -166,17 +163,15 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               />
             ))}
           </div>
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Goals Notes"
-            variant="outlined"
             placeholder="Goals Notes"
-            multiline
-            onChange={(e) =>
-              handleTextChange('homeownerGoalsNotes', e.target.value)
+            onChange={
+              (value) => handleTextChange('homeownerGoalsNotes', value as string)
             }
             onBlur={() => projectUpdate()}
-            value={data?.homeownerGoalsNotes}
+            value={data?.homeownerGoalsNotes || ''}
+            multiline={true}
           />
         </FormGroup>
       </form>

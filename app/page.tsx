@@ -14,9 +14,11 @@ import ModelStore from './stores/modelStore'
 
 import './style.scss'
 import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
 
 const Home = observer(() => {
   const { user } = useUser()
+  const router = useRouter()
 
   useEffect(() => {
     // Check if user's publicMetadata has the organization_id
@@ -72,8 +74,9 @@ const Home = observer(() => {
   }
 
   async function handleCreate(newProject: Project) {
-    await ModelStore.createProject(newProject)
+    const createdProject = await ModelStore.createProject(newProject)
     setOpenModal(false)
+    // router.push(`/project/${createdProject.id}`)
   }
 
   const columns: GridColDef[] = [
