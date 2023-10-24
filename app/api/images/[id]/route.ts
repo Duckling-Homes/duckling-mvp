@@ -1,37 +1,21 @@
-import { getImageById } from '@/app/utils/repositories/image'
-import withErrorHandler from '@/app/utils/withErrorHandler'
-import { NextRequest, NextResponse } from 'next/server'
-import AWS from 'aws-sdk';
-
-// Initialize the S3 client
-const s3 = new AWS.S3({
-  accessKeyId: process.env.S3_ACCESS_KEY || 'minio',
-  secretAccessKey: process.env.S3_SECRET_KEY || 'minio123',
-  endpoint: process.env.S3_ENDPOINT || 'http://localhost:9000',
-  s3ForcePathStyle: true,
-  signatureVersion: 'v4',
-});
+import { getImageById } from '@/app/utils/repositories/image';
+import withErrorHandler from '@/app/utils/withErrorHandler';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = withErrorHandler(
   async (req: NextRequest, { params: routeParams }: { params: { id: string } }) => {
     try {
-      const orgContext = req.headers.get('organization-context')
-      const image = await getImageById(routeParams.id, orgContext as string)
+      const orgContext = req.headers.get('organization-context') || '';
+
+      // Fetch from Database
+      const image = await getImageById(routeParams.id, orgContext);
 
       if (!image) {
-        return NextResponse.json({ message: `Image not found` }, { status: 404 })
+        return NextResponse.json({ message: 'Image not found' }, { status: 404 });
       }
 
-      const s3Key: string = `${orgContext}/originalSize/${routeParams.id}.jpg`;
-      const s3Params = {
-        Bucket: process.env.UPLOAD_BUCKET || 'image-uploads',
-        Key: s3Key,
-      };
-
-      const s3Object = await s3.getObject(s3Params).promise();
-      const imageBlob = s3Object.Body;
-
-      return NextResponse.json({ image, imageBlob });
+      // Only return the database metadata
+      return NextResponse.json({ image });
     } catch (err) {
       return new NextResponse((err as Error).message, {
         status: 500,
