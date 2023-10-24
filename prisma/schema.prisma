@@ -62,6 +62,7 @@ model Project {
   batteries         Battery[]
   generators        Generator[]
   evChargers        EvCharger[]
+  images            Image[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -333,4 +334,19 @@ model GoalTag {
   name            String @unique
   organizationId  String
   organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Image {
+  id                  String  @id @default(uuid())
+  photoName           String
+  homeownerNotes      String?
+  internalNotes       String?
+  associatedEntityId String?
+
+  projectId           String
+  project              Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
