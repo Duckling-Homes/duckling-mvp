@@ -17,7 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Project } from "@/types/types";
 import dayjs from "dayjs";
-import { TextInput } from "@/components/Inputs";
+import { SelectInput, TextInput } from "@/components/Inputs";
 
 interface BasicsProps {
   currentProject: Project
@@ -107,23 +107,13 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
             }
             maxDate={dayjs()}
           />
-          <FormControl fullWidth>
-            <InputLabel id="basement-type-label">Basement Type</InputLabel>
-            <Select
-              labelId="basement-type-label"
-              id="basement-type-select"
-              label="Basement Type"
-              value={data?.basementType || ''}
-              onChange={(e) =>
-                handleInputChange('basementType', e.target.value)
-              }
-            >
-              <MenuItem value={'Finished'}>Finished</MenuItem>
-              <MenuItem value={'Unfinished'}>Unfinished</MenuItem>
-              <MenuItem value={'Crawlspace'}>Crawlspace</MenuItem>
-              <MenuItem value={'No Basement'}>No Basement</MenuItem>
-            </Select>
-          </FormControl>
+          <SelectInput
+            label="Basement Type"
+            value={data?.basementType || ''}
+            onChange={(value) => handleInputChange('basementType', value)}
+            options={['Finished', 'Unfinished', 'Crawlspace', 'No Basement']}
+            onBlur={updateData}
+          />
         </form>
         <Divider />
         <div
