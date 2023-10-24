@@ -1,21 +1,11 @@
 'use client'
 
-import ModelStore from '@/app/stores/modelStore'
-import ChipManager from '@/components/ChipManager'
-import { Project, ProjectRoom } from '@/types/types'
-import {
-  Chip,
-  FormControl,
-  FormGroup,
-  FormLabel,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-} from '@mui/material'
-import { useEffect, useState } from 'react'
+import ModelStore from "@/app/stores/modelStore";
+import ChipManager from "@/components/ChipManager";
+import { TextInput } from "@/components/Inputs";
+import { Project, ProjectRoom } from "@/types/types";
+import { Chip, FormControl, FormGroup, FormLabel, InputLabel, MenuItem, Select,ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const COMFORT_ISSUES = [
   'Drafty',
@@ -163,188 +153,161 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
         chipType="Room"
         onChipClick={(i: number) => setCurrentRoom(rooms[i])}
       />
-      <div
-        style={{
-          width: '100%',
-        }}
-      >
-        {currentRoom?.id ? (
-          <form
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <div
-              style={{
+      <div style={{
+        width: '100%',
+      }}>
+        {currentRoom?.id ? (<form style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '24px',
+          }}>
+            <TextInput
+              label="Room Name"
+              placeholder="Room Name"
+              value={currentRoom?.name || ''}
+              onChange={(value) => handleInputChange('name', value)}
+              onBlur={() => patchRoom()}
+            />
+            <FormControl fullWidth>
+              <InputLabel id="room-type-label">
+                Room Type
+              </InputLabel>
+              <Select
+                placeholder="Room Type"
+                labelId="room-type-label"
+                id="room-type-select"
+                label="Room Type"
+                value={currentRoom?.type}
+                onBlur={() => patchRoom()}
+                onChange={(e) => handleInputChange('type', e.target.value)}
+              >
+                {ROOM_TYPES.map((roomType, i) => (
+                  <MenuItem key={i} value={roomType}>{roomType}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextInput
+              label="Width"
+              placeholder="Width"
+              type="number"
+              value={currentRoom?.width || ''}
+              onChange={(value) => handleInputChange('width', parseInt(value))}
+              onBlur={() => patchRoom()}
+            />
+            <TextInput
+              label="Length"
+              placeholder="Length"
+              type="number"
+              value={currentRoom?.length || ''}
+              onChange={(value) => handleInputChange('length', parseInt(value))}
+              onBlur={() => patchRoom()}
+            />
+            <TextInput
+              label="Ceiling Height"
+              placeholder="Ceiling Height"
+              type="number"
+              value={currentRoom?.ceilingHeight || ''}
+              onChange={
+                (value) => handleInputChange('ceilingHeight', parseInt(value))
+              }
+              onBlur={() => patchRoom()}
+            />
+            <FormControl fullWidth>
+              <InputLabel id="width-label">
+                Floor
+              </InputLabel>
+              <Select
+                labelId="width-label"
+                id="width-select"
+                label="Floor"
+                value={currentRoom?.floor}
+                onChange={(e) => handleInputChange('floor', e.target.value)}
+                onBlur={() => patchRoom()}
+              >
+                {ROOM_FLOORS.map((floor, i) => (
+                  <MenuItem key={i} value={floor}>{floor}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <FormLabel component="legend">Usage</FormLabel>
+              <ToggleButtonGroup
+                value={currentRoom?.usage}
+                exclusive
+                color="primary"
+                onChange={(e, value) => handleInputChange('usage', value)}
+                onBlur={() => patchRoom()}
+                aria-label="usage"
+              >
+                <ToggleButton value="rare" aria-label="left aligned">
+                  Rare
+                </ToggleButton>
+                <ToggleButton value="regular" aria-label="centered">
+                  Regular
+                </ToggleButton>
+                <ToggleButton value="frequent" aria-label="right aligned">
+                  Frequent
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </FormControl>
+            <FormGroup>
+              <FormLabel>Comfort Issues</FormLabel>
+              <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '24px',
               }}
             >
-              <TextField
-                id="outlined-basic"
-                label="Room Name"
-                value={currentRoom?.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                onBlur={() => patchRoom()}
-                variant="outlined"
-                placeholder="Name"
-                fullWidth
-              />
-              <FormControl fullWidth>
-                <InputLabel id="room-type-label">Room Type</InputLabel>
-                <Select
-                  placeholder="Room Type"
-                  labelId="room-type-label"
-                  id="room-type-select"
-                  label="Room Type"
-                  value={currentRoom?.type}
-                  onBlur={() => patchRoom()}
-                  onChange={(e) => handleInputChange('type', e.target.value)}
-                >
-                  {ROOM_TYPES.map((roomType, i) => (
-                    <MenuItem key={i} value={roomType}>
-                      {roomType}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <TextField
-                id="outlined-basic"
-                label="Width"
-                variant="outlined"
-                value={currentRoom?.width}
-                onChange={(e) =>
-                  handleInputChange('width', parseInt(e.target.value))
-                }
-                onBlur={() => patchRoom()}
-                placeholder="Width"
-                fullWidth
-                type="number"
-              />
-              <TextField
-                id="outlined-basic"
-                label="Length"
-                variant="outlined"
-                value={currentRoom?.length}
-                onChange={(e) =>
-                  handleInputChange('length', parseInt(e.target.value))
-                }
-                onBlur={() => patchRoom()}
-                placeholder="Length"
-                fullWidth
-                type="number"
-              />
-              <TextField
-                id="outlined-basic"
-                label="Ceiling Height"
-                variant="outlined"
-                onChange={(e) =>
-                  handleInputChange('ceilingHeight', parseInt(e.target.value))
-                }
-                onBlur={() => patchRoom()}
-                value={currentRoom?.ceilingHeight}
-                placeholder="Ceiling Height"
-                fullWidth
-                type="number"
-              />
-              <FormControl fullWidth>
-                <InputLabel id="width-label">Floor</InputLabel>
-                <Select
-                  labelId="width-label"
-                  id="width-select"
-                  label="Floor"
-                  value={currentRoom?.floor}
-                  onChange={(e) => handleInputChange('floor', e.target.value)}
-                  onBlur={() => patchRoom()}
-                >
-                  {ROOM_FLOORS.map((floor, i) => (
-                    <MenuItem key={i} value={floor}>
-                      {floor}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl>
-                <FormLabel component="legend">Usage</FormLabel>
-                <ToggleButtonGroup
-                  value={currentRoom?.usage}
-                  exclusive
-                  color="primary"
-                  onChange={(e, value) => handleInputChange('usage', value)}
-                  onBlur={() => patchRoom()}
-                  aria-label="usage"
-                >
-                  <ToggleButton value="rare" aria-label="left aligned">
-                    Rare
-                  </ToggleButton>
-                  <ToggleButton value="regular" aria-label="centered">
-                    Regular
-                  </ToggleButton>
-                  <ToggleButton value="frequent" aria-label="right aligned">
-                    Frequent
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </FormControl>
-              <FormGroup>
-                <FormLabel>Comfort Issues</FormLabel>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '8px',
-                    flexWrap: 'wrap',
-                    marginTop: '12px',
-                    marginBottom: '24px',
-                  }}
-                >
-                  {COMFORT_ISSUES.map((issue, i) => (
-                    <Chip
-                      onClick={() =>
-                        handleChipChange('comfortIssueTags', issue)
-                      }
-                      label={issue}
-                      key={i}
-                      color={
-                        currentRoom?.comfortIssueTags?.includes(issue)
-                          ? 'primary'
-                          : 'default'
-                      }
-                    />
-                  ))}
-                </div>
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>Health & Safety Issues</FormLabel>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '8px',
-                    flexWrap: 'wrap',
-                    marginTop: '12px',
-                    marginBottom: '24px',
-                  }}
-                >
-                  {HEALTH_SAFETY.map((issue, i) => (
-                    <Chip
-                      onClick={() => handleChipChange('safetyIssueTags', issue)}
-                      label={issue}
-                      key={i}
-                      color={
-                        currentRoom?.safetyIssueTags?.includes(issue)
-                          ? 'primary'
-                          : 'default'
-                      }
-                    />
-                  ))}
-                </div>
-              </FormGroup>
+              {COMFORT_ISSUES.map((issue, i) => (
+                <Chip
+                  onClick={() =>
+                    handleChipChange('comfortIssueTags', issue)
+                  }
+                  label={issue}
+                  key={i}
+                  color={
+                    currentRoom?.comfortIssueTags?.includes(issue)
+                      ? 'primary'
+                      : 'default'
+                  }
+                />
+              ))}
             </div>
-          </form>
-        ) : (
-          <></>
-        )}
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>Health & Safety Issues</FormLabel>
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginTop: '12px',
+                marginBottom: '24px',
+              }}
+            >
+              {HEALTH_SAFETY.map((issue, i) => (
+                <Chip
+                  onClick={() => handleChipChange('safetyIssueTags', issue)}
+                  label={issue}
+                  key={i}
+                  color={
+                    currentRoom?.safetyIssueTags?.includes(issue)
+                      ? 'primary'
+                      : 'default'
+                  }
+                />
+              ))}
+            </div>
+          </FormGroup>
+        </div>
+      </form>
+      ) : (
+      <></>)}
       </div>
     </div>
   )
