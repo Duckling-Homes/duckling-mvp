@@ -14,6 +14,7 @@ import { Project, ProjectEnvelope } from '@/types/types';
 import ModelStore from '@/app/stores/modelStore';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
+import { v4 } from 'uuid';
 
 interface EnvelopeProps {
   currentProject: Project;
@@ -40,7 +41,7 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
 
   function createEnvelope() {
     const newEnvelope = {
-      id: 'NEW',
+      id: v4(),
       name: 'New Envelope',
       type: '',
       location: '',
@@ -59,7 +60,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   async function handlePostEnvelope(envelope: ProjectEnvelope, type: string) {
     envelope.type = type;
     const createdEnvelope = await ModelStore.createEnvelope(currentProject.id!, envelope);
-    console.log("POST WAS CALLED", createdEnvelope.id);
     const updatedEnvelopes = envelopes.map((envelope) => {
       if (envelope.id === createdEnvelope.id) {
         return { ...envelope, ...createdEnvelope };
