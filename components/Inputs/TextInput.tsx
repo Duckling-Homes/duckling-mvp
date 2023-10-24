@@ -8,7 +8,7 @@ interface TextInputProps {
   type?: string;
   value: string | number;
   multiline?: boolean;
-  onChange: (value: string | number) => void;
+  onChange: (value: string) => void;
   onBlur: () => void;
 }
 

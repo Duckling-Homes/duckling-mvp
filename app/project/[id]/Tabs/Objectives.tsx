@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import ModelStore from "@/app/stores/modelStore";
 import { Project } from "@/types/types";
-import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
+import { Chip, FormGroup, FormLabel } from "@mui/material";
 import { TextInput } from "@/components/Inputs";
 
 const COMFORT_ISSUES = [
