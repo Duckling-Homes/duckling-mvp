@@ -1,13 +1,8 @@
 'use client'
 
-import { ProjectElectrical } from '@/types/types'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { TextInput } from "@/components/Inputs";
+import { ProjectElectrical } from "@/types/types";
+import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const FUEL = ['Natural gas', 'Propane', 'Diesel', 'Gasoline']
 
@@ -58,45 +53,35 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         </Select>
       </FormControl>
       {/* Rated Continuous Wattage */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Rated Continuous Wattage"
-          variant="outlined"
-          type="number"
           placeholder="Rated Continuous Wattage"
-          value={currentElectrical?.ratedContinuousWattage}
-          onChange={(e) =>
-            onChange('ratedContinuousWattage', parseInt(e.target.value))
-          }
+          type="number"
+          value={currentElectrical?.ratedContinuousWattage || ''}
+          onChange={(value) => onChange('ratedContinuousWattage', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Rated Peak Wattage */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Rated Peak Wattage"
-          variant="outlined"
           placeholder="Rated Peak Wattage"
           type="number"
-          value={currentElectrical?.ratedPeakWattage}
-          onChange={(e) =>
-            onChange('ratedPeakWattage', parseInt(e.target.value))
-          }
+          value={currentElectrical?.ratedPeakWattage || ''}
+          onChange={(value) => onChange('ratedPeakWattage', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Voltage */}
       <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+        <TextInput
           label="Voltage"
-          variant="outlined"
           placeholder="Voltage"
           type="number"
-          value={currentElectrical?.voltage}
-          onChange={(e) => onChange('voltage', parseInt(e.target.value))}
+          value={currentElectrical?.voltage || ''}
+          onChange={(value) => onChange('voltage', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
@@ -147,20 +132,18 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         </Select>
       </FormControl>
       {/* Location */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Location"
-          variant="outlined"
           placeholder="Location"
-          type="text"
-          value={currentElectrical?.location}
-          onChange={(e) => onChange('location', e.target.value)}
+          value={currentElectrical?.location || ''}
+          onChange={(value) => onChange('location', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Year Installed */}
-      <FormControl fullWidth>
+      {/* TODO: use date picker here */}
+      <FormControl fullWidth> 
         <TextField
           id="outlined-basic"
           label="Year Installed"
@@ -173,54 +156,42 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         />
       </FormControl>
       {/* Manufacturer */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Manufacturer"
-          variant="outlined"
           placeholder="Manufacturer"
-          type="text"
-          value={currentElectrical?.manufacturer}
-          onChange={(e) => onChange('manufacturer', e.target.value)}
+          value={currentElectrical?.manufacturer || ''}
+          onChange={(value) => onChange('manufacturer', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Model Number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Model Number"
-          variant="outlined"
           placeholder="Model Number"
-          type="text"
-          value={currentElectrical?.modelNumber}
-          onChange={(e) => onChange('modelNumber', e.target.value)}
+          value={currentElectrical?.modelNumber || ''}
+          onChange={(value) => onChange('modelNumber', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Serial Number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Serial Number"
-          variant="outlined"
           placeholder="Serial Number"
-          type="text"
-          value={currentElectrical?.serialNumber}
-          onChange={(e) => onChange('serialNumber', e.target.value)}
+          value={currentElectrical?.serialNumber || ''}
+          onChange={(value) => onChange('serialNumber', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* notes */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Notes"
-          variant="outlined"
           placeholder="Notes"
-          type="text"
-          value={currentElectrical?.notes}
-          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentElectrical?.notes || ''}
+          onChange={(value) => onChange('notes', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>

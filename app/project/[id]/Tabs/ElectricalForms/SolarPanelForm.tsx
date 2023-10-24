@@ -1,13 +1,8 @@
 'use client'
 
-import { ProjectElectrical } from '@/types/types'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { TextInput } from "@/components/Inputs";
+import { ProjectElectrical } from "@/types/types";
+import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const LOCATIONS = ['Roof', 'Ground', 'Other']
 
@@ -132,46 +127,41 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         </Select>
       </FormControl>
       {/* Tilt */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Tilt"
-          variant="outlined"
           placeholder="Tilt"
           type="number"
-          value={currentElectrical?.arrayTilt}
-          onChange={(e) => onChange('arrayTilt', parseInt(e.target.value))}
+          value={currentElectrical?.arrayTilt || ''}
+          onChange={(value) => onChange('arrayTilt', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Max Output */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Max Output"
-          variant="outlined"
           placeholder="Max Output"
           type="number"
-          value={currentElectrical?.maxPowerOutput}
-          onChange={(e) => onChange('maxPowerOutput', parseInt(e.target.value))}
+          value={currentElectrical?.maxPowerOutput || ''}
+          onChange={(value) => onChange('maxPowerOutput', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Number of Panels */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Number of Panels"
-          variant="outlined"
           placeholder="Number of Panels"
-          type="text"
-          value={currentElectrical?.numberOfPanels}
-          onChange={(e) => onChange('numberOfPanels', parseInt(e.target.value))}
+          type="number"
+          value={currentElectrical?.numberOfPanels || ''}
+          onChange={(value) => onChange('numberOfPanels', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Year Installed */}
-      <FormControl fullWidth>
+      {/* TODO: use date picker here */}
+      <FormControl fullWidth> 
         <TextField
           id="outlined-basic"
           label="Year Installed"
@@ -184,28 +174,23 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         />
       </FormControl>
       {/* Annual Output */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Annual Output"
-          variant="outlined"
           placeholder="Annual Output"
           type="number"
-          value={currentElectrical?.annualOutput}
-          onChange={(e) => onChange('annualOutput', parseInt(e.target.value))}
+          value={currentElectrical?.annualOutput || ''}
+          onChange={(value) => onChange('annualOutput', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Notes */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Notes"
-          variant="outlined"
           placeholder="Notes"
-          type="text"
-          value={currentElectrical?.notes}
-          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentElectrical?.notes || ''}
+          onChange={(value) => onChange('notes', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>

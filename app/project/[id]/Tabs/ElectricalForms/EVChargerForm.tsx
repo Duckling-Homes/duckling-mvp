@@ -1,13 +1,8 @@
 'use client'
 
-import { ProjectElectrical } from '@/types/types'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { TextInput } from "@/components/Inputs";
+import { ProjectElectrical } from "@/types/types";
+import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const CHARGING_LEVELS = ['Level 1', 'Level 2', 'Level 3']
 
@@ -43,97 +38,75 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         </Select>
       </FormControl>
       {/* Amperage */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Amperage"
-          variant="outlined"
           placeholder="Amperage"
           type="number"
-          value={currentElectrical?.amperage}
-          onChange={(e) => onChange('amperage', parseInt(e.target.value))}
+          value={currentElectrical?.amperage || ''}
+          onChange={(value) => onChange('amperage', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* AC Power Source Voltage */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="AC Power Source Voltage"
-          variant="outlined"
           placeholder="AC Power Source Voltage"
           type="number"
-          value={currentElectrical?.acPowerSourceVolatge}
-          onChange={(e) =>
-            onChange('acPowerSourceVolatge', parseInt(e.target.value))
-          }
+          value={currentElectrical?.acPowerSourceVolatge || ''}
+          onChange={(value) => onChange('acPowerSourceVolatge', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Max Charging Power */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Max Charging Power"
-          variant="outlined"
           placeholder="Max Charging Power"
           type="number"
-          value={currentElectrical?.maxChargingPower}
-          onChange={(e) =>
-            onChange('maxChargingPower', parseInt(e.target.value))
-          }
+          value={currentElectrical?.maxChargingPower || ''}
+          onChange={(value) => onChange('maxChargingPower', parseInt(value))}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Manufacturer */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Manufacturer"
-          variant="outlined"
           placeholder="Manufacturer"
-          type="text"
-          value={currentElectrical?.manufacturer}
-          onChange={(e) => onChange('manufacturer', e.target.value)}
+          value={currentElectrical?.manufacturer || ''}
+          onChange={(value) => onChange('manufacturer', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Model Number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Model Number"
-          variant="outlined"
           placeholder="Model Number"
-          type="text"
-          value={currentElectrical?.modelNumber}
-          onChange={(e) => onChange('modelNumber', e.target.value)}
+          value={currentElectrical?.modelNumber || ''}
+          onChange={(value) => onChange('modelNumber', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Serial Number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Serial Number"
-          variant="outlined"
           placeholder="Serial Number"
-          type="text"
-          value={currentElectrical?.serialNumber}
-          onChange={(e) => onChange('serialNumber', e.target.value)}
+          value={currentElectrical?.serialNumber || ''}
+          onChange={(value) => onChange('serialNumber', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* notes */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+      <FormControl fullWidth> 
+        <TextInput
           label="Notes"
-          variant="outlined"
           placeholder="Notes"
-          type="text"
-          value={currentElectrical?.notes}
-          onChange={(e) => onChange('notes', e.target.value)}
+          value={currentElectrical?.notes || ''}
+          onChange={(value) => onChange('notes', value)}
           onBlur={() => onUpdate()}
         />
       </FormControl>
