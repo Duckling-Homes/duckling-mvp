@@ -1,15 +1,16 @@
 'use client'
 
-import ChipManager from '@/components/ChipManager'
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import { useEffect, useState } from 'react'
-import HVACForm from './AppliancesForms/HVACForm'
-import WaterHeaterForm from './AppliancesForms/WaterHeaterForm'
-import CooktopForm from './AppliancesForms/CooktopForm'
-import DefaultForm from './AppliancesForms/DefaultForm'
-import { Project, ProjectAppliance } from '@/types/types'
-import { v4 as uuidv4 } from 'uuid'
-import ModelStore from '@/app/stores/modelStore'
+import ChipManager from "@/components/ChipManager";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useEffect, useState } from "react";
+import HVACForm from "./AppliancesForms/HVACForm";
+import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
+import CooktopForm from "./AppliancesForms/CooktopForm";
+import DefaultForm from "./AppliancesForms/DefaultForm";
+import { Project, ProjectAppliance } from "@/types/types";
+import { v4 as uuidv4 } from 'uuid';
+import ModelStore from "@/app/stores/modelStore";
+import { SelectInput } from "@/components/Inputs";
 
 const TYPES = [
   { name: 'HVAC', value: 'hvac' },
@@ -247,42 +248,24 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         currentChip={currentAppliance?.id || ''}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
-      {currentAppliance?.id && (
-        <div
-          style={{
-            width: '100%',
-          }}
-        >
-          <form
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <FormControl fullWidth>
-              <InputLabel id="type-label">Type</InputLabel>
-              <Select
-                labelId="type-label"
-                id="type-select"
-                label="Type"
-                disabled={currentAppliance?.type ? true : false}
-                value={currentAppliance?.type?.toLowerCase()}
-                onChange={({ target }) =>
-                  handleTypeChange('type', target.value)
-                }
-              >
-                {TYPES.map((type, i) => (
-                  <MenuItem key={i} value={type.value}>
-                    {type.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {renderForm()}
-          </form>
-        </div>
-      )}
+      {currentAppliance?.id && <div style={{
+        width: '100%',
+      }}>
+        <form style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}>
+          <SelectInput
+            label="Type"
+            value={(currentAppliance?.type)?.toLowerCase() || ''}
+            onChange={(value) => handleTypeChange('type', value)}
+            disabled={currentAppliance?.type ? true : false}
+            options={TYPES}
+          />
+          {renderForm()}
+        </form>
+      </div>}
     </div>
   )
 }

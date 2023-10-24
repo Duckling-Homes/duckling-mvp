@@ -2,7 +2,7 @@
 
 import ModelStore from "@/app/stores/modelStore";
 import ChipManager from "@/components/ChipManager";
-import { TextInput } from "@/components/Inputs";
+import { SelectInput, TextInput } from "@/components/Inputs";
 import { Project, ProjectRoom } from "@/types/types";
 import { Chip, FormControl, FormGroup, FormLabel, InputLabel, MenuItem, Select,ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -171,33 +171,22 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               placeholder="Room Name"
               value={currentRoom?.name || ''}
               onChange={(value) => handleInputChange('name', value)}
-              onBlur={() => patchRoom()}
+              onBlur={patchRoom}
             />
-            <FormControl fullWidth>
-              <InputLabel id="room-type-label">
-                Room Type
-              </InputLabel>
-              <Select
-                placeholder="Room Type"
-                labelId="room-type-label"
-                id="room-type-select"
-                label="Room Type"
-                value={currentRoom?.type}
-                onBlur={() => patchRoom()}
-                onChange={(e) => handleInputChange('type', e.target.value)}
-              >
-                {ROOM_TYPES.map((roomType, i) => (
-                  <MenuItem key={i} value={roomType}>{roomType}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <SelectInput
+              label="Room Type"
+              value={currentRoom?.type || ''}
+              onChange={(value) => handleInputChange('type', value)}
+              onBlur={patchRoom}
+              options={ROOM_TYPES}
+            />
             <TextInput
               label="Width"
               placeholder="Width"
               type="number"
               value={currentRoom?.width || ''}
               onChange={(value) => handleInputChange('width', parseInt(value))}
-              onBlur={() => patchRoom()}
+              onBlur={patchRoom}
             />
             <TextInput
               label="Length"
@@ -205,7 +194,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               type="number"
               value={currentRoom?.length || ''}
               onChange={(value) => handleInputChange('length', parseInt(value))}
-              onBlur={() => patchRoom()}
+              onBlur={patchRoom}
             />
             <TextInput
               label="Ceiling Height"
@@ -215,25 +204,15 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               onChange={
                 (value) => handleInputChange('ceilingHeight', parseInt(value))
               }
-              onBlur={() => patchRoom()}
+              onBlur={patchRoom}
             />
-            <FormControl fullWidth>
-              <InputLabel id="width-label">
-                Floor
-              </InputLabel>
-              <Select
-                labelId="width-label"
-                id="width-select"
-                label="Floor"
-                value={currentRoom?.floor}
-                onChange={(e) => handleInputChange('floor', e.target.value)}
-                onBlur={() => patchRoom()}
-              >
-                {ROOM_FLOORS.map((floor, i) => (
-                  <MenuItem key={i} value={floor}>{floor}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <SelectInput
+              label="Floor"
+              value={currentRoom?.floor || ''}
+              onChange={(value) => handleInputChange('floor', value)}
+              onBlur={patchRoom}
+              options={ROOM_FLOORS}
+            />
             <FormControl>
               <FormLabel component="legend">Usage</FormLabel>
               <ToggleButtonGroup
