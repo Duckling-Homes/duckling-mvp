@@ -1,33 +1,36 @@
-"use client";
+'use client'
 
-import { ProjectAppliance } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { ProjectAppliance } from '@/types/types'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material'
 
-const FUEL = [
-  "Electricity",
-  "Natural Gas",
-  "Propane",
-  "Fuel Oil",
-  "Other",
-];
+const FUEL = ['Electricity', 'Natural Gas', 'Propane', 'Fuel Oil', 'Other']
 
 interface CooktopFormProps {
-  onChange: (key: string, value: string | number | boolean) => void;
-  onUpdate: () => void;
-  currentAppliance: ProjectAppliance;
+  onChange: (key: string, value: string | number | boolean) => void
+  onUpdate: () => void
+  currentAppliance: ProjectAppliance
 }
 
-const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance, onUpdate }) => {
-  
+const CooktopForm: React.FC<CooktopFormProps> = ({
+  onChange,
+  currentAppliance,
+  onUpdate,
+}) => {
   return (
     <>
       {/* manufacturer */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Manufacturer"
           variant="outlined"
-          placeholder='Manufacturer'
+          placeholder="Manufacturer"
           type="text"
           onChange={(e) => onChange('manufacturer', e.target.value)}
           onBlur={() => onUpdate()}
@@ -35,12 +38,12 @@ const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance, o
         />
       </FormControl>
       {/* model number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Model Number"
           variant="outlined"
-          placeholder='Model Number'
+          placeholder="Model Number"
           type="text"
           onChange={(e) => onChange('modelNumber', e.target.value)}
           onBlur={() => onUpdate()}
@@ -48,12 +51,12 @@ const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance, o
         />
       </FormControl>
       {/* serial number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Serial Number"
           variant="outlined"
-          placeholder='Serial Number'
+          placeholder="Serial Number"
           type="text"
           onChange={(e) => onChange('serialNumber', e.target.value)}
           onBlur={() => onUpdate()}
@@ -61,7 +64,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance, o
         />
       </FormControl>
       {/* fuel */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <InputLabel id="fuel-label">Fuel</InputLabel>
         <Select
           labelId="fuel-label"
@@ -71,15 +74,15 @@ const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance, o
           onBlur={() => onUpdate()}
           value={currentAppliance?.fuel}
         >
-          {
-            FUEL.map((fuel, i) => (
-              <MenuItem key={i} value={fuel}>{fuel}</MenuItem>
-            ))
-          }
+          {FUEL.map((fuel, i) => (
+            <MenuItem key={i} value={fuel}>
+              {fuel}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       {/* induction */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <InputLabel id="induction-label">Is Induction?</InputLabel>
         <Select
           labelId="induction-label"
@@ -94,12 +97,12 @@ const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance, o
         </Select>
       </FormControl>
       {/* age */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Age"
           variant="outlined"
-          placeholder='Age'
+          placeholder="Age"
           type="number"
           onChange={(e) => onChange('age', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
@@ -107,12 +110,12 @@ const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance, o
         />
       </FormControl>
       {/* location */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Location"
           variant="outlined"
-          placeholder='Location'
+          placeholder="Location"
           type="text"
           onChange={(e) => onChange('location', e.target.value)}
           onBlur={() => onUpdate()}
@@ -120,12 +123,12 @@ const CooktopForm: React.FC<CooktopFormProps> = ({ onChange, currentAppliance, o
         />
       </FormControl>
       {/* notes */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Notes"
           variant="outlined"
-          placeholder='Notes'
+          placeholder="Notes"
           type="text"
           onChange={(e) => onChange('notes', e.target.value)}
           onBlur={() => onUpdate()}
