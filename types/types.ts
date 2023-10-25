@@ -30,6 +30,7 @@ export interface ProjectData {
 }
 
 export interface PhotoDetails {
+  id?: string
   photoUrl?: any
   name?: string
   homeownerNotes?: string
