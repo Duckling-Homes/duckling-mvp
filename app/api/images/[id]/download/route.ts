@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import AWS from 'aws-sdk'
-import { PassThrough } from 'stream'
 import { ImageType, constructS3ImageKey, getS3Client } from '@/app/utils/s3'
+import { isImageInOrganization } from '@/app/utils/repositories/image'
 
 // Initialize the S3 client
 const s3 = getS3Client()
@@ -12,10 +11,18 @@ export async function GET(
 ): Promise<NextResponse | void> {
   try {
     const { id } = context.params
+    const orgContext = request.headers.get('organization-context') || ''
+    if (!(await isImageInOrganization(id, orgContext))) {
+      return new NextResponse('Not found', {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    }
     const imageType: ImageType =
       (request.nextUrl.searchParams.get('type') as ImageType) || 'ORIGINAL'
 
-    const orgContext = request.headers.get('organization-context') || ''
     const s3Key = constructS3ImageKey(orgContext, imageType, id)
 
     const downloadParams = {

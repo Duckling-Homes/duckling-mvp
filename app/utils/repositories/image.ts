@@ -5,6 +5,25 @@ type ExtendedImageCreateInput = Prisma.ImageUncheckedCreateInput & {
   isHeroPhoto?: boolean
 }
 
+/**
+ * Verifies if an image is part of a project that belongs to the specified organization.
+ *
+ * @param imageId - The ID of the image.
+ * @param organizationId - The ID of the organization.
+ * @returns True if the image's project is in the organization, otherwise false.
+ */
+export async function isImageInOrganization(
+  imageId: string,
+  organizationId: string
+): Promise<boolean> {
+  const image = await prisma.image.findUnique({
+    where: { id: imageId },
+    include: { project: true },
+  })
+
+  return image?.project.organizationId === organizationId || false
+}
+
 export async function createImage(
   imageData: ExtendedImageCreateInput,
   organizationContext: string
