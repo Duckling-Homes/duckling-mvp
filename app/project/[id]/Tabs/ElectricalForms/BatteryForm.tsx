@@ -1,25 +1,34 @@
-"use client";
+'use client'
 
-import { ProjectElectrical } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { ProjectElectrical } from '@/types/types'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material'
 
 interface BatteryFormProps {
-  currentElectrical: ProjectElectrical;
-  onChange: (key: string, value: number | string | boolean) => void;
-  onUpdate: () => void;
+  currentElectrical: ProjectElectrical
+  onChange: (key: string, value: number | string | boolean) => void
+  onUpdate: () => void
 }
 
-const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, onUpdate }) => {
-  
+const BatteryForm: React.FC<BatteryFormProps> = ({
+  currentElectrical,
+  onChange,
+  onUpdate,
+}) => {
   return (
     <>
       {/* Total Capacity */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Total Capacity"
           variant="outlined"
-          placeholder='Total Capacity'
+          placeholder="Total Capacity"
           type="number"
           value={currentElectrical?.totalCapacity}
           onChange={(e) => onChange('totalCapacity', parseInt(e.target.value))}
@@ -27,38 +36,42 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
         />
       </FormControl>
       {/* Rated Power Output */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Rated Power Output"
           variant="outlined"
-          placeholder='Rated Power Output'
+          placeholder="Rated Power Output"
           type="number"
           value={currentElectrical?.ratedPowerOutput}
-          onChange={(e) => onChange('ratedPowerOutput', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('ratedPowerOutput', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Peak Power Output */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Peak Power Output"
           variant="outlined"
-          placeholder='Peak Power Output'
+          placeholder="Peak Power Output"
           type="number"
           value={currentElectrical?.ratedPeakOutput}
-          onChange={(e) => onChange('ratedPeakOutput', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('ratedPeakOutput', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Voltage */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Voltage"
           variant="outlined"
-          placeholder='Voltage'
+          placeholder="Voltage"
           type="number"
           value={currentElectrical?.voltage}
           onChange={(e) => onChange('voltage', parseInt(e.target.value))}
@@ -66,7 +79,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
         />
       </FormControl>
       {/* Grid Connected */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <InputLabel id="grid-connected-label">Grid Connected</InputLabel>
         <Select
           labelId="grid-connected-label"
@@ -81,12 +94,12 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
         </Select>
       </FormControl>
       {/* Manufacturer */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Manufacturer"
           variant="outlined"
-          placeholder='Manufacturer'
+          placeholder="Manufacturer"
           type="text"
           value={currentElectrical?.manufacturer}
           onChange={(e) => onChange('manufacturer', e.target.value)}
@@ -94,12 +107,12 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
         />
       </FormControl>
       {/* Model Number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Model Number"
           variant="outlined"
-          placeholder='Model Number'
+          placeholder="Model Number"
           type="text"
           value={currentElectrical?.modelNumber}
           onChange={(e) => onChange('modelNumber', e.target.value)}
@@ -107,12 +120,12 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
         />
       </FormControl>
       {/* Serial Number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Serial Number"
           variant="outlined"
-          placeholder='Serial Number'
+          placeholder="Serial Number"
           type="text"
           value={currentElectrical?.serialNumber}
           onChange={(e) => onChange('serialNumber', e.target.value)}
@@ -120,12 +133,12 @@ const BatteryForm: React.FC<BatteryFormProps> = ({ currentElectrical, onChange, 
         />
       </FormControl>
       {/* notes */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Notes"
           variant="outlined"
-          placeholder='Notes'
+          placeholder="Notes"
           type="text"
           value={currentElectrical?.notes}
           onChange={(e) => onChange('notes', e.target.value)}

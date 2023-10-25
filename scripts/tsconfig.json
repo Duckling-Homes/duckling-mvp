@@ -1,10 +1,9 @@
 {
-    "extends": "../tsconfig.json",
-    "compilerOptions": {
-      "module": "CommonJS",
-      "esModuleInterop": true,
-      "outDir": "./dist"
-    },
-    "include": ["./**/*.ts"]
-  }
-  
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "outDir": "./dist"
+  },
+  "include": ["./**/*.ts"]
+}

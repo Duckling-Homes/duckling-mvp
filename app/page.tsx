@@ -21,12 +21,11 @@ const Home = observer(() => {
   useEffect(() => {
     // Check if user's publicMetadata has the organization_id
     if (user && !user?.publicMetadata?.organization_id) {
-      console.log("User has no organization_id: Hitting Assign route")
+      console.log('User has no organization_id: Hitting Assign route')
       // Make a call to /api/assign
       fetch('/api/assign', {
         method: 'GET',
-        headers: {
-        },
+        headers: {},
       })
         .then((response) => response.json())
         .then((data) => {

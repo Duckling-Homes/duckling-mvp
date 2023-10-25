@@ -1,6 +1,6 @@
 'use client'
 
-import { ProjectEnvelope } from '@/types/types';
+import { ProjectEnvelope } from '@/types/types'
 import {
   FormControl,
   InputLabel,
@@ -10,13 +10,16 @@ import {
 } from '@mui/material'
 
 interface InsulationFormProps {
-  onChange: (inputName: string, value: string) => void;
-  onUpdate: () => void;
-  currentEnvelope: ProjectEnvelope;
+  onChange: (inputName: string, value: string) => void
+  onUpdate: () => void
+  currentEnvelope: ProjectEnvelope
 }
 
-const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelope, onUpdate }) => {
-
+const InsulationForm: React.FC<InsulationFormProps> = ({
+  onChange,
+  currentEnvelope,
+  onUpdate,
+}) => {
   return (
     <>
       <TextField
@@ -78,7 +81,7 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
         fullWidth
         multiline
       />
-    </> 
+    </>
   )
 }
 
