@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-} from '@mui/material'
+import { Box, Button, Grid } from '@mui/material'
 import React, { useState, useRef, useEffect } from 'react'
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 
@@ -19,8 +11,6 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onChange }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [imageX, setImageX] = useState<number>(0)
   const [imageY, setImageY] = useState<number>(0)
-  const [cameraFacingEnvironment, setCameraFacingEnvironment] =
-    useState<boolean>(true)
   const videoStreamRef = useRef<MediaStream | null>(null) // Create a ref instead of state
 
   const handleCapture = () => {
@@ -55,7 +45,7 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onChange }) => {
           .getUserMedia({
             video: {
               facingMode: {
-                ideal: cameraFacingEnvironment ? 'environment' : 'user',
+                ideal: 'user', // TODO: Add the ability to change the camera facing env
               },
               width: { ideal: window.innerWidth },
               height: { ideal: window.innerHeight },
@@ -110,7 +100,7 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onChange }) => {
         console.log('Camera feed stopped and video source object cleared.')
       }
     }
-  }, [cameraFacingEnvironment]) // This effect only runs when cameraFacingEnvironment changes
+  })
 
   useEffect(() => {
     const video = videoRef.current
