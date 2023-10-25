@@ -21,16 +21,16 @@ export class PhotoSyncOperations {
   }
 
   upload = async (imageID: string, photoUrl: string) => {
-    const response = await fetch(photoUrl)
-    const blob = await response.blob()
-
-    const formData = new FormData()
-    formData.append('file', blob)
-
     try {
+      const response = await fetch(photoUrl)
+      const arrayBuffer = await response.arrayBuffer()
+
       await fetch(`/api/images/${imageID}/upload`, {
         method: 'POST',
-        body: formData,
+        body: arrayBuffer,
+        headers: {
+          'Content-Type': 'application/octet-stream', // This indicates we are sending raw binary data
+        },
       })
     } catch (error) {
       console.error('Error uploading the photo:', error)
