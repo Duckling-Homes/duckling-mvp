@@ -71,7 +71,6 @@ const DataCollection = observer(() => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
-          onConfirm={() => {}}
           // TODO: Pass in photo if a hero photo is set
         />
       )}

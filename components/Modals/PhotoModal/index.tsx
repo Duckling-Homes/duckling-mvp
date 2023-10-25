@@ -8,10 +8,9 @@ import PhotoForm from './PhotoForms/PhotoForm'
 const PhotoCaptureModal: React.FC<{
   open: boolean
   onClose: () => void
-  onConfirm: (projectId: string) => void
   project: Project
   photo?: PhotoDetails
-}> = ({ open, onConfirm, onClose, project, photo }) => {
+}> = ({ open, onClose, project, photo }) => {
   const [currentPhoto, setCurrentPhoto] = useState<PhotoDetails>(photo ?? {})
   const handleOnClose = () => {
     setCurrentPhoto({})
