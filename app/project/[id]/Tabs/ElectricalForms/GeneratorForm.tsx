@@ -1,23 +1,27 @@
-"use client";
+'use client'
 
-import { ProjectElectrical } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { ProjectElectrical } from '@/types/types'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material'
 
-const FUEL = [
-  "Natural gas",
-  "Propane",
-  "Diesel",
-  "Gasoline",
-]
+const FUEL = ['Natural gas', 'Propane', 'Diesel', 'Gasoline']
 
 interface GeneratorFormProps {
-  currentElectrical: ProjectElectrical;
-  onChange: (name: string, value: string | number | boolean) => void;
-  onUpdate: () => void;
+  currentElectrical: ProjectElectrical
+  onChange: (name: string, value: string | number | boolean) => void
+  onUpdate: () => void
 }
 
-const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChange, onUpdate }) => {
-  
+const GeneratorForm: React.FC<GeneratorFormProps> = ({
+  currentElectrical,
+  onChange,
+  onUpdate,
+}) => {
   return (
     <>
       {/* Generator Type */}
@@ -36,7 +40,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
         </Select>
       </FormControl>
       {/* Fuel Type */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <InputLabel id="fuel-type-label">Fuel Type</InputLabel>
         <Select
           labelId="fuel-type-label"
@@ -46,46 +50,50 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           onChange={(e) => onChange('fuelType', e.target.value)}
           onBlur={() => onUpdate()}
         >
-          {
-            FUEL.map((fuel, i) => (
-              <MenuItem key={i} value={fuel}>{fuel}</MenuItem>
-            ))
-          }
+          {FUEL.map((fuel, i) => (
+            <MenuItem key={i} value={fuel}>
+              {fuel}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       {/* Rated Continuous Wattage */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Rated Continuous Wattage"
           variant="outlined"
           type="number"
-          placeholder='Rated Continuous Wattage'
+          placeholder="Rated Continuous Wattage"
           value={currentElectrical?.ratedContinuousWattage}
-          onChange={(e) => onChange('ratedContinuousWattage', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('ratedContinuousWattage', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Rated Peak Wattage */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Rated Peak Wattage"
           variant="outlined"
-          placeholder='Rated Peak Wattage'
+          placeholder="Rated Peak Wattage"
           type="number"
           value={currentElectrical?.ratedPeakWattage}
-          onChange={(e) => onChange('ratedPeakWattage', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('ratedPeakWattage', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Voltage */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Voltage"
           variant="outlined"
-          placeholder='Voltage'
+          placeholder="Voltage"
           type="number"
           value={currentElectrical?.voltage}
           onChange={(e) => onChange('voltage', parseInt(e.target.value))}
@@ -118,8 +126,8 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           onChange={(e) => onChange('transferSwitch', e.target.value)}
           onBlur={() => onUpdate()}
         >
-          <MenuItem value='Automatic'>Automatic</MenuItem>
-          <MenuItem value='Manual'>Manual</MenuItem>
+          <MenuItem value="Automatic">Automatic</MenuItem>
+          <MenuItem value="Manual">Manual</MenuItem>
         </Select>
       </FormControl>
       {/* Connection Method */}
@@ -133,19 +141,18 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
           onChange={(e) => onChange('connection', e.target.value)}
           onBlur={() => onUpdate()}
         >
-          <MenuItem value='Interlock'>Interlock</MenuItem>
-          <MenuItem value='Main Panel'>Main Panel</MenuItem>
-          <MenuItem value='Sub-Panel'>Sub-Panel</MenuItem>
-
+          <MenuItem value="Interlock">Interlock</MenuItem>
+          <MenuItem value="Main Panel">Main Panel</MenuItem>
+          <MenuItem value="Sub-Panel">Sub-Panel</MenuItem>
         </Select>
       </FormControl>
       {/* Location */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Location"
           variant="outlined"
-          placeholder='Location'
+          placeholder="Location"
           type="text"
           value={currentElectrical?.location}
           onChange={(e) => onChange('location', e.target.value)}
@@ -153,12 +160,12 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* Year Installed */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Year Installed"
           variant="outlined"
-          placeholder='Year Installed'
+          placeholder="Year Installed"
           type="text"
           value={currentElectrical?.yearInstalled}
           onChange={(e) => onChange('yearInstalled', parseInt(e.target.value))}
@@ -166,12 +173,12 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* Manufacturer */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Manufacturer"
           variant="outlined"
-          placeholder='Manufacturer'
+          placeholder="Manufacturer"
           type="text"
           value={currentElectrical?.manufacturer}
           onChange={(e) => onChange('manufacturer', e.target.value)}
@@ -179,12 +186,12 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* Model Number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Model Number"
           variant="outlined"
-          placeholder='Model Number'
+          placeholder="Model Number"
           type="text"
           value={currentElectrical?.modelNumber}
           onChange={(e) => onChange('modelNumber', e.target.value)}
@@ -192,12 +199,12 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* Serial Number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Serial Number"
           variant="outlined"
-          placeholder='Serial Number'
+          placeholder="Serial Number"
           type="text"
           value={currentElectrical?.serialNumber}
           onChange={(e) => onChange('serialNumber', e.target.value)}
@@ -205,12 +212,12 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* notes */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Notes"
           variant="outlined"
-          placeholder='Notes'
+          placeholder="Notes"
           type="text"
           value={currentElectrical?.notes}
           onChange={(e) => onChange('notes', e.target.value)}

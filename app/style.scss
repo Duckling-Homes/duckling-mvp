@@ -1,8 +1,9 @@
 .projectList {
   $self: &;
-  background-color: #FFF;
+  background-color: #fff;
   border-radius: 4px;
-  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 
   &__upperWrapper {
     padding: 16px;
@@ -15,7 +16,7 @@
       justify-content: space-between;
 
       p {
-        font-family: "Roboto", "Helvetica Neue";
+        font-family: 'Roboto', 'Helvetica Neue';
         font-size: 24px;
         font-style: normal;
         font-weight: 400;
@@ -36,10 +37,11 @@
     gap: 40px;
     flex-direction: column;
     margin: 0 auto;
-    background-color: #FFF;
+    background-color: #fff;
     border-radius: 4px;
     width: 50%;
-    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.20), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+      0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
     padding: 40px;
 
     #{$self}__header {
@@ -62,6 +64,5 @@
       display: flex;
       justify-content: end;
     }
-
   }
 }

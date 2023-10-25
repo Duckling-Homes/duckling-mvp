@@ -7,8 +7,14 @@ import { NextRequest, NextResponse } from 'next/server'
  * Create project insulation
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
-  const { name, insulationLocation, insulationCondition, notes, projectId, id } =
-    await req.json()
+  const {
+    name,
+    insulationLocation,
+    insulationCondition,
+    notes,
+    projectId,
+    id,
+  } = await req.json()
   const orgContext = req.headers.get('organization-context')
   const project = await getProject(projectId)
 

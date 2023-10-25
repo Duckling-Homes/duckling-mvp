@@ -1,45 +1,50 @@
-"use client";
+'use client'
 
-import { ProjectAppliance } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { ProjectAppliance } from '@/types/types'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material'
 
-const HVAC_TYPES = [
-  "Heating",
-  "Cooling",
-  "Heat Pump"
-]
+const HVAC_TYPES = ['Heating', 'Cooling', 'Heat Pump']
 
 const HVAC_SYSTEMS = [
-  { name: "Furnace", parent: "Heating" },
-  { name: "Boiler", parent: "Heating" },
-  { name: "Baseboard", parent: "Heating" },
-  { name: "Stove", parent: "Heating" },
-  { name: "Solar Thermal", parent: "Heating" },
-  { name: "Other", parent: "Heating" },
-  { name: "Central Air Conditioner", parent: "Cooling" },
-  { name: "Mini- Split", parent: "Cooling" },
-  { name: "Other", parent: "Cooling" },
-  { name: "Mini - Split", parent: "Heat Pump" },
-  { name: "Central", parent: "Heat Pump" },
-  { name: "Other", parent: "Heat Pump" },
-];
+  { name: 'Furnace', parent: 'Heating' },
+  { name: 'Boiler', parent: 'Heating' },
+  { name: 'Baseboard', parent: 'Heating' },
+  { name: 'Stove', parent: 'Heating' },
+  { name: 'Solar Thermal', parent: 'Heating' },
+  { name: 'Other', parent: 'Heating' },
+  { name: 'Central Air Conditioner', parent: 'Cooling' },
+  { name: 'Mini- Split', parent: 'Cooling' },
+  { name: 'Other', parent: 'Cooling' },
+  { name: 'Mini - Split', parent: 'Heat Pump' },
+  { name: 'Central', parent: 'Heat Pump' },
+  { name: 'Other', parent: 'Heat Pump' },
+]
 
 const FUEL = [
-  { name: "Electricity", parent: "all" },
-  { name: "Natural Gas", parent: "Heating" },
-  { name: "Fuel Oil", parent: "Heating" },
-  { name: "Wood Pallet", parent: "Heating" },
-  { name: "Other", parent: "all" },
-];
+  { name: 'Electricity', parent: 'all' },
+  { name: 'Natural Gas', parent: 'Heating' },
+  { name: 'Fuel Oil', parent: 'Heating' },
+  { name: 'Wood Pallet', parent: 'Heating' },
+  { name: 'Other', parent: 'all' },
+]
 
 interface HVACFormProps {
-  onChange: (key: string, value: string | number | boolean) => void;
-  onUpdate: () => void;
-  currentAppliance: ProjectAppliance;
+  onChange: (key: string, value: string | number | boolean) => void
+  onUpdate: () => void
+  currentAppliance: ProjectAppliance
 }
 
-const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdate }) => {
-  
+const HVACForm: React.FC<HVACFormProps> = ({
+  onChange,
+  currentAppliance,
+  onUpdate,
+}) => {
   return (
     <>
       <FormControl fullWidth>
@@ -52,14 +57,14 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdat
           onBlur={() => onUpdate()}
           value={currentAppliance?.hvacSystemType}
         >
-          {
-            HVAC_TYPES.map((type, i) => (
-              <MenuItem key={i} value={type}>{type}</MenuItem>
-            ))
-          }
+          {HVAC_TYPES.map((type, i) => (
+            <MenuItem key={i} value={type}>
+              {type}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <InputLabel id="system-label">HVAC System</InputLabel>
         <Select
           labelId="ystem-label"
@@ -69,14 +74,14 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdat
           onBlur={() => onUpdate()}
           value={currentAppliance?.havcSystem}
         >
-          {
-            HVAC_SYSTEMS.map((system, i) => (
-              <MenuItem key={i} value={system.name}>{system.name}</MenuItem>
-            ))
-          }
+          {HVAC_SYSTEMS.map((system, i) => (
+            <MenuItem key={i} value={system.name}>
+              {system.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <InputLabel id="fuel-label">Fuel</InputLabel>
         <Select
           labelId="fuel-label"
@@ -86,20 +91,20 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdat
           onBlur={() => onUpdate()}
           value={currentAppliance?.fuel}
         >
-          {
-            FUEL.map((fuel, i) => (
-              <MenuItem key={i} value={fuel.name}>{fuel.name}</MenuItem>
-            ))
-          }
+          {FUEL.map((fuel, i) => (
+            <MenuItem key={i} value={fuel.name}>
+              {fuel.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       {/* age */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Age"
           variant="outlined"
-          placeholder='Age'
+          placeholder="Age"
           type="number"
           onChange={(e) => onChange('age', parseInt(e.target.value))}
           onBlur={() => onUpdate()}
@@ -107,12 +112,12 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdat
         />
       </FormControl>
       {/* manufacturer */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Manufacturer"
           variant="outlined"
-          placeholder='Manufacturer'
+          placeholder="Manufacturer"
           type="text"
           onChange={(e) => onChange('manufacturer', e.target.value)}
           onBlur={() => onUpdate()}
@@ -120,12 +125,12 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdat
         />
       </FormControl>
       {/* model number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Model Number"
           variant="outlined"
-          placeholder='Model Number'
+          placeholder="Model Number"
           type="text"
           onChange={(e) => onChange('modelNumber', e.target.value)}
           onBlur={() => onUpdate()}
@@ -133,12 +138,12 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdat
         />
       </FormControl>
       {/* serial number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Serial Number"
           variant="outlined"
-          placeholder='Serial Number'
+          placeholder="Serial Number"
           type="text"
           onChange={(e) => onChange('serialNumber', e.target.value)}
           onBlur={() => onUpdate()}
@@ -146,38 +151,42 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdat
         />
       </FormControl>
       {/* heating */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Heating Capacity"
           variant="outlined"
-          placeholder='Heating Capacity'
+          placeholder="Heating Capacity"
           type="text"
-          onChange={(e) => onChange('heatingCapacity', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('heatingCapacity', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
           value={currentAppliance?.heatingCapacity}
         />
       </FormControl>
       {/* cooling capacity */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Cooling Capacity"
           variant="outlined"
-          placeholder='Cooling Capacity'
+          placeholder="Cooling Capacity"
           type="text"
-          onChange={(e) => onChange('coolingCapacity', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('coolingCapacity', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
           value={currentAppliance?.coolingCapacity}
         />
       </FormControl>
       {/* location */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Location"
           variant="outlined"
-          placeholder='Location'
+          placeholder="Location"
           type="text"
           onChange={(e) => onChange('location', e.target.value)}
           onBlur={() => onUpdate()}
@@ -185,12 +194,12 @@ const HVACForm: React.FC<HVACFormProps> = ({ onChange, currentAppliance, onUpdat
         />
       </FormControl>
       {/* notes */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Notes"
           variant="outlined"
-          placeholder='Notes'
+          placeholder="Notes"
           type="text"
           onChange={(e) => onChange('notes', e.target.value)}
           onBlur={() => onUpdate()}

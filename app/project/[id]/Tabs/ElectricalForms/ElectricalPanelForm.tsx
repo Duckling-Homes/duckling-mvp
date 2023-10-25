@@ -1,16 +1,25 @@
-"use client";
+'use client'
 
-import { ProjectElectrical } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { ProjectElectrical } from '@/types/types'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material'
 
 interface ElectricalPanelFormProps {
-  currentElectrical: ProjectElectrical;
-  onChange: (name: string, value: string | number | boolean) => void;
-  onUpdate: () => void;
+  currentElectrical: ProjectElectrical
+  onChange: (name: string, value: string | number | boolean) => void
+  onUpdate: () => void
 }
 
-const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({ currentElectrical, onChange, onUpdate }) => {
-
+const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
+  currentElectrical,
+  onChange,
+  onUpdate,
+}) => {
   return (
     <>
       {/* Panel Type */}
@@ -29,129 +38,147 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({ currentElectr
         </Select>
       </FormControl>
       {/* Amperage Rating */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Amperage Rating"
           variant="outlined"
-          placeholder='Amperage Rating'
+          placeholder="Amperage Rating"
           type="number"
           value={currentElectrical?.panelAmperageRating}
-          onChange={(e) => onChange('panelAmperageRating', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('panelAmperageRating', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Available Slot for New Circuits */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Available Slot for New Circuits"
           variant="outlined"
-          placeholder='Available Slot for New Circuits'
+          placeholder="Available Slot for New Circuits"
           type="number"
           value={currentElectrical?.availableNewCircuits}
-          onChange={(e) => onChange('availableNewCircuits', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('availableNewCircuits', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Total 15 Amp Circuits */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Total 15 Amp Circuits"
           variant="outlined"
-          placeholder='Total 15 Amp Circuits'
+          placeholder="Total 15 Amp Circuits"
           type="number"
           value={currentElectrical?.total15AmpCircuits}
-          onChange={(e) => onChange('total15AmpCircuits', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('total15AmpCircuits', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Total 20 Amp Circuits */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Total 20 Amp Circuits"
           variant="outlined"
-          placeholder='Total 20 Amp Circuits'
+          placeholder="Total 20 Amp Circuits"
           type="number"
           value={currentElectrical?.total20AmpCircuits}
-          onChange={(e) => onChange('total20AmpCircuits', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('total20AmpCircuits', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Total 30 Amp Circuits */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Total 30 Amp Circuits"
           variant="outlined"
-          placeholder='Total 30 Amp Circuits'
+          placeholder="Total 30 Amp Circuits"
           type="number"
           value={currentElectrical?.total30AmpCircuits}
-          onChange={(e) => onChange('total30AmpCircuits', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('total30AmpCircuits', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Total 40 Amp Circuits */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Total 40 Amp Circuits"
           variant="outlined"
-          placeholder='Total 40 Amp Circuits'
+          placeholder="Total 40 Amp Circuits"
           type="number"
           value={currentElectrical?.total40AmpCircuits}
-          onChange={(e) => onChange('total40AmpCircuits', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('total40AmpCircuits', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Total 50 Amp Circuits */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Total 50 Amp Circuits"
           variant="outlined"
-          placeholder='Total 50 Amp Circuits'
+          placeholder="Total 50 Amp Circuits"
           type="number"
           value={currentElectrical?.total50AmpCircuits}
-          onChange={(e) => onChange('total50AmpCircuits', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('total50AmpCircuits', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Total 60 Amp Circuits */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Total 60 Amp Circuits"
           variant="outlined"
-          placeholder='Total 60 Amp Circuits'
+          placeholder="Total 60 Amp Circuits"
           type="number"
           value={currentElectrical?.total60AmpCircuits}
-          onChange={(e) => onChange('total60AmpCircuits', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('total60AmpCircuits', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Total 70 Amp Circuits */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Total 70 Amp Circuits"
           variant="outlined"
-          placeholder='Total 70 Amp Circuits'
+          placeholder="Total 70 Amp Circuits"
           type="number"
           value={currentElectrical?.total70AmpCircuits}
-          onChange={(e) => onChange('total70AmpCircuits', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('total70AmpCircuits', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Location */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Location"
           variant="outlined"
-          placeholder='Location'
+          placeholder="Location"
           type="text"
           value={currentElectrical?.location}
           onChange={(e) => onChange('location', e.target.value)}
@@ -159,12 +186,12 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({ currentElectr
         />
       </FormControl>
       {/* Notes */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Notes"
           variant="outlined"
-          placeholder='Notes'
+          placeholder="Notes"
           type="text"
           value={currentElectrical?.notes}
           onChange={(e) => onChange('notes', e.target.value)}

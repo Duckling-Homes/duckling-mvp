@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
  * Create project air sealing
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
-  const { name, leakinessDescription, notes, projectId, id} = await req.json()
+  const { name, leakinessDescription, notes, projectId, id } = await req.json()
   const orgContext = req.headers.get('organization-context')
   const project = await getProject(projectId)
 

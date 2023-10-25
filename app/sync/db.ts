@@ -29,7 +29,6 @@ export class DucklingDexie extends Dexie {
 
   putObject = async (obj: _Object) => {
     obj.json = JSON.parse(JSON.stringify(obj.json))
-
     return this.objects.put(obj, obj.id)
   }
 
@@ -43,7 +42,6 @@ export class DucklingDexie extends Dexie {
       options,
       added: Date.now(),
     }
-    console.log('this object size' + (await this.requests.count()))
     return this.requests.put(req)
   }
 

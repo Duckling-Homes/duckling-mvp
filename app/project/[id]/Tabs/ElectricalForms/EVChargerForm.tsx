@@ -1,22 +1,27 @@
-"use client";
+'use client'
 
-import { ProjectElectrical } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { ProjectElectrical } from '@/types/types'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material'
 
-const CHARGING_LEVELS = [
-  "Level 1",
-  "Level 2",
-  "Level 3",
-]
+const CHARGING_LEVELS = ['Level 1', 'Level 2', 'Level 3']
 
 interface EVChargerFormProps {
-  currentElectrical: ProjectElectrical;
-  onChange: (name: string, value: string | number | boolean) => void;
-  onUpdate: () => void;
+  currentElectrical: ProjectElectrical
+  onChange: (name: string, value: string | number | boolean) => void
+  onUpdate: () => void
 }
 
-const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChange, onUpdate }) => {
-  
+const EVChargerForm: React.FC<EVChargerFormProps> = ({
+  currentElectrical,
+  onChange,
+  onUpdate,
+}) => {
   return (
     <>
       {/* Charging Level */}
@@ -30,20 +35,20 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChan
           onChange={(e) => onChange('chargingLevel', e.target.value)}
           onBlur={() => onUpdate()}
         >
-          {
-            CHARGING_LEVELS.map((level, i) => (
-              <MenuItem key={i} value={level}>{level}</MenuItem>
-            ))
-          }
+          {CHARGING_LEVELS.map((level, i) => (
+            <MenuItem key={i} value={level}>
+              {level}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       {/* Amperage */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Amperage"
           variant="outlined"
-          placeholder='Amperage'
+          placeholder="Amperage"
           type="number"
           value={currentElectrical?.amperage}
           onChange={(e) => onChange('amperage', parseInt(e.target.value))}
@@ -51,38 +56,42 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* AC Power Source Voltage */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="AC Power Source Voltage"
           variant="outlined"
-          placeholder='AC Power Source Voltage'
+          placeholder="AC Power Source Voltage"
           type="number"
           value={currentElectrical?.acPowerSourceVolatge}
-          onChange={(e) => onChange('acPowerSourceVolatge', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('acPowerSourceVolatge', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Max Charging Power */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Max Charging Power"
           variant="outlined"
-          placeholder='Max Charging Power'
+          placeholder="Max Charging Power"
           type="number"
           value={currentElectrical?.maxChargingPower}
-          onChange={(e) => onChange('maxChargingPower', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange('maxChargingPower', parseInt(e.target.value))
+          }
           onBlur={() => onUpdate()}
         />
       </FormControl>
       {/* Manufacturer */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Manufacturer"
           variant="outlined"
-          placeholder='Manufacturer'
+          placeholder="Manufacturer"
           type="text"
           value={currentElectrical?.manufacturer}
           onChange={(e) => onChange('manufacturer', e.target.value)}
@@ -90,12 +99,12 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* Model Number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Model Number"
           variant="outlined"
-          placeholder='Model Number'
+          placeholder="Model Number"
           type="text"
           value={currentElectrical?.modelNumber}
           onChange={(e) => onChange('modelNumber', e.target.value)}
@@ -103,12 +112,12 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* Serial Number */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Serial Number"
           variant="outlined"
-          placeholder='Serial Number'
+          placeholder="Serial Number"
           type="text"
           value={currentElectrical?.serialNumber}
           onChange={(e) => onChange('serialNumber', e.target.value)}
@@ -116,12 +125,12 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({ currentElectrical, onChan
         />
       </FormControl>
       {/* notes */}
-      <FormControl fullWidth> 
+      <FormControl fullWidth>
         <TextField
           id="outlined-basic"
           label="Notes"
           variant="outlined"
-          placeholder='Notes'
+          placeholder="Notes"
           type="text"
           value={currentElectrical?.notes}
           onChange={(e) => onChange('notes', e.target.value)}
