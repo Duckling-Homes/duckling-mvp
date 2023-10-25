@@ -142,7 +142,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           ))}
         </Select>
       </FormControl>
-      {/* issue */}
+      {/* envelope */}
       <FormControl fullWidth>
         <InputLabel id="envelope-label">Envelope</InputLabel>
         <Select
