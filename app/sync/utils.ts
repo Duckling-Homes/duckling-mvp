@@ -8,11 +8,6 @@ export const isOnline = () => {
 export const publishChanges = debounce(async () => {
   if (!isOnline()) return false
   const allChanges = await db.requests.orderBy('added').toArray()
-  // the key is       const key = curr.options?.method + curr.url + curr.id
-  // only pick the latest change for each key
-
-  console.log('===== allChanges', allChanges.length)
-
   const changesByURL: Map<string, _Request> = new Map()
 
   allChanges.forEach((curr) => {
@@ -21,7 +16,6 @@ export const publishChanges = debounce(async () => {
   })
 
   const changes = Array.from(changesByURL.values())
-  console.log('===== Publishing changes...', changes.length)
 
   for (const change of changes) {
     try {
