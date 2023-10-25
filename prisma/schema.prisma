@@ -49,8 +49,8 @@ model Project {
   organizationId   String
   organization     Organization @relation(fields: [organizationId], references: [id])
 
-  heroImageId      String @unique
-  heroImage        Image @relation(name: "HeroImageRelation", fields: [heroImageId], references: [id])
+  heroImageId      String? @unique
+  heroImage        Image? @relation(name: "HeroImageRelation", fields: [heroImageId], references: [id])
 
   projectData       ProjectData?
   projectRooms      ProjectRoom[]
@@ -341,7 +341,7 @@ model GoalTag {
 
 model Image {
   id                  String  @id @default(uuid())
-  name                String
+  name                String?
   homeownerNotes      String?
   internalNotes       String?
   roomId              String?

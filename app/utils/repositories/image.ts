@@ -54,14 +54,12 @@ export async function createImage(
       },
     })
 
-    // If imageData.isHeroImage is true, update the project's heroImage
+    // If imageData.isHeroImage is true, update the project's heroImageId
     if (imageData.isHeroPhoto) {
       await prisma.project.update({
         where: { id: imageData.projectId },
         data: {
-          heroImage: {
-            connect: { id: createdImage.id },
-          },
+          heroImageId: createdImage.id,
         },
       })
     }
