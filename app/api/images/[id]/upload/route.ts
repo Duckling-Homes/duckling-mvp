@@ -27,8 +27,9 @@ export async function POST(
 
     const uploadParams = {
       Bucket: process.env.UPLOAD_BUCKET || 'image-uploads',
-      Key: s3Key,
+      Key: `${s3Key}.png`,
       Body: readableStream,
+      ContentType: 'image/png',
     }
 
     const uploadResult = await s3.upload(uploadParams).promise()

@@ -1,5 +1,6 @@
 import {
   Organization,
+  PhotoDetails,
   Project,
   ProjectAppliance,
   ProjectData,
@@ -193,6 +194,17 @@ export class _ModelStore {
   ) => {
     await SyncAPI.electrical.delete(projectID, electricalType, electricalID)
     await this.loadProject(projectID)
+  }
+
+  createPhotoEntry = async (
+    projectID: string,
+    photoUrl: string,
+    photoDetails: PhotoDetails
+  ) => {
+    console.log(projectID)
+    console.log(photoDetails)
+    await SyncAPI.photos.create(projectID, photoDetails)
+    await SyncAPI.photos.upload(photoDetails.id!, photoUrl)
   }
 }
 

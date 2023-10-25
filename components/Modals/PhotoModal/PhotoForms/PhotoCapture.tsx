@@ -1,23 +1,29 @@
 import { Box, Button, Grid } from '@mui/material'
 import React, { useState, useRef, useEffect } from 'react'
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
+import ModelStore from '@/app/stores/modelStore'
+import { Project } from '@/types/types'
 
 interface PhotoCaptureProps {
+  project: Project
   onChange: (key: string, value: string | number | boolean | undefined) => void
 }
 
-const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onChange }) => {
+const PhotoCapture: React.FC<PhotoCaptureProps> = ({ project, onChange }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [imageX, setImageX] = useState<number>(0)
   const [imageY, setImageY] = useState<number>(0)
   const videoStreamRef = useRef<MediaStream | null>(null) // Create a ref instead of state
 
-  const handleCapture = () => {
+  const handleCapture = async () => {
     const canvas = canvasRef.current
     if (canvas !== null) {
       const imgDataUrl = canvas.toDataURL('image/png')
       onChange('photoUrl', imgDataUrl)
+      console.log(imgDataUrl)
+      console.log(typeof imgDataUrl)
+      await ModelStore.createPhotoEntry(project.id!, imgDataUrl, {})
       // TODO: Make API call to upload the image
     }
   }

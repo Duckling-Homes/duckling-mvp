@@ -73,7 +73,10 @@ const PhotoCaptureModal: React.FC<{
             <Close />
           </IconButton>
           {!currentPhoto.photoUrl && (
-            <PhotoCapture onChange={handlePhotoChange}></PhotoCapture>
+            <PhotoCapture
+              project={project}
+              onChange={handlePhotoChange}
+            ></PhotoCapture>
           )}
           {currentPhoto.photoUrl && (
             <PhotoForm
