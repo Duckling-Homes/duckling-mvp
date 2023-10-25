@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { ApplianceSyncOperations } from './operations/appliances'
 import { ElectricalSyncOperations } from './operations/electrical'
 import { EnvelopeSyncOperations } from './operations/envelope'
@@ -6,15 +5,6 @@ import { OrganizationSyncOperations } from './operations/organization'
 import { ProjectSyncOperations } from './operations/project'
 import { RoomSyncOperations } from './operations/room'
 import { isOnline, publishChanges } from './utils'
-=======
-import { isOnline, publishChanges } from './utils'
-import { ProjectSyncOperations } from './operations/project'
-import { OrganizationSyncOperations } from './operations/organization'
-import { ApplianceSyncOperations } from './operations/appliances'
-import { EnvelopeSyncOperations } from './operations/envelope'
-import { ElectricalSyncOperations } from './operations/electrical'
-import { RoomSyncOperations } from './operations/room'
->>>>>>> 410e50bcab153d659fbaace574f7af3ba574d4ca
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
