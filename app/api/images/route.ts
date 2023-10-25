@@ -6,10 +6,14 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   const {
     id,
     projectId,
-    photoName,
+    name,
     homeownerNotes,
     internalNotes,
-    associatedEntityId,
+    roomId,
+    envelopeId,
+    applianceId,
+    electricalId,
+    isHeroPhoto,
   } = await req.json()
 
   const orgContext = req.headers.get('organization-context') || ''
@@ -21,10 +25,14 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       {
         id,
         projectId,
-        photoName,
+        name,
         homeownerNotes,
         internalNotes,
-        associatedEntityId,
+        roomId,
+        envelopeId,
+        applianceId,
+        electricalId,
+        isHeroPhoto,
       },
       orgContext
     )
