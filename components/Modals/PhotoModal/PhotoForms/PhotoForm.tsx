@@ -21,9 +21,6 @@ interface PhotoFormProps {
   currentPhoto?: PhotoDetails
   project: Project
   onChange: (key: string, value: string | number | boolean | undefined) => void
-
-  // might want the project so that I can get the rooms and appliances
-  // also pass in the photo details
 }
 
 const PhotoForm: React.FC<PhotoFormProps> = ({
