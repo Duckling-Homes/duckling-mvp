@@ -200,7 +200,10 @@ const DataCollection = observer(() => {
                   5,
                   <Electrical currentProject={currentProject} />
                 )}
-                {renderTabContent(6, <Photos />)}
+                {renderTabContent(
+                  6,
+                  <Photos currentProject={currentProject} />
+                )}
               </div>
             ) : null}
           </div>
