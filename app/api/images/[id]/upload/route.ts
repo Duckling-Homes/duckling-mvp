@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import AWS from 'aws-sdk'
 import { Readable } from 'stream'
 import { ImageType, constructS3ImageKey, getS3Client } from '@/app/utils/s3'
 import { isImageInOrganization } from '@/app/utils/repositories/image'
@@ -7,9 +6,15 @@ import { isImageInOrganization } from '@/app/utils/repositories/image'
 // Initialize the S3 client
 const s3 = getS3Client()
 
+type ContextType = {
+  params: {
+    id: string
+  }
+}
+
 export async function POST(
   request: NextRequest,
-  context: any
+  context: ContextType
 ): Promise<NextResponse> {
   try {
     const { id } = context.params

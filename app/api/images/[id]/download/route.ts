@@ -5,9 +5,15 @@ import { isImageInOrganization } from '@/app/utils/repositories/image'
 // Initialize the S3 client
 const s3 = getS3Client()
 
+type ContextType = {
+  params: {
+    id: string
+  }
+}
+
 export async function GET(
   request: NextRequest,
-  context: any
+  context: ContextType
 ): Promise<NextResponse | void> {
   try {
     const { id } = context.params
