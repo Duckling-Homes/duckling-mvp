@@ -1,15 +1,20 @@
 'use client'
 
 import ChipManager from '@/components/ChipManager'
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import { useEffect, useState } from 'react'
-import InsulationForm from './EnvelopesForms/InsulationForm'
-import AirSealingForm from './EnvelopesForms/AirSealingForm'
-import { Project, ProjectEnvelope } from '@/types/types'
-import ModelStore from '@/app/stores/modelStore'
-import { toJS } from 'mobx'
-import { observer } from 'mobx-react-lite'
-import { v4 } from 'uuid'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import InsulationForm from './EnvelopesForms/InsulationForm';
+import AirSealingForm from './EnvelopesForms/AirSealingForm';
+import { Project, ProjectEnvelope } from '@/types/types';
+import ModelStore from '@/app/stores/modelStore';
+import { toJS } from 'mobx';
+import { observer } from 'mobx-react-lite';
+import { SelectInput } from '@/components/Inputs';
 
 interface EnvelopeProps {
   currentProject: Project
@@ -168,34 +173,22 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
           width: '100%',
         }}
       >
-        {currentEnvelope?.id && (
-          <form
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <FormControl fullWidth>
-              <InputLabel id="envelope-type-label">Type</InputLabel>
-              <Select
-                labelId="envelope-type-label"
-                id="envelope-type-select"
-                label="Type"
-                value={currentEnvelope?.type}
-                disabled={currentEnvelope?.type ? true : false}
-                onChange={(e) => handleTypeChange(e.target.value)}
-              >
-                <MenuItem value={''} disabled={true}>
-                  Select Type
-                </MenuItem>
-                <MenuItem value={'Insulation'}>Insulation</MenuItem>
-                <MenuItem value={'AirSealing'}>Air Sealing</MenuItem>
-              </Select>
-            </FormControl>
-            {renderForm()}
-          </form>
-        )}
+        {currentEnvelope?.id && <form
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+          }}
+        >
+          <SelectInput
+            label="Type"
+            value={currentEnvelope?.type || ''}
+            onChange={(value) => handleTypeChange(value)}
+            disabled={currentEnvelope?.type ? true : false}
+            options={['Insulation', 'AirSealing']}
+          />
+          {renderForm()}
+        </form>}
       </div>
     </div>
   )

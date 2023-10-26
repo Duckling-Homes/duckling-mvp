@@ -6,17 +6,11 @@ import { AddPhotoAlternate } from '@mui/icons-material'
 import {
   Button,
   Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { Project } from '@/types/types'
-import dayjs from 'dayjs'
+} from "@mui/material";
+import { Project } from "@/types/types";
+import dayjs from "dayjs";
+import { SelectInput, TextInput } from "@/components/Inputs";
+import DatePickerInput from "@/components/Inputs/DatePickerInput";
 
 interface BasicsProps {
   currentProject: Project
@@ -36,22 +30,24 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
     value: string | number
   ) => {
     if (currentProject && currentProject.id) {
-      const updatedData = { ...data, [inputName]: value }
-      setData(await ModelStore.patchProjectData(currentProject.id, updatedData))
+      const updatedData = { ...data, [inputName]: value };
+      setData(updatedData);
     }
   }
 
-  const blurActiveElement = () => {
-    const activeElement = document.activeElement as HTMLInputElement
-    if (activeElement) {
-      activeElement.blur()
-    }
+  const updateData = async () => {
+    await ModelStore.patchProjectData(currentProject.id as string, data)
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div
-        style={{
+    <>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '32px',
+        gap: '24px',
+      }}>
+        <form style={{
           display: 'flex',
           flexDirection: 'column',
           padding: '32px',
@@ -65,58 +61,41 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
             gap: '16px',
           }}
         >
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Square Footage"
-            variant="outlined"
             placeholder="Square Footage"
-            type="number"
+            type="tel"
             value={data?.squareFootage || ''}
-            onChange={(e) =>
-              handleInputChange('squareFootage', parseInt(e.target.value))
-            }
-            onWheel={blurActiveElement}
+            onChange={(value) => handleInputChange('squareFootage', parseInt(value))}
+            onBlur={updateData}
+            endAdornment='sq ft'
           />
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Number of Rooms"
-            variant="outlined"
             placeholder="Number of Rooms"
-            type="number"
+            type="tel"
             value={data?.roomCount || ''}
-            onChange={(e) =>
-              handleInputChange('roomCount', parseInt(e.target.value))
-            }
-            onWheel={blurActiveElement}
+            onChange={(value) => handleInputChange('roomCount', parseInt(value))}
+            onBlur={updateData}
           />
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Number of Bathrooms"
-            variant="outlined"
             placeholder="Number of Bathrooms"
-            type="number"
+            type="tel"
             value={data?.bathroomCount || ''}
-            onChange={(e) =>
-              handleInputChange('bathroomCount', parseInt(e.target.value))
-            }
-            onWheel={blurActiveElement}
+            onChange={(value) => handleInputChange('bathroomCount', parseInt(value))}
+            onBlur={updateData}
           />
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Stories"
-            variant="outlined"
             placeholder="Stories"
-            type="number"
+            type="tel"
             value={data?.stories || ''}
-            onChange={(e) =>
-              handleInputChange('stories', parseInt(e.target.value))
-            }
-            onWheel={blurActiveElement}
+            onChange={(value) => handleInputChange('stories', parseInt(value))}
+            onBlur={updateData}
           />
-          <DatePicker
+          <DatePickerInput
             label="Year Built"
-            openTo="year"
-            views={['year']}
             onChange={(e) => handleInputChange('yearBuilt', e!.year())}
             value={
               data && typeof data.yearBuilt === 'number'
@@ -125,23 +104,13 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
             }
             maxDate={dayjs()}
           />
-          <FormControl fullWidth>
-            <InputLabel id="basement-type-label">Basement Type</InputLabel>
-            <Select
-              labelId="basement-type-label"
-              id="basement-type-select"
-              label="Basement Type"
-              value={data?.basementType || ''}
-              onChange={(e) =>
-                handleInputChange('basementType', e.target.value)
-              }
-            >
-              <MenuItem value={'Finished'}>Finished</MenuItem>
-              <MenuItem value={'Unfinished'}>Unfinished</MenuItem>
-              <MenuItem value={'Crawlspace'}>Crawlspace</MenuItem>
-              <MenuItem value={'No Basement'}>No Basement</MenuItem>
-            </Select>
-          </FormControl>
+          <SelectInput
+            label="Basement Type"
+            value={data?.basementType || ''}
+            onChange={(value) => handleInputChange('basementType', value)}
+            options={['Finished', 'Unfinished', 'Crawlspace', 'No Basement']}
+            onBlur={updateData}
+          />
         </form>
         <Divider />
         <div
@@ -160,7 +129,7 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
           </Button>
         </div>
       </div>
-    </LocalizationProvider>
+    </>
   )
 }
 

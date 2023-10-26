@@ -1,13 +1,10 @@
 'use client'
 
-import { ProjectElectrical } from '@/types/types'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { SelectInput, TextInput } from "@/components/Inputs";
+import DatePickerInput from "@/components/Inputs/DatePickerInput";
+import { ProjectElectrical } from "@/types/types";
+import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import dayjs from "dayjs";
 
 const FUEL = ['Natural gas', 'Propane', 'Diesel', 'Gasoline']
 
@@ -25,205 +22,126 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
   return (
     <>
       {/* Generator Type */}
-      <FormControl fullWidth>
-        <InputLabel id="type-label">Generator Type</InputLabel>
-        <Select
-          labelId="generator-type-label"
-          id="generator-type-select"
-          label="Generator Type"
-          value={currentElectrical?.generatorType}
-          onChange={(e) => onChange('generatorType', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          <MenuItem value={'Standby'}>Standby</MenuItem>
-          <MenuItem value={'Portable'}>Portable</MenuItem>
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Generator Type"
+        value={currentElectrical?.generatorType || ''}
+        onChange={(value) => onChange('generatorType', value)}
+        onBlur={onUpdate}
+        options={['Standby', 'Portable']}
+      />
       {/* Fuel Type */}
-      <FormControl fullWidth>
-        <InputLabel id="fuel-type-label">Fuel Type</InputLabel>
-        <Select
-          labelId="fuel-type-label"
-          id="fuel-type-select"
-          label="Fuel Type"
-          value={currentElectrical?.fuelType}
-          onChange={(e) => onChange('fuelType', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          {FUEL.map((fuel, i) => (
-            <MenuItem key={i} value={fuel}>
-              {fuel}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Fuel Type"
+        value={currentElectrical?.fuelType || ''}
+        onChange={(value) => onChange('fuelType', value)}
+        onBlur={onUpdate}
+        options={FUEL}
+      />
       {/* Rated Continuous Wattage */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Rated Continuous Wattage"
-          variant="outlined"
-          type="number"
-          placeholder="Rated Continuous Wattage"
-          value={currentElectrical?.ratedContinuousWattage}
-          onChange={(e) =>
-            onChange('ratedContinuousWattage', parseInt(e.target.value))
-          }
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Rated Continuous Wattage"
+        placeholder="Rated Continuous Wattage"
+        type="tel"
+        value={currentElectrical?.ratedContinuousWattage || ''}
+        onChange={(value) => onChange('ratedContinuousWattage', parseInt(value))}
+        onBlur={onUpdate}
+        endAdornment='kW'
+      />
       {/* Rated Peak Wattage */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Rated Peak Wattage"
-          variant="outlined"
-          placeholder="Rated Peak Wattage"
-          type="number"
-          value={currentElectrical?.ratedPeakWattage}
-          onChange={(e) =>
-            onChange('ratedPeakWattage', parseInt(e.target.value))
-          }
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Rated Peak Wattage"
+        placeholder="Rated Peak Wattage"
+        type="tel"
+        value={currentElectrical?.ratedPeakWattage || ''}
+        onChange={(value) => onChange('ratedPeakWattage', parseInt(value))}
+        onBlur={onUpdate}
+        endAdornment='kW'
+      />
       {/* Voltage */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Voltage"
-          variant="outlined"
-          placeholder="Voltage"
-          type="number"
-          value={currentElectrical?.voltage}
-          onChange={(e) => onChange('voltage', parseInt(e.target.value))}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Voltage"
+        placeholder="Voltage"
+        type="tel"
+        value={currentElectrical?.voltage || ''}
+        onChange={(value) => onChange('voltage', parseInt(value))}
+        onBlur={onUpdate}
+        endAdornment='Amps'
+      />
       {/* Number of Phases */}
-      <FormControl fullWidth>
-        <InputLabel id="number-phases-label">Number of Phases</InputLabel>
-        <Select
-          labelId="number-phases-label"
-          id="number-phases-select"
-          label="Number of Phases"
-          value={currentElectrical?.numberOfPhases}
-          onChange={(e) => onChange('numberOfPhases', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          <MenuItem value={'1'}>1-Phase</MenuItem>
-          <MenuItem value={'3'}>3-Phase</MenuItem>
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Number of Phases"
+        value={currentElectrical?.numberOfPhases || ''}
+        onChange={(value) => onChange('numberOfPhases', value)}
+        onBlur={onUpdate}
+        options={[{name: '1-Phase', value: '1'}, {name: '3-Phase', value: '3'}]}
+      />
       {/* Transfer Switch */}
-      <FormControl fullWidth>
-        <InputLabel id="transfer-switch-label">Transfer Switch</InputLabel>
-        <Select
-          labelId="transfer-switch-label"
-          id="transfer-switch-select"
-          label="Transfer Switch"
-          value={currentElectrical?.transferSwitch}
-          onChange={(e) => onChange('transferSwitch', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          <MenuItem value="Automatic">Automatic</MenuItem>
-          <MenuItem value="Manual">Manual</MenuItem>
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Transfer Switch"
+        value={currentElectrical?.transferSwitch || ''}
+        onChange={(value) => onChange('transferSwitch', value)}
+        onBlur={onUpdate}
+        options={['Automatic', 'Manual']}
+      />
       {/* Connection Method */}
-      <FormControl fullWidth>
-        <InputLabel id="connection-method-label">Connection Method</InputLabel>
-        <Select
-          labelId="connection-method-label"
-          id="connection-method-select"
-          label="Connection Method"
-          value={currentElectrical?.connection}
-          onChange={(e) => onChange('connection', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          <MenuItem value="Interlock">Interlock</MenuItem>
-          <MenuItem value="Main Panel">Main Panel</MenuItem>
-          <MenuItem value="Sub-Panel">Sub-Panel</MenuItem>
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Connection Method"
+        value={currentElectrical?.connection || ''}
+        onChange={(value) => onChange('connection', value)}
+        onBlur={onUpdate}
+        options={['Interlock', 'Main Panel', 'Sub-Panel']}
+      />
       {/* Location */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Location"
-          variant="outlined"
-          placeholder="Location"
-          type="text"
-          value={currentElectrical?.location}
-          onChange={(e) => onChange('location', e.target.value)}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Location"
+        placeholder="Location"
+        value={currentElectrical?.location || ''}
+        onChange={(value) => onChange('location', value)}
+        onBlur={onUpdate}
+      />
       {/* Year Installed */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Year Installed"
-          variant="outlined"
-          placeholder="Year Installed"
-          type="text"
-          value={currentElectrical?.yearInstalled}
-          onChange={(e) => onChange('yearInstalled', parseInt(e.target.value))}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <DatePickerInput
+        label="Year Installed"
+        onChange={(e) => {
+          onChange('yearInstalled', e!.year());
+          onUpdate();
+        }}
+        value={currentElectrical && typeof currentElectrical.yearInstalled === 'number' ? dayjs(new Date(currentElectrical.yearInstalled, 0)) : dayjs()}
+        maxDate={dayjs()}
+      />
       {/* Manufacturer */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Manufacturer"
-          variant="outlined"
-          placeholder="Manufacturer"
-          type="text"
-          value={currentElectrical?.manufacturer}
-          onChange={(e) => onChange('manufacturer', e.target.value)}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Manufacturer"
+        placeholder="Manufacturer"
+        value={currentElectrical?.manufacturer || ''}
+        onChange={(value) => onChange('manufacturer', value)}
+        onBlur={onUpdate}
+      />
       {/* Model Number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Model Number"
-          variant="outlined"
-          placeholder="Model Number"
-          type="text"
-          value={currentElectrical?.modelNumber}
-          onChange={(e) => onChange('modelNumber', e.target.value)}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Model Number"
+        placeholder="Model Number"
+        value={currentElectrical?.modelNumber || ''}
+        onChange={(value) => onChange('modelNumber', value)}
+        onBlur={onUpdate}
+      />
       {/* Serial Number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Serial Number"
-          variant="outlined"
-          placeholder="Serial Number"
-          type="text"
-          value={currentElectrical?.serialNumber}
-          onChange={(e) => onChange('serialNumber', e.target.value)}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Serial Number"
+        placeholder="Serial Number"
+        value={currentElectrical?.serialNumber || ''}
+        onChange={(value) => onChange('serialNumber', value)}
+        onBlur={onUpdate}
+      />
       {/* notes */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Notes"
-          variant="outlined"
-          placeholder="Notes"
-          type="text"
-          value={currentElectrical?.notes}
-          onChange={(e) => onChange('notes', e.target.value)}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Notes"
+        placeholder="Notes"
+        value={currentElectrical?.notes || ''}
+        onChange={(value) => onChange('notes', value)}
+        onBlur={onUpdate}
+        multiline={true}
+      />
     </>
   )
 }

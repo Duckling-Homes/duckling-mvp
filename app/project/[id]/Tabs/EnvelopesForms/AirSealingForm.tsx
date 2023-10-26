@@ -1,6 +1,7 @@
 'use client'
 
-import { ProjectEnvelope } from '@/types/types'
+import { SelectInput, TextInput } from '@/components/Inputs';
+import { ProjectEnvelope } from '@/types/types';
 import {
   FormControl,
   InputLabel,
@@ -9,6 +10,13 @@ import {
   TextField,
 } from '@mui/material'
 
+const LEAKINESS = [
+  { name: 'Very Tight', value: 'veryTight' },
+  { name: 'Tight', value: 'tight' },
+  { name: 'Average', value: 'average' },
+  { name: 'Leaky', value: 'leaky' },
+  { name: 'Very Leaky', value: 'veryLeaky' },
+]
 interface AirSealingFormProps {
   onChange: (inputName: string, value: string) => void
   onUpdate: () => void
@@ -29,47 +37,27 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({
           gap: '24px',
         }}
       >
-        <TextField
-          id="outlined-basic"
+        <TextInput
           label="Name"
-          variant="outlined"
           placeholder="Name"
-          value={currentEnvelope?.name}
-          onChange={(e) => onChange('name', e.target.value)}
-          onBlur={() => onUpdate()}
-          fullWidth
+          value={currentEnvelope?.name || ''}
+          onChange={(value) => onChange('name', value)}
+          onBlur={onUpdate}
         />
-        <FormControl fullWidth>
-          <InputLabel id="leakiness-description-label">
-            Leakiness Description
-          </InputLabel>
-          <Select
-            labelId="leakiness-description-label"
-            id="leakiness-description-select"
-            label="Leakiness Description"
-            value={currentEnvelope?.leakinessDescription}
-            onChange={(e) => {
-              onChange('leakinessDescription', e.target.value)
-              onUpdate()
-            }}
-          >
-            <MenuItem value={'veryTight'}>Very Tight</MenuItem>
-            <MenuItem value={'tight'}>Tight</MenuItem>
-            <MenuItem value={'average'}>Average</MenuItem>
-            <MenuItem value={'leaky'}>Leaky</MenuItem>
-            <MenuItem value={'veryLeaky'}>Very Leaky</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          fullWidth
-          id="outlined-basic"
+        <SelectInput
+          label="Leakiness Description"
+          value={currentEnvelope?.leakinessDescription || ''}
+          onChange={(value) => onChange('leakinessDescription', value)}
+          onBlur={onUpdate}
+          options={LEAKINESS}
+        />
+        <TextInput
           label="User Notes"
-          variant="outlined"
           placeholder="User Notes"
-          value={currentEnvelope?.notes}
-          onChange={(e) => onChange('notes', e.target.value)}
-          onBlur={() => onUpdate()}
-          multiline
+          value={currentEnvelope?.notes || ''}
+          onChange={(value) => onChange('notes', value)}
+          onBlur={onUpdate}
+          multiline={true}
         />
       </div>
     </>
