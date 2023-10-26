@@ -21,37 +21,41 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
       <TextInput
         label="Total Capacity"
         placeholder="Total Capacity"
-        type="number"
+        type="tel"
         value={currentElectrical?.totalCapacity || ''}
         onChange={(value) => onChange('totalCapacity', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='amp/hours'
       />
       {/* Rated Power Output */}
       <TextInput
         label="Rated Power Output"
         placeholder="Rated Power Output"
-        type="number"
+        type="tel"
         value={currentElectrical?.ratedPowerOutput || ''}
         onChange={(value) => onChange('ratedPowerOutput', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='kW'
       />
       {/* Peak Power Output */}
       <TextInput
         label="Peak Power Output"
         placeholder="Peak Power Output"
-        type="number"
+        type="tel"
         value={currentElectrical?.ratedPeakOutput || ''}
         onChange={(value) => onChange('ratedPeakOutput', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='kW'
       />
       {/* Voltage */}
       <TextInput
         label="Voltage"
         placeholder="Voltage"
-        type="number"
+        type="tel"
         value={currentElectrical?.voltage || ''}
         onChange={(value) => onChange('voltage', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='V'
       />
       {/* Grid Connected */}
       <SelectInput

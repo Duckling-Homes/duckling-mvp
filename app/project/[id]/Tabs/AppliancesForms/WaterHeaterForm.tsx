@@ -46,10 +46,11 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
       <TextInput
         label="Age"
         placeholder="Age"
-        type="number"
+        type="tel"
         onChange={(value) => onChange('age', parseInt(value))}
         onBlur={onUpdate}
         value={currentAppliance?.age || ''}
+        endAdornment='Years'
       />
       {/* manufacturer */}
       <TextInput
@@ -79,10 +80,11 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
       <TextInput
         label="Tank Volume"
         placeholder="Tank Volume"
-        type="number"
+        type="tel"
         onChange={(value) => onChange('tankVolume', parseInt(value))}
         onBlur={onUpdate}
         value={currentAppliance?.tankVolume || ''}
+        endAdornment='Gallons'
       />
       {/* location */}
       <TextInput

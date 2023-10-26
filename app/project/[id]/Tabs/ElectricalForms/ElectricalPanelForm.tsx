@@ -29,16 +29,17 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
       <TextInput
         label="Amperage Rating"
         placeholder="Amperage Rating"
-        type="number"
+        type="tel"
         value={currentElectrical?.panelAmperageRating || ''}
         onChange={(value) => onChange('panelAmperageRating', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='Amps'
       />
       {/* Available Slot for New Circuits */}
         <TextInput
           label="Available Slot for New Circuits"
           placeholder="Available Slot for New Circuits"
-          type="number"
+          type="tel"
           value={currentElectrical?.availableNewCircuits || ''}
           onChange={
             (value) => onChange('availableNewCircuits', parseInt(value))
@@ -49,7 +50,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
       <TextInput
         label="Total 15 Amp Circuits"
         placeholder="Total 15 Amp Circuits"
-        type="number"
+        type="tel"
         value={currentElectrical?.total15AmpCircuits || ''}
         onChange={
           (value) => onChange('total15AmpCircuits', parseInt(value))
@@ -60,7 +61,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
       <TextInput
         label="Total 20 Amp Circuits"
         placeholder="Total 20 Amp Circuits"
-        type="number"
+        type="tel"
         value={currentElectrical?.total20AmpCircuits || ''}
         onChange={
           (value) => onChange('total20AmpCircuits', parseInt(value))
@@ -71,7 +72,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
       <TextInput
         label="Total 30 Amp Circuits"
         placeholder="Total 30 Amp Circuits"
-        type="number"
+        type="tel"
         value={currentElectrical?.total30AmpCircuits || ''}
         onChange={
           (value) => onChange('total30AmpCircuits', parseInt(value))
@@ -82,7 +83,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
       <TextInput
         label="Total 40 Amp Circuits"
         placeholder="Total 40 Amp Circuits"
-        type="number"
+        type="tel"
         value={currentElectrical?.total40AmpCircuits || ''}
         onChange={
           (value) => onChange('total40AmpCircuits', parseInt(value))
@@ -93,7 +94,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
       <TextInput
         label="Total 50 Amp Circuits"
         placeholder="Total 50 Amp Circuits"
-        type="number"
+        type="tel"
         value={currentElectrical?.total50AmpCircuits || ''}
         onChange={
           (value) => onChange('total50AmpCircuits', parseInt(value))
@@ -104,7 +105,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
       <TextInput
         label="Total 60 Amp Circuits"
         placeholder="Total 60 Amp Circuits"
-        type="number"
+        type="tel"
         value={currentElectrical?.total60AmpCircuits || ''}
         onChange={
           (value) => onChange('total60AmpCircuits', parseInt(value))
@@ -115,7 +116,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
       <TextInput
         label="Total 70 Amp Circuits"
         placeholder="Total 70 Amp Circuits"
-        type="number"
+        type="tel"
         value={currentElectrical?.total70AmpCircuits || ''}
         onChange={
           (value) => onChange('total70AmpCircuits', parseInt(value))

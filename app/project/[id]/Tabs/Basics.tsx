@@ -64,15 +64,16 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
           <TextInput
             label="Square Footage"
             placeholder="Square Footage"
-            type="number"
+            type="tel"
             value={data?.squareFootage || ''}
             onChange={(value) => handleInputChange('squareFootage', parseInt(value))}
             onBlur={updateData}
+            endAdornment='sq ft'
           />
           <TextInput
             label="Number of Rooms"
             placeholder="Number of Rooms"
-            type="number"
+            type="tel"
             value={data?.roomCount || ''}
             onChange={(value) => handleInputChange('roomCount', parseInt(value))}
             onBlur={updateData}
@@ -80,7 +81,7 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
           <TextInput
             label="Number of Bathrooms"
             placeholder="Number of Bathrooms"
-            type="number"
+            type="tel"
             value={data?.bathroomCount || ''}
             onChange={(value) => handleInputChange('bathroomCount', parseInt(value))}
             onBlur={updateData}
@@ -88,7 +89,7 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
           <TextInput
             label="Stories"
             placeholder="Stories"
-            type="number"
+            type="tel"
             value={data?.stories || ''}
             onChange={(value) => handleInputChange('stories', parseInt(value))}
             onBlur={updateData}

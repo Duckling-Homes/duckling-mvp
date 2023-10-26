@@ -31,28 +31,31 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
       <TextInput
         label="Amperage"
         placeholder="Amperage"
-        type="number"
+        type="tel"
         value={currentElectrical?.amperage || ''}
         onChange={(value) => onChange('amperage', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='Amps'
       />
       {/* AC Power Source Voltage */}
       <TextInput
         label="AC Power Source Voltage"
         placeholder="AC Power Source Voltage"
-        type="number"
+        type="tel"
         value={currentElectrical?.acPowerSourceVolatge || ''}
         onChange={(value) => onChange('acPowerSourceVolatge', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='V'
       />
       {/* Max Charging Power */}
       <TextInput
         label="Max Charging Power"
         placeholder="Max Charging Power"
-        type="number"
+        type="tel"
         value={currentElectrical?.maxChargingPower || ''}
         onChange={(value) => onChange('maxChargingPower', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='kW'
       />
       {/* Manufacturer */}
       <TextInput

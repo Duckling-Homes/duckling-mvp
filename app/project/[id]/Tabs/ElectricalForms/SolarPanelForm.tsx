@@ -82,25 +82,27 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
       <TextInput
         label="Tilt"
         placeholder="Tilt"
-        type="number"
+        type="tel"
         value={currentElectrical?.arrayTilt || ''}
         onChange={(value) => onChange('arrayTilt', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='Degrees'
       />
       {/* Max Output */}
       <TextInput
         label="Max Output"
         placeholder="Max Output"
-        type="number"
+        type="tel"
         value={currentElectrical?.maxPowerOutput || ''}
         onChange={(value) => onChange('maxPowerOutput', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='DC Watts'
       />
       {/* Number of Panels */} 
       <TextInput
         label="Number of Panels"
         placeholder="Number of Panels"
-        type="number"
+        type="tel"
         value={currentElectrical?.numberOfPanels || ''}
         onChange={(value) => onChange('numberOfPanels', parseInt(value))}
         onBlur={onUpdate}
@@ -119,10 +121,11 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
       <TextInput
         label="Annual Output"
         placeholder="Annual Output"
-        type="number"
+        type="tel"
         value={currentElectrical?.annualOutput || ''}
         onChange={(value) => onChange('annualOutput', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='kWh'
       />
       {/* Notes */}
       <TextInput

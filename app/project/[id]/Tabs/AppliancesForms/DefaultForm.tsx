@@ -61,10 +61,11 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
       <TextInput
         label="Age"
         placeholder="Age"
-        type="number"
+        type="tel"
         onChange={(value) => onChange('age', parseInt(value))}
         onBlur={() => onUpdate()}
         value={currentAppliance?.age || ''}
+        endAdornment='Years'
       />
       {/* location */}
       <TextInput

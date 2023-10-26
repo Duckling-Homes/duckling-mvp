@@ -41,28 +41,31 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
       <TextInput
         label="Rated Continuous Wattage"
         placeholder="Rated Continuous Wattage"
-        type="number"
+        type="tel"
         value={currentElectrical?.ratedContinuousWattage || ''}
         onChange={(value) => onChange('ratedContinuousWattage', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='kW'
       />
       {/* Rated Peak Wattage */}
       <TextInput
         label="Rated Peak Wattage"
         placeholder="Rated Peak Wattage"
-        type="number"
+        type="tel"
         value={currentElectrical?.ratedPeakWattage || ''}
         onChange={(value) => onChange('ratedPeakWattage', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='kW'
       />
       {/* Voltage */}
       <TextInput
         label="Voltage"
         placeholder="Voltage"
-        type="number"
+        type="tel"
         value={currentElectrical?.voltage || ''}
         onChange={(value) => onChange('voltage', parseInt(value))}
         onBlur={onUpdate}
+        endAdornment='Amps'
       />
       {/* Number of Phases */}
       <SelectInput

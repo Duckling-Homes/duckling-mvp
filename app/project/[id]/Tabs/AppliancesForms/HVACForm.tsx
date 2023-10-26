@@ -70,10 +70,11 @@ const HVACForm: React.FC<HVACFormProps> = ({
       <TextInput
         label="Age"
         placeholder="Age"
-        type="number"
+        type="tel"
         onChange={(value) => onChange('age', parseInt(value))}
         onBlur={onUpdate}
         value={currentAppliance?.age || ''}
+        endAdornment='Years'
       />
       {/* manufacturer */}
       <TextInput
@@ -106,6 +107,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         onChange={(value) => onChange('heatingCapacity', value)}
         onBlur={onUpdate}
         value={currentAppliance?.heatingCapacity || ''}
+        endAdornment='BTU/hr'
       />
       {/* cooling capacity */}
       <TextInput
@@ -114,6 +116,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         onChange={(value) => onChange('coolingCapacity', value)}
         onBlur={onUpdate}
         value={currentAppliance?.coolingCapacity || ''}
+        endAdornment='BTU/hr'
       />
       {/* location */}
       <TextInput

@@ -1,6 +1,6 @@
 'use client';
 
-import { TextField } from "@mui/material";
+import { InputAdornment, TextField } from "@mui/material";
 
 interface TextInputProps {
   label: string;
@@ -10,6 +10,8 @@ interface TextInputProps {
   multiline?: boolean;
   onChange: (value: string) => void;
   onBlur: () => void;
+  startAdornment?: string | number;
+  endAdornment?: string | number;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -19,7 +21,9 @@ const TextInput: React.FC<TextInputProps> = ({
   value,
   multiline,
   onChange,
-  onBlur
+  onBlur,
+  startAdornment,
+  endAdornment
 }) => {
 
   const blurActiveElement = () => {
@@ -41,6 +45,10 @@ const TextInput: React.FC<TextInputProps> = ({
       onBlur={onBlur}
       onWheel={blurActiveElement}
       multiline={multiline || false}
+      InputProps={{
+        startAdornment: <InputAdornment position="start">{startAdornment}</InputAdornment>,
+        endAdornment: <InputAdornment position="start">{endAdornment}</InputAdornment>,
+      }}
     />
   )
 }

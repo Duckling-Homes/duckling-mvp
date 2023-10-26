@@ -96,12 +96,9 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
     setCurrentRoom(response)
   }
 
-  async function patchRoom(updatedRoom = currentRoom) {
-    console.log(rooms)
-    const response = await ModelStore.updateRoom(
-      currentProject.id!,
-      updatedRoom
-    )
+  async function patchRoom() {
+    const updatedRoom = currentRoom
+    const response = await ModelStore.updateRoom(currentProject.id!, updatedRoom);
     const updatedRooms = rooms.map((room) => {
       if (room.id === updatedRoom.id) {
         return { ...room, ...updatedRoom }
@@ -183,28 +180,31 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
             <TextInput
               label="Width"
               placeholder="Width"
-              type="number"
+              type="tel"
               value={currentRoom?.width || ''}
               onChange={(value) => handleInputChange('width', parseInt(value))}
               onBlur={patchRoom}
+              endAdornment='ft'
             />
             <TextInput
               label="Length"
               placeholder="Length"
-              type="number"
+              type="tel"
               value={currentRoom?.length || ''}
               onChange={(value) => handleInputChange('length', parseInt(value))}
               onBlur={patchRoom}
+              endAdornment='ft'
             />
             <TextInput
               label="Ceiling Height"
               placeholder="Ceiling Height"
-              type="number"
+              type="tel"
               value={currentRoom?.ceilingHeight || ''}
               onChange={
                 (value) => handleInputChange('ceilingHeight', parseInt(value))
               }
               onBlur={patchRoom}
+              endAdornment='ft'
             />
             <SelectInput
               label="Floor"
