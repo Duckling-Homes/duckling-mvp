@@ -14,8 +14,11 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
+  Button,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 
 const COMFORT_ISSUES = [
   'Drafty',
@@ -58,6 +61,7 @@ interface RoomsProps {
 
 const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   const [rooms, setRooms] = useState<ProjectRoom[]>([])
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentRoom, setCurrentRoom] = useState<ProjectRoom>({
     id: '',
     name: '',
@@ -155,6 +159,13 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
         gap: '32px',
       }}
     >
+      {currentProject && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+        />
+      )}
       <ChipManager
         chips={rooms}
         onDelete={deleteRoom}
@@ -340,6 +351,13 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                   ))}
                 </div>
               </FormGroup>
+              <Button
+                variant="contained"
+                startIcon={<CameraAltOutlinedIcon />}
+                onClick={() => setOpenCamera(true)}
+              >
+                Add Photo
+              </Button>
             </div>
           </form>
         ) : (

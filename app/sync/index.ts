@@ -5,6 +5,7 @@ import { ApplianceSyncOperations } from './operations/appliances'
 import { EnvelopeSyncOperations } from './operations/envelope'
 import { ElectricalSyncOperations } from './operations/electrical'
 import { RoomSyncOperations } from './operations/room'
+import { ImageSyncOperations } from './operations/images'
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
@@ -44,6 +45,7 @@ class _SyncAPI {
   electrical = new ElectricalSyncOperations()
   envelopes = new EnvelopeSyncOperations()
   rooms = new RoomSyncOperations()
+  images = new ImageSyncOperations()
 
   sync = async () => {
     if (!isOnline()) {

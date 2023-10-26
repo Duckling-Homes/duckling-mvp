@@ -1,7 +1,13 @@
 'use client'
 
 // import ChipManager from "@/components/ChipManager";
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Button,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import ElectricalPanelForm from './ElectricalForms/ElectricalPanelForm'
 import SolarPanelForm from './ElectricalForms/SolarPanelForm'
@@ -13,7 +19,8 @@ import { Project, ProjectElectrical } from '@/types/types'
 import { v4 as uuidv4 } from 'uuid'
 import ModelStore from '@/app/stores/modelStore'
 import { observer } from 'mobx-react-lite'
-
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 const TYPES = [
   { name: 'Electrical Panel', value: 'electricalpanel' },
   { name: 'Solar', value: 'solar' },
@@ -28,6 +35,7 @@ interface ElectricalProps {
 
 const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
   const [electricals, setElectricals] = useState<ProjectElectrical[]>([])
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentElectrical, setCurrentElectrical] =
     useState<ProjectElectrical>()
 
@@ -237,6 +245,13 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
         gap: '32px',
       }}
     >
+      {currentProject && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+        />
+      )}
       <ChipManager
         onDelete={deleteElectrical}
         onCreate={createElectrical}
@@ -278,6 +293,15 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
               </Select>
             </FormControl>
             {renderForm()}
+            {currentElectrical?.type && (
+              <Button
+                variant="contained"
+                startIcon={<CameraAltOutlinedIcon />}
+                onClick={() => setOpenCamera(true)}
+              >
+                Add Photo
+              </Button>
+            )}
           </form>
         </div>
       )}

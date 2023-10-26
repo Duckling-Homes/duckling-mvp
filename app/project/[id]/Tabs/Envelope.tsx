@@ -1,7 +1,13 @@
 'use client'
 
 import ChipManager from '@/components/ChipManager'
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Button,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import InsulationForm from './EnvelopesForms/InsulationForm'
 import AirSealingForm from './EnvelopesForms/AirSealingForm'
@@ -10,6 +16,8 @@ import ModelStore from '@/app/stores/modelStore'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { v4 } from 'uuid'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 
 interface EnvelopeProps {
   currentProject: Project
@@ -18,6 +26,7 @@ interface EnvelopeProps {
 const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   const [envelopes, setEnvelopes] = useState<ProjectEnvelope[]>([])
   const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>()
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
 
   useEffect(() => {
     if (currentProject && currentProject.envelopes) {
@@ -102,7 +111,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   }
 
   async function patchEnvelope(updatedEnvelope = currentEnvelope) {
-    console.log('caiu aqui')
     if (updatedEnvelope && updatedEnvelope.id) {
       const response = await ModelStore.updateEnvelope(
         currentProject.id!,
@@ -152,6 +160,13 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
         gap: '32px',
       }}
     >
+      {currentProject && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+        />
+      )}
       <ChipManager
         onCreate={createEnvelope}
         onDelete={deleteEnvelope}
@@ -194,6 +209,15 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
               </Select>
             </FormControl>
             {renderForm()}
+            {currentEnvelope?.type && (
+              <Button
+                variant="contained"
+                startIcon={<CameraAltOutlinedIcon />}
+                onClick={() => setOpenCamera(true)}
+              >
+                Add Photo
+              </Button>
+            )}
           </form>
         )}
       </div>

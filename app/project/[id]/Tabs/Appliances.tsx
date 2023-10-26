@@ -1,7 +1,13 @@
 'use client'
 
 import ChipManager from '@/components/ChipManager'
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Button,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import HVACForm from './AppliancesForms/HVACForm'
 import WaterHeaterForm from './AppliancesForms/WaterHeaterForm'
@@ -10,6 +16,8 @@ import DefaultForm from './AppliancesForms/DefaultForm'
 import { Project, ProjectAppliance } from '@/types/types'
 import { v4 as uuidv4 } from 'uuid'
 import ModelStore from '@/app/stores/modelStore'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 
 const TYPES = [
   { name: 'HVAC', value: 'hvac' },
@@ -28,6 +36,7 @@ interface AppliancesProps {
 
 const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   const appliances = currentProject.appliances ?? []
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({
     id: '',
     name: '',
@@ -239,6 +248,13 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         gap: '32px',
       }}
     >
+      {currentProject && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+        />
+      )}
       <ChipManager
         onDelete={deleteAppliance}
         onCreate={createAppliance}
@@ -280,6 +296,15 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
               </Select>
             </FormControl>
             {renderForm()}
+            {currentAppliance?.type && (
+              <Button
+                variant="contained"
+                startIcon={<CameraAltOutlinedIcon />}
+                onClick={() => setOpenCamera(true)}
+              >
+                Add Photo
+              </Button>
+            )}
           </form>
         </div>
       )}
