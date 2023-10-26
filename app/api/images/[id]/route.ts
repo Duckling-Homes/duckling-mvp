@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-import { getImageById } from '@/app/utils/repositories/image'
-=======
 import {
   getImageById,
   isImageInOrganization,
   updateImage,
 } from '@/app/utils/repositories/image'
->>>>>>> 1648652fc482e96c375bfc1905b9a3470ed23475
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -40,8 +36,6 @@ export const GET = withErrorHandler(
     }
   }
 )
-<<<<<<< HEAD
-=======
 
 /**
  * Update an image object
@@ -78,4 +72,3 @@ export const PATCH = withErrorHandler(
     )
   }
 )
->>>>>>> 1648652fc482e96c375bfc1905b9a3470ed23475
