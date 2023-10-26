@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 import { getImageById } from '@/app/utils/repositories/image'
+=======
+import {
+  getImageById,
+  isImageInOrganization,
+  updateImage,
+} from '@/app/utils/repositories/image'
+>>>>>>> 1648652fc482e96c375bfc1905b9a3470ed23475
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -32,3 +40,42 @@ export const GET = withErrorHandler(
     }
   }
 )
+<<<<<<< HEAD
+=======
+
+/**
+ * Update an image object
+ */
+export const PATCH = withErrorHandler(
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const {
+      name,
+      homeownerNotes,
+      internalNotes,
+      roomId,
+      envelopeId,
+      applianceId,
+      electricalId,
+      isHeroPhoto,
+    } = await req.json()
+
+    const orgContext = req.headers.get('organization-context') || ''
+
+    // Validate the organization context and image ID (if necessary)
+    await isImageInOrganization(params.id, orgContext as string)
+
+    return NextResponse.json(
+      await updateImage(params.id, {
+        name,
+        homeownerNotes,
+        internalNotes,
+        roomId,
+        envelopeId,
+        applianceId,
+        electricalId,
+        isHeroPhoto,
+      })
+    )
+  }
+)
+>>>>>>> 1648652fc482e96c375bfc1905b9a3470ed23475
