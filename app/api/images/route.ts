@@ -38,3 +38,17 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     )
   )
 })
+
+/**
+ * Delete an image object
+ */
+export const DELETE = withErrorHandler(
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const orgContext = req.headers.get('organization-context')
+
+    // Validate the organization context and image ID (if necessary)
+    await validateImageProject(orgContext as string, params.id) // Uncomment and implement if necessary
+
+    return NextResponse.json(await deleteImage(params.id, orgContext))
+  }
+)
