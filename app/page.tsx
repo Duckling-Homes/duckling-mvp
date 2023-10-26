@@ -15,6 +15,7 @@ import ModelStore from './stores/modelStore'
 import './style.scss'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
+import dayjs from 'dayjs'
 
 const Home = observer(() => {
   const { user } = useUser()
@@ -83,7 +84,12 @@ const Home = observer(() => {
     { field: 'name', headerName: 'Project Name', flex: 1 },
     { field: 'homeownerName', headerName: 'Name', flex: 1 },
     { field: 'homeownerAddress', headerName: 'Address', flex: 1 },
-    { field: 'createdAt', headerName: 'Created', flex: 1 },
+    {
+      field: 'createdAt', 
+      headerName: 'Created',
+      flex: 1,
+      renderCell: (params) => <div>{dayjs(params.value).format('MMMM D, YYYY')} </div>
+    },
     {
       field: 'edit',
       headerName: '',

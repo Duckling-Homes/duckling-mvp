@@ -25,6 +25,7 @@ import ModelStore from '@/app/stores/modelStore'
 
 import './style.scss'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import dayjs from 'dayjs'
 
 const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false)
@@ -121,7 +122,7 @@ const DataCollection = observer(() => {
                   <span className="dataCollection__info">
                     {/* TODO: make this beautiful */}
                     <CalendarMonth />
-                    {currentProject?.createdAt}
+                    {dayjs(currentProject?.createdAt).format('MMMM D, YYYY')}
                   </span>
                 </div>
               </div>

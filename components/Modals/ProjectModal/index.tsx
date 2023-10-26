@@ -132,6 +132,7 @@ const ProjectModal: React.FC<ProjectModalProps> = observer(
                 variant="outlined"
                 value={projectData.homeownerEmail}
                 required
+                type='email'
                 placeholder="Client Email Address"
               />
             </FormControl>
