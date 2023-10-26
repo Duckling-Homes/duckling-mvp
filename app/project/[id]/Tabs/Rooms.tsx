@@ -284,6 +284,14 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               ))}
             </div>
           </FormGroup>
+          <TextInput
+            label="Notes"
+            placeholder="Notes"
+            onChange={(value) => handleInputChange('notes', value)}
+            onBlur={() => patchRoom()}
+            value={currentRoom?.notes || ''}
+            multiline={true}
+          />
         </div>
       </form>
       ) : (
