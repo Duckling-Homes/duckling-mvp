@@ -149,7 +149,8 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     setCurrentAppliance(appliance)
   }
 
-  async function patchAppliance(updatedAppliance = currentAppliance) {
+  async function patchAppliance() {
+    const updatedAppliance = currentAppliance
     let api = ''
     console.log(updatedAppliance)
 

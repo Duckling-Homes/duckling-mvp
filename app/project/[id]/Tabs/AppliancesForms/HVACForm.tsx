@@ -2,24 +2,22 @@
 
 import { SelectInput, TextInput } from "@/components/Inputs";
 import { ProjectAppliance } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const HVAC_TYPES = ['Heating', 'Cooling', 'Heat Pump']
 
 const HVAC_SYSTEMS = [
-  { name: 'Furnace', parent: 'Heating' },
-  { name: 'Boiler', parent: 'Heating' },
-  { name: 'Baseboard', parent: 'Heating' },
-  { name: 'Stove', parent: 'Heating' },
-  { name: 'Solar Thermal', parent: 'Heating' },
-  { name: 'Other', parent: 'Heating' },
-  { name: 'Central Air Conditioner', parent: 'Cooling' },
-  { name: 'Mini- Split', parent: 'Cooling' },
-  { name: 'Other', parent: 'Cooling' },
-  { name: 'Mini - Split', parent: 'Heat Pump' },
-  { name: 'Central', parent: 'Heat Pump' },
-  { name: 'Other', parent: 'Heat Pump' },
-]
+  { name: "Furnace", parent: "Heating" },
+  { name: "Boiler", parent: "Heating" },
+  { name: "Baseboard", parent: "Heating" },
+  { name: "Stove", parent: "Heating" },
+  { name: "Solar Thermal", parent: "Heating" },
+  { name: "Other", parent: "Heating" },
+  { name: "Central Air Conditioner", parent: "Cooling" },
+  { name: "Mini- Split", parent: "Cooling" },
+  { name: "Other", parent: "Cooling" },
+  { name: "Mini - Split", parent: "Heat Pump" },
+  { name: "Central", parent: "Heat Pump" },
+];
 
 const FUEL = [
   { name: 'Electricity', parent: 'all' },
@@ -56,7 +54,9 @@ const HVACForm: React.FC<HVACFormProps> = ({
         value={currentAppliance?.havcSystem || ''}
         onChange={(value) => onChange('havcSystem', value)}
         onBlur={onUpdate}
+        disabled={currentAppliance?.hvacSystemType ? false : true}
         options={HVAC_SYSTEMS}
+        parent={currentAppliance?.hvacSystemType}
       />
       {/* Fuel */}
       <SelectInput
@@ -64,7 +64,9 @@ const HVACForm: React.FC<HVACFormProps> = ({
         value={currentAppliance?.fuel || ''}
         onChange={(value) => onChange('fuel', value)}
         onBlur={onUpdate}
+        disabled={currentAppliance?.hvacSystemType ? false : true}
         options={FUEL}
+        parent={currentAppliance?.hvacSystemType}
       />
       {/* Age */}
       <TextInput
