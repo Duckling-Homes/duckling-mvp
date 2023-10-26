@@ -4,7 +4,7 @@ import ModelStore from "@/app/stores/modelStore";
 import ChipManager from "@/components/ChipManager";
 import { SelectInput, TextInput } from "@/components/Inputs";
 import { Project, ProjectRoom } from "@/types/types";
-import { Chip, FormControl, FormGroup, FormLabel, InputLabel, MenuItem, Select,ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Chip, FormControl, FormGroup, FormLabel, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const COMFORT_ISSUES = [

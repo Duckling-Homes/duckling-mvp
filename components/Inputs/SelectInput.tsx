@@ -6,8 +6,9 @@ interface SelectInputProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  onBlur: () => void;
+  onBlur?: () => void;
   options: (string | {value: string, name: string})[];
+  disabled?: boolean;
 }
 
 const SelectInput: React.FC<SelectInputProps> = ({
@@ -15,7 +16,8 @@ const SelectInput: React.FC<SelectInputProps> = ({
   value,
   onChange,
   onBlur,
-  options
+  options,
+  disabled = false,
 }) => {
 
   const transformOptions = (options: (string | { value: string, name: string })[]): { value: string, name: string }[] => {
@@ -39,6 +41,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
     <FormControl fullWidth>
       <InputLabel>{label}</InputLabel>
       <Select
+        disabled={disabled}
         label={label}
         value={value}
         onChange={({target}) => onChange(target.value)}

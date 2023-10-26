@@ -1,8 +1,10 @@
 'use client'
 
 import { SelectInput, TextInput } from "@/components/Inputs";
+import DatePickerInput from "@/components/Inputs/DatePickerInput";
 import { ProjectElectrical } from "@/types/types";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import dayjs from "dayjs";
 
 const FUEL = ['Natural gas', 'Propane', 'Diesel', 'Gasoline']
 
@@ -95,16 +97,14 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         onBlur={onUpdate}
       />
       {/* Year Installed */}
-      {/* TODO: use date picker here */}
-      <TextField
-        id="outlined-basic"
+      <DatePickerInput
         label="Year Installed"
-        variant="outlined"
-        placeholder='Year Installed'
-        type="text"
-        value={currentElectrical?.yearInstalled}
-        onChange={(e) => onChange('yearInstalled', parseInt(e.target.value))}
-        onBlur={() => onUpdate()}
+        onChange={(e) => {
+          onChange('yearInstalled', e!.year());
+          onUpdate();
+        }}
+        value={currentElectrical && typeof currentElectrical.yearInstalled === 'number' ? dayjs(new Date(currentElectrical.yearInstalled, 0)) : dayjs()}
+        maxDate={dayjs()}
       />
       {/* Manufacturer */}
       <TextInput

@@ -6,18 +6,11 @@ import { AddPhotoAlternate } from '@mui/icons-material'
 import {
   Button,
   Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Project } from "@/types/types";
 import dayjs from "dayjs";
 import { SelectInput, TextInput } from "@/components/Inputs";
+import DatePickerInput from "@/components/Inputs/DatePickerInput";
 
 interface BasicsProps {
   currentProject: Project
@@ -47,9 +40,14 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div
-        style={{
+    <>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '32px',
+        gap: '24px',
+      }}>
+        <form style={{
           display: 'flex',
           flexDirection: 'column',
           padding: '32px',
@@ -95,10 +93,8 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
             onChange={(value) => handleInputChange('stories', parseInt(value))}
             onBlur={updateData}
           />
-          <DatePicker
+          <DatePickerInput
             label="Year Built"
-            openTo="year"
-            views={['year']}
             onChange={(e) => handleInputChange('yearBuilt', e!.year())}
             value={
               data && typeof data.yearBuilt === 'number'
@@ -132,7 +128,7 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
           </Button>
         </div>
       </div>
-    </LocalizationProvider>
+    </>
   )
 }
 
