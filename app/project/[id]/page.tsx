@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Button, Tab, Tabs } from '@mui/material'
+import { Button, ButtonGroup, Tab, Tabs } from '@mui/material'
 import { CalendarMonth, Delete, Edit, Home, Person } from '@mui/icons-material'
 import Image from 'next/image'
 import { Container } from '@/components/Container'
@@ -156,13 +156,14 @@ const DataCollection = observer(() => {
               style={{
                 padding: '8px 24px 16px 24px',
                 display: 'flex',
-                gap: '24px',
                 justifyContent: 'center',
               }}
             >
-              <Button variant="outlined">Home Info</Button>
-              <Button variant="outlined">Plans</Button>
-              <Button variant="outlined">Present</Button>
+              <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                <Button>Home Info</Button>
+                <Button>Plans</Button>
+                <Button>Present</Button>
+              </ButtonGroup>
             </div>
             {currentProject ? (
               <div>
