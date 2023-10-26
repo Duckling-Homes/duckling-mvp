@@ -1,4 +1,5 @@
 import {
+  deleteImage,
   getImageById,
   isImageInOrganization,
   updateImage,
@@ -55,7 +56,7 @@ export const PATCH = withErrorHandler(
 
     const orgContext = req.headers.get('organization-context') || ''
 
-    // Validate the organization context and image ID (if necessary)
+    // Validate the organization context and image ID
     await isImageInOrganization(params.id, orgContext as string)
 
     return NextResponse.json(
@@ -70,5 +71,19 @@ export const PATCH = withErrorHandler(
         isHeroPhoto,
       })
     )
+  }
+)
+
+/**
+ * Delete an image object
+ */
+export const DELETE = withErrorHandler(
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const orgContext = req.headers.get('organization-context')
+
+    // Validate the organization context and image ID
+    await isImageInOrganization(params.id, orgContext as string)
+
+    return NextResponse.json(await deleteImage(params.id))
   }
 )
