@@ -165,8 +165,6 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       })
 
       setElectricals(updatedElectricals)
-      setCurrentElectrical(response)
-      console.log(response)
     }
   }
 

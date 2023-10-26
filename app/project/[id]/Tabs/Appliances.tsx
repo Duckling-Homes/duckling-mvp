@@ -196,7 +196,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'hvac':
         return (
           <HVACForm
-            onUpdate={patchAppliance}
+            onUpdate={() => patchAppliance()}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -204,7 +204,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'waterheater':
         return (
           <WaterHeaterForm
-            onUpdate={patchAppliance}
+            onUpdate={() => patchAppliance()}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -212,7 +212,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'cooktop':
         return (
           <CooktopForm
-            onUpdate={patchAppliance}
+            onUpdate={() => patchAppliance()}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -221,7 +221,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         if (currentAppliance?.type) {
           return (
             <DefaultForm
-              onUpdate={patchAppliance}
+              onUpdate={() => patchAppliance()}
               onChange={handleInputChange}
               currentAppliance={currentAppliance}
             />

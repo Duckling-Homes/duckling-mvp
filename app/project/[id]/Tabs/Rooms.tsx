@@ -97,15 +97,19 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   }
 
   async function patchRoom(updatedRoom = currentRoom) {
-    const response = await ModelStore.updateRoom(currentProject.id!, updatedRoom);
-    const updatedRooms = rooms.map((room) => {
-      if (room.id === updatedRoom.id) {
-        return { ...room, ...updatedRoom }
-      }
-      return room
-    })
-    setRooms(updatedRooms)
-    setCurrentRoom(response)
+    if (updatedRoom && updatedRoom.id) {
+      const response = await ModelStore.updateRoom(
+        currentProject.id!,
+        updatedRoom
+      )
+      const updatedRooms = rooms.map((room) => {
+        if (room.id === updatedRoom.id) {
+          return { ...room, ...updatedRoom }
+        }
+        return room
+      })
+      setRooms(updatedRooms)
+    }
   }
 
   const handleChipChange = (inputName: string, value: string) => {
@@ -119,7 +123,6 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
 
     const updatedRoom = { ...currentRoom, [inputName]: array }
 
-    setCurrentRoom(updatedRoom)
     patchRoom(updatedRoom)
   }
 
