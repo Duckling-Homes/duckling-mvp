@@ -102,7 +102,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   }
 
   async function patchEnvelope(updatedEnvelope = currentEnvelope) {
-    console.log('caiu aqui')
     if (updatedEnvelope && updatedEnvelope.id) {
       const response = await ModelStore.updateEnvelope(
         currentProject.id!,
@@ -116,8 +115,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
         return envelope
       })
       setEnvelopes(updatedEnvelopes)
-      setCurrentEnvelope(response)
-      console.log(response)
     }
   }
 
@@ -145,47 +142,49 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        padding: '32px',
-        gap: '32px',
-      }}
-    >
-      <ChipManager
-        onCreate={createEnvelope}
-        onDelete={deleteEnvelope}
-        chips={envelopes}
-        currentChip={currentEnvelope?.id || ''}
-        chipType="Envelope"
-        onChipClick={(i: number) => {
-          console.log(toJS(envelopes[i]))
-          setCurrentEnvelope(envelopes[i])
-        }}
-      />
+    <>
       <div
         style={{
-          width: '100%',
+          display: 'flex',
+          padding: '32px',
+          gap: '32px',
         }}
       >
-        {currentEnvelope?.id && <form
+        <ChipManager
+          onCreate={createEnvelope}
+          onDelete={deleteEnvelope}
+          chips={envelopes}
+          currentChip={currentEnvelope?.id || ''}
+          chipType="Envelope"
+          onChipClick={(i: number) => {
+            console.log(toJS(envelopes[i]))
+            setCurrentEnvelope(envelopes[i])
+          }}
+        />
+        <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
+            width: '100%',
           }}
         >
-          <SelectInput
-            label="Type"
-            value={currentEnvelope?.type || ''}
-            onChange={(value) => handleTypeChange(value)}
-            disabled={currentEnvelope?.type ? true : false}
-            options={['Insulation', 'AirSealing']}
-          />
-          {renderForm()}
-        </form>}
+          {currentEnvelope?.id && <form
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+          >
+            <SelectInput
+              label="Type"
+              value={currentEnvelope?.type || ''}
+              onChange={(value) => handleTypeChange(value)}
+              disabled={currentEnvelope?.type ? true : false}
+              options={['Insulation', 'AirSealing']}
+            />
+            {renderForm()}
+          </form>}
+        </div>
       </div>
-    </div>
+    </>
   )
 })
 

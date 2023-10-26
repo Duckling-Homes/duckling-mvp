@@ -77,7 +77,7 @@ const Header = () => {
         onClick={handleClick}
         aria-label="delete"
       >
-        <MenuOutlined fontSize={device === 'phone' ? 'small' : 'large'} />
+        <MenuOutlined fontSize='small' />
       </IconButton>
       <CustomMenu
         handleSignout={doSignOut}
