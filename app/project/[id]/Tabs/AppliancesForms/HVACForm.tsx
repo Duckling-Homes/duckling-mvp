@@ -112,7 +112,8 @@ const HVACForm: React.FC<HVACFormProps> = ({
       <TextInput
         label="Heating Capacity"
         placeholder="Heating Capacity"
-        onChange={(value) => onChange('heatingCapacity', value)}
+        type="tel"
+        onChange={(value) => onChange('heatingCapacity', parseInt(value))}
         onBlur={onUpdate}
         value={currentAppliance?.heatingCapacity || ''}
         endAdornment='BTU/hr'
@@ -121,7 +122,8 @@ const HVACForm: React.FC<HVACFormProps> = ({
       <TextInput
         label="Cooling Capacity"
         placeholder="Cooling Capacity"
-        onChange={(value) => onChange('coolingCapacity', value)}
+        type="tel"
+        onChange={(value) => onChange('coolingCapacity', parseInt(value))}
         onBlur={onUpdate}
         value={currentAppliance?.coolingCapacity || ''}
         endAdornment='BTU/hr'

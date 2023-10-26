@@ -15,6 +15,7 @@ import ModelStore from '@/app/stores/modelStore';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { SelectInput } from '@/components/Inputs';
+import { v4 } from 'uuid';
 
 interface EnvelopeProps {
   currentProject: Project

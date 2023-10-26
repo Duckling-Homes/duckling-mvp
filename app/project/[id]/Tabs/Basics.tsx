@@ -47,13 +47,6 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
         padding: '32px',
         gap: '24px',
       }}>
-        <form style={{
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '32px',
-          gap: '24px',
-        }}
-      >
         <form
           style={{
             display: 'flex',

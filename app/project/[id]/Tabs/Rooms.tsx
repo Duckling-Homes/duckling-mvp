@@ -238,8 +238,10 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               <FormLabel>Comfort Issues</FormLabel>
               <div style={{
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginTop: '12px',
+                marginBottom: '24px',
               }}
             >
               {COMFORT_ISSUES.map((issue, i) => (
