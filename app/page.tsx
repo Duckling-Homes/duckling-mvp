@@ -76,7 +76,7 @@ const Home = observer(() => {
   async function handleCreate(newProject: Project) {
     const createdProject = await ModelStore.createProject(newProject)
     setOpenModal(false)
-    // router.push(`/project/${createdProject.id}`)
+    router.push(`/project/${createdProject.id}`)
   }
 
   const columns: GridColDef[] = [
