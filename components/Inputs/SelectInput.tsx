@@ -2,12 +2,18 @@
 
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 
+type Option = {
+  value: string;
+  name: string;
+  parent?: string;
+};
+
 interface SelectInputProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
-  options: (string | { value: string; name: string; parent?: string })[];
+  options: (string | Option)[];
   disabled?: boolean;
   parent?: string;
   helperText?: string;
@@ -24,34 +30,28 @@ const SelectInput: React.FC<SelectInputProps> = ({
   helperText
 }) => {
 
-  const transformOptions = (options: (string | {
-    parent?: undefined | string; value: string, name: string 
-})[]): { value: string, name: string, parent?: string }[] => {
-    let result = [...options];
-
+  const transformOptions = (options: (string | Option)[]): Option[] => {
     if (!options || options?.length === 0) {
       return [];
     }
 
-    if (typeof options[0] === "string") {
-      result: {}[] = result.map((value) => ({
-        value: value,
-        name: value,
-      }));
-      return result as { value: string, name: string }[];
-    }
+    const result = options.map((option) => {
+      if (typeof option === "string") {
+        return {
+          value: option,
+          name: option,
+        };
+      }
+      return option;
+    });
 
     if (parent) {
-      result = result.filter((option) => {
-        if (typeof option === 'string' || option?.parent === undefined) {
-          return false;
-        } else {
-          return option.parent === parent || option.parent === 'all';
-        }
+      return result.filter((option) => {
+        return option.parent === parent || option.parent === 'all';
       });
     }
 
-    return result as { value: string, name: string }[];
+    return result;
   };
 
   const transformedOptions = transformOptions(options);
