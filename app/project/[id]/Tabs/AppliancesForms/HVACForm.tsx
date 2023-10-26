@@ -57,6 +57,9 @@ const HVACForm: React.FC<HVACFormProps> = ({
         disabled={currentAppliance?.hvacSystemType ? false : true}
         options={HVAC_SYSTEMS}
         parent={currentAppliance?.hvacSystemType}
+        helperText={
+          currentAppliance?.hvacSystemType ? '' : 'You need to select a HVAC System Type below before you can use this field.'
+        }
       />
       {/* Fuel */}
       <SelectInput
@@ -67,6 +70,9 @@ const HVACForm: React.FC<HVACFormProps> = ({
         disabled={currentAppliance?.hvacSystemType ? false : true}
         options={FUEL}
         parent={currentAppliance?.hvacSystemType}
+        helperText={
+          currentAppliance?.hvacSystemType ? '' : 'You need to select a HVAC System Type below before you can use this field.'
+        }
       />
       {/* Age */}
       <TextInput

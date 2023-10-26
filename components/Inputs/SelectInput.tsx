@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 
 interface SelectInputProps {
   label: string;
@@ -9,7 +9,8 @@ interface SelectInputProps {
   onBlur?: () => void;
   options: (string | {value: string, name: string, parent?: string})[];
   disabled?: boolean;
-  parent?: string
+  parent?: string;
+  helperText?: string;
 }
 
 const SelectInput: React.FC<SelectInputProps> = ({
@@ -19,7 +20,8 @@ const SelectInput: React.FC<SelectInputProps> = ({
   onBlur,
   options,
   disabled = false,
-  parent
+  parent,
+  helperText
 }) => {
 
   const transformOptions = (options: (string | { value: string, name: string })[]): { value: string, name: string }[] => {
@@ -62,6 +64,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
           ))
         }
       </Select>
+      <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   )
 }
