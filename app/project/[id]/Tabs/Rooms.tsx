@@ -96,8 +96,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
     setCurrentRoom(response)
   }
 
-  async function patchRoom() {
-    const updatedRoom = currentRoom
+  async function patchRoom(updatedRoom = currentRoom) {
     const response = await ModelStore.updateRoom(currentProject.id!, updatedRoom);
     const updatedRooms = rooms.map((room) => {
       if (room.id === updatedRoom.id) {
@@ -168,13 +167,13 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               placeholder="Room Name"
               value={currentRoom?.name || ''}
               onChange={(value) => handleInputChange('name', value)}
-              onBlur={patchRoom}
+              onBlur={() => patchRoom()}
             />
             <SelectInput
               label="Room Type"
               value={currentRoom?.type || ''}
               onChange={(value) => handleInputChange('type', value)}
-              onBlur={patchRoom}
+              onBlur={() => patchRoom()}
               options={ROOM_TYPES}
             />
             <TextInput
@@ -183,7 +182,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               type="tel"
               value={currentRoom?.width || ''}
               onChange={(value) => handleInputChange('width', parseInt(value))}
-              onBlur={patchRoom}
+              onBlur={() => patchRoom()}
               endAdornment='ft'
             />
             <TextInput
@@ -192,7 +191,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               type="tel"
               value={currentRoom?.length || ''}
               onChange={(value) => handleInputChange('length', parseInt(value))}
-              onBlur={patchRoom}
+              onBlur={() => patchRoom()}
               endAdornment='ft'
             />
             <TextInput
@@ -203,14 +202,14 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               onChange={
                 (value) => handleInputChange('ceilingHeight', parseInt(value))
               }
-              onBlur={patchRoom}
+              onBlur={() => patchRoom()}
               endAdornment='ft'
             />
             <SelectInput
               label="Floor"
               value={currentRoom?.floor || ''}
               onChange={(value) => handleInputChange('floor', value)}
-              onBlur={patchRoom}
+              onBlur={() => patchRoom()}
               options={ROOM_FLOORS}
             />
             <FormControl>
@@ -238,8 +237,10 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               <FormLabel>Comfort Issues</FormLabel>
               <div style={{
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginTop: '12px',
+                marginBottom: '24px',
               }}
             >
               {COMFORT_ISSUES.map((issue, i) => (

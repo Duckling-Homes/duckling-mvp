@@ -6,25 +6,25 @@ import { ProjectAppliance } from "@/types/types";
 const HVAC_TYPES = ['Heating', 'Cooling', 'Heat Pump']
 
 const HVAC_SYSTEMS = [
-  { name: "Furnace", parent: "Heating" },
-  { name: "Boiler", parent: "Heating" },
-  { name: "Baseboard", parent: "Heating" },
-  { name: "Stove", parent: "Heating" },
-  { name: "Solar Thermal", parent: "Heating" },
-  { name: "Other", parent: "Heating" },
-  { name: "Central Air Conditioner", parent: "Cooling" },
-  { name: "Mini- Split", parent: "Cooling" },
-  { name: "Other", parent: "Cooling" },
-  { name: "Mini - Split", parent: "Heat Pump" },
-  { name: "Central", parent: "Heat Pump" },
+  { name: "Furnace", value: "furnace", parent: "Heating" },
+  { name: "Boiler", value: "boiler", parent: "Heating" },
+  { name: "Baseboard", value: "baseboard", parent: "Heating" },
+  { name: "Stove", value: "stove", parent: "Heating" },
+  { name: "Solar Thermal",value: "solar thermal", parent: "Heating" },
+  { name: "Other", value: "other", parent: "Heating" },
+  { name: "Central Air Conditioner", value: "central air conditioner", parent: "Cooling" },
+  { name: "Mini-Split", value: "mini-split", parent: "Cooling" },
+  { name: "Other", value: "other", parent: "Cooling" },
+  { name: "Mini-Split", value: "mini-split", parent: "Heat Pump" },
+  { name: "Central", value: "central", parent: "Heat Pump" },
 ];
 
 const FUEL = [
-  { name: 'Electricity', parent: 'all' },
-  { name: 'Natural Gas', parent: 'Heating' },
-  { name: 'Fuel Oil', parent: 'Heating' },
-  { name: 'Wood Pallet', parent: 'Heating' },
-  { name: 'Other', parent: 'all' },
+  { name: 'Electricity', value: "electricity", parent: 'all' },
+  { name: 'Natural Gas', value: "natural gas", parent: 'Heating' },
+  { name: 'Fuel Oil', value: "fuel oil", parent: 'Heating' },
+  { name: 'Wood Pallet', value: "wood pallet", parent: 'Heating' },
+  { name: 'Other', value: "other", parent: 'all' },
 ]
 
 interface HVACFormProps {
@@ -112,7 +112,8 @@ const HVACForm: React.FC<HVACFormProps> = ({
       <TextInput
         label="Heating Capacity"
         placeholder="Heating Capacity"
-        onChange={(value) => onChange('heatingCapacity', value)}
+        type="tel"
+        onChange={(value) => onChange('heatingCapacity', parseInt(value))}
         onBlur={onUpdate}
         value={currentAppliance?.heatingCapacity || ''}
         endAdornment='BTU/hr'
@@ -121,7 +122,8 @@ const HVACForm: React.FC<HVACFormProps> = ({
       <TextInput
         label="Cooling Capacity"
         placeholder="Cooling Capacity"
-        onChange={(value) => onChange('coolingCapacity', value)}
+        type="tel"
+        onChange={(value) => onChange('coolingCapacity', parseInt(value))}
         onBlur={onUpdate}
         value={currentAppliance?.coolingCapacity || ''}
         endAdornment='BTU/hr'

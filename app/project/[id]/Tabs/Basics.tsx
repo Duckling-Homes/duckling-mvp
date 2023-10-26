@@ -7,7 +7,7 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import { Project } from "@/types/types";
+import { Project, ProjectData } from "@/types/types";
 import dayjs from "dayjs";
 import { SelectInput, TextInput } from "@/components/Inputs";
 import DatePickerInput from "@/components/Inputs/DatePickerInput";
@@ -36,7 +36,7 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
   }
 
   const updateData = async () => {
-    await ModelStore.patchProjectData(currentProject.id as string, data)
+    await ModelStore.patchProjectData(currentProject.id as string, data as ProjectData)
   }
 
   return (
@@ -47,13 +47,6 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
         padding: '32px',
         gap: '24px',
       }}>
-        <form style={{
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '32px',
-          gap: '24px',
-        }}
-      >
         <form
           style={{
             display: 'flex',

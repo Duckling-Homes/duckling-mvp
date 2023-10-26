@@ -2,7 +2,6 @@
 
 import { SelectInput, TextInput } from "@/components/Inputs";
 import { ProjectAppliance } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const SYSTEM_TYPE = [
   'Storage Water Heater',

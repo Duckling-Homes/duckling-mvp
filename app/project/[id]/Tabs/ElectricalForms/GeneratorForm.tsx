@@ -3,7 +3,6 @@
 import { SelectInput, TextInput } from "@/components/Inputs";
 import DatePickerInput from "@/components/Inputs/DatePickerInput";
 import { ProjectElectrical } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import dayjs from "dayjs";
 
 const FUEL = ['Natural gas', 'Propane', 'Diesel', 'Gasoline']

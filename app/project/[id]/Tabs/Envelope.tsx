@@ -1,12 +1,6 @@
 'use client'
 
 import ChipManager from '@/components/ChipManager'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@mui/material';
 import { useEffect, useState } from 'react';
 import InsulationForm from './EnvelopesForms/InsulationForm';
 import AirSealingForm from './EnvelopesForms/AirSealingForm';
@@ -15,6 +9,7 @@ import ModelStore from '@/app/stores/modelStore';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { SelectInput } from '@/components/Inputs';
+import { v4 } from 'uuid';
 
 interface EnvelopeProps {
   currentProject: Project

@@ -2,7 +2,6 @@
 
 import { SelectInput, TextInput } from "@/components/Inputs";
 import { ProjectElectrical } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 interface BatteryFormProps {
   currentElectrical: ProjectElectrical

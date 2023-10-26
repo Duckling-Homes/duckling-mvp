@@ -2,7 +2,6 @@
 
 import { SelectInput, TextInput } from "@/components/Inputs";
 import { ProjectAppliance } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const FUEL = [
   "Electricity",
@@ -55,7 +54,7 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
         value={currentAppliance?.fuel || ''}
         onChange={(value) => onChange('fuel', value)}
         onBlur={onUpdate}
-        options={[{name: 'Yes', value: 'true'}, {name: 'No', value: 'false'}]}
+        options={FUEL}
       />
       {/* age */}
       <TextInput
