@@ -7,7 +7,7 @@ interface SelectInputProps {
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
-  options: (string | {value: string, name: string, parent?: string})[];
+  options: (string | { value: string; name: string; parent?: string })[];
   disabled?: boolean;
   parent?: string;
   helperText?: string;
@@ -24,7 +24,9 @@ const SelectInput: React.FC<SelectInputProps> = ({
   helperText
 }) => {
 
-  const transformOptions = (options: (string | { value: string, name: string })[]): { value: string, name: string }[] => {
+  const transformOptions = (options: (string | {
+    parent?: undefined | string; value: string, name: string 
+})[]): { value: string, name: string, parent?: string }[] => {
     let result = [...options];
 
     if (!options || options?.length === 0) {
@@ -32,15 +34,21 @@ const SelectInput: React.FC<SelectInputProps> = ({
     }
 
     if (typeof options[0] === "string") {
-      result = result.map((value) => ({
+      result: {}[] = result.map((value) => ({
         value: value,
         name: value,
       }));
+      return result as { value: string, name: string }[];
     }
 
-     if (parent) {
-      result = result
-        .filter((option) => option.parent === parent || option.parent === 'all')
+    if (parent) {
+      result = result.filter((option) => {
+        if (typeof option === 'string' || option?.parent === undefined) {
+          return false;
+        } else {
+          return option.parent === parent || option.parent === 'all';
+        }
+      });
     }
 
     return result as { value: string, name: string }[];

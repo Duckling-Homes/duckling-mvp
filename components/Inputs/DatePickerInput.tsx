@@ -24,7 +24,7 @@ const DatePickerInput: React.FC<DatePickerInputProps> = ({
         label={label}
         openTo="year"
         views={['year']}
-        onChange={(e) => onChange(e)}
+        onChange={(e) => onChange(e as Dayjs)}
         value={value}
         maxDate={maxDate}
       />

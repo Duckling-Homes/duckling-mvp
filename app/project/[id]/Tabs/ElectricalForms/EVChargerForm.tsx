@@ -2,7 +2,6 @@
 
 import { SelectInput, TextInput } from "@/components/Inputs";
 import { ProjectElectrical } from "@/types/types";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 
 const CHARGING_LEVELS = ['Level 1', 'Level 2', 'Level 3']
 

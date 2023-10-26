@@ -1,12 +1,6 @@
 'use client'
 
 import ChipManager from '@/components/ChipManager'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@mui/material';
 import { useEffect, useState } from 'react';
 import InsulationForm from './EnvelopesForms/InsulationForm';
 import AirSealingForm from './EnvelopesForms/AirSealingForm';

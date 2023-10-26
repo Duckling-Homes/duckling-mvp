@@ -2,12 +2,6 @@
 
 import { SelectInput, TextInput } from '@/components/Inputs';
 import { ProjectEnvelope } from '@/types/types';
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@mui/material'
 
 interface InsulationFormProps {
   onChange: (inputName: string, value: string) => void
