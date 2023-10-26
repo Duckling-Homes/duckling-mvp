@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client'
 import prisma from '../../../lib/prisma'
+import HandlerError from '../HandlerError'
 
 type ExtendedImageCreateInput = Prisma.ImageUncheckedCreateInput & {
   isHeroPhoto?: boolean
@@ -21,7 +22,11 @@ export async function isImageInOrganization(
     include: { project: true },
   })
 
-  return image?.project.organizationId === organizationId || false
+  if (image?.project.organizationId === organizationId) {
+    return true
+  } else {
+    throw new HandlerError('Image Not Found', 404)
+  }
 }
 
 export async function createImage(
@@ -116,19 +121,44 @@ export async function deleteImage(id: string, organizationContext: string) {
   })
 }
 
+type ExtendedImageUpdateInput = Prisma.ImageUpdateInput & {
+  isHeroPhoto?: boolean
+}
+
 // Update an image by its ID
 export async function updateImage(
   id: string,
-  imageUpdates: Prisma.ImageUpdateInput,
-  organizationContext: string
+  imageUpdates: ExtendedImageUpdateInput
 ) {
   const image = await prisma.image.findUnique({
     where: { id },
     include: { project: true },
   })
 
-  if (image?.project.organizationId !== organizationContext) {
+  if (!image) {
     return null
+  }
+
+  // If imageUpdates.isHeroPhoto is true, update the project's heroImageId
+  if (imageUpdates.isHeroPhoto) {
+    await prisma.project.update({
+      where: { id: image.project.id },
+      data: {
+        heroImageId: id,
+      },
+    })
+  }
+  // If imageUpdates.isHeroPhoto is false, and this image is currently the hero image, clear the project's heroImageId
+  else if (
+    imageUpdates.isHeroPhoto === false &&
+    image.project.heroImageId === id
+  ) {
+    await prisma.project.update({
+      where: { id: image.project.id },
+      data: {
+        heroImageId: null,
+      },
+    })
   }
 
   return await prisma.image.update({
