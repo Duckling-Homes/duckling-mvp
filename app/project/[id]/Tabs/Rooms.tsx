@@ -98,7 +98,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
 
   async function patchRoom(updatedRoom = currentRoom) {
     if (updatedRoom && updatedRoom.id) {
-      const response = await ModelStore.updateRoom(
+      await ModelStore.updateRoom(
         currentProject.id!,
         updatedRoom
       )
