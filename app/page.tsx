@@ -154,7 +154,7 @@ const Home = observer(() => {
             id="outlined-basic"
             label="Search"
             variant="outlined"
-            placeholder="Name, address"
+            placeholder="Name, address, date, etc..."
             sx={{
               width: 300,
             }}
