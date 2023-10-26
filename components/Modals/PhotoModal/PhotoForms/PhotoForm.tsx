@@ -133,7 +133,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           label="Room"
           onChange={(e) => onChange('room', e.target.value)}
           onBlur={() => patchPhotoDetails()}
-          value={currentPhoto?.room}
+          value={currentPhoto?.roomId}
         >
           {rooms.map((room, i) => (
             <MenuItem key={i} value={room.id}>
@@ -151,7 +151,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           label="Envelope"
           onChange={(e) => onChange('envelope', e.target.value)}
           onBlur={() => patchPhotoDetails()}
-          value={currentPhoto?.envelope}
+          value={currentPhoto?.envelopeId}
         >
           {envelopes.map((envelope, i) => (
             <MenuItem key={i} value={envelope.id}>
@@ -169,7 +169,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           label="Appliance"
           onChange={(e) => onChange('appliance', e.target.value)}
           onBlur={() => patchPhotoDetails()}
-          value={currentPhoto?.appliance}
+          value={currentPhoto?.applianceId}
         >
           {appliances.map((appliance, i) => (
             <MenuItem key={i} value={appliance.id}>
@@ -187,7 +187,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           label="Electrical"
           onChange={(e) => onChange('electrical', e.target.value)}
           onBlur={() => patchPhotoDetails()}
-          value={currentPhoto?.electrical}
+          value={currentPhoto?.electricalId}
         >
           {electrical.map((electrical_val, i) => (
             <MenuItem key={i} value={electrical_val.id}>

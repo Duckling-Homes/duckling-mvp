@@ -35,10 +35,10 @@ export interface PhotoDetails {
   name?: string
   homeownerNotes?: string
   internalNotes?: string
-  room?: string
-  envelope?: string
-  appliance?: string
-  electrical?: string
+  roomId?: string
+  envelopeId?: string
+  applianceId?: string
+  electricalId?: string
   isHeroPhoto?: boolean
 }
 
