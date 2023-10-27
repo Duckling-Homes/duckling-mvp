@@ -18,6 +18,7 @@ import { observer } from 'mobx-react-lite'
 import { v4 } from 'uuid'
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import { v4 as uuidv4 } from 'uuid'
 
 interface EnvelopeProps {
   currentProject: Project
@@ -165,6 +166,7 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
+          photo={{ id: uuidv4() }}
         />
       )}
       <ChipManager

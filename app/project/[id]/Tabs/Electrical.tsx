@@ -21,6 +21,7 @@ import ModelStore from '@/app/stores/modelStore'
 import { observer } from 'mobx-react-lite'
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+
 const TYPES = [
   { name: 'Electrical Panel', value: 'electricalpanel' },
   { name: 'Solar', value: 'solar' },
@@ -250,6 +251,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
+          photo={{ id: uuidv4() }}
         />
       )}
       <ChipManager

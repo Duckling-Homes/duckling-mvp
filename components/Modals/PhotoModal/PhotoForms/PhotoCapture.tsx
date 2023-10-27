@@ -3,10 +3,13 @@ import React, { useState, useRef, useEffect } from 'react'
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 import ModelStore from '@/app/stores/modelStore'
 import { Project } from '@/types/types'
+import { v4 as uuidv4 } from 'uuid'
 
 interface PhotoCaptureProps {
   project: Project
-  onChange: (key: string, value: string | number | boolean | undefined) => void
+  onChange: (values: {
+    [key: string]: string | number | boolean | undefined
+  }) => void
 }
 
 const PhotoCapture: React.FC<PhotoCaptureProps> = ({ project, onChange }) => {
@@ -20,8 +23,12 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({ project, onChange }) => {
     const canvas = canvasRef.current
     if (canvas !== null) {
       const imgDataUrl = canvas.toDataURL('image/png')
-      onChange('photoUrl', imgDataUrl)
-      await ModelStore.createPhotoEntry(project.id!, imgDataUrl)
+      const imageId = uuidv4()
+
+      onChange({ photoUrl: imgDataUrl, id: imageId })
+      await ModelStore.createPhotoEntry(project.id!, imgDataUrl, {
+        id: imageId,
+      })
     }
   }
 

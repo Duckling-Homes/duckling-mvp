@@ -161,6 +161,9 @@ export async function updateImage(
     })
   }
 
+  // Remove isHeroImage from input
+  delete imageUpdates.isHeroPhoto
+
   return await prisma.image.update({
     where: { id },
     data: imageUpdates,

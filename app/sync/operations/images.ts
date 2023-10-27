@@ -1,29 +1,27 @@
 import { v4 as uuidv4 } from 'uuid'
 import { SyncAPI } from '..'
+import { PhotoDetails } from '@/types/types'
+import { db } from '../db'
 
 export class ImageSyncOperations {
-  create = async (projectID: string, imgDataUrl: string) => {
-    const imageId = uuidv4()
+  create = async (
+    projectID: string,
+    imgDataUrl: string,
+    photoDetails: PhotoDetails
+  ) => {
+    photoDetails.id = photoDetails.id ?? uuidv4()
     await fetch(`/api/images`, {
       method: 'POST',
       body: JSON.stringify({
-        id: imageId,
+        ...photoDetails,
         projectId: projectID,
       }),
     }).then(async (_) => {
-      await this.upload(imageId, imgDataUrl)
+      await this.upload(photoDetails.id!, imgDataUrl)
     })
-    // await db.enqueueRequest(`/api/images`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     id: imageId,
-    //     projectId: projectID,
-    //   }),
-    // })
 
-    await this.upload(imageId, imgDataUrl)
     const photo = {
-      id: imageId,
+      ...photoDetails,
       photoUrl: imgDataUrl,
     }
 
@@ -71,5 +69,30 @@ export class ImageSyncOperations {
     } catch (error) {
       console.error('Error uploading the photo:', error)
     }
+  }
+
+  update = async (projectID: string, photoDetails: PhotoDetails) => {
+    await db.enqueueRequest(`/api/images/${photoDetails.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(photoDetails),
+    })
+
+    await SyncAPI.projects._swap(projectID, (proj) => {
+      if (photoDetails.isHeroPhoto) {
+        console.log('Im updating the hero image to')
+        console.log(photoDetails.id)
+        proj.heroImageId = photoDetails.id
+      }
+      const idx = proj.images?.findIndex(
+        (image) => image.id === photoDetails.id
+      )
+      if (idx) {
+        proj.images?.splice(idx, 1)
+      }
+      proj.images?.push(photoDetails)
+      return proj
+    })
+
+    return photoDetails
   }
 }

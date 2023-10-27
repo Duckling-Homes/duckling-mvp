@@ -12,17 +12,17 @@ const PhotoCaptureModal: React.FC<{
   photo?: PhotoDetails
 }> = ({ open, onClose, project, photo }) => {
   const [currentPhoto, setCurrentPhoto] = useState<PhotoDetails>(photo ?? {})
+
   const handleOnClose = () => {
     setCurrentPhoto({})
     onClose()
   }
 
-  function handlePhotoChange(
-    inputName: string,
-    value: string | number | boolean | undefined
-  ) {
+  function handlePhotoChange(valuesToSet: {
+    [key: string]: string | number | boolean | undefined
+  }) {
     if (currentPhoto) {
-      const updatedPhoto = { ...currentPhoto, [inputName]: value }
+      const updatedPhoto = { ...currentPhoto, ...valuesToSet }
       setCurrentPhoto(updatedPhoto)
     }
   }

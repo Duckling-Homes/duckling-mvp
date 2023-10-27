@@ -15,12 +15,15 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { PhotoDetails, Project } from '@/types/types'
+import ModelStore from '@/app/stores/modelStore'
 
 interface PhotoFormProps {
   onClose: () => void
   currentPhoto?: PhotoDetails
   project: Project
-  onChange: (key: string, value: string | number | boolean | undefined) => void
+  onChange: (values: {
+    [key: string]: string | number | boolean | undefined
+  }) => void
 }
 
 const PhotoForm: React.FC<PhotoFormProps> = ({
@@ -38,12 +41,17 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
     // TODO: Add patch API call
     console.log('Making a call to patch the photo details')
     console.log(updatedPhoto)
+    if (updatedPhoto) {
+      console.log('MAKEING A PATCH')
+      console.log(updatedPhoto)
+      await ModelStore.patchPhotoDetails(project.id!, updatedPhoto)
+    }
   }
 
   function deletePhoto() {
     // TODO: Add in API call to delete image and its details
     console.log('deleteing the photo')
-    onChange('photoUrl', undefined)
+    onChange({ photoUrl: undefined })
   }
 
   return (
@@ -93,7 +101,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           variant="outlined"
           placeholder="Photo Name"
           type="text"
-          onChange={(e) => onChange('name', e.target.value)}
+          onChange={(e) => onChange({ name: e.target.value })}
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.name}
         />
@@ -106,7 +114,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           variant="outlined"
           placeholder="Enter notes for homeowner"
           type="text"
-          onChange={(e) => onChange('homeownerNotes', e.target.value)}
+          onChange={(e) => onChange({ homeownerNotes: e.target.value })}
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.homeownerNotes}
         />
@@ -119,7 +127,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           variant="outlined"
           placeholder="Enter internal notes"
           type="text"
-          onChange={(e) => onChange('internalNotes', e.target.value)}
+          onChange={(e) => onChange({ internalNotes: e.target.value })}
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.internalNotes}
         />
@@ -131,7 +139,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           labelId="room-label"
           id="room-select"
           label="Room"
-          onChange={(e) => onChange('room', e.target.value)}
+          onChange={(e) => onChange({ roomId: e.target.value })}
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.roomId}
         >
@@ -149,7 +157,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           labelId="envelope-label"
           id="envelope-select"
           label="Envelope"
-          onChange={(e) => onChange('envelope', e.target.value)}
+          onChange={(e) => onChange({ envelopeId: e.target.value })}
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.envelopeId}
         >
@@ -167,7 +175,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           labelId="appliance-label"
           id="appliance-select"
           label="Appliance"
-          onChange={(e) => onChange('appliance', e.target.value)}
+          onChange={(e) => onChange({ applianceId: e.target.value })}
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.applianceId}
         >
@@ -185,7 +193,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           labelId="electrical-label"
           id="electrical-select"
           label="Electrical"
-          onChange={(e) => onChange('electrical', e.target.value)}
+          onChange={(e) => onChange({ electricalId: e.target.value })}
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.electricalId}
         >
@@ -200,9 +208,19 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
       <FormControlLabel
         control={
           <Checkbox
-            checked={currentPhoto?.isHeroPhoto}
-            onChange={(e) => onChange('isHeroPhoto', e.target.value)}
-            onBlur={() => patchPhotoDetails()}
+            checked={
+              currentPhoto?.id == project?.heroImageId ||
+              currentPhoto?.isHeroPhoto
+            }
+            // onChange={(e) => onChange({ isHeroPhoto: e.target.value })} // Change this so that on change it sets project heroImageId...?
+            // onBlur={() => patchPhotoDetails()}
+            onChange={(e) => {
+              //   onChange({ isHeroPhoto: e.target.checked })
+              patchPhotoDetails({
+                ...currentPhoto,
+                isHeroPhoto: e.target.checked,
+              })
+            }}
           />
         }
         label="Hero Photo for Project"

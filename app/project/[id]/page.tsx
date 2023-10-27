@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation'
 import { observer } from 'mobx-react-lite'
 import ProjectModal from '@/components/Modals/ProjectModal'
 import ModelStore from '@/app/stores/modelStore'
+import { v4 as uuidv4 } from 'uuid'
 
 import './style.scss'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
@@ -47,10 +48,12 @@ const DataCollection = observer(() => {
     }
   }, [id])
 
+  useEffect(() => {}, [currentProject])
+
   useEffect(() => {
+    console.log('I got a change in the image')
     if (currentProject?.heroImageId) {
       ModelStore.downloadPhoto(currentProject.heroImageId).then((response) => {
-        console.log(response)
         setHeroPhoto({ photoUrl: response })
       })
     }
@@ -81,7 +84,7 @@ const DataCollection = observer(() => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
-          photo={heroPhoto}
+          photo={heroPhoto.id ? heroPhoto : { id: uuidv4() }}
         />
       )}
       {currentProject && (
@@ -110,7 +113,12 @@ const DataCollection = observer(() => {
                 {!heroPhoto?.photoUrl && (
                   <Image src={PlaceHolderPhoto} alt="project-image" />
                 )}
-                {heroPhoto?.photoUrl && <img src={heroPhoto.photoUrl}></img>}
+                {heroPhoto?.photoUrl && (
+                  <img
+                    style={{ width: '150px', height: '100px' }}
+                    src={heroPhoto.photoUrl}
+                  ></img>
+                )}
                 {!heroPhoto?.photoUrl && (
                   <Button
                     variant="contained"

@@ -19,6 +19,7 @@ import {
 import { useEffect, useState } from 'react'
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import { v4 as uuidv4 } from 'uuid'
 
 const COMFORT_ISSUES = [
   'Drafty',
@@ -164,6 +165,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
+          photo={{ id: uuidv4() }}
         />
       )}
       <ChipManager

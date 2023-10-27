@@ -103,7 +103,8 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
         >
           {photos
             .filter(
-              (image) => roomFilter == 'UNSELECTED' || image.id == roomFilter
+              (image) =>
+                roomFilter == 'UNSELECTED' || image.roomId == roomFilter
             )
             .map((image, i) => (
               <div key={i} style={{ position: 'relative' }}>

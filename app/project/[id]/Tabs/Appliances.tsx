@@ -14,10 +14,10 @@ import WaterHeaterForm from './AppliancesForms/WaterHeaterForm'
 import CooktopForm from './AppliancesForms/CooktopForm'
 import DefaultForm from './AppliancesForms/DefaultForm'
 import { Project, ProjectAppliance } from '@/types/types'
-import { v4 as uuidv4 } from 'uuid'
 import ModelStore from '@/app/stores/modelStore'
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import { v4 as uuidv4 } from 'uuid'
 
 const TYPES = [
   { name: 'HVAC', value: 'hvac' },
@@ -253,6 +253,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
+          photo={{ id: uuidv4() }}
         />
       )}
       <ChipManager
