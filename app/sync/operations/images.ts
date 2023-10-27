@@ -26,6 +26,9 @@ export class ImageSyncOperations {
     }
 
     await SyncAPI.projects._swap(projectID, (proj) => {
+      if (photoDetails.isHeroPhoto) {
+        proj.heroImageId = photoDetails.id
+      }
       proj.images = proj.images ?? []
       proj.images.push(photo)
       return proj
