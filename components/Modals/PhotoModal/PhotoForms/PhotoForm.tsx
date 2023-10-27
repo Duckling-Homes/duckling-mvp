@@ -38,12 +38,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
   const electrical = project.electrical ?? []
 
   async function patchPhotoDetails(updatedPhoto = currentPhoto) {
-    // TODO: Add patch API call
-    console.log('Making a call to patch the photo details')
-    console.log(updatedPhoto)
     if (updatedPhoto) {
-      console.log('MAKEING A PATCH')
-      console.log(updatedPhoto)
       await ModelStore.patchPhotoDetails(project.id!, updatedPhoto)
     }
   }
@@ -181,7 +176,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
         >
           {appliances.map((appliance, i) => (
             <MenuItem key={i} value={appliance.id}>
-              {appliance.name}
+              {appliance.type}
             </MenuItem>
           ))}
         </Select>
@@ -199,7 +194,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
         >
           {electrical.map((electrical_val, i) => (
             <MenuItem key={i} value={electrical_val.id}>
-              {electrical_val.name}
+              {electrical_val.type}
             </MenuItem>
           ))}
         </Select>
@@ -212,10 +207,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
               currentPhoto?.id == project?.heroImageId ||
               currentPhoto?.isHeroPhoto
             }
-            // onChange={(e) => onChange({ isHeroPhoto: e.target.value })} // Change this so that on change it sets project heroImageId...?
-            // onBlur={() => patchPhotoDetails()}
             onChange={(e) => {
-              //   onChange({ isHeroPhoto: e.target.checked })
               patchPhotoDetails({
                 ...currentPhoto,
                 isHeroPhoto: e.target.checked,

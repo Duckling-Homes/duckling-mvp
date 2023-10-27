@@ -106,16 +106,7 @@ export async function getImageById(id: string, organizationContext: string) {
 }
 
 // Delete an image by its ID
-export async function deleteImage(id: string, organizationContext: string) {
-  const image = await prisma.image.findUnique({
-    where: { id },
-    include: { project: true },
-  })
-
-  if (image?.project.organizationId !== organizationContext) {
-    return null
-  }
-
+export async function deleteImage(id: string) {
   return await prisma.image.delete({
     where: { id },
   })

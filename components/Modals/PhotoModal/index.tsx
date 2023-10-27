@@ -4,6 +4,7 @@ import { PhotoDetails, Project } from '@/types/types'
 import { useState } from 'react'
 import PhotoCapture from './PhotoForms/PhotoCapture'
 import PhotoForm from './PhotoForms/PhotoForm'
+import { useEffect } from "react";
 
 const PhotoCaptureModal: React.FC<{
   open: boolean
@@ -12,18 +13,24 @@ const PhotoCaptureModal: React.FC<{
   photo?: PhotoDetails
 }> = ({ open, onClose, project, photo }) => {
   const [currentPhoto, setCurrentPhoto] = useState<PhotoDetails>(photo ?? {})
-
   const handleOnClose = () => {
     setCurrentPhoto({})
     onClose()
   }
+
+  useEffect(() => {
+    setCurrentPhoto(prevPhoto => ({
+      ...prevPhoto,
+      ...(photo ?? {})
+    }));
+  }, [photo]);
 
   function handlePhotoChange(valuesToSet: {
     [key: string]: string | number | boolean | undefined
   }) {
     if (currentPhoto) {
       const updatedPhoto = { ...currentPhoto, ...valuesToSet }
-      setCurrentPhoto(updatedPhoto)
+      setCurrentPhoto(JSON.parse(JSON.stringify(updatedPhoto)))
     }
   }
 
@@ -76,6 +83,7 @@ const PhotoCaptureModal: React.FC<{
             <PhotoCapture
               project={project}
               onChange={handlePhotoChange}
+              photo={currentPhoto}
             ></PhotoCapture>
           )}
           {currentPhoto.photoUrl && (
