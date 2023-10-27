@@ -76,21 +76,28 @@ export class ImageSyncOperations {
       method: 'PATCH',
       body: JSON.stringify(photoDetails),
     })
-
+    console.log('Axel about to call swap')
     await SyncAPI.projects._swap(projectID, (proj) => {
-      if (photoDetails.isHeroPhoto) {
-        console.log('Im updating the hero image to')
-        console.log(photoDetails.id)
-        proj.heroImageId = photoDetails.id
-      }
+      const newHeroImageId = photoDetails.isHeroPhoto
+        ? photoDetails.id
+        : proj.heroImageId
+
+      console.log('Axel new hero image id: ', newHeroImageId)
+
       const idx = proj.images?.findIndex(
         (image) => image.id === photoDetails.id
       )
-      if (idx) {
-        proj.images?.splice(idx, 1)
+      const newImages = proj.images ? [...proj.images] : []
+      if (idx !== undefined && idx !== -1) {
+        newImages.splice(idx, 1)
       }
-      proj.images?.push(photoDetails)
-      return proj
+      newImages.push(photoDetails)
+
+      return {
+        ...proj,
+        heroImageId: newHeroImageId,
+        images: newImages,
+      }
     })
 
     return photoDetails
