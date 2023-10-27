@@ -1,24 +1,18 @@
 'use client'
 
 import ChipManager from '@/components/ChipManager'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Button,
-} from '@mui/material'
-import { useEffect, useState } from 'react'
-import InsulationForm from './EnvelopesForms/InsulationForm'
-import AirSealingForm from './EnvelopesForms/AirSealingForm'
-import { Project, ProjectEnvelope } from '@/types/types'
-import ModelStore from '@/app/stores/modelStore'
-import { toJS } from 'mobx'
-import { observer } from 'mobx-react-lite'
-import { v4 } from 'uuid'
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { useEffect, useState } from 'react';
+import InsulationForm from './EnvelopesForms/InsulationForm';
+import AirSealingForm from './EnvelopesForms/AirSealingForm';
+import { Project, ProjectEnvelope } from '@/types/types';
+import ModelStore from '@/app/stores/modelStore';
+import { toJS } from 'mobx';
+import { observer } from 'mobx-react-lite';
+import { SelectInput } from '@/components/Inputs';
+import { v4 } from 'uuid';
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
-import { v4 as uuidv4 } from 'uuid'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { Button } from '@mui/material';
 
 interface EnvelopeProps {
   currentProject: Project
@@ -26,8 +20,8 @@ interface EnvelopeProps {
 
 const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   const [envelopes, setEnvelopes] = useState<ProjectEnvelope[]>([])
-  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>()
   const [openCamera, setOpenCamera] = useState<boolean>(false)
+  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>()
 
   useEffect(() => {
     if (currentProject && currentProject.envelopes) {
@@ -125,8 +119,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
         return envelope
       })
       setEnvelopes(updatedEnvelopes)
-      setCurrentEnvelope(response)
-      console.log(response)
     }
   }
 
@@ -154,76 +146,64 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        padding: '32px',
-        gap: '32px',
-      }}
-    >
-      {currentProject && (
-        <PhotoCaptureModal
-          open={openCamera}
-          project={currentProject}
-          onClose={() => setOpenCamera(false)}
-          photo={{ id: uuidv4() }}
-        />
-      )}
-      <ChipManager
-        onCreate={createEnvelope}
-        onDelete={deleteEnvelope}
-        chips={envelopes}
-        currentChip={currentEnvelope?.id || ''}
-        chipType="Envelope"
-        onChipClick={(i: number) => {
-          console.log(toJS(envelopes[i]))
-          setCurrentEnvelope(envelopes[i])
-        }}
-      />
+    <>
       <div
         style={{
-          width: '100%',
+          display: 'flex',
+          padding: '32px',
+          gap: '32px',
         }}
       >
-        {currentEnvelope?.id && (
-          <form
+        <ChipManager
+          onCreate={createEnvelope}
+          onDelete={deleteEnvelope}
+          chips={envelopes}
+          currentChip={currentEnvelope?.id || ''}
+          chipType="Envelope"
+          onChipClick={(i: number) => {
+            console.log(toJS(envelopes[i]))
+            setCurrentEnvelope(envelopes[i])
+          }}
+        />
+        {currentEnvelope && (
+          <PhotoCaptureModal
+            open={openCamera}
+            project={currentProject}
+            onClose={() => setOpenCamera(false)}
+            photo={{ envelopeId: currentEnvelope?.id }}
+          />
+        )}
+        <div
+          style={{
+            width: '100%',
+          }}
+        >
+          {currentEnvelope?.id && <form
             style={{
               display: 'flex',
               flexDirection: 'column',
               gap: '16px',
             }}
           >
-            <FormControl fullWidth>
-              <InputLabel id="envelope-type-label">Type</InputLabel>
-              <Select
-                labelId="envelope-type-label"
-                id="envelope-type-select"
-                label="Type"
-                value={currentEnvelope?.type}
-                disabled={currentEnvelope?.type ? true : false}
-                onChange={(e) => handleTypeChange(e.target.value)}
-              >
-                <MenuItem value={''} disabled={true}>
-                  Select Type
-                </MenuItem>
-                <MenuItem value={'Insulation'}>Insulation</MenuItem>
-                <MenuItem value={'AirSealing'}>Air Sealing</MenuItem>
-              </Select>
-            </FormControl>
+            <SelectInput
+              label="Type"
+              value={currentEnvelope?.type || ''}
+              onChange={(value) => handleTypeChange(value)}
+              disabled={currentEnvelope?.type ? true : false}
+              options={['Insulation', 'AirSealing']}
+            />
             {renderForm()}
-            {currentEnvelope?.type && (
-              <Button
-                variant="contained"
-                startIcon={<CameraAltOutlinedIcon />}
-                onClick={() => setOpenCamera(true)}
-              >
-                Add Photo
-              </Button>
-            )}
-          </form>
-        )}
+            <Button
+              variant="contained"
+              startIcon={<CameraAltOutlinedIcon />}
+              onClick={() => setOpenCamera(true)}
+            >
+              Add Photo
+            </Button>
+          </form>}
+        </div>
       </div>
-    </div>
+    </>
   )
 })
 

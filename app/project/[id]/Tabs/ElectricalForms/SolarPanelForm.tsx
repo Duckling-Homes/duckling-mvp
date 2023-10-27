@@ -1,13 +1,9 @@
 'use client'
 
-import { ProjectElectrical } from '@/types/types'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { SelectInput, TextInput } from "@/components/Inputs";
+import DatePickerInput from "@/components/Inputs/DatePickerInput";
+import { ProjectElectrical } from "@/types/types";
+import dayjs from "dayjs";
 
 const LOCATIONS = ['Roof', 'Ground', 'Other']
 
@@ -42,173 +38,103 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
   return (
     <>
       {/* Location */}
-      <FormControl fullWidth>
-        <InputLabel id="location-label">Location</InputLabel>
-        <Select
-          labelId="location-label"
-          id="location-select"
-          label="Location"
-          value={currentElectrical?.location}
-          onChange={(e) => onChange('location', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          {LOCATIONS.map((location, i) => (
-            <MenuItem key={i} value={location}>
-              {location}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Location"
+        value={currentElectrical?.location || ''}
+        onChange={(value) => onChange('location', value)}
+        onBlur={onUpdate}
+        options={LOCATIONS}
+      />
       {/* Ownership */}
-      <FormControl fullWidth>
-        <InputLabel id="ownership-label">Ownership</InputLabel>
-        <Select
-          labelId="ownership-label"
-          id="ownership-select"
-          label="Ownership"
-          value={currentElectrical?.ownership}
-          onChange={(e) => onChange('ownership', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          {OWNERSHIPS.map((ownership, i) => (
-            <MenuItem key={i} value={ownership}>
-              {ownership}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Ownership"
+        value={currentElectrical?.ownership || ''}
+        onChange={(value) => onChange('ownership', value)}
+        onBlur={onUpdate}
+        options={OWNERSHIPS}
+      />
       {/* Module Type */}
-      <FormControl fullWidth>
-        <InputLabel id="module-type-label">Module Type</InputLabel>
-        <Select
-          labelId="module-type-label"
-          id="module-type-select"
-          label="Module Type"
-          value={currentElectrical?.moduleType}
-          onChange={(e) => onChange('moduleType', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          {MODULE_TYPES.map((type, i) => (
-            <MenuItem key={i} value={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Module Type"
+        value={currentElectrical?.moduleType || ''}
+        onChange={(value) => onChange('moduleType', value)}
+        onBlur={onUpdate}
+        options={MODULE_TYPES}
+      />
       {/* Tracking */}
-      <FormControl fullWidth>
-        <InputLabel id="tracking-label">Tracking</InputLabel>
-        <Select
-          labelId="tracking-label"
-          id="tracking-select"
-          label="Tracking"
-          value={currentElectrical?.tracking}
-          onChange={(e) => onChange('tracking', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          {TRACKINGS.map((tracking, i) => (
-            <MenuItem key={i} value={tracking}>
-              {tracking}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Tracking"
+        value={currentElectrical?.tracking || ''}
+        onChange={(value) => onChange('tracking', value)}
+        onBlur={onUpdate}
+        options={TRACKINGS}
+      />
       {/* Orientation */}
-      <FormControl fullWidth>
-        <InputLabel id="orientation-label">Orientation</InputLabel>
-        <Select
-          labelId="orientation-label"
-          id="orientation-select"
-          label="Orientation"
-          value={currentElectrical?.arrayOrientation}
-          onChange={(e) => onChange('arrayOrientation', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          {ORIENTATIONS.map((orientation, i) => (
-            <MenuItem key={i} value={orientation}>
-              {orientation}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Orientation"
+        value={currentElectrical?.arrayOrientation || ''}
+        onChange={(value) => onChange('arrayOrientation', value)}
+        onBlur={onUpdate}
+        options={ORIENTATIONS}
+      />
       {/* Tilt */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Tilt"
-          variant="outlined"
-          placeholder="Tilt"
-          type="number"
-          value={currentElectrical?.arrayTilt}
-          onChange={(e) => onChange('arrayTilt', parseInt(e.target.value))}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Tilt"
+        placeholder="Tilt"
+        type="tel"
+        value={currentElectrical?.arrayTilt || ''}
+        onChange={(value) => onChange('arrayTilt', parseInt(value))}
+        onBlur={onUpdate}
+        endAdornment='Degrees'
+      />
       {/* Max Output */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Max Output"
-          variant="outlined"
-          placeholder="Max Output"
-          type="number"
-          value={currentElectrical?.maxPowerOutput}
-          onChange={(e) => onChange('maxPowerOutput', parseInt(e.target.value))}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
-      {/* Number of Panels */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Number of Panels"
-          variant="outlined"
-          placeholder="Number of Panels"
-          type="text"
-          value={currentElectrical?.numberOfPanels}
-          onChange={(e) => onChange('numberOfPanels', parseInt(e.target.value))}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Max Output"
+        placeholder="Max Output"
+        type="tel"
+        value={currentElectrical?.maxPowerOutput || ''}
+        onChange={(value) => onChange('maxPowerOutput', parseInt(value))}
+        onBlur={onUpdate}
+        endAdornment='DC Watts'
+      />
+      {/* Number of Panels */} 
+      <TextInput
+        label="Number of Panels"
+        placeholder="Number of Panels"
+        type="tel"
+        value={currentElectrical?.numberOfPanels || ''}
+        onChange={(value) => onChange('numberOfPanels', parseInt(value))}
+        onBlur={onUpdate}
+      />
       {/* Year Installed */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Year Installed"
-          variant="outlined"
-          placeholder="Year Installed"
-          type="text"
-          value={currentElectrical?.yearInstalled}
-          onChange={(e) => onChange('yearInstalled', parseInt(e.target.value))}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <DatePickerInput
+        label="Year Installed"
+        onChange={(e) => {
+          onChange('yearInstalled', e!.year());
+          onUpdate();
+        }}
+        value={currentElectrical && typeof currentElectrical.yearInstalled === 'number' ? dayjs(new Date(currentElectrical.yearInstalled, 0)) : dayjs()}
+        maxDate={dayjs()}
+      />
       {/* Annual Output */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Annual Output"
-          variant="outlined"
-          placeholder="Annual Output"
-          type="number"
-          value={currentElectrical?.annualOutput}
-          onChange={(e) => onChange('annualOutput', parseInt(e.target.value))}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Annual Output"
+        placeholder="Annual Output"
+        type="tel"
+        value={currentElectrical?.annualOutput || ''}
+        onChange={(value) => onChange('annualOutput', parseInt(value))}
+        onBlur={onUpdate}
+        endAdornment='kWh'
+      />
       {/* Notes */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Notes"
-          variant="outlined"
-          placeholder="Notes"
-          type="text"
-          value={currentElectrical?.notes}
-          onChange={(e) => onChange('notes', e.target.value)}
-          onBlur={() => onUpdate()}
-        />
-      </FormControl>
+      <TextInput
+        label="Notes"
+        placeholder="Notes"
+        value={currentElectrical?.notes || ''}
+        onChange={(value) => onChange('notes', value)}
+        onBlur={onUpdate}
+        multiline={true}
+      />
     </>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Button, Tab, Tabs } from '@mui/material'
+import { Button, ButtonGroup, Tab, Tabs } from '@mui/material'
 import { CalendarMonth, Delete, Edit, Home, Person } from '@mui/icons-material'
 import Image from 'next/image'
 import { Container } from '@/components/Container'
@@ -26,6 +26,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import './style.scss'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import dayjs from 'dayjs'
 
 const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false)
@@ -84,7 +85,7 @@ const DataCollection = observer(() => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
-          photo={heroPhoto.id ? heroPhoto : { id: uuidv4() }}
+          photo={{isHeroPhoto: true}}
         />
       )}
       {currentProject && (
@@ -143,7 +144,7 @@ const DataCollection = observer(() => {
                   <span className="dataCollection__info">
                     {/* TODO: make this beautiful */}
                     <CalendarMonth />
-                    {currentProject?.createdAt}
+                    {dayjs(currentProject?.createdAt).format('MMMM D, YYYY')}
                   </span>
                 </div>
               </div>
@@ -177,13 +178,14 @@ const DataCollection = observer(() => {
               style={{
                 padding: '8px 24px 16px 24px',
                 display: 'flex',
-                gap: '24px',
                 justifyContent: 'center',
               }}
             >
-              <Button variant="outlined">Home Info</Button>
-              <Button variant="outlined">Plans</Button>
-              <Button variant="outlined">Present</Button>
+              <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                <Button>Home Info</Button>
+                <Button>Plans</Button>
+                <Button>Present</Button>
+              </ButtonGroup>
             </div>
             {currentProject ? (
               <div>

@@ -1,15 +1,15 @@
 'use client'
 
-import { ProjectAppliance } from '@/types/types'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { SelectInput, TextInput } from "@/components/Inputs";
+import { ProjectAppliance } from "@/types/types";
 
-const FUEL = ['Electricity', 'Natural Gas', 'Propane', 'Fuel Oil', 'Other']
+const FUEL = [
+  "Electricity",
+  "Natural Gas",
+  "Propane",
+  "Fuel Oil",
+  "Other",
+];
 
 interface DefaultFormProps {
   onChange: (key: string, value: string | number | boolean) => void
@@ -25,101 +25,64 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
   return (
     <>
       {/* manufacturer */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Manufacturer"
-          variant="outlined"
-          placeholder="Manufacturer"
-          type="text"
-          onChange={(e) => onChange('manufacturer', e.target.value)}
-          onBlur={() => onUpdate()}
-          value={currentAppliance?.manufacturer}
-        />
-      </FormControl>
+      <TextInput
+        label="Manufacturer"
+        placeholder="Manufacturer"
+        onChange={(value) => onChange('manufacturer', value)}
+        onBlur={() => onUpdate()}
+        value={currentAppliance?.manufacturer || ''}
+      />
       {/* model number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Model Number"
-          variant="outlined"
-          placeholder="Model Number"
-          type="text"
-          onChange={(e) => onChange('modelNumber', e.target.value)}
-          onBlur={() => onUpdate()}
-          value={currentAppliance?.modelNumber}
-        />
-      </FormControl>
+      <TextInput
+        label="Model Number"
+        placeholder="Model Number"
+        onChange={(value) => onChange('modelNumber', value)}
+        onBlur={() => onUpdate()}
+        value={currentAppliance?.modelNumber || ''}
+      />
       {/* serial number */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Serial Number"
-          variant="outlined"
-          placeholder="Serial Number"
-          type="text"
-          onChange={(e) => onChange('serialNumber', e.target.value)}
-          onBlur={() => onUpdate()}
-          value={currentAppliance?.serialNumber}
-        />
-      </FormControl>
+      <TextInput
+        label="Serial Number"
+        placeholder="Serial Number"
+        onChange={(value) => onChange('serialNumber', value)}
+        onBlur={() => onUpdate()}
+        value={currentAppliance?.serialNumber || ''}
+      />
       {/* fuel */}
-      <FormControl fullWidth>
-        <InputLabel id="fuel-label">Fuel</InputLabel>
-        <Select
-          labelId="fuel-label"
-          id="fuel-select"
-          label="Fuel"
-          onChange={(e) => onChange('fuel', e.target.value)}
-          onBlur={() => onUpdate()}
-          value={currentAppliance?.fuel}
-        >
-          {FUEL.map((fuel, i) => (
-            <MenuItem key={i} value={fuel}>
-              {fuel}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <SelectInput
+        label="Fuel"
+        value={currentAppliance?.fuel || ''}
+        onChange={(value) => onChange('fuel', value)}
+        onBlur={onUpdate}
+        options={FUEL}
+      />
       {/* age */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Age"
-          variant="outlined"
-          placeholder="Age"
-          type="number"
-          onChange={(e) => onChange('age', parseInt(e.target.value))}
-          onBlur={() => onUpdate()}
-          value={currentAppliance?.age}
-        />
-      </FormControl>
+      <TextInput
+        label="Age"
+        placeholder="Age"
+        type="tel"
+        onChange={(value) => onChange('age', parseInt(value))}
+        onBlur={() => onUpdate()}
+        value={currentAppliance?.age || ''}
+        endAdornment='Years'
+      />
       {/* location */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Location"
-          variant="outlined"
-          placeholder="Location"
-          type="text"
-          onChange={(e) => onChange('location', e.target.value)}
-          onBlur={() => onUpdate()}
-          value={currentAppliance?.location}
-        />
-      </FormControl>
+      <TextInput
+        label="Location"
+        placeholder="Location"
+        onChange={(value) => onChange('location', value)}
+        onBlur={() => onUpdate()}
+        value={currentAppliance?.location || ''}
+      />
       {/* notes */}
-      <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Notes"
-          variant="outlined"
-          placeholder="Notes"
-          type="text"
-          onChange={(e) => onChange('notes', e.target.value)}
-          onBlur={() => onUpdate()}
-          value={currentAppliance?.notes}
-        />
-      </FormControl>
+      <TextInput
+        label="Notes"
+        placeholder="Notes"
+        onChange={(value) => onChange('notes', value)}
+        onBlur={() => onUpdate()}
+        value={currentAppliance?.notes || ''}
+        multiline={true}
+      />
     </>
   )
 }

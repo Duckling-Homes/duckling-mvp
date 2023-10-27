@@ -1,13 +1,7 @@
 'use client'
 
-import { ProjectEnvelope } from '@/types/types'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { SelectInput, TextInput } from '@/components/Inputs';
+import { ProjectEnvelope } from '@/types/types';
 
 interface InsulationFormProps {
   onChange: (inputName: string, value: string) => void
@@ -15,71 +9,54 @@ interface InsulationFormProps {
   currentEnvelope: ProjectEnvelope
 }
 
-const InsulationForm: React.FC<InsulationFormProps> = ({
-  onChange,
-  currentEnvelope,
-  onUpdate,
-}) => {
+const LOCATIONS = [
+  { name: 'Attic', value: 'attic' },
+  { name: 'Basement', value: 'basement' },
+  { name: 'Crawlspace', value: 'crawlspace' },
+  { name: 'Wall', value: 'wall' },
+  { name: 'Floor', value: 'floor' },
+  { name: 'Other', value: 'other' },
+]
+
+const CONDITIONS = [
+  { name: 'None', value: 'none' },
+  { name: 'Good', value: 'good' },
+  { name: 'Fair', value: 'fair' },
+  { name: 'Poor', value: 'poor' },
+]
+
+const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelope, onUpdate }) => {
+
   return (
     <>
-      <TextField
-        id="outlined-basic"
+      <TextInput
         label="Name"
-        value={currentEnvelope?.name}
-        onChange={(e) => onChange('name', e.target.value)}
-        onBlur={() => onUpdate()}
-        variant="outlined"
         placeholder="Name"
-        fullWidth
+        value={currentEnvelope?.name || ''}
+        onChange={(value) => onChange('name', value)}
+        onBlur={onUpdate}
       />
-      <FormControl fullWidth>
-        <InputLabel id="insolation-location-label">
-          Insulation Location
-        </InputLabel>
-        <Select
-          labelId="insolation-location-label"
-          id="insolation-location-select"
-          label="Insulation Location"
-          value={currentEnvelope?.insulationLocation}
-          onChange={(e) => onChange('insulationLocation', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          <MenuItem value={'attic'}>Attic</MenuItem>
-          <MenuItem value={'basement'}>Basement</MenuItem>
-          <MenuItem value={'crawlspace'}>Crawlspace</MenuItem>
-          <MenuItem value={'wall'}>Wall</MenuItem>
-          <MenuItem value={'floor'}>Floor</MenuItem>
-          <MenuItem value={'other'}>Other</MenuItem>
-        </Select>
-      </FormControl>
-      <FormControl fullWidth>
-        <InputLabel id="leakiness-description-label">
-          Insulation Condition
-        </InputLabel>
-        <Select
-          labelId="insulation-condition-label"
-          id="insulatiom-condition-select"
-          label="Insulation Condition"
-          value={currentEnvelope?.insulationCondition}
-          onChange={(e) => onChange('insulationCondition', e.target.value)}
-          onBlur={() => onUpdate()}
-        >
-          <MenuItem value={'none'}>None</MenuItem>
-          <MenuItem value={'good'}>Good</MenuItem>
-          <MenuItem value={'fair'}>Fair</MenuItem>
-          <MenuItem value={'poor'}>Poor</MenuItem>
-        </Select>
-      </FormControl>
-      <TextField
-        id="outlined-basic"
+      <SelectInput
+        label="Insulation Location"
+        value={currentEnvelope?.insulationLocation || ''}
+        onChange={(value) => onChange('insulationLocation', value)}
+        onBlur={onUpdate}
+        options={LOCATIONS}
+      />
+      <SelectInput
+        label="Insulation Condition"
+        value={currentEnvelope?.insulationCondition || ''}
+        onChange={(value) => onChange('insulationCondition', value)}
+        onBlur={onUpdate}
+        options={CONDITIONS}
+      />
+      <TextInput
         label="User Notes"
-        variant="outlined"
-        value={currentEnvelope?.notes}
-        onChange={(e) => onChange('notes', e.target.value)}
-        onBlur={() => onUpdate()}
         placeholder="User Notes"
-        fullWidth
-        multiline
+        value={currentEnvelope?.notes || ''}
+        onChange={(value) => onChange('notes', value)}
+        onBlur={onUpdate}
+        multiline={true}
       />
     </>
   )

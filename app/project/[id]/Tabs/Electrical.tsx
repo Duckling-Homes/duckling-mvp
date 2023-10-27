@@ -1,26 +1,20 @@
 'use client'
 
-// import ChipManager from "@/components/ChipManager";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Button,
-} from '@mui/material'
-import { useEffect, useState } from 'react'
-import ElectricalPanelForm from './ElectricalForms/ElectricalPanelForm'
-import SolarPanelForm from './ElectricalForms/SolarPanelForm'
-import BatteryForm from './ElectricalForms/BatteryForm'
-import EVChargerForm from './ElectricalForms/EVChargerForm'
-import GeneratorForm from './ElectricalForms/GeneratorForm'
-import ChipManager from '@/components/ChipManager'
-import { Project, ProjectElectrical } from '@/types/types'
-import { v4 as uuidv4 } from 'uuid'
-import ModelStore from '@/app/stores/modelStore'
-import { observer } from 'mobx-react-lite'
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { useEffect, useState } from "react";
+import ElectricalPanelForm from "./ElectricalForms/ElectricalPanelForm";
+import SolarPanelForm from "./ElectricalForms/SolarPanelForm";
+import BatteryForm from "./ElectricalForms/BatteryForm";
+import EVChargerForm from "./ElectricalForms/EVChargerForm";
+import GeneratorForm from "./ElectricalForms/GeneratorForm";
+import ChipManager from "@/components/ChipManager";
+import { Project, ProjectElectrical } from "@/types/types";
+import { v4 as uuidv4 } from 'uuid';
+import ModelStore from "@/app/stores/modelStore";
+import { observer } from "mobx-react-lite";
+import { SelectInput } from "@/components/Inputs";
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { Button } from "@mui/material";
 
 const TYPES = [
   { name: 'Electrical Panel', value: 'electricalpanel' },
@@ -153,7 +147,9 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     setCurrentElectrical(newElectricalsList[0] || {})
   }
 
-  async function patchElectrical(updatedElectrical = currentElectrical) {
+  async function patchElectrical() {
+    const updatedElectrical = {...currentElectrical}
+
     if (!updatedElectrical?.type) {
       return
     }
@@ -173,8 +169,6 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       })
 
       setElectricals(updatedElectricals)
-      setCurrentElectrical(response)
-      console.log(response)
     }
   }
 
@@ -246,14 +240,6 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
         gap: '32px',
       }}
     >
-      {currentProject && (
-        <PhotoCaptureModal
-          open={openCamera}
-          project={currentProject}
-          onClose={() => setOpenCamera(false)}
-          photo={{ id: uuidv4() }}
-        />
-      )}
       <ChipManager
         onDelete={deleteElectrical}
         onCreate={createElectrical}
@@ -262,51 +248,39 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
         currentChip={currentElectrical?.id || ''}
         onChipClick={(i: number) => setCurrentElectrical(electricals[i])}
       />
-      {currentElectrical?.id && (
-        <div
-          style={{
-            width: '100%',
-          }}
-        >
-          <form
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <FormControl fullWidth>
-              <InputLabel id="type-label">Type</InputLabel>
-              <Select
-                labelId="type-label"
-                id="type-select"
-                label="Type"
-                value={currentElectrical?.type?.toLowerCase()}
-                onChange={({ target }) =>
-                  handleTypeChange('type', target.value)
-                }
-                disabled={currentElectrical?.type ? true : false}
-              >
-                {TYPES.map((type, i) => (
-                  <MenuItem key={i} value={type.value}>
-                    {type.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {renderForm()}
-            {currentElectrical?.type && (
-              <Button
-                variant="contained"
-                startIcon={<CameraAltOutlinedIcon />}
-                onClick={() => setOpenCamera(true)}
-              >
-                Add Photo
-              </Button>
-            )}
-          </form>
-        </div>
+      {currentElectrical && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+          photo={{ electricalId: currentElectrical?.id }}
+        />
       )}
+     {currentElectrical?.id && <div style={{
+        width: '100%',
+      }}>
+        <form style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}>
+          <SelectInput
+            label="Type"
+            value={currentElectrical?.type?.toLowerCase() || ''}
+            onChange={(value) => handleTypeChange('type', value)}
+            disabled={currentElectrical?.type ? true : false}
+            options={TYPES}
+          />
+          {renderForm()}
+          <Button
+            variant="contained"
+            startIcon={<CameraAltOutlinedIcon />}
+            onClick={() => setOpenCamera(true)}
+          >
+            Add Photo
+          </Button>
+        </form>
+      </div>}
     </div>
   )
 })

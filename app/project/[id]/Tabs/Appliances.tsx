@@ -1,23 +1,18 @@
 'use client'
 
-import ChipManager from '@/components/ChipManager'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Button,
-} from '@mui/material'
-import { useEffect, useState } from 'react'
-import HVACForm from './AppliancesForms/HVACForm'
-import WaterHeaterForm from './AppliancesForms/WaterHeaterForm'
-import CooktopForm from './AppliancesForms/CooktopForm'
-import DefaultForm from './AppliancesForms/DefaultForm'
-import { Project, ProjectAppliance } from '@/types/types'
-import ModelStore from '@/app/stores/modelStore'
+import ChipManager from "@/components/ChipManager";
+import { useEffect, useState } from "react";
+import HVACForm from "./AppliancesForms/HVACForm";
+import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
+import CooktopForm from "./AppliancesForms/CooktopForm";
+import DefaultForm from "./AppliancesForms/DefaultForm";
+import { Project, ProjectAppliance } from "@/types/types";
+import { v4 as uuidv4 } from 'uuid';
+import ModelStore from "@/app/stores/modelStore";
+import { SelectInput } from "@/components/Inputs";
+import { Button } from "@mui/material";
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
-import { v4 as uuidv4 } from 'uuid'
 
 const TYPES = [
   { name: 'HVAC', value: 'hvac' },
@@ -157,7 +152,8 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     setCurrentAppliance(appliance)
   }
 
-  async function patchAppliance(updatedAppliance = currentAppliance) {
+  async function patchAppliance() {
+    const updatedAppliance = currentAppliance
     let api = ''
     console.log(updatedAppliance)
 
@@ -204,7 +200,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'hvac':
         return (
           <HVACForm
-            onUpdate={patchAppliance}
+            onUpdate={() => patchAppliance()}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -212,7 +208,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'waterheater':
         return (
           <WaterHeaterForm
-            onUpdate={patchAppliance}
+            onUpdate={() => patchAppliance()}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -220,7 +216,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'cooktop':
         return (
           <CooktopForm
-            onUpdate={patchAppliance}
+            onUpdate={() => patchAppliance()}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -229,7 +225,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         if (currentAppliance?.type) {
           return (
             <DefaultForm
-              onUpdate={patchAppliance}
+              onUpdate={() => patchAppliance()}
               onChange={handleInputChange}
               currentAppliance={currentAppliance}
             />
@@ -248,14 +244,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         gap: '32px',
       }}
     >
-      {currentProject && (
-        <PhotoCaptureModal
-          open={openCamera}
-          project={currentProject}
-          onClose={() => setOpenCamera(false)}
-          photo={{ id: uuidv4() }}
-        />
-      )}
       <ChipManager
         onDelete={deleteAppliance}
         onCreate={createAppliance}
@@ -264,51 +252,41 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         currentChip={currentAppliance?.id || ''}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
-      {currentAppliance?.id && (
-        <div
-          style={{
-            width: '100%',
-          }}
-        >
-          <form
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <FormControl fullWidth>
-              <InputLabel id="type-label">Type</InputLabel>
-              <Select
-                labelId="type-label"
-                id="type-select"
-                label="Type"
-                disabled={currentAppliance?.type ? true : false}
-                value={currentAppliance?.type?.toLowerCase()}
-                onChange={({ target }) =>
-                  handleTypeChange('type', target.value)
-                }
-              >
-                {TYPES.map((type, i) => (
-                  <MenuItem key={i} value={type.value}>
-                    {type.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {renderForm()}
-            {currentAppliance?.type && (
-              <Button
-                variant="contained"
-                startIcon={<CameraAltOutlinedIcon />}
-                onClick={() => setOpenCamera(true)}
-              >
-                Add Photo
-              </Button>
-            )}
-          </form>
-        </div>
+      {currentAppliance && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+          photo={{ applianceId: currentAppliance?.id }}
+        />
       )}
+      {currentAppliance?.id && <div style={{
+        width: '100%',
+      }}>
+        <form style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}>
+          <SelectInput
+            label="Type"
+            value={(currentAppliance?.type)?.toLowerCase() || ''}
+            onChange={(value) => handleTypeChange('type', value)}
+            disabled={currentAppliance?.type ? true : false}
+            options={TYPES}
+          />
+          {renderForm()}
+          {currentAppliance?.type && (
+            <Button
+              variant="contained"
+              startIcon={<CameraAltOutlinedIcon />}
+              onClick={() => setOpenCamera(true)}
+            >
+              Add Photo
+            </Button>
+          )}
+        </form>
+      </div>}
     </div>
   )
 }
