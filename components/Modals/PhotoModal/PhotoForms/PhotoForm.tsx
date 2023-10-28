@@ -10,16 +10,19 @@ import {
   FormControlLabel,
   Button,
 } from '@mui/material'
+import { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { PhotoDetails, Project } from '@/types/types'
 import ModelStore from '@/app/stores/modelStore'
+import { SelectInput, TextInput } from '@/components/Inputs';
 
 interface PhotoFormProps {
   onClose: () => void
   currentPhoto?: PhotoDetails
+  setCurrentPhoto: (photo: PhotoDetails) => void
   project: Project
   onChange: (values: {
     [key: string]: string | number | boolean | undefined
@@ -29,9 +32,12 @@ interface PhotoFormProps {
 const PhotoForm: React.FC<PhotoFormProps> = ({
   onClose,
   currentPhoto,
+  setCurrentPhoto,
   project,
   onChange,
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const rooms = project.rooms ?? []
   const envelopes = project.envelopes ?? []
   const appliances = project.appliances ?? []
@@ -49,6 +55,28 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
     }
     onClose()
   }
+
+  async function duplicatePhoto() {
+    if(currentPhoto) {
+      setIsLoading(true);
+      const duplicate = {
+        ...currentPhoto, 
+        id: undefined, 
+        isHeroPhoto: undefined,
+        name: `${currentPhoto.name} (copy)`
+      }
+
+      try {
+        await ModelStore.createPhotoEntry(project.id!, currentPhoto.photoUrl, duplicate);
+        setCurrentPhoto(duplicate);
+      } catch (error) {
+        console.error("Error duplicating photo", error);
+      }
+      setIsLoading(false);
+    }
+  }
+
+  const ROOMS = rooms.map((room) => ({ name: room.name, value: room.id }));
 
   return (
     <div
@@ -71,7 +99,12 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
         <Button variant="contained" startIcon={<EditOutlinedIcon />}>
           Edit
         </Button>
-        <Button variant="contained" startIcon={<ContentCopyOutlinedIcon />}>
+        <Button 
+          variant="contained" 
+          onClick={duplicatePhoto} 
+          disabled={isLoading} 
+          startIcon={<ContentCopyOutlinedIcon />}
+        > 
           Duplicate
         </Button>
         <Button variant="contained" onClick={deletePhoto}>
@@ -91,41 +124,32 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
       />
       {/* photo name */}
       <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+        <TextInput
           label="Photo Name"
-          variant="outlined"
           placeholder="Photo Name"
-          type="text"
-          onChange={(e) => onChange({ name: e.target.value })}
+          onChange={(value) => onChange({ name: value })}
           onBlur={() => patchPhotoDetails()}
-          value={currentPhoto?.name}
+          value={currentPhoto?.name || ''}
         />
       </FormControl>
       {/* notes for homeowner */}
       <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
-          label="Notes for Homeowner"
-          variant="outlined"
-          placeholder="Enter notes for homeowner"
-          type="text"
-          onChange={(e) => onChange({ homeownerNotes: e.target.value })}
-          onBlur={() => patchPhotoDetails()}
-          value={currentPhoto?.homeownerNotes}
-        />
+        <TextInput
+            label="Notes for Homeowner"
+            placeholder="Enter notes for homeowner"
+            onChange={(value) => onChange({ homeownerNotes: value })}
+            onBlur={() => patchPhotoDetails()}
+            value={currentPhoto?.homeownerNotes || ''}
+          />
       </FormControl>
       {/* internal notes */}
       <FormControl fullWidth>
-        <TextField
-          id="outlined-basic"
+        <TextInput
           label="Internal Notes"
-          variant="outlined"
           placeholder="Enter internal notes"
-          type="text"
-          onChange={(e) => onChange({ internalNotes: e.target.value })}
+          onChange={(value) => onChange({ internalNotes: value })}
           onBlur={() => patchPhotoDetails()}
-          value={currentPhoto?.internalNotes}
+          value={currentPhoto?.internalNotes || ''}
         />
       </FormControl>
       {/* room */}
@@ -139,6 +163,9 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.roomId}
         >
+          <MenuItem value={undefined}>
+            None
+          </MenuItem>
           {rooms.map((room, i) => (
             <MenuItem key={i} value={room.id}>
               {room.name}
@@ -157,6 +184,9 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.envelopeId}
         >
+          <MenuItem value={undefined}>
+            None
+          </MenuItem>
           {envelopes.map((envelope, i) => (
             <MenuItem key={i} value={envelope.id}>
               {envelope.name}
@@ -175,6 +205,9 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.applianceId}
         >
+          <MenuItem value={undefined}>
+            None
+          </MenuItem>
           {appliances.map((appliance, i) => (
             <MenuItem key={i} value={appliance.id}>
               {appliance.type}
@@ -193,6 +226,9 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
           onBlur={() => patchPhotoDetails()}
           value={currentPhoto?.electricalId}
         >
+          <MenuItem value={undefined}>
+            None
+          </MenuItem>
           {electrical.map((electrical_val, i) => (
             <MenuItem key={i} value={electrical_val.id}>
               {electrical_val.type}
