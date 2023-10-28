@@ -80,7 +80,6 @@ export const PATCH = withErrorHandler(
 export const DELETE = withErrorHandler(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
     const orgContext = req.headers.get('organization-context')
-
     // Validate the organization context and image ID
     await isImageInOrganization(params.id, orgContext as string)
 

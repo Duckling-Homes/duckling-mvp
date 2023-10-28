@@ -155,7 +155,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   async function patchAppliance() {
     const updatedAppliance = currentAppliance
     let api = ''
-    console.log(updatedAppliance)
 
     if (updatedAppliance.type) {
       switch (updatedAppliance.type.toLowerCase()) {
@@ -188,7 +187,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     inputName: string,
     value: string | number | boolean
   ) {
-    console.log('inputName')
     if (currentAppliance) {
       const updatedAppliance = { ...currentAppliance, [inputName]: value }
       setCurrentAppliance(updatedAppliance)

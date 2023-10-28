@@ -220,6 +220,11 @@ export class _ModelStore {
     await this.loadProject(projectID)
     return updated
   }
+
+  deletePhoto = async (projectID: string, imageID: string) => {
+    await SyncAPI.images.delete(projectID, imageID)
+    await this.loadProject(projectID)
+  }
 }
 
 const ModelStore = new _ModelStore()

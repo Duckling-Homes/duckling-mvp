@@ -43,10 +43,11 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
     }
   }
 
-  function deletePhoto() {
-    // TODO: Add in API call to delete image and its details
-    console.log('deleteing the photo')
-    onChange({ photoUrl: undefined })
+  async function deletePhoto() {
+    if (currentPhoto?.id) {
+      await ModelStore.deletePhoto(project.id!, currentPhoto.id)
+    }
+    onClose()
   }
 
   return (

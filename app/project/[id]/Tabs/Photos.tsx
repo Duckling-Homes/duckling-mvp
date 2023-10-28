@@ -47,9 +47,8 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
     }
   }, [currentProject])
 
-  const handleDeleteImage = (imageId: string) => {
-    console.log(`deleteing image ${imageId}`)
-    // TODO: Update this to call the delete image API
+  const handleDeleteImage = async (imageId: string) => {
+    await ModelStore.deletePhoto(currentProject.id!, imageId)
   }
 
   return (

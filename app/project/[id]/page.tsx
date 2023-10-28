@@ -49,13 +49,8 @@ const DataCollection = observer(() => {
     }
   }, [id])
 
-  useEffect(() => {
-    console.log('Axel I got a change in the currentProject')
-    console.log('Axel:', JSON.stringify(currentProject?.heroImageId))
-  }, [currentProject])
 
   useEffect(() => {
-    console.log('Axel I got a change in the image')
     if (currentProject?.heroImageId) {
       ModelStore.downloadPhoto(currentProject.heroImageId).then((response) => {
         setHeroPhoto({ photoUrl: response })

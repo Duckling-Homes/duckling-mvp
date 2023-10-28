@@ -84,7 +84,6 @@ export class ProjectSyncOperations {
   }
 
   _swap = async (projectID: string, edit: (project: Project) => Project) => {
-    console.log('IM IN THE SWAP')
     const project = await this.get(projectID)
     const edited = edit(project)
     db.putObject({ id: project.id!, type: 'Project', json: edited })

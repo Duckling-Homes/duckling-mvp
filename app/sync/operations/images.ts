@@ -79,13 +79,10 @@ export class ImageSyncOperations {
       method: 'PATCH',
       body: JSON.stringify(photoDetails),
     })
-    console.log('Axel about to call swap')
     await SyncAPI.projects._swap(projectID, (proj) => {
       const newHeroImageId = photoDetails.isHeroPhoto
         ? photoDetails.id
         : proj.heroImageId
-
-      console.log('Axel new hero image id: ', newHeroImageId)
 
       const idx = proj.images?.findIndex(
         (image) => image.id === photoDetails.id
@@ -104,5 +101,24 @@ export class ImageSyncOperations {
     })
 
     return photoDetails
+  }
+
+  delete = async (projectID: string, imageID: string) => {
+    await db.enqueueRequest(
+      `/api/images/${imageID}`,
+      {method: 'DELETE'}
+    )
+
+    await SyncAPI.projects._swap(projectID, (proj) => {
+      const idx = proj.images?.findIndex((image) => image.id === imageID)
+      if(imageID == proj.heroImageId) {
+        proj.heroImageId = undefined
+      }
+
+      if(idx != undefined) {
+        proj.images?.splice(idx, 1)
+      }
+      return proj
+    })
   }
 }
