@@ -22,7 +22,6 @@ import { useRouter } from 'next/navigation'
 import { observer } from 'mobx-react-lite'
 import ProjectModal from '@/components/Modals/ProjectModal'
 import ModelStore from '@/app/stores/modelStore'
-import { v4 as uuidv4 } from 'uuid'
 
 import './style.scss'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
