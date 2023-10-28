@@ -12,6 +12,9 @@ import { v4 as uuidv4 } from 'uuid';
 import ModelStore from "@/app/stores/modelStore";
 import { observer } from "mobx-react-lite";
 import { SelectInput } from "@/components/Inputs";
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { Button } from "@mui/material";
 
 const TYPES = [
   { name: 'Electrical Panel', value: 'electricalpanel' },
@@ -27,6 +30,7 @@ interface ElectricalProps {
 
 const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
   const [electricals, setElectricals] = useState<ProjectElectrical[]>([])
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentElectrical, setCurrentElectrical] =
     useState<ProjectElectrical>()
 
@@ -244,6 +248,14 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
         currentChip={currentElectrical?.id || ''}
         onChipClick={(i: number) => setCurrentElectrical(electricals[i])}
       />
+      {currentElectrical && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+          photo={{ electricalId: currentElectrical?.id }}
+        />
+      )}
      {currentElectrical?.id && <div style={{
         width: '100%',
       }}>
@@ -260,6 +272,13 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
             options={TYPES}
           />
           {renderForm()}
+          <Button
+            variant="contained"
+            startIcon={<CameraAltOutlinedIcon />}
+            onClick={() => setOpenCamera(true)}
+          >
+            Add Photo
+          </Button>
         </form>
       </div>}
     </div>

@@ -11,6 +11,8 @@ export interface Project {
   appliances?: ProjectAppliance[]
   electrical?: ProjectElectrical[]
   envelopes?: ProjectEnvelope[]
+  images?: PhotoDetails[]
+  heroImageId?: string
 }
 
 export interface ProjectData {

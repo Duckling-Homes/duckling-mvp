@@ -4,8 +4,10 @@ import ModelStore from "@/app/stores/modelStore";
 import ChipManager from "@/components/ChipManager";
 import { SelectInput, TextInput } from "@/components/Inputs";
 import { Project, ProjectRoom } from "@/types/types";
-import { Chip, FormControl, FormGroup, FormLabel, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Button, Chip, FormControl, FormGroup, FormLabel, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useEffect, useState } from "react";
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 
 const COMFORT_ISSUES = [
   'Drafty',
@@ -48,6 +50,7 @@ interface RoomsProps {
 
 const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   const [rooms, setRooms] = useState<ProjectRoom[]>([])
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentRoom, setCurrentRoom] = useState<ProjectRoom>({
     id: '',
     name: '',
@@ -152,6 +155,14 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
         chipType="Room"
         onChipClick={(i: number) => setCurrentRoom(rooms[i])}
       />
+      {currentRoom && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+          photo={{ roomId: currentRoom?.id }}
+        />
+      )}
       <div style={{
         width: '100%',
       }}>
@@ -295,6 +306,13 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
             value={currentRoom?.notes || ''}
             multiline={true}
           />
+          <Button
+            variant="contained"
+            startIcon={<CameraAltOutlinedIcon />}
+            onClick={() => setOpenCamera(true)}
+          >
+            Add Photo
+          </Button>
         </div>
       </form>
       ) : (

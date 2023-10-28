@@ -9,6 +9,7 @@ import {
 import { ProjectRoom, Project, PhotoDetails } from '@/types/types'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import ModelStore from '@/app/stores/modelStore'
 
 interface PhotosTabProps {
   currentProject: Project
@@ -18,15 +19,27 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
   const [rooms, setRooms] = useState<ProjectRoom[]>([])
   const [roomFilter, setRoomFilter] = useState<string>('UNSELECTED')
   const [editPhoto, setEditPhoto] = useState<PhotoDetails>({})
+  const [photos, setPhotos] = useState<PhotoDetails[]>([])
 
-  // TODO: This will be the set of photos on currentProject - and will need to call download for each imageId
-  const photos: PhotoDetails[] = [
-    { id: '1', photoUrl: 'https://picsum.photos/300/200' },
-    { id: '2', photoUrl: 'https://picsum.photos/300/200' },
-    { id: '3', photoUrl: 'https://picsum.photos/300/200' },
-    { id: '4', photoUrl: 'https://picsum.photos/300/200' },
-    { id: '5', photoUrl: 'https://picsum.photos/300/200' },
-  ]
+  useEffect(() => {
+    if (currentProject?.images && currentProject.images.length > 0) {
+      const downloadPromises = currentProject.images.map(
+        (image: PhotoDetails) => {
+          return ModelStore.downloadPhoto(image.id!).then((response) => {
+            return { ...image, photoUrl: response }
+          })
+        }
+      )
+
+      Promise.all(downloadPromises)
+        .then((photos) => {
+          setPhotos(photos)
+        })
+        .catch((error) => {
+          console.error('Failed to download photos:', error)
+        })
+    }
+  }, [currentProject?.images])
 
   useEffect(() => {
     if (currentProject && currentProject.rooms) {
@@ -34,9 +47,8 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
     }
   }, [currentProject])
 
-  const handleDeleteImage = (imageId: string) => {
-    console.log(`deleteing image ${imageId}`)
-    // TODO: Update this to call the delete image API
+  const handleDeleteImage = async (imageId: string) => {
+    await ModelStore.deletePhoto(currentProject.id!, imageId)
   }
 
   return (
@@ -90,7 +102,8 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
         >
           {photos
             .filter(
-              (image) => roomFilter == 'UNSELECTED' || image.id == roomFilter
+              (image) =>
+                roomFilter == 'UNSELECTED' || image.roomId == roomFilter
             )
             .map((image, i) => (
               <div key={i} style={{ position: 'relative' }}>

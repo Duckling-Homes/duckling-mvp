@@ -10,6 +10,9 @@ import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { SelectInput } from '@/components/Inputs';
 import { v4 } from 'uuid';
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { Button } from '@mui/material';
 
 interface EnvelopeProps {
   currentProject: Project
@@ -17,6 +20,7 @@ interface EnvelopeProps {
 
 const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   const [envelopes, setEnvelopes] = useState<ProjectEnvelope[]>([])
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>()
 
   useEffect(() => {
@@ -161,6 +165,14 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
             setCurrentEnvelope(envelopes[i])
           }}
         />
+        {currentEnvelope && (
+          <PhotoCaptureModal
+            open={openCamera}
+            project={currentProject}
+            onClose={() => setOpenCamera(false)}
+            photo={{ envelopeId: currentEnvelope?.id }}
+          />
+        )}
         <div
           style={{
             width: '100%',
@@ -181,6 +193,13 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
               options={['Insulation', 'AirSealing']}
             />
             {renderForm()}
+            <Button
+              variant="contained"
+              startIcon={<CameraAltOutlinedIcon />}
+              onClick={() => setOpenCamera(true)}
+            >
+              Add Photo
+            </Button>
           </form>}
         </div>
       </div>

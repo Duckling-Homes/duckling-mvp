@@ -10,6 +10,9 @@ import { Project, ProjectAppliance } from "@/types/types";
 import { v4 as uuidv4 } from 'uuid';
 import ModelStore from "@/app/stores/modelStore";
 import { SelectInput } from "@/components/Inputs";
+import { Button } from "@mui/material";
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 
 const TYPES = [
   { name: 'HVAC', value: 'hvac' },
@@ -28,6 +31,7 @@ interface AppliancesProps {
 
 const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   const appliances = currentProject.appliances ?? []
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({
     id: '',
     name: '',
@@ -151,7 +155,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   async function patchAppliance() {
     const updatedAppliance = currentAppliance
     let api = ''
-    console.log(updatedAppliance)
 
     if (updatedAppliance.type) {
       switch (updatedAppliance.type.toLowerCase()) {
@@ -184,7 +187,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     inputName: string,
     value: string | number | boolean
   ) {
-    console.log('inputName')
     if (currentAppliance) {
       const updatedAppliance = { ...currentAppliance, [inputName]: value }
       setCurrentAppliance(updatedAppliance)
@@ -248,6 +250,14 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         currentChip={currentAppliance?.id || ''}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
+      {currentAppliance && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+          photo={{ applianceId: currentAppliance?.id }}
+        />
+      )}
       {currentAppliance?.id && <div style={{
         width: '100%',
       }}>
@@ -264,6 +274,15 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
             options={TYPES}
           />
           {renderForm()}
+          {currentAppliance?.type && (
+            <Button
+              variant="contained"
+              startIcon={<CameraAltOutlinedIcon />}
+              onClick={() => setOpenCamera(true)}
+            >
+              Add Photo
+            </Button>
+          )}
         </form>
       </div>}
     </div>

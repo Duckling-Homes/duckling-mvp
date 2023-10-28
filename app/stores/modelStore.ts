@@ -1,5 +1,6 @@
 import {
   Organization,
+  PhotoDetails,
   Project,
   ProjectAppliance,
   ProjectData,
@@ -51,6 +52,7 @@ export class _ModelStore {
   }
 
   loadProject = async (projectID: string) => {
+    console.log('loading')
     const project = await SyncAPI.projects.get(projectID)
     if (this.currentProject?.id === projectID) {
       this.currentProject = project
@@ -192,6 +194,35 @@ export class _ModelStore {
     electricalID: string
   ) => {
     await SyncAPI.electrical.delete(projectID, electricalType, electricalID)
+    await this.loadProject(projectID)
+  }
+
+  createPhotoEntry = async (
+    projectID: string,
+    imgDataUrl: string,
+    photoDetails: PhotoDetails
+  ) => {
+    const created = await SyncAPI.images.create(
+      projectID,
+      imgDataUrl,
+      photoDetails
+    )
+    await this.loadProject(projectID)
+    return created
+  }
+
+  downloadPhoto = async (imageID: string) => {
+    return await SyncAPI.images.download(imageID)
+  }
+
+  patchPhotoDetails = async (projectID: string, photoDetails: PhotoDetails) => {
+    const updated = await SyncAPI.images.update(projectID, photoDetails)
+    await this.loadProject(projectID)
+    return updated
+  }
+
+  deletePhoto = async (projectID: string, imageID: string) => {
+    await SyncAPI.images.delete(projectID, imageID)
     await this.loadProject(projectID)
   }
 }

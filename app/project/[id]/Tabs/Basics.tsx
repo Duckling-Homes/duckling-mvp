@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import ModelStore from '@/app/stores/modelStore'
-import { AddPhotoAlternate } from '@mui/icons-material'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import {
   Button,
   Divider,
@@ -11,6 +11,7 @@ import { Project, ProjectData } from "@/types/types";
 import dayjs from "dayjs";
 import { SelectInput, TextInput } from "@/components/Inputs";
 import DatePickerInput from "@/components/Inputs/DatePickerInput";
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 
 interface BasicsProps {
   currentProject: Project
@@ -18,6 +19,7 @@ interface BasicsProps {
 
 const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
   const [data, setData] = useState<Project['data']>()
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
 
   useEffect(() => {
     if (!data && currentProject?.data) {
@@ -41,11 +43,17 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
 
   return (
     <>
+     {currentProject && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+        />
+      )}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         padding: '32px',
-        gap: '24px',
       }}>
         <form
           style={{
@@ -116,7 +124,8 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
           <Button
             variant="contained"
             size="small"
-            startIcon={<AddPhotoAlternate />}
+            startIcon={<CameraAltOutlinedIcon />}
+            onClick={() => setOpenCamera(true)}
           >
             Add Photos
           </Button>

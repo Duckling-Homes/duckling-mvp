@@ -1,25 +1,42 @@
 import { Box, Button, Grid } from '@mui/material'
 import React, { useState, useRef, useEffect } from 'react'
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
+import ModelStore from '@/app/stores/modelStore'
+import { PhotoDetails, Project } from '@/types/types'
+import { v4 as uuidv4 } from 'uuid'
+import FlipCameraIosIcon from '@mui/icons-material/FlipCameraIos';
 
 interface PhotoCaptureProps {
-  onChange: (key: string, value: string | number | boolean | undefined) => void
+  project: Project
+  photo?: PhotoDetails
+  onChange: (values: {
+    [key: string]: string | number | boolean | undefined
+  }) => void
 }
 
-const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onChange }) => {
+const PhotoCapture: React.FC<PhotoCaptureProps> = ({ project, photo, onChange }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [imageX, setImageX] = useState<number>(0)
   const [imageY, setImageY] = useState<number>(0)
+  const [cameraFacingEnvironment, setCameraFacingEnvironment] = useState<'user' | 'environment'>('user');
+
   const videoStreamRef = useRef<MediaStream | null>(null) // Create a ref instead of state
 
-  const handleCapture = () => {
+  const handleCapture = async () => {
     const canvas = canvasRef.current
     if (canvas !== null) {
       const imgDataUrl = canvas.toDataURL('image/png')
-      onChange('photoUrl', imgDataUrl)
-      // TODO: Make API call to upload the image
+      const imageId = uuidv4()
+      onChange({ photoUrl: imgDataUrl, id: imageId })
+      await ModelStore.createPhotoEntry(project.id!, imgDataUrl, {
+        id: imageId, ...photo
+      })
     }
+  }
+
+  const handleToggleCamera = () => {
+    setCameraFacingEnvironment((prevMode) => (prevMode === 'user' ? 'environment' : 'user'))
   }
 
   const draw = (video: HTMLVideoElement, ctx: CanvasRenderingContext2D) => {
@@ -44,9 +61,7 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onChange }) => {
         navigator.mediaDevices
           .getUserMedia({
             video: {
-              facingMode: {
-                ideal: 'user', // TODO: Add the ability to change the camera facing env
-              },
+              facingMode: { ideal: cameraFacingEnvironment },
               width: { ideal: window.innerWidth },
               height: { ideal: window.innerHeight },
               frameRate: { ideal: 20 },
@@ -100,7 +115,7 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onChange }) => {
         console.log('Camera feed stopped and video source object cleared.')
       }
     }
-  })
+  }, [cameraFacingEnvironment])
 
   useEffect(() => {
     const video = videoRef.current
@@ -172,6 +187,18 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onChange }) => {
             }}
           >
             <PhotoCameraIcon />
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleToggleCamera}
+            style={{
+              marginLeft: '10px',
+              padding: '8px 16px',
+              minWidth: 'auto',
+            }}
+          >
+            <FlipCameraIosIcon />
           </Button>
         </Box>
       </Grid>

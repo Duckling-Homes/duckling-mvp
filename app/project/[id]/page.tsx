@@ -15,7 +15,7 @@ import {
   Photos,
   Rooms,
 } from './Tabs/index'
-import { Project } from '@/types/types'
+import { PhotoDetails, Project } from '@/types/types'
 import { useParams } from 'next/navigation'
 import DeleteProjectModal from '@/components/Modals/DeleteProject'
 import { useRouter } from 'next/navigation'
@@ -32,6 +32,7 @@ const DataCollection = observer(() => {
   const [deleteModal, setDeleteModal] = useState<boolean>(false)
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0)
   const [openCamera, setOpenCamera] = useState<boolean>(false)
+  const [heroPhoto, setHeroPhoto] = useState<PhotoDetails>({})
 
   const currentProject = ModelStore.currentProject
   const router = useRouter()
@@ -46,6 +47,15 @@ const DataCollection = observer(() => {
       ModelStore.clearCurrentProject()
     }
   }, [id])
+
+
+  useEffect(() => {
+    if (currentProject?.heroImageId) {
+      ModelStore.downloadPhoto(currentProject.heroImageId).then((response) => {
+        setHeroPhoto({ photoUrl: response })
+      })
+    }
+  }, [currentProject?.heroImageId])
 
   const renderTabContent = (index: number, component: JSX.Element) => (
     <div hidden={currentTabIndex !== index}>{component}</div>
@@ -72,7 +82,7 @@ const DataCollection = observer(() => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
-          // TODO: Pass in photo if a hero photo is set
+          photo={{isHeroPhoto: true}}
         />
       )}
       {currentProject && (
@@ -98,15 +108,24 @@ const DataCollection = observer(() => {
           <div className="dataCollection">
             <div className="dataCollection__header">
               <div className="dataCollection__photoWrapper">
-                <Image src={PlaceHolderPhoto} alt="project-image" />
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => setOpenCamera(true)}
-                  // TODO: Remove add photo and display photo if one is returned
-                >
-                  Add Photo
-                </Button>
+                {!heroPhoto?.photoUrl && (
+                  <Image src={PlaceHolderPhoto} alt="project-image" />
+                )}
+                {heroPhoto?.photoUrl && (
+                  <img
+                    style={{ width: '150px', height: '100px' }}
+                    src={heroPhoto.photoUrl}
+                  ></img>
+                )}
+                {!heroPhoto?.photoUrl && (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => setOpenCamera(true)}
+                  >
+                    Add Photo
+                  </Button>
+                )}
               </div>
               <div className="dataCollection__projectInfo">
                 <p className="dataCollection__title">{currentProject?.name}</p>
