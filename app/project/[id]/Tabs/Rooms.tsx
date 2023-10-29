@@ -35,7 +35,6 @@ const ROOM_TYPES = [
   'Other',
 ]
 
-//TODO: check these values
 const ROOM_FLOORS = [
   'Basement',
   'Ground Floor',
@@ -52,19 +51,7 @@ interface RoomsProps {
 const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   const [rooms, setRooms] = useState<ProjectRoom[]>([])
   const [openCamera, setOpenCamera] = useState<boolean>(false)
-  const [currentRoom, setCurrentRoom] = useState<ProjectRoom>({
-    id: '',
-    name: '',
-    type: '',
-    width: 0,
-    length: 0,
-    ceilingHeight: 0,
-    floor: '',
-    usage: '',
-    comfortIssueTags: [],
-    safetyIssueTags: [],
-    notes: '',
-  })
+  const [currentRoom, setCurrentRoom] = useState<ProjectRoom>({})
 
   useEffect(() => {
     if (currentProject && currentProject.rooms) {
@@ -81,53 +68,54 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   }
 
   async function createRoom() {
-    const response = await ModelStore.createRoom(currentProject.id!, {
+    const createdRoom = await ModelStore.createRoom(currentProject.id!, {
       name: 'New Room',
       projectId: currentProject.id,
-      type: '',
-      width: 0,
-      length: 0,
-      ceilingHeight: 0,
-      floor: '',
-      usage: '',
-      comfortIssueTags: [],
-      safetyIssueTags: [],
-      notes: '',
     })
-    const newRoomList = [...rooms, response]
+    const newRoomList = [...rooms, createdRoom]
 
     setRooms(newRoomList)
-    setCurrentRoom(response)
+    setCurrentRoom(createdRoom)
   }
 
-  async function patchRoom(updatedRoom = currentRoom) {
-    if (updatedRoom && updatedRoom.id) {
-      await ModelStore.updateRoom(
-        currentProject.id!,
-        updatedRoom
-      )
+  async function patchRoom(propName: string, updatedRoom = currentRoom) {
+    if (updatedRoom?.id) {
+
+      const roomToUpdate: ProjectRoom = { id: updatedRoom.id }
+      roomToUpdate[propName] = updatedRoom[propName]
+
       const updatedRooms = rooms.map((room) => {
         if (room.id === updatedRoom.id) {
-          return { ...room, ...updatedRoom }
+          return { ...room, [propName]: updatedRoom[propName] }
         }
         return room
       })
+
+      await ModelStore.updateRoom(
+        currentProject.id!,
+        roomToUpdate
+      )
+
       setRooms(updatedRooms)
     }
   }
 
+  const toggleTagValue = (array: string[], value: string) => {
+    return array.includes(value) ?
+      array.filter((item) => item !== value) :
+      [...array, value];
+  };
+
   const handleChipChange = (inputName: string, value: string) => {
-    let array = currentRoom ? (currentRoom[inputName] as string[]) : []
-
-    if (array && array.includes(value)) {
-      array = array.filter((item) => item !== value)
-    } else {
-      array.push(value)
+    if (currentRoom) {
+      const array = currentRoom[inputName] as string[] || [];
+      const updatedRoom = {
+        ...currentRoom,
+        [inputName]: toggleTagValue(array, value)
+      };
+      setCurrentRoom(updatedRoom);
+      patchRoom(inputName, updatedRoom);
     }
-
-    const updatedRoom = { ...currentRoom, [inputName]: array }
-
-    patchRoom(updatedRoom)
   }
 
   const handleInputChange = async (
@@ -135,8 +123,8 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
     value: string | number
   ) => {
     if (currentRoom && currentRoom.id) {
-      const updatedRoom = { ...currentRoom, [inputName]: value }
-      setCurrentRoom(updatedRoom)
+      const updatedRoom = { ...currentRoom, [inputName]: value };
+      setCurrentRoom(updatedRoom);
     }
   }
 
@@ -182,13 +170,13 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               placeholder="Room Name"
               value={currentRoom?.name || ''}
               onChange={(value) => handleInputChange('name', value)}
-              onBlur={() => patchRoom()}
+              onBlur={() => patchRoom('name')}
             />
             <SelectInput
               label="Room Type"
               value={currentRoom?.type || ''}
               onChange={(value) => handleInputChange('type', value)}
-              onBlur={() => patchRoom()}
+              onBlur={() => patchRoom('type')}
               options={ROOM_TYPES}
             />
             <TextInput
@@ -197,7 +185,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               type="tel"
               value={currentRoom?.width || ''}
               onChange={(value) => handleInputChange('width', parseInt(value))}
-              onBlur={() => patchRoom()}
+              onBlur={() => patchRoom('width')}
               endAdornment='ft'
             />
             <TextInput
@@ -206,7 +194,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               type="tel"
               value={currentRoom?.length || ''}
               onChange={(value) => handleInputChange('length', parseInt(value))}
-              onBlur={() => patchRoom()}
+              onBlur={() => patchRoom('length')}
               endAdornment='ft'
             />
             <TextInput
@@ -217,14 +205,14 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               onChange={
                 (value) => handleInputChange('ceilingHeight', parseInt(value))
               }
-              onBlur={() => patchRoom()}
+              onBlur={() => patchRoom('ceilingHeight')}
               endAdornment='ft'
             />
             <SelectInput
               label="Floor"
               value={currentRoom?.floor || ''}
               onChange={(value) => handleInputChange('floor', value)}
-              onBlur={() => patchRoom()}
+              onBlur={() => patchRoom('floor')}
               options={ROOM_FLOORS}
             />
             <FormControl>
@@ -234,7 +222,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                 exclusive
                 color="primary"
                 onChange={(e, value) => handleInputChange('usage', value)}
-                onBlur={() => patchRoom()}
+                onBlur={() => patchRoom('usage')}
                 aria-label="usage"
               >
                 <ToggleButton value="rare" aria-label="left aligned">
@@ -303,7 +291,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
             label="Notes"
             placeholder="Notes"
             onChange={(value) => handleInputChange('notes', value)}
-            onBlur={() => patchRoom()}
+            onBlur={() => patchRoom('notes')}
             value={currentRoom?.notes || ''}
             multiline={true}
           />

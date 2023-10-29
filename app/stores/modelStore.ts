@@ -140,7 +140,6 @@ export class _ModelStore {
 
   updateRoom = async (projectID: string, room: ProjectRoom) => {
     const updated = await SyncAPI.rooms.update(projectID, room)
-    await this.loadProject(projectID)
     return updated
   }
 
