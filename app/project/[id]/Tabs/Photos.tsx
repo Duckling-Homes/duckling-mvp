@@ -152,7 +152,7 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
         </div>
       </div>
     </>
-  );         
+  );
 }
 
 export default Photos
