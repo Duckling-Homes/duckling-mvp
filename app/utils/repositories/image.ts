@@ -51,11 +51,8 @@ export async function createImage(
         envelopeId: imageData.envelopeId,
         applianceId: imageData.applianceId,
         electricalId: imageData.electricalId,
-        project: {
-          connect: {
-            id: imageData.projectId,
-          },
-        },
+        projectId: imageData.projectId,
+        duplicatedFromId: imageData.duplicatedFromId || null,
       },
     })
 
@@ -74,7 +71,6 @@ export async function createImage(
     throw new Error('Organization context does not match')
   }
 }
-
 // Get all images for a particular project
 export async function getImagesByProjectId(
   projectId: string,
