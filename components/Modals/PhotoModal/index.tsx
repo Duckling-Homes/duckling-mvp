@@ -29,7 +29,13 @@ const PhotoCaptureModal: React.FC<{
     [key: string]: string | number | boolean | undefined
   }) {
     if (currentPhoto) {
-      const updatedPhoto = { ...currentPhoto, ...valuesToSet }
+      const updatedValues = Object.fromEntries(
+        Object.entries(valuesToSet).map(([key, value]) => [
+          key,
+          value === undefined ? null : value,
+        ])
+      );
+      const updatedPhoto = { ...currentPhoto, ...updatedValues }
       setCurrentPhoto(JSON.parse(JSON.stringify(updatedPhoto)))
     }
   }
@@ -90,6 +96,7 @@ const PhotoCaptureModal: React.FC<{
             <PhotoForm
               onClose={handleOnClose}
               currentPhoto={currentPhoto}
+              setCurrentPhoto={setCurrentPhoto}
               project={project}
               onChange={handlePhotoChange}
             ></PhotoForm>

@@ -106,32 +106,43 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
                 roomFilter == 'UNSELECTED' || image.roomId == roomFilter
             )
             .map((image, i) => (
-              <div key={i} style={{ position: 'relative' }}>
+              <div
+                key={i}
+                style={{
+                  position: 'relative',
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                }}
+              >
                 <Button
                   onClick={() => {
-                    setEditPhoto(image)
+                    setEditPhoto(image);
                   }}
                 >
                   <img
                     src={image.photoUrl}
                     alt={`Image ${i + 1}`}
                     style={{
-                      width: '100%',
-                      height: 'auto',
+                      width: '200px',
+                      height: '200px',
+                      objectFit: 'fill',
                     }}
                   />
                 </Button>
                 <Button
                   variant="contained"
                   onClick={() => {
-                    handleDeleteImage(image.id!)
+                    handleDeleteImage(image.id!);
                   }}
                   style={{
                     position: 'absolute',
-                    bottom: '5px',
-                    right: '5px',
+                    bottom: '20px',
+                    right: '20px',
                     fontSize: '12px',
-                    margin: '10px',
+                    minWidth: '0',
+                    padding: '6px',
+                    lineHeight: '1',
                   }}
                 >
                   <DeleteOutlineOutlinedIcon />
@@ -141,7 +152,7 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default Photos
