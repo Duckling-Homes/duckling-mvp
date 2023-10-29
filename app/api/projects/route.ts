@@ -13,12 +13,14 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     homeownerPhone,
     homeownerEmail,
     homeownerAddress,
+    id,
   } = await req.json()
 
   const orgContext = req.headers.get('organization-context')
 
   return NextResponse.json(
     await createProject({
+      id,
       name,
       homeownerName,
       homeownerPhone,
@@ -36,8 +38,8 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
 export const GET = withErrorHandler(async (req: NextRequest) => {
   const orgContext = req.headers.get('organization-context')
 
-  const response = NextResponse.json(await getProjects(orgContext as string));
-  response.headers.set('X-Is-Cacheable', 'true');
+  const response = NextResponse.json(await getProjects(orgContext as string))
+  response.headers.set('X-Is-Cacheable', 'true')
 
-  return response;
+  return response
 })

@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
   const {
+    id,
     generatorType,
     fuelType,
     ratedContinuousWattage,
@@ -32,6 +33,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   }
   return NextResponse.json(
     await createProjectGenerator({
+      id,
       generatorType,
       fuelType,
       ratedContinuousWattage,

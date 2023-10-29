@@ -1,4 +1,4 @@
-import { SignIn } from "@clerk/nextjs";
+import { SignIn } from '@clerk/nextjs'
 
 import './style.scss'
 
@@ -7,5 +7,5 @@ export default function Page() {
     <div className="signIn">
       <SignIn />
     </div>
-  );
+  )
 }

@@ -6,6 +6,7 @@ export async function createProject(
 ) {
   return await prisma.project.create({
     data: {
+      id: projectData.id,
       name: projectData.name,
       homeownerName: projectData.homeownerName,
       homeownerPhone: projectData.homeownerPhone,

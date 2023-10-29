@@ -1,48 +1,47 @@
-"use client";
+'use client'
 
+import ModelStore from "@/app/stores/modelStore";
 import ChipManager from "@/components/ChipManager";
+import { SelectInput, TextInput } from "@/components/Inputs";
 import { Project, ProjectRoom } from "@/types/types";
-import { Chip, FormControl, FormGroup, FormLabel, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Button, Chip, FormControl, FormGroup, FormLabel, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useEffect, useState } from "react";
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 
 const COMFORT_ISSUES = [
-  "Drafty",
-  "Too hot in summer",
-  "Too cold in summer",
-  "Too hot in winter",
-  "Too cold in winter",
-  "Humid",
-  "Dry",
-  "Noisy System",
+  'Drafty',
+  'Too hot in summer',
+  'Too cold in summer',
+  'Too hot in winter',
+  'Too cold in winter',
+  'Humid',
+  'Dry',
+  'Noisy System',
 ]
 
-const HEALTH_SAFETY = [
-  "Mold",
-  "Allergens",
-  "Indoor air quality",
-  "Asbestos",
-]
+const HEALTH_SAFETY = ['Mold', 'Allergens', 'Indoor air quality', 'Asbestos']
 
 const ROOM_TYPES = [
-  "Bedroom",
-  "Living Room",
-  "Dining Room",
-  "Family Room",
-  "Kitchen",
-  "Office",
-  "Bathroom",
-  "Basement",
-  "Other",
-];
+  'Bedroom',
+  'Living Room',
+  'Dining Room',
+  'Family Room',
+  'Kitchen',
+  'Office',
+  'Bathroom',
+  'Basement',
+  'Other',
+]
 
 //TODO: check these values
 const ROOM_FLOORS = [
-  "Basement",
-  "Ground Floor",
-  "Second Floor",
-  "Third Floor",
-  "Attic",
-  "Other",
+  'Basement',
+  'Ground Floor',
+  'Second Floor',
+  'Third Floor',
+  'Attic',
+  'Other',
 ]
 
 interface RoomsProps {
@@ -50,20 +49,21 @@ interface RoomsProps {
 }
 
 const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
-  const [rooms, setRooms] = useState<ProjectRoom[]>([]);
+  const [rooms, setRooms] = useState<ProjectRoom[]>([])
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentRoom, setCurrentRoom] = useState<ProjectRoom>({
-    id: "",
-    name: "",
-    type: "",
+    id: '',
+    name: '',
+    type: '',
     width: 0,
     length: 0,
     ceilingHeight: 0,
-    floor: "",
-    usage: "",
+    floor: '',
+    usage: '',
     comfortIssueTags: [],
     safetyIssueTags: [],
-    notes: "",
-  });
+    notes: '',
+  })
 
   useEffect(() => {
     if (currentProject && currentProject.rooms) {
@@ -73,104 +73,71 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
   }, [currentProject])
 
   async function deleteRoom(roomId: string) {
-    try {
-      await fetch(`/api/projectRooms/${roomId}`, {
-        method: 'DELETE',
-      })
-
-      const newRooms = rooms.filter(r => r.id !== roomId);
-      setRooms(newRooms);
-      setCurrentRoom(newRooms[0] || {});
-    } catch (error) {
-      console.error(error)
-    }
+    await ModelStore.deleteRoom(currentProject.id!, roomId)
+    const newRooms = rooms.filter((r) => r.id !== roomId)
+    setRooms(newRooms)
+    setCurrentRoom(newRooms[0] || {})
   }
 
   async function createRoom() {
-    try {
-      const response = await fetch('/api/projectRooms', {
-        method: 'POST',
-        body: JSON.stringify({
-          name: "New Room",
-          projectId: currentProject.id,
-          type: "",
-          width: 0,
-          length: 0,
-          ceilingHeight: 0,
-          floor: "",
-          usage: "",
-          comfortIssueTags: [],
-          safetyIssueTags: [],
-          notes: "",
-        })
-      })
+    const response = await ModelStore.createRoom(currentProject.id!, {
+      name: 'New Room',
+      projectId: currentProject.id,
+      type: '',
+      width: 0,
+      length: 0,
+      ceilingHeight: 0,
+      floor: '',
+      usage: '',
+      comfortIssueTags: [],
+      safetyIssueTags: [],
+      notes: '',
+    })
+    const newRoomList = [...rooms, response]
 
-      const newRoom = await response.json();
-      const newRoomList = [...rooms, newRoom];
-
-      setRooms(newRoomList);
-      setCurrentRoom(newRoom);
-      
-    } catch (error) {
-      console.error(error)
-    }
+    setRooms(newRoomList)
+    setCurrentRoom(response)
   }
 
   async function patchRoom(updatedRoom = currentRoom) {
-    console.log(rooms)
-    if (currentRoom && currentRoom.id) {
-      try {
-        const data = await fetch(`/api/projectRooms/${currentRoom.id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            ...updatedRoom,
-            projectId: currentProject.id
-          })
-        })
-
-        if (data.ok) {
-          const response = await data.json();
-
-          const updatedRooms = rooms.map((room) => {
-            if (room.id === updatedRoom.id) {
-              return { ...room, ...updatedRoom };
-            }
-            return room;
-          });
-
-          setRooms(updatedRooms);
-          setCurrentRoom(response);
-        } else {
-          throw new Error('Failed to update room.');
+    if (updatedRoom && updatedRoom.id) {
+      await ModelStore.updateRoom(
+        currentProject.id!,
+        updatedRoom
+      )
+      const updatedRooms = rooms.map((room) => {
+        if (room.id === updatedRoom.id) {
+          return { ...room, ...updatedRoom }
         }
-        
-      } catch (error) {
-        console.error(error)
-      }
+        return room
+      })
+      setRooms(updatedRooms)
     }
   }
 
   const handleChipChange = (inputName: string, value: string) => {
-    let array = currentRoom ? currentRoom[inputName] as string[] : [];
+    let array = currentRoom ? (currentRoom[inputName] as string[]) : []
 
     if (array && array.includes(value)) {
-      array = array.filter(item => item !== value);
+      array = array.filter((item) => item !== value)
     } else {
-      array.push(value);
+      array.push(value)
     }
 
     const updatedRoom = { ...currentRoom, [inputName]: array }
-  
-    setCurrentRoom(updatedRoom)  
-    patchRoom(updatedRoom);
+
+    patchRoom(updatedRoom)
   }
 
-  const handleInputChange = async (inputName: string, value: string | number) => {
+  const handleInputChange = async (
+    inputName: string,
+    value: string | number
+  ) => {
     if (currentRoom && currentRoom.id) {
-      const updatedRoom = { ...currentRoom, [inputName]: value };
-      setCurrentRoom(updatedRoom);
+      const updatedRoom = { ...currentRoom, [inputName]: value }
+      setCurrentRoom(updatedRoom)
     }
-  };
+  }
 
   return (
     <div
@@ -188,10 +155,18 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
         chipType="Room"
         onChipClick={(i: number) => setCurrentRoom(rooms[i])}
       />
+      {currentRoom && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+          photo={{ roomId: currentRoom?.id }}
+        />
+      )}
       <div style={{
         width: '100%',
       }}>
-        {currentRoom?.id ? <form style={{
+        {currentRoom?.id ? (<form style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
@@ -201,84 +176,56 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
             flexDirection: 'column',
             gap: '24px',
           }}>
-            <TextField
-              id="outlined-basic"
+            <TextInput
               label="Room Name"
-              value={currentRoom?.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              placeholder="Room Name"
+              value={currentRoom?.name || ''}
+              onChange={(value) => handleInputChange('name', value)}
               onBlur={() => patchRoom()}
-              variant="outlined"
-              placeholder='Name'
-              fullWidth
             />
-            <FormControl fullWidth>
-              <InputLabel id="room-type-label">
-                Room Type
-              </InputLabel>
-              <Select
-                placeholder="Room Type"
-                labelId="room-type-label"
-                id="room-type-select"
-                label="Room Type"
-                value={currentRoom?.type}
-                onBlur={() => patchRoom()}
-                onChange={(e) => handleInputChange('type', e.target.value)}
-              >
-                {ROOM_TYPES.map((roomType, i) => (
-                  <MenuItem key={i} value={roomType}>{roomType}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              id="outlined-basic"
+            <SelectInput
+              label="Room Type"
+              value={currentRoom?.type || ''}
+              onChange={(value) => handleInputChange('type', value)}
+              onBlur={() => patchRoom()}
+              options={ROOM_TYPES}
+            />
+            <TextInput
               label="Width"
-              variant="outlined"
-              value={currentRoom?.width}
-              onChange={(e) => handleInputChange('width', parseInt(e.target.value))}
+              placeholder="Width"
+              type="tel"
+              value={currentRoom?.width || ''}
+              onChange={(value) => handleInputChange('width', parseInt(value))}
               onBlur={() => patchRoom()}
-              placeholder='Width'
-              fullWidth
-              type="number"
+              endAdornment='ft'
             />
-            <TextField
-              id="outlined-basic"
+            <TextInput
               label="Length"
-              variant="outlined"
-              value={currentRoom?.length}
-              onChange={(e) => handleInputChange('length', parseInt(e.target.value))}
+              placeholder="Length"
+              type="tel"
+              value={currentRoom?.length || ''}
+              onChange={(value) => handleInputChange('length', parseInt(value))}
               onBlur={() => patchRoom()}
-              placeholder='Length'
-              fullWidth
-              type="number"
+              endAdornment='ft'
             />
-            <TextField
-              id="outlined-basic"
+            <TextInput
               label="Ceiling Height"
-              variant="outlined"
-              onChange={(e) => handleInputChange('ceilingHeight', parseInt(e.target.value))}
+              placeholder="Ceiling Height"
+              type="tel"
+              value={currentRoom?.ceilingHeight || ''}
+              onChange={
+                (value) => handleInputChange('ceilingHeight', parseInt(value))
+              }
               onBlur={() => patchRoom()}
-              value={currentRoom?.ceilingHeight}
-              placeholder='Ceiling Height'
-              fullWidth
-              type="number"
+              endAdornment='ft'
             />
-            <FormControl fullWidth>
-              <InputLabel id="width-label">
-                Floor
-              </InputLabel>
-              <Select
-                labelId="width-label"
-                id="width-select"
-                label="Floor"
-                value={currentRoom?.floor}
-                onChange={(e) => handleInputChange('floor', e.target.value)}
-                onBlur={() => patchRoom()}
-              >
-                {ROOM_FLOORS.map((floor, i) => (
-                  <MenuItem key={i} value={floor}>{floor}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <SelectInput
+              label="Floor"
+              value={currentRoom?.floor || ''}
+              onChange={(value) => handleInputChange('floor', value)}
+              onBlur={() => patchRoom()}
+              options={ROOM_FLOORS}
+            />
             <FormControl>
               <FormLabel component="legend">Usage</FormLabel>
               <ToggleButtonGroup
@@ -308,42 +255,68 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                 flexWrap: 'wrap',
                 marginTop: '12px',
                 marginBottom: '24px',
-              }}>
-                {
-                  COMFORT_ISSUES.map((issue, i) => (
-                    <Chip
-                      onClick={() => handleChipChange('comfortIssueTags', issue)}
-                      label={issue}
-                      key={i}
-                      color={currentRoom?.comfortIssueTags?.includes(issue) ? "primary" : "default"}
-                    />
-                  ))
-                }
-              </div>
-            </FormGroup>
-            <FormGroup>
-              <FormLabel>Health & Safety Issues</FormLabel>
-              <div style={{
+              }}
+            >
+              {COMFORT_ISSUES.map((issue, i) => (
+                <Chip
+                  onClick={() =>
+                    handleChipChange('comfortIssueTags', issue)
+                  }
+                  label={issue}
+                  key={i}
+                  color={
+                    currentRoom?.comfortIssueTags?.includes(issue)
+                      ? 'primary'
+                      : 'default'
+                  }
+                />
+              ))}
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>Health & Safety Issues</FormLabel>
+            <div
+              style={{
                 display: 'flex',
                 gap: '8px',
                 flexWrap: 'wrap',
                 marginTop: '12px',
                 marginBottom: '24px',
-              }}>
-                {
-                  HEALTH_SAFETY.map((issue, i) => (
-                    <Chip
-                      onClick={() => handleChipChange('safetyIssueTags', issue)}
-                      label={issue}
-                      key={i}
-                      color={currentRoom?.safetyIssueTags?.includes(issue) ? "primary" : "default"}
-                    />
-                  ))
-                }
-              </div>
-            </FormGroup>
-          </div>
-        </form> : <></>}
+              }}
+            >
+              {HEALTH_SAFETY.map((issue, i) => (
+                <Chip
+                  onClick={() => handleChipChange('safetyIssueTags', issue)}
+                  label={issue}
+                  key={i}
+                  color={
+                    currentRoom?.safetyIssueTags?.includes(issue)
+                      ? 'primary'
+                      : 'default'
+                  }
+                />
+              ))}
+            </div>
+          </FormGroup>
+          <TextInput
+            label="Notes"
+            placeholder="Notes"
+            onChange={(value) => handleInputChange('notes', value)}
+            onBlur={() => patchRoom()}
+            value={currentRoom?.notes || ''}
+            multiline={true}
+          />
+          <Button
+            variant="contained"
+            startIcon={<CameraAltOutlinedIcon />}
+            onClick={() => setOpenCamera(true)}
+          >
+            Add Photo
+          </Button>
+        </div>
+      </form>
+      ) : (
+      <></>)}
       </div>
     </div>
   )

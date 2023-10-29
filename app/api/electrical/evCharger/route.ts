@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 export const POST = withErrorHandler(async (req: NextRequest) => {
   const {
+    id,
     chargingLevel,
     amperage,
     acPowerSourceVolatge,
@@ -26,6 +27,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   }
   return NextResponse.json(
     await createProjectEvCharger({
+      id,
       chargingLevel,
       amperage,
       acPowerSourceVolatge,

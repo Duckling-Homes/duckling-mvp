@@ -6,6 +6,7 @@ export async function createProjectEvCharger(
 ) {
   return await prisma.evCharger.create({
     data: {
+      id: evChargerData.id,
       chargingLevel: evChargerData.chargingLevel,
       amperage: evChargerData.amperage,
       acPowerSourceVolatge: evChargerData.acPowerSourceVolatge,

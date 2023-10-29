@@ -1,174 +1,177 @@
-"use client";
+'use client'
 
 import { useEffect, useState } from "react";
 import ModelStore from "@/app/stores/modelStore";
 import { Project } from "@/types/types";
-import { Chip, FormGroup, FormLabel, TextField } from "@mui/material";
+import { Chip, FormGroup, FormLabel } from "@mui/material";
+import { TextInput } from "@/components/Inputs";
 
 const COMFORT_ISSUES = [
-  "Drafty",
-  "Too hot in summer",
-  "Too cold in summer",
-  "Too hot in winter",
-  "Too cold in winter",
-  "Humid",
-  "Dry",
-  "Noisy System",
+  'Drafty',
+  'Too hot in summer',
+  'Too cold in summer',
+  'Too hot in winter',
+  'Too cold in winter',
+  'Humid',
+  'Dry',
+  'Noisy System',
 ]
 
-const HEALTH_SAFETY = [
-  "Mold",
-  "Allergens",
-  "Indoor air quality",
-  "Asbestos",
-]
+const HEALTH_SAFETY = ['Mold', 'Allergens', 'Indoor air quality', 'Asbestos']
 
 const GOALS = [
-  "Improve comfort",
-  "Improve health & safety",
-  "Increase home value",
-  "Lower bills",
-  "Reduce Emissions",
+  'Improve comfort',
+  'Improve health & safety',
+  'Increase home value',
+  'Lower bills',
+  'Reduce Emissions',
 ]
 
-const Objectives: React.FC<{ currentProject: Project }> = ({ currentProject }) => {
-  const [data, setData] = useState<Project["data"]>({
-    comfortIssueNotes: "",
-    comfortIssueTags: [],
-    healthSafetyIssueNotes: "",
-    healthSafetyIssueTags: [],
-    homeownerGoalsNotes: "",
-    homeownerGoalsTags: []
-  });
+const Objectives: React.FC<{ currentProject: Project }> = ({
+  currentProject,
+}) => {
+  const [data, setData] = useState<Project['data']>()
 
   useEffect(() => {
-    if (currentProject?.data) {
-      setData(currentProject.data);
+    if (!data && currentProject?.data) {
+      setData(currentProject.data)
     }
-  }, [currentProject]);
+  }, [currentProject.data])
 
   const handleTextChange = (inputName: string, value: string) => {
     if (currentProject && currentProject.id) {
-      const updatedData = { ...data, [inputName]: value };
-      setData(updatedData);
+      const updatedData = { ...data, [inputName]: value }
+      setData(updatedData)
     }
   }
 
   const handleChipChange = (inputName: string, value: string) => {
-    let array = data ? data[inputName] as string[] : [];
+    let array = data ? (data[inputName] as string[]) : []
 
     if (array && array.includes(value)) {
-      array = array.filter(item => item !== value);
+      array = array.filter((item) => item !== value)
     } else {
-      array.push(value);
+      array.push(value)
     }
 
     const updatedData = { ...data, [inputName]: array }
-  
-    setData(updatedData)  
-    projectUpdate(updatedData);
+
+    setData(updatedData)
+    projectUpdate(updatedData)
   }
 
   const projectUpdate = async (projectData = data) => {
     if (currentProject && currentProject.id && projectData) {
-      await ModelStore.patchProjectData(currentProject.id, projectData);
+      setData(await ModelStore.patchProjectData(currentProject.id, projectData))
     }
-  };
+  }
 
   return (
     <>
       <form className="objectives">
         <FormGroup>
           <FormLabel>Comfort Issues</FormLabel>
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            flexWrap: 'wrap',
-            marginTop: '12px',
-            marginBottom: '24px',
-          }}>
-            {
-              COMFORT_ISSUES.map((issue, i) => (
-                <Chip
-                  onClick={() => handleChipChange('comfortIssueTags', issue)}
-                  label={issue}
-                  key={i}
-                  color={data?.comfortIssueTags?.includes(issue) ? "primary" : "default"}
-                />
-              ))
-            }
+          <div
+            style={{
+              display: 'flex',
+              gap: '8px',
+              flexWrap: 'wrap',
+              marginTop: '12px',
+              marginBottom: '24px',
+            }}
+          >
+            {COMFORT_ISSUES.map((issue, i) => (
+              <Chip
+                onClick={() => handleChipChange('comfortIssueTags', issue)}
+                label={issue}
+                key={i}
+                color={
+                  data?.comfortIssueTags?.includes(issue)
+                    ? 'primary'
+                    : 'default'
+                }
+              />
+            ))}
           </div>
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Comfort Notes"
-            variant="outlined"
-            placeholder='Comfort Notes'
-            multiline
-            onChange={(e) => handleTextChange('comfortIssueNotes', e.target.value)}
+            placeholder="Comfort Notes"
+            onChange={
+              (value) => handleTextChange('comfortIssueNotes', value as string)
+            }
             onBlur={() => projectUpdate()}
-            value={data?.comfortIssueNotes}
+            value={data?.comfortIssueNotes || ''}
+            multiline={true}
           />
         </FormGroup>
         <FormGroup>
           <FormLabel>Health & Safety Issues</FormLabel>
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            flexWrap: 'wrap',
-            marginTop: '12px',
-            marginBottom: '24px',
-          }}>
-            {
-              HEALTH_SAFETY.map((issue, i) => (
-                <Chip
-                  onClick={() => handleChipChange('healthSafetyIssueTags', issue)}
-                  label={issue}
-                  key={i}
-                  color={data?.healthSafetyIssueTags?.includes(issue) ? "primary" : "default"}
-                />
-              ))
-            }
+          <div
+            style={{
+              display: 'flex',
+              gap: '8px',
+              flexWrap: 'wrap',
+              marginTop: '12px',
+              marginBottom: '24px',
+            }}
+          >
+            {HEALTH_SAFETY.map((issue, i) => (
+              <Chip
+                onClick={() => handleChipChange('healthSafetyIssueTags', issue)}
+                label={issue}
+                key={i}
+                color={
+                  data?.healthSafetyIssueTags?.includes(issue)
+                    ? 'primary'
+                    : 'default'
+                }
+              />
+            ))}
           </div>
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Health & Safety Notes"
-            variant="outlined"
-            placeholder='Health & Safety Notes'
-            multiline
-            onChange={(e) => handleTextChange('healthSafetyIssueNotes', e.target.value)}
+            placeholder="Health & Safety Notes"
+            onChange={
+              (value) => handleTextChange('healthSafetyIssueNotes', value as string)
+            }
             onBlur={() => projectUpdate()}
-            value={data?.healthSafetyIssueNotes}
+            value={data?.healthSafetyIssueNotes || ''}
+            multiline={true}
           />
         </FormGroup>
         <FormGroup>
           <FormLabel>Goals</FormLabel>
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            flexWrap: 'wrap',
-            marginTop: '12px',
-            marginBottom: '24px',
-          }}>
-            {
-              GOALS.map((goal, i) => (
-                <Chip
-                  onClick={() => handleChipChange('homeownerGoalsTags', goal)}
-                  label={goal}
-                  key={i}
-                  color={data?.homeownerGoalsTags?.includes(goal) ? "primary" : "default"}
-                />
-              ))
-            }
+          <div
+            style={{
+              display: 'flex',
+              gap: '8px',
+              flexWrap: 'wrap',
+              marginTop: '12px',
+              marginBottom: '24px',
+            }}
+          >
+            {GOALS.map((goal, i) => (
+              <Chip
+                onClick={() => handleChipChange('homeownerGoalsTags', goal)}
+                label={goal}
+                key={i}
+                color={
+                  data?.homeownerGoalsTags?.includes(goal)
+                    ? 'primary'
+                    : 'default'
+                }
+              />
+            ))}
           </div>
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Goals Notes"
-            variant="outlined"
-            placeholder='Goals Notes'
-            multiline
-            onChange={(e) => handleTextChange('homeownerGoalsNotes', e.target.value)}
+            placeholder="Goals Notes"
+            onChange={
+              (value) => handleTextChange('homeownerGoalsNotes', value as string)
+            }
             onBlur={() => projectUpdate()}
-            value={data?.homeownerGoalsNotes}
+            value={data?.homeownerGoalsNotes || ''}
+            multiline={true}
           />
         </FormGroup>
       </form>

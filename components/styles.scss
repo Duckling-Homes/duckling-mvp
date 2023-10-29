@@ -1,21 +1,19 @@
 .header {
   p {
-    color: #FFF;
-    font-family: "Roboto", "Helvetica Neue";
+    color: #fff;
+    font-family: 'Roboto', 'Helvetica Neue';
     font-size: 1.5rem;
     margin: 0px;
     display: flex;
     align-items: center;
   }
 
-  background-color: #303F9F;
+  background-color: #303f9f;
   padding: 16px 24px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-
-
 
 @media screen and (max-width: 768px) {
   .header {

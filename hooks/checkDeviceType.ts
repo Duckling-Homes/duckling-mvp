@@ -1,26 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
 export const checkDeviceType = () => {
-  const [deviceType, setDeviceType] = useState<string>("");
+  const [deviceType, setDeviceType] = useState<string>('')
 
   useEffect(() => {
     const checkDeviceType = () => {
-      const screenWidth = window.innerWidth;
+      const screenWidth = window.innerWidth
 
       if (screenWidth < 768) {
-        setDeviceType("phone");
+        setDeviceType('phone')
       } else if (screenWidth >= 768 && screenWidth < 1024) {
-        setDeviceType("tablet");
+        setDeviceType('tablet')
       } else {
-        setDeviceType("desktop");
+        setDeviceType('desktop')
       }
-    };
-    checkDeviceType();
-    window.addEventListener("resize", checkDeviceType);
+    }
+    checkDeviceType()
+    window.addEventListener('resize', checkDeviceType)
     return () => {
-      window.removeEventListener("resize", checkDeviceType);
-    };
-  }, []);
+      window.removeEventListener('resize', checkDeviceType)
+    }
+  }, [])
 
-  return deviceType;
-};
+  return deviceType
+}

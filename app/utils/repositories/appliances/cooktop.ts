@@ -6,6 +6,7 @@ export async function createCooktopAppliance(
 ) {
   return await prisma.cooktop.create({
     data: {
+      id: cooktopData.id,
       isInduction: cooktopData.isInduction,
       fuel: cooktopData.fuel,
       age: cooktopData.age,

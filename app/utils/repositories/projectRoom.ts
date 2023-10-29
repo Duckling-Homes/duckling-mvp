@@ -6,6 +6,7 @@ export async function createProjectRoom(
 ) {
   return await prisma.projectRoom.create({
     data: {
+      id: roomData.id,
       name: roomData.name,
       type: roomData.type,
       width: roomData.width,

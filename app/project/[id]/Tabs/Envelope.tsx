@@ -1,51 +1,46 @@
 'use client'
 
 import ChipManager from '@/components/ChipManager'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@mui/material';
 import { useEffect, useState } from 'react';
 import InsulationForm from './EnvelopesForms/InsulationForm';
 import AirSealingForm from './EnvelopesForms/AirSealingForm';
 import { Project, ProjectEnvelope } from '@/types/types';
-import { v4 as uuidv4 } from 'uuid';
+import ModelStore from '@/app/stores/modelStore';
+import { toJS } from 'mobx';
+import { observer } from 'mobx-react-lite';
+import { SelectInput } from '@/components/Inputs';
+import { v4 } from 'uuid';
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { Button } from '@mui/material';
 
 interface EnvelopeProps {
-  currentProject: Project;
+  currentProject: Project
 }
 
-const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
+const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   const [envelopes, setEnvelopes] = useState<ProjectEnvelope[]>([])
-  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>({
-    id: '',
-    type: '',
-    name: '',
-    location: '',
-    leakinessDescription: '',
-    insulationLocation: '',
-    insulationCondition: '',
-    notes: '',
-    condition: '',
-  })
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
+  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>()
 
   useEffect(() => {
     if (currentProject && currentProject.envelopes) {
       setEnvelopes(currentProject.envelopes)
-      setCurrentEnvelope(currentProject.envelopes[0])
+
+      if (!currentEnvelope) {
+        setCurrentEnvelope(currentProject.envelopes[0])
+      }
     }
-  }, [currentProject])
+  }, [currentProject, currentProject.envelopes])
 
   const handleTypeChange = (value: string) => {
-    const updatedEnvelope = {...currentEnvelope, type: value}
+    const updatedEnvelope = { ...currentEnvelope, type: value }
     handlePostEnvelope(updatedEnvelope, value)
   }
 
   function createEnvelope() {
     const newEnvelope = {
-      id: uuidv4(),
+      id: v4(),
       name: 'New Envelope',
       type: '',
       location: '',
@@ -54,184 +49,162 @@ const Envelope: React.FC<EnvelopeProps> = ({ currentProject }) => {
       insulationCondition: '',
       notes: '',
       condition: '',
-    };
+    }
 
-    const newEnvelopeList = [...envelopes, newEnvelope];
-    setEnvelopes(newEnvelopeList);
-    setCurrentEnvelope(newEnvelope);
+    const newEnvelopeList = [...envelopes, newEnvelope]
+    setEnvelopes(newEnvelopeList)
+    setCurrentEnvelope(newEnvelope)
   }
 
-  async function handlePostEnvelope(updatedEnvelope: ProjectEnvelope, type: string) {
-    try {
-      const oldId = updatedEnvelope.id;
-      delete updatedEnvelope.id;
-      const data = await fetch(`/api/project${type}`, {
-        method: 'POST',
-        body: JSON.stringify({
-            ...updatedEnvelope,
-            projectId: currentProject.id
-          })
-      });
-
-      if (data.ok) {
-        const response = await data.json()
-        const createdEnvelope = {...response, type: updatedEnvelope.type}
-
-        const updatedEnvelopes = envelopes.map((envelope) => {
-          if (envelope.id === oldId) {
-            return { ...envelope, ...createdEnvelope };
-          }
-          return envelope;
-        });
-
-        setEnvelopes(updatedEnvelopes);
-        setCurrentEnvelope(createdEnvelope);
-      } else {
-        throw new Error('Failed to create a new envelope.');
+  async function handlePostEnvelope(envelope: ProjectEnvelope, type: string) {
+    envelope.type = type
+    const createdEnvelope = await ModelStore.createEnvelope(
+      currentProject.id!,
+      envelope
+    )
+    const updatedEnvelopes = envelopes.map((envelope) => {
+      if (envelope.id === createdEnvelope.id) {
+        return { ...envelope, ...createdEnvelope }
       }
-    } catch (error) {
-      console.error('Error creating a new envelope:', error);
-      throw error;
-    }
+      return envelope
+    })
+    setEnvelopes(updatedEnvelopes)
+    setCurrentEnvelope(createdEnvelope)
   }
 
   async function deleteEnvelope(envelopeId: string) {
-    const envelopeToDelete = envelopes.find(envelope => envelope.id === envelopeId);
+    const envelopeToDelete = envelopes.find(
+      (envelope) => envelope.id === envelopeId
+    )
 
     if (!envelopeToDelete) {
-      return;
+      return
     }
 
     if (!envelopeToDelete.type) {
-      const newEnvelopeList = envelopes.filter(r => r.id !== envelopeId);
-      setEnvelopes(newEnvelopeList);
-      setCurrentEnvelope(newEnvelopeList[0] || {});
-      return;
+      const newEnvelopeList = envelopes.filter((r) => r.id !== envelopeId)
+      setEnvelopes(newEnvelopeList)
+      setCurrentEnvelope(newEnvelopeList[0] || {})
+      return
     }
 
-    try {
-      const response = await fetch(`/api/project${envelopeToDelete.type}/${envelopeId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        console.log('Old envelope deleted successfully.');
-        const newEnvelopeList = envelopes.filter(r => r.id !== envelopeId);
-        setEnvelopes(newEnvelopeList);
-        setCurrentEnvelope(newEnvelopeList[0] || {});
-      } else {
-        throw new Error('Failed to delete the old envelope.');
-      }
-    } catch (error) {
-      console.error('Error deleting the old envelope:', error);
-      throw error;
-    }
+    await ModelStore.deleteEnvelope(
+      currentProject.id!,
+      envelopeToDelete.type,
+      envelopeId
+    )
+    const newEnvelopeList = envelopes.filter((r) => r.id !== envelopeId)
+    setEnvelopes(newEnvelopeList)
+    setCurrentEnvelope(newEnvelopeList[0] || {})
   }
 
   function handleInputChange(inputName: string, value: string) {
     if (currentEnvelope && currentEnvelope.id) {
-      const updatedEnvelope = { ...currentEnvelope, [inputName]: value };
-      setCurrentEnvelope(updatedEnvelope);
+      const updatedEnvelope = { ...currentEnvelope, [inputName]: value }
+      setCurrentEnvelope(updatedEnvelope)
     }
   }
 
   async function patchEnvelope(updatedEnvelope = currentEnvelope) {
-    console.log('caiu aqui')
     if (updatedEnvelope && updatedEnvelope.id) {
-      try {
-        const data = await fetch(`/api/project${updatedEnvelope.type}/${updatedEnvelope.id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            ...updatedEnvelope,
-            projectId: currentProject.id
-          })
-        });
-
-        if (data.ok) {
-          const response = await data.json();
-          response.type = updatedEnvelope.type;
-
-          const updatedEnvelopes = envelopes.map((envelope) => {
-            if (envelope.id === updatedEnvelope.id) {
-              return { ...envelope, ...updatedEnvelope };
-            }
-            return envelope;
-          });
-
-          setEnvelopes(updatedEnvelopes);
-          setCurrentEnvelope(response);
-          console.log(response);
-        } else {
-          throw new Error('Failed to update the envelope.');
+      const response = await ModelStore.updateEnvelope(
+        currentProject.id!,
+        updatedEnvelope
+      )
+      response.type = updatedEnvelope.type
+      const updatedEnvelopes = envelopes.map((envelope) => {
+        if (envelope.id === updatedEnvelope.id) {
+          return { ...envelope, ...updatedEnvelope }
         }
-      } catch (error) {
-        console.error(error);
-      }
+        return envelope
+      })
+      setEnvelopes(updatedEnvelopes)
     }
   }
 
   const renderForm = () => {
-    switch(currentEnvelope?.type) {
+    switch (currentEnvelope?.type) {
       case 'Insulation':
-        return (<InsulationForm onUpdate={() => patchEnvelope()} onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
+        return (
+          <InsulationForm
+            onUpdate={() => patchEnvelope()}
+            onChange={handleInputChange}
+            currentEnvelope={currentEnvelope}
+          />
+        )
       case 'AirSealing':
-        return (<AirSealingForm onUpdate={() => patchEnvelope()} onChange={handleInputChange} currentEnvelope={currentEnvelope}/>);
+        return (
+          <AirSealingForm
+            onUpdate={() => patchEnvelope()}
+            onChange={handleInputChange}
+            currentEnvelope={currentEnvelope}
+          />
+        )
       default:
-          return (null);
+        return null
     }
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        padding: '32px',
-        gap: '32px',
-      }}
-    >
-      <ChipManager
-        onCreate={createEnvelope}
-        onDelete={deleteEnvelope}
-        chips={envelopes}
-        currentChip={currentEnvelope?.id || ''}
-        chipType="Envelope"
-        onChipClick={(i: number) => {
-          console.log(envelopes)
-          setCurrentEnvelope(envelopes[i])
-        }}
-      />
+    <>
       <div
         style={{
-          width: '100%',
+          display: 'flex',
+          padding: '32px',
+          gap: '32px',
         }}
       >
-        {currentEnvelope?.id && <form
+        <ChipManager
+          onCreate={createEnvelope}
+          onDelete={deleteEnvelope}
+          chips={envelopes}
+          currentChip={currentEnvelope?.id || ''}
+          chipType="Envelope"
+          onChipClick={(i: number) => {
+            console.log(toJS(envelopes[i]))
+            setCurrentEnvelope(envelopes[i])
+          }}
+        />
+        {currentEnvelope && (
+          <PhotoCaptureModal
+            open={openCamera}
+            project={currentProject}
+            onClose={() => setOpenCamera(false)}
+            photo={{ envelopeId: currentEnvelope?.id }}
+          />
+        )}
+        <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
+            width: '100%',
           }}
         >
-          <FormControl fullWidth>
-            <InputLabel id="envelope-type-label">Type</InputLabel>
-            <Select
-              labelId="envelope-type-label"
-              id="envelope-type-select"
+          {currentEnvelope?.id && <form
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+          >
+            <SelectInput
               label="Type"
-              value={currentEnvelope?.type}
+              value={currentEnvelope?.type || ''}
+              onChange={(value) => handleTypeChange(value)}
               disabled={currentEnvelope?.type ? true : false}
-              onChange={(e) => handleTypeChange(e.target.value)}
+              options={['Insulation', 'AirSealing']}
+            />
+            {renderForm()}
+            <Button
+              variant="contained"
+              startIcon={<CameraAltOutlinedIcon />}
+              onClick={() => setOpenCamera(true)}
             >
-              <MenuItem value={''} disabled={true}>Select Type</MenuItem>
-              <MenuItem value={'Insulation'}>Insulation</MenuItem>
-              <MenuItem value={'AirSealing'}>Air Sealing</MenuItem>
-            </Select>
-          </FormControl>
-          {renderForm()}
-        </form>}
+              Add Photo
+            </Button>
+          </form>}
+        </div>
       </div>
-    </div>
+    </>
   )
-}
+})
 
 export default Envelope

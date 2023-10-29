@@ -6,6 +6,7 @@ export async function createProjectBattery(
 ) {
   return await prisma.battery.create({
     data: {
+      id: batteryData.id,
       totalCapacity: batteryData.totalCapacity,
       ratedPowerOutput: batteryData.ratedPowerOutput,
       ratedPeakOutput: batteryData.ratedPeakOutput,

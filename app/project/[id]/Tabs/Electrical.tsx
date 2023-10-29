@@ -1,7 +1,5 @@
-"use client";
+'use client'
 
-// import ChipManager from "@/components/ChipManager";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useEffect, useState } from "react";
 import ElectricalPanelForm from "./ElectricalForms/ElectricalPanelForm";
 import SolarPanelForm from "./ElectricalForms/SolarPanelForm";
@@ -11,77 +9,45 @@ import GeneratorForm from "./ElectricalForms/GeneratorForm";
 import ChipManager from "@/components/ChipManager";
 import { Project, ProjectElectrical } from "@/types/types";
 import { v4 as uuidv4 } from 'uuid';
+import ModelStore from "@/app/stores/modelStore";
+import { observer } from "mobx-react-lite";
+import { SelectInput } from "@/components/Inputs";
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { Button } from "@mui/material";
 
 const TYPES = [
-  {name: "Electrical Panel", value: "electricalpanel"},
-  {name: "Solar", value: "solar"},
-  {name: "Battery", value: "battery"},
-  {name: "EV Charger", value: "evcharger"},
-  {name: "Generator", value: "generator"}
+  { name: 'Electrical Panel', value: 'electricalpanel' },
+  { name: 'Solar', value: 'solar' },
+  { name: 'Battery', value: 'battery' },
+  { name: 'EV Charger', value: 'evcharger' },
+  { name: 'Generator', value: 'generator' },
 ]
 
 interface ElectricalProps {
-  currentProject: Project;
+  currentProject: Project
 }
 
-const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
+const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
   const [electricals, setElectricals] = useState<ProjectElectrical[]>([])
-  const [currentElectrical, setCurrentElectrical] = useState<ProjectElectrical>({
-    id: "",
-    type: '',
-    panelType: '',
-    panelAmperageRating: 0,
-    availableNewCircuits: 0,
-    total15AmpCircuits: 0,
-    total20AmpCircuits: 0,
-    total30AmpCircuits: 0,
-    total40AmpCircuits: 0,
-    total50AmpCircuits: 0,
-    total60AmpCircuits: 0,
-    total70AmpCircuits: 0,
-    notes: '',
-    ownership: '',
-    moduleType: '',
-    tracking: '',
-    arrayOrientation: '',
-    arrayTilt: 0,
-    maxPowerOutput: 0,
-    numberOfPanels: 0,
-    annualOutput: 0,
-    chargingLevel: '',
-    amperage: 0,
-    acPowerSourceVolatge: 0,
-    maxChargingPower: 0,
-    totalCapacity: 0,
-    ratedPowerOutput: 0,
-    ratedPeakOutput: 0,
-    gridConnected: '',
-    generatorType: '',
-    fuelType: '',
-    ratedContinuousWattage: 0,
-    ratedPeakWattage: 0,
-    numberOfPhases: '',
-    transferSwitch: '',
-    connection: '',
-    yearInstalled: 0,
-    manufacturer: '',
-    modelNumber: '',
-    serialNumber: '',
-    location: '',
-  });
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
+  const [currentElectrical, setCurrentElectrical] =
+    useState<ProjectElectrical>()
 
   useEffect(() => {
     if (currentProject && currentProject?.electrical) {
       setElectricals(currentProject.electrical)
-      setCurrentElectrical(currentProject.electrical[0])
+
+      if (!currentElectrical) {
+        setCurrentElectrical(currentProject.electrical[0])
+      }
     }
-  }, [currentProject])
+  }, [currentProject, currentProject.electrical])
 
   function createElectrical() {
-
     const newElectrical = {
       id: uuidv4(),
-      name: "New Electrical",
+      name: 'New Electrical',
       type: '',
       panelType: '',
       panelAmperageRating: 0,
@@ -122,155 +88,150 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
       modelNumber: '',
       serialNumber: '',
       location: '',
-    };
+    }
 
-    const newElectricalsList = [...electricals, newElectrical];
-    setElectricals(newElectricalsList);
-    setCurrentElectrical(newElectrical);
+    const newElectricalsList = [...electricals, newElectrical]
+    setElectricals(newElectricalsList)
+    setCurrentElectrical(newElectrical)
   }
 
   const handleTypeChange = (name: string, value: string) => {
-    const updatedElectrical = {...currentElectrical, [name]: value}
+    const updatedElectrical = { ...currentElectrical, [name]: value }
     handlePostElectrical(updatedElectrical, value)
   }
 
-  async function handlePostElectrical(updatedElectrical: ProjectElectrical, type: string) {
-    const api = type === 'electricalpanel' ? 'panel' : (type === 'evcharger' ? 'evCharger' : type);
-
-    try {
-      const oldId = updatedElectrical.id;
-      delete updatedElectrical.id;
-      const data = await fetch(`/api/electrical/${api}`, {
-        method: 'POST',
-        body: JSON.stringify({
-            ...updatedElectrical,
-            projectId: currentProject.id
-          })
-      });
-
-      if (data.ok) {
-        const response = await data.json()
-        const createdElectrical = {...response, type: updatedElectrical.type}
-
-        const updatedElectricals = electricals.map((electrical) => {
-          if (electrical.id === oldId) {
-            return { ...electrical, ...createdElectrical };
-          }
-          return electrical;
-        });
-
-        setElectricals(updatedElectricals);
-        setCurrentElectrical(createdElectrical)
-      } else {
-        throw new Error('Failed to create a new appliance.');
+  async function handlePostElectrical(
+    updatedElectrical: ProjectElectrical,
+    type: string
+  ) {
+    updatedElectrical.type = type
+    const response = await ModelStore.createElectrical(
+      currentProject.id!,
+      updatedElectrical
+    )
+    const createdElectrical = { ...response, type: updatedElectrical.type }
+    const updatedElectricals = electricals.map((electrical) => {
+      if (electrical.id === updatedElectrical.id) {
+        return { ...electrical, ...createdElectrical }
       }
-    } catch (error) {
-      console.error('Error creating a new appliance:', error);
-      throw error;
-    }
+      return electrical
+    })
+    setElectricals(updatedElectricals)
+    setCurrentElectrical(createdElectrical)
   }
 
   async function deleteElectrical(electricalId: string) {
-    const electricalToDelete = electricals.find(electrical => electrical.id === electricalId);
+    const electricalToDelete = electricals.find(
+      (electrical) => electrical.id === electricalId
+    )
 
     if (!electricalToDelete) {
-      return;
+      return
     }
 
     if (!electricalToDelete.type) {
-      const newElectricalList = electricals.filter(r => r.id !== electricalId);
-      setElectricals(newElectricalList);
-      setCurrentElectrical(newElectricalList[0] || {});
-      return;
-    }
-
-    const api = electricalToDelete.type.toLowerCase() === 'electricalpanel' ? 'panel' : (electricalToDelete.type.toLowerCase() === 'evcharger' ? 'evCharger' : electricalToDelete.type.toLowerCase());
-
-    try {
-      const response = await fetch(`/api/electrical/${api}/${electricalId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        console.log('Electrical deleted successfully.');
-        const newElectricalsList = electricals.filter(r => r.id !== electricalId);
-        setElectricals(newElectricalsList);
-        setCurrentElectrical(newElectricalsList[0] || {});
-      } else {
-        throw new Error('Failed to delete the electrical.');
-      }
-    } catch (error) {
-      console.error('Error deleting the electrical:', error);
-      throw error;
-    }
-  }
-
-  async function patchElectrical(updatedElectrical = currentElectrical) {
-    if (!updatedElectrical.type) {
+      const newElectricalList = electricals.filter((r) => r.id !== electricalId)
+      setElectricals(newElectricalList)
+      setCurrentElectrical(newElectricalList[0] || {})
       return
     }
-    const api = updatedElectrical.type.toLowerCase() === 'electricalpanel' ? 'panel' : (updatedElectrical.type.toLowerCase() === 'evcharger' ? 'evCharger' : updatedElectrical.type.toLowerCase());
+
+    await ModelStore.deleteElectrical(
+      currentProject.id!,
+      electricalToDelete.type,
+      electricalToDelete.id!
+    )
+    console.log('Electrical deleted successfully.')
+    const newElectricalsList = electricals.filter((r) => r.id !== electricalId)
+    setElectricals(newElectricalsList)
+    setCurrentElectrical(newElectricalsList[0] || {})
+  }
+
+  async function patchElectrical() {
+    const updatedElectrical = {...currentElectrical}
+
+    if (!updatedElectrical?.type) {
+      return
+    }
 
     if (updatedElectrical) {
-      try {
-        const data = await fetch(`/api/electrical/${api}/${updatedElectrical.id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            ...updatedElectrical,
-            projectId: currentProject.id
-          })
-        });
+      const response = await ModelStore.updateElectrical(
+        currentProject.id!,
+        updatedElectrical
+      )
+      response.type = updatedElectrical.type
 
-        if (data.ok) {
-          const response = await data.json();
-          response.type = updatedElectrical.type;
-
-          const updatedElectricals = electricals.map((electrical) => {
-            if (electrical.id === updatedElectrical.id) {
-              return { ...electrical, ...updatedElectrical };
-            }
-            return electrical;
-          });
-
-          setElectricals(updatedElectricals);
-          setCurrentElectrical(response);
-          console.log(response);
-        } else {
-          throw new Error('Failed to update the appliance.');
+      const updatedElectricals = electricals.map((electrical) => {
+        if (electrical.id === updatedElectrical.id) {
+          return { ...electrical, ...updatedElectrical }
         }
-      } catch (error) {
-        console.error(error);
-      }
+        return electrical
+      })
+
+      setElectricals(updatedElectricals)
     }
   }
 
-  function handleInputChange(inputName: string, value: string | number | boolean) {
+  function handleInputChange(
+    inputName: string,
+    value: string | number | boolean
+  ) {
     if (currentElectrical) {
       const updatedElectrical: ProjectElectrical = {
         ...currentElectrical,
         [inputName]: value,
-      };
-      setCurrentElectrical(updatedElectrical);
+      }
+      setCurrentElectrical(updatedElectrical)
     }
   }
 
   const renderForm = () => {
-    switch(currentElectrical?.type?.toLowerCase()) {
+    switch (currentElectrical?.type?.toLowerCase()) {
       case 'electricalpanel':
-        return (<ElectricalPanelForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical} />);
+        return (
+          <ElectricalPanelForm
+            onUpdate={patchElectrical}
+            onChange={handleInputChange}
+            currentElectrical={currentElectrical}
+          />
+        )
       case 'solar':
-        return (<SolarPanelForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (
+          <SolarPanelForm
+            onUpdate={patchElectrical}
+            onChange={handleInputChange}
+            currentElectrical={currentElectrical}
+          />
+        )
       case 'battery':
-        return (<BatteryForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (
+          <BatteryForm
+            onUpdate={patchElectrical}
+            onChange={handleInputChange}
+            currentElectrical={currentElectrical}
+          />
+        )
       case 'evcharger':
-        return (<EVChargerForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (
+          <EVChargerForm
+            onUpdate={patchElectrical}
+            onChange={handleInputChange}
+            currentElectrical={currentElectrical}
+          />
+        )
       case 'generator':
-        return (<GeneratorForm onUpdate={patchElectrical} onChange={handleInputChange} currentElectrical={currentElectrical}/>);
+        return (
+          <GeneratorForm
+            onUpdate={patchElectrical}
+            onChange={handleInputChange}
+            currentElectrical={currentElectrical}
+          />
+        )
       default:
-        return null;
+        return null
     }
   }
-  
+
   return (
     <div
       style={{
@@ -287,6 +248,14 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
         currentChip={currentElectrical?.id || ''}
         onChipClick={(i: number) => setCurrentElectrical(electricals[i])}
       />
+      {currentElectrical && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+          photo={{ electricalId: currentElectrical?.id }}
+        />
+      )}
      {currentElectrical?.id && <div style={{
         width: '100%',
       }}>
@@ -295,28 +264,25 @@ const Electrical: React.FC<ElectricalProps> = ({ currentProject }) => {
           flexDirection: 'column',
           gap: '16px',
         }}>
-          <FormControl fullWidth>
-            <InputLabel id="type-label">Type</InputLabel>
-            <Select
-              labelId="type-label"
-              id="type-select"
-              label="Type"
-              value={currentElectrical?.type?.toLowerCase()}
-              onChange={({ target }) => handleTypeChange('type', target.value)}
-              disabled={currentElectrical?.type ? true : false}
-            >
-              {
-                TYPES.map((type, i) => (
-                  <MenuItem key={i} value={type.value}>{type.name}</MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>
+          <SelectInput
+            label="Type"
+            value={currentElectrical?.type?.toLowerCase() || ''}
+            onChange={(value) => handleTypeChange('type', value)}
+            disabled={currentElectrical?.type ? true : false}
+            options={TYPES}
+          />
           {renderForm()}
+          <Button
+            variant="contained"
+            startIcon={<CameraAltOutlinedIcon />}
+            onClick={() => setOpenCamera(true)}
+          >
+            Add Photo
+          </Button>
         </form>
       </div>}
     </div>
   )
-}
+})
 
 export default Electrical

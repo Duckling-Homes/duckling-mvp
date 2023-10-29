@@ -1,27 +1,27 @@
-version: "3"
+version: '3'
 services:
   postgres:
     container_name: duckling-postgres
     image: postgres:latest
     ports:
-      - "5447:5432"
+      - '5447:5432'
     volumes:
       - ./tmp/data/postgres:/data/postgres
     env_file:
       - docker.env
-  
+
   minio:
     container_name: duckling-minio
     image: minio/minio
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - '9000:9000'
+      - '9001:9001'
     volumes:
       - ./tmp/data/minio:/data
     environment:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123
-    command: ["server", "/data", "--console-address", ":9001"]
+    command: ['server', '/data', '--console-address', ':9001']
 
   setup_minio:
     build:

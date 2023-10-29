@@ -49,6 +49,9 @@ model Project {
   organizationId   String
   organization     Organization @relation(fields: [organizationId], references: [id])
 
+  heroImageId      String? @unique
+  heroImage        Image? @relation(name: "HeroImageRelation", fields: [heroImageId], references: [id])
+
   projectData       ProjectData?
   projectRooms      ProjectRoom[]
   insulation        ProjectInsulation[]
@@ -62,10 +65,11 @@ model Project {
   batteries         Battery[]
   generators        Generator[]
   evChargers        EvCharger[]
-
+  relatedImages     Image[] @relation(name: "ProjectToImage")
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
+
 
 model ProjectData {
   id                      String @id @default(uuid())
@@ -333,4 +337,22 @@ model GoalTag {
   name            String @unique
   organizationId  String
   organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Image {
+  id                  String  @id @default(uuid())
+  name                String?
+  homeownerNotes      String?
+  internalNotes       String?
+  roomId              String?
+  envelopeId          String?
+  applianceId         String?
+  electricalId        String?
+
+  projectId           String
+  project             Project @relation(name: "ProjectToImage", fields: [projectId], references: [id], onDelete: Cascade)
+  projectHeroImage    Project? @relation(name: "HeroImageRelation")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }

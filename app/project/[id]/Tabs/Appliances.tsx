@@ -1,7 +1,6 @@
-"use client";
+'use client'
 
 import ChipManager from "@/components/ChipManager";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useEffect, useState } from "react";
 import HVACForm from "./AppliancesForms/HVACForm";
 import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
@@ -9,24 +8,30 @@ import CooktopForm from "./AppliancesForms/CooktopForm";
 import DefaultForm from "./AppliancesForms/DefaultForm";
 import { Project, ProjectAppliance } from "@/types/types";
 import { v4 as uuidv4 } from 'uuid';
+import ModelStore from "@/app/stores/modelStore";
+import { SelectInput } from "@/components/Inputs";
+import { Button } from "@mui/material";
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 
 const TYPES = [
-  {name: "HVAC", value: "hvac"},
-  {name: "Water Heater", value: 'waterheater'},
-  {name: "Refrigerator", value: "refrigerator"},
-  {name: "Washing Machine", value: "washingmachine"},
-  {name: "Dryer", value: "dryer"},
-  {name: "Dishwasher", value: "dishwasher"},
-  {name: "Cooktop", value: "cooktop"},
-  {name: "Oven", value: "oven"},
-  {name: "Other", value: "other"}
+  { name: 'HVAC', value: 'hvac' },
+  { name: 'Water Heater', value: 'waterheater' },
+  { name: 'Refrigerator', value: 'refrigerator' },
+  { name: 'Washing Machine', value: 'washingmachine' },
+  { name: 'Dryer', value: 'dryer' },
+  { name: 'Dishwasher', value: 'dishwasher' },
+  { name: 'Cooktop', value: 'cooktop' },
+  { name: 'Oven', value: 'oven' },
+  { name: 'Other', value: 'other' },
 ]
 interface AppliancesProps {
-  currentProject: Project;
+  currentProject: Project
 }
 
 const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
-  const [appliances, setAppliances] = useState<ProjectAppliance[]>([]);
+  const appliances = currentProject.appliances ?? []
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({
     id: '',
     name: '',
@@ -44,72 +49,57 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     location: '',
     notes: '',
     isInduction: false,
-  });
+  })
 
   useEffect(() => {
     if (currentProject && currentProject?.appliances) {
-      setAppliances(currentProject.appliances)
       setCurrentAppliance(currentProject.appliances[0])
     }
-  }, [currentProject])
-
+  }, [currentProject, currentProject?.appliances])
 
   async function deleteAppliance(applianceId: string) {
-    const applianceToDelete = appliances.find(appliance => appliance.id === applianceId);
-    let api = '';
+    const appliances = currentProject.appliances ?? []
+    const applianceToDelete = appliances.find(
+      (appliance) => appliance.id === applianceId
+    )
+    let api = ''
 
     if (applianceToDelete?.type) {
-      switch(applianceToDelete.type.toLowerCase()) {
+      switch (applianceToDelete.type.toLowerCase()) {
         case 'hvac':
-          api = 'hvac';
-          break;
+          api = 'hvac'
+          break
         case 'cooktop':
-          api = 'cooktop';
-          break;
+          api = 'cooktop'
+          break
         case 'waterheater':
-          api = 'waterHeater';
-          break;
+          api = 'waterHeater'
+          break
         default:
-          api = 'other';
-          break;
+          api = 'other'
+          break
       }
-    };
+    }
 
     if (!applianceToDelete) {
-      return;
+      return
     }
 
     if (!applianceToDelete.type) {
-      const newApplianceList = appliances.filter(r => r.id !== applianceId);
-      setAppliances(newApplianceList);
-      setCurrentAppliance(newApplianceList[0] || {});
-      return;
+      const newApplianceList = appliances.filter((r) => r.id !== applianceId)
+      setCurrentAppliance(newApplianceList[0] || {})
+      return
     }
 
-    try {
-      const response = await fetch(`/api/appliances/${api}/${applianceId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        console.log('Appliance deleted successfully.');
-        const newApplianceList = appliances.filter(r => r.id !== applianceId);
-        setAppliances(newApplianceList);
-        setCurrentAppliance(newApplianceList[0] || {});
-      } else {
-        throw new Error('Failed to delete the appliance.');
-      }
-    } catch (error) {
-      console.error('Error deleting the appliance:', error);
-      throw error;
-    }
+    await ModelStore.deleteAppliance(currentProject.id!, api, applianceId)
+    const newApplianceList = appliances.filter((r) => r.id !== applianceId)
+    setCurrentAppliance(newApplianceList[0] || {})
   }
 
   function createAppliance() {
-
     const newAppliance = {
       id: uuidv4(),
-      name: "New Appliance",
+      name: 'New Appliance',
       type: '',
       hvacSystemType: '',
       havcSystem: '',
@@ -124,150 +114,126 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       location: '',
       notes: '',
       isInduction: false,
-    };
+    }
 
-    const newApplianceList = [...appliances, newAppliance];
-    setAppliances(newApplianceList);
-    setCurrentAppliance(newAppliance);
+    setCurrentAppliance(newAppliance)
   }
 
   const handleTypeChange = (name: string, value: string) => {
-    const updatedAppliance = {...currentAppliance, [name]: value}
+    const updatedAppliance = { ...currentAppliance, [name]: value }
     handlePostAppliance(updatedAppliance, value)
   }
 
-  async function handlePostAppliance(updatedAppliance: ProjectAppliance, type: string) {
-
+  async function handlePostAppliance(
+    updatedAppliance: ProjectAppliance,
+    type: string
+  ) {
     let api = ''
-    switch(type.toLowerCase()) {
+    switch (type.toLowerCase()) {
       case 'hvac':
-        api = 'hvac';
-        break;
+        api = 'hvac'
+        break
       case 'cooktop':
-        api = 'cooktop';
-        break;
+        api = 'cooktop'
+        break
       case 'waterheater':
-        api = 'waterHeater';
-        break;
+        api = 'waterHeater'
+        break
       default:
-        api = 'other';
-        break;
+        api = 'other'
+        break
     }
 
-    try {
-      const oldId = updatedAppliance.id;
-      delete updatedAppliance.id;
-
-      const data = await fetch(`/api/appliances/${api}`, {
-        method: 'POST',
-        body: JSON.stringify({
-            ...updatedAppliance,
-            projectId: currentProject.id
-          })
-      });
-
-      if (data.ok) {
-        const response = await data.json()
-        const createdAppliance = {...response, type: updatedAppliance.type}
-        const updatedAppliances = appliances.map((appliance) => {
-          if (appliance.id === oldId) {
-            return { ...appliance, ...createdAppliance };
-          }
-          return appliance;
-        });
-
-        setAppliances(updatedAppliances);
-        setCurrentAppliance(createdAppliance);
-      } else {
-        throw new Error('Failed to create a new appliance.');
-      }
-    } catch (error) {
-      console.error('Error creating a new appliance:', error);
-      throw error;
-    }
+    const appliance = await ModelStore.createAppliance(
+      currentProject.id!,
+      api,
+      updatedAppliance
+    )
+    setCurrentAppliance(appliance)
   }
 
-  async function patchAppliance(updatedAppliance = currentAppliance) {
+  async function patchAppliance() {
+    const updatedAppliance = currentAppliance
     let api = ''
-    console.log(updatedAppliance)
 
     if (updatedAppliance.type) {
-      switch(updatedAppliance.type.toLowerCase()) {
+      switch (updatedAppliance.type.toLowerCase()) {
         case 'hvac':
-          api = 'hvac';
-          break;
+          api = 'hvac'
+          break
         case 'cooktop':
-          api = 'cooktop';
-          break;
+          api = 'cooktop'
+          break
         case 'waterheater':
-          api = 'waterHeater';
-          break;
+          api = 'waterHeater'
+          break
         default:
-          api = 'other';
-          break;
+          api = 'other'
+          break
       }
     }
-
 
     if (updatedAppliance) {
-      try {
-        const data = await fetch(`/api/appliances/${api}/${updatedAppliance.id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            ...updatedAppliance,
-            projectId: currentProject.id
-          })
-        });
-
-        if (data.ok) {
-          const response = await data.json();
-          response.type = updatedAppliance.type;
-
-          const updatedAppliances = appliances.map((appliance) => {
-            if (appliance.id === updatedAppliance.id) {
-              return { ...appliance, ...updatedAppliance };
-            }
-            return appliance;
-          });
-
-          setAppliances(updatedAppliances);
-          setCurrentAppliance(response);
-          console.log(response);
-        } else {
-          throw new Error('Failed to update the appliance.');
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      const updated = await ModelStore.updateAppliance(
+        currentProject.id!,
+        api,
+        updatedAppliance
+      )
+      setCurrentAppliance(updated)
     }
   }
 
-  function handleInputChange(inputName: string, value: string | number | boolean) {
-    console.log('inputName')
+  function handleInputChange(
+    inputName: string,
+    value: string | number | boolean
+  ) {
     if (currentAppliance) {
-      const updatedAppliance = { ...currentAppliance, [inputName]: value };
-      setCurrentAppliance(updatedAppliance);
+      const updatedAppliance = { ...currentAppliance, [inputName]: value }
+      setCurrentAppliance(updatedAppliance)
     }
   }
-
 
   const renderForm = () => {
-    switch(currentAppliance?.type?.toLowerCase()) {
+    switch (currentAppliance?.type?.toLowerCase()) {
       case 'hvac':
-        return (<HVACForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (
+          <HVACForm
+            onUpdate={() => patchAppliance()}
+            onChange={handleInputChange}
+            currentAppliance={currentAppliance}
+          />
+        )
       case 'waterheater':
-        return (<WaterHeaterForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (
+          <WaterHeaterForm
+            onUpdate={() => patchAppliance()}
+            onChange={handleInputChange}
+            currentAppliance={currentAppliance}
+          />
+        )
       case 'cooktop':
-        return (<CooktopForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+        return (
+          <CooktopForm
+            onUpdate={() => patchAppliance()}
+            onChange={handleInputChange}
+            currentAppliance={currentAppliance}
+          />
+        )
       default:
         if (currentAppliance?.type) {
-          return (<DefaultForm onUpdate={patchAppliance} onChange={handleInputChange} currentAppliance={currentAppliance}/>);
+          return (
+            <DefaultForm
+              onUpdate={() => patchAppliance()}
+              onChange={handleInputChange}
+              currentAppliance={currentAppliance}
+            />
+          )
         } else {
-          return (null);
+          return null
         }
     }
   }
-  
+
   return (
     <div
       style={{
@@ -284,6 +250,14 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         currentChip={currentAppliance?.id || ''}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
+      {currentAppliance && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+          photo={{ applianceId: currentAppliance?.id }}
+        />
+      )}
       {currentAppliance?.id && <div style={{
         width: '100%',
       }}>
@@ -292,24 +266,23 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
           flexDirection: 'column',
           gap: '16px',
         }}>
-          <FormControl fullWidth>
-            <InputLabel id="type-label">Type</InputLabel>
-            <Select
-              labelId="type-label"
-              id="type-select"
-              label="Type"
-              disabled={currentAppliance?.type ? true : false}
-              value={(currentAppliance?.type)?.toLowerCase()}
-              onChange={({ target }) => handleTypeChange('type', target.value)}
-            >
-              {
-                TYPES.map((type, i) => (
-                  <MenuItem key={i} value={type.value}>{type.name}</MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>
+          <SelectInput
+            label="Type"
+            value={(currentAppliance?.type)?.toLowerCase() || ''}
+            onChange={(value) => handleTypeChange('type', value)}
+            disabled={currentAppliance?.type ? true : false}
+            options={TYPES}
+          />
           {renderForm()}
+          {currentAppliance?.type && (
+            <Button
+              variant="contained"
+              startIcon={<CameraAltOutlinedIcon />}
+              onClick={() => setOpenCamera(true)}
+            >
+              Add Photo
+            </Button>
+          )}
         </form>
       </div>}
     </div>

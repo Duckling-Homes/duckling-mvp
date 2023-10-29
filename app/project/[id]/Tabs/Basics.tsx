@@ -1,151 +1,137 @@
-"use client";
+'use client'
 
-import React, { useEffect, useState } from "react";
-import ModelStore from "@/app/stores/modelStore";
-import { AddPhotoAlternate } from "@mui/icons-material";
+import React, { useEffect, useState } from 'react'
+import ModelStore from '@/app/stores/modelStore'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import {
   Button,
   Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Project } from "@/types/types";
+import { Project, ProjectData } from "@/types/types";
 import dayjs from "dayjs";
+import { SelectInput, TextInput } from "@/components/Inputs";
+import DatePickerInput from "@/components/Inputs/DatePickerInput";
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 
 interface BasicsProps {
   currentProject: Project
 }
 
 const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
-  const [data, setData] = useState<Project["data"]>({
-    squareFootage: 0,
-    roomCount: 0,
-    bathroomCount: 0,
-    stories: 0,
-    yearBuilt: 0,
-    basementType: '',
-  });
+  const [data, setData] = useState<Project['data']>()
+  const [openCamera, setOpenCamera] = useState<boolean>(false)
 
   useEffect(() => {
-    if (currentProject?.data) {
-      setData(currentProject.data);
+    if (!data && currentProject?.data) {
+      setData(currentProject.data)
     }
-  }, [currentProject]);
+  }, [currentProject.data])
 
-  const handleInputChange = async (inputName: string, value: string | number) => {
+  const handleInputChange = async (
+    inputName: string,
+    value: string | number
+  ) => {
     if (currentProject && currentProject.id) {
       const updatedData = { ...data, [inputName]: value };
       setData(updatedData);
-      await ModelStore.patchProjectData(currentProject.id, updatedData);
     }
-  };
+  }
 
-  const blurActiveElement = () => {
-    const activeElement = document.activeElement as HTMLInputElement;
-    if (activeElement) {
-      activeElement.blur();
-    }
-  };
+  const updateData = async () => {
+    await ModelStore.patchProjectData(currentProject.id as string, data as ProjectData)
+  }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <>
+     {currentProject && (
+        <PhotoCaptureModal
+          open={openCamera}
+          project={currentProject}
+          onClose={() => setOpenCamera(false)}
+        />
+      )}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         padding: '32px',
-        gap: '24px',
       }}>
-        <form style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-        }}>
-          <TextField
-            id="outlined-basic"
+        <form
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+          }}
+        >
+          <TextInput
             label="Square Footage"
-            variant="outlined"
-            placeholder='Square Footage'
-            type="number"
+            placeholder="Square Footage"
+            type="tel"
             value={data?.squareFootage || ''}
-            onChange={(e) => handleInputChange('squareFootage', parseInt(e.target.value))}
-            onWheel={blurActiveElement}
+            onChange={(value) => handleInputChange('squareFootage', parseInt(value))}
+            onBlur={updateData}
+            endAdornment='sq ft'
           />
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Number of Rooms"
-            variant="outlined"
-            placeholder='Number of Rooms'
-            type="number"
+            placeholder="Number of Rooms"
+            type="tel"
             value={data?.roomCount || ''}
-            onChange={(e) => handleInputChange('roomCount', parseInt(e.target.value))}
-            onWheel={blurActiveElement}
+            onChange={(value) => handleInputChange('roomCount', parseInt(value))}
+            onBlur={updateData}
           />
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Number of Bathrooms"
-            variant="outlined"
-            placeholder='Number of Bathrooms'
-            type="number"
+            placeholder="Number of Bathrooms"
+            type="tel"
             value={data?.bathroomCount || ''}
-            onChange={(e) => handleInputChange('bathroomCount', parseInt(e.target.value))}
-            onWheel={blurActiveElement}
+            onChange={(value) => handleInputChange('bathroomCount', parseInt(value))}
+            onBlur={updateData}
           />
-          <TextField
-            id="outlined-basic"
+          <TextInput
             label="Stories"
-            variant="outlined"
-            placeholder='Stories'
-            type="number"
+            placeholder="Stories"
+            type="tel"
             value={data?.stories || ''}
-            onChange={(e) => handleInputChange('stories', parseInt(e.target.value))}
-            onWheel={blurActiveElement}
+            onChange={(value) => handleInputChange('stories', parseInt(value))}
+            onBlur={updateData}
           />
-          <DatePicker
+          <DatePickerInput
             label="Year Built"
-            openTo="year"
-            views={['year']}
             onChange={(e) => handleInputChange('yearBuilt', e!.year())}
-            value={data && typeof data.yearBuilt === 'number' ? dayjs(new Date(data.yearBuilt, 0)) : dayjs()}
+            value={
+              data && typeof data.yearBuilt === 'number'
+                ? dayjs(new Date(data.yearBuilt, 0))
+                : dayjs()
+            }
             maxDate={dayjs()}
           />
-          <FormControl fullWidth>
-            <InputLabel id="basement-type-label">Basement Type</InputLabel>
-            <Select
-              labelId="basement-type-label"
-              id="basement-type-select"
-              label="Basement Type"
-              value={data?.basementType || ''}
-              onChange={(e) => handleInputChange('basementType', e.target.value)}
-            >
-              <MenuItem value={'Finished'}>Finished</MenuItem>
-              <MenuItem value={'Unfinished'}>Unfinished</MenuItem>
-              <MenuItem value={'Crawlspace'}>Crawlspace</MenuItem>
-              <MenuItem value={'No Basement'}>No Basement</MenuItem>
-            </Select>
-          </FormControl>
+          <SelectInput
+            label="Basement Type"
+            value={data?.basementType || ''}
+            onChange={(value) => handleInputChange('basementType', value)}
+            options={['Finished', 'Unfinished', 'Crawlspace', 'No Basement']}
+            onBlur={updateData}
+          />
         </form>
         <Divider />
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Button
             variant="contained"
             size="small"
-            startIcon={<AddPhotoAlternate />}
+            startIcon={<CameraAltOutlinedIcon />}
+            onClick={() => setOpenCamera(true)}
           >
             Add Photos
           </Button>
         </div>
       </div>
-    </LocalizationProvider>
+    </>
   )
 }
 
