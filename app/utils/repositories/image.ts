@@ -51,8 +51,18 @@ export async function createImage(
         envelopeId: imageData.envelopeId,
         applianceId: imageData.applianceId,
         electricalId: imageData.electricalId,
-        projectId: imageData.projectId,
-        duplicatedFromId: imageData.duplicatedFromId || null,
+        project: {
+          connect: {
+            id: imageData.projectId,
+          },
+        },
+        duplicatedFrom: imageData.duplicatedFromId
+          ? {
+              connect: {
+                id: imageData.duplicatedFromId,
+              },
+            }
+          : undefined, // If duplicatedFromId is not provided, it will remain undefined
       },
     })
 
