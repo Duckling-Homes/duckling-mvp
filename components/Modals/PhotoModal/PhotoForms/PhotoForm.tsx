@@ -6,7 +6,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
   FormControlLabel,
   Button,
 } from '@mui/material'
@@ -17,7 +16,7 @@ import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { PhotoDetails, Project } from '@/types/types'
 import ModelStore from '@/app/stores/modelStore'
-import { SelectInput, TextInput } from '@/components/Inputs';
+import { TextInput } from '@/components/Inputs';
 
 interface PhotoFormProps {
   onClose: () => void
@@ -75,8 +74,6 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
       setIsLoading(false);
     }
   }
-
-  const ROOMS = rooms.map((room) => ({ name: room.name, value: room.id }));
 
   return (
     <div
