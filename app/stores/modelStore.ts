@@ -156,7 +156,6 @@ export class _ModelStore {
 
   updateEnvelope = async (projectID: string, envelope: ProjectEnvelope) => {
     const updated = await SyncAPI.envelopes.update(projectID, envelope)
-    await this.loadProject(projectID)
     return updated
   }
 

@@ -34,7 +34,7 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
     }
   }, [currentProject, currentProject.envelopes])
 
-  const handleTypeChange = (value: string) => {
+  function handleTypeChange(value: string) {
     const updatedEnvelope = { ...currentEnvelope, type: value }
     handlePostEnvelope(updatedEnvelope, value)
   }
@@ -43,13 +43,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
     const newEnvelope = {
       id: v4(),
       name: 'New Envelope',
-      type: '',
-      location: '',
-      leakinessDescription: '',
-      insulationLocation: '',
-      insulationCondition: '',
-      notes: '',
-      condition: '',
     }
 
     const newEnvelopeList = [...envelopes, newEnvelope]
@@ -106,19 +99,27 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
     }
   }
 
-  async function patchEnvelope(updatedEnvelope = currentEnvelope) {
-    if (updatedEnvelope && updatedEnvelope.id) {
-      const response = await ModelStore.updateEnvelope(
-        currentProject.id!,
-        updatedEnvelope
-      )
-      response.type = updatedEnvelope.type
+  async function patchEnvelope(
+    propName: string, updatedEnvelope = currentEnvelope) {
+    if (updatedEnvelope?.id) {
+      const envelopeToUpdate = {
+        id: updatedEnvelope.id,
+        type: updatedEnvelope.type,
+        [propName]: updatedEnvelope[propName]
+      }
+
       const updatedEnvelopes = envelopes.map((envelope) => {
         if (envelope.id === updatedEnvelope.id) {
-          return { ...envelope, ...updatedEnvelope }
+          return { ...envelope, [propName]: updatedEnvelope[propName] }
         }
         return envelope
       })
+
+      await ModelStore.updateEnvelope(
+        currentProject.id!,
+        envelopeToUpdate
+      )
+
       setEnvelopes(updatedEnvelopes)
     }
   }
@@ -128,7 +129,7 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
       case 'Insulation':
         return (
           <InsulationForm
-            onUpdate={() => patchEnvelope()}
+            onUpdate={(inputName: string) => patchEnvelope(inputName)}
             onChange={handleInputChange}
             currentEnvelope={currentEnvelope}
           />
@@ -136,7 +137,7 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
       case 'AirSealing':
         return (
           <AirSealingForm
-            onUpdate={() => patchEnvelope()}
+            onUpdate={(inputName: string) => patchEnvelope(inputName)}
             onChange={handleInputChange}
             currentEnvelope={currentEnvelope}
           />
