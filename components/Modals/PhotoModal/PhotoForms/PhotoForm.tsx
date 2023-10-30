@@ -35,11 +35,7 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
   project,
   onChange,
 }) => {
-<<<<<<< HEAD
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-=======
   const [isLoading, setIsLoading] = useState<boolean>(false)
->>>>>>> c8ac7e9fed9a6da70da33c88072949a4eb7b6334
 
   const rooms = project.rooms ?? []
   const envelopes = project.envelopes ?? []
