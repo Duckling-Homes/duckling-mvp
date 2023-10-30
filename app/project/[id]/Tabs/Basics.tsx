@@ -124,6 +124,7 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
           <Button
             variant="contained"
             size="small"
+            style={ {top: '20px'} }
             startIcon={<CameraAltOutlinedIcon />}
             onClick={() => setOpenCamera(true)}
           >

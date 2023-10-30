@@ -8,6 +8,7 @@ import { Button, Chip, FormControl, FormGroup, FormLabel, ToggleButton, ToggleBu
 import { useEffect, useState } from "react";
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import PhotoDisplay from "@/components/PhotoDisplay";
 
 const COMFORT_ISSUES = [
   'Drafty',
@@ -306,6 +307,10 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
             value={currentRoom?.notes || ''}
             multiline={true}
           />
+          <PhotoDisplay
+            currentProject={currentProject}
+            filterCriteria={ { roomId: currentRoom.id! } }
+          ></PhotoDisplay>
           <Button
             variant="contained"
             startIcon={<CameraAltOutlinedIcon />}
