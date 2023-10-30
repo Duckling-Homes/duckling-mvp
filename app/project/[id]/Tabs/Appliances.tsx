@@ -95,8 +95,11 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       id: uuidv4(),
       name: 'New Appliance',
     }
-
-    setCurrentAppliance(newAppliance)
+    const newApplianceList = [...appliances];
+    newApplianceList.push(newAppliance);
+    
+    setAppliances(newApplianceList);
+    setCurrentAppliance(newAppliance);
   }
 
   const handleTypeChange = (name: string, value: string) => {
