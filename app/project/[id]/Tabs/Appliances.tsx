@@ -1,7 +1,7 @@
 'use client'
 
-import ChipManager from "@/components/ChipManager";
 import { useEffect, useState } from "react";
+import ChipManager from "@/components/ChipManager";
 import HVACForm from "./AppliancesForms/HVACForm";
 import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
 import CooktopForm from "./AppliancesForms/CooktopForm";
@@ -31,90 +31,69 @@ interface AppliancesProps {
 }
 
 const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
-  const appliances = currentProject.appliances ?? []
+  const [appliances, setAppliances] = useState<ProjectAppliance[]>([])
   const [openCamera, setOpenCamera] = useState<boolean>(false)
-  const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({
-    id: '',
-    name: '',
-    type: '',
-    hvacSystemType: '',
-    havcSystem: '',
-    fuel: '',
-    age: 0,
-    manufacturer: '',
-    modelNumber: '',
-    serialNumber: '',
-    heatingCapacity: 0,
-    coolingCapacity: 0,
-    tankVolume: 0,
-    location: '',
-    notes: '',
-    isInduction: false,
-  })
+  const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({})
 
   useEffect(() => {
-    if (currentProject && currentProject?.appliances) {
-      setCurrentAppliance(currentProject.appliances[0])
+    if (currentProject?.appliances) {
+      setAppliances(currentProject.appliances)
+
+      if (!currentAppliance) {
+        setCurrentAppliance(currentProject.appliances[0])
+      }
     }
   }, [currentProject, currentProject?.appliances])
 
+  function getTypeApi(type: string) {
+    let api = ''
+    switch (type.toLowerCase()) {
+      case 'hvac':
+        api = 'hvac'
+        break
+      case 'cooktop':
+        api = 'cooktop'
+        break
+      case 'waterheater':
+        api = 'waterHeater'
+        break
+      default:
+        api = 'other'
+        break
+    }
+
+    return api
+  }
+
   async function deleteAppliance(applianceId: string) {
-    const appliances = currentProject.appliances ?? []
+    const appliances = currentProject.appliances ?? [];
     const applianceToDelete = appliances.find(
       (appliance) => appliance.id === applianceId
-    )
-    let api = ''
-
-    if (applianceToDelete?.type) {
-      switch (applianceToDelete.type.toLowerCase()) {
-        case 'hvac':
-          api = 'hvac'
-          break
-        case 'cooktop':
-          api = 'cooktop'
-          break
-        case 'waterheater':
-          api = 'waterHeater'
-          break
-        default:
-          api = 'other'
-          break
-      }
-    }
+    );
 
     if (!applianceToDelete) {
-      return
+      return;
     }
+
+    const api = applianceToDelete?.type ?
+      getTypeApi(applianceToDelete.type) : '';
+
 
     if (!applianceToDelete.type) {
-      const newApplianceList = appliances.filter((r) => r.id !== applianceId)
-      setCurrentAppliance(newApplianceList[0] || {})
-      return
+      const newApplianceList = appliances.filter((r) => r.id !== applianceId);
+      setCurrentAppliance(newApplianceList[0] || {});
+      return;
     }
 
-    await ModelStore.deleteAppliance(currentProject.id!, api, applianceId)
-    const newApplianceList = appliances.filter((r) => r.id !== applianceId)
-    setCurrentAppliance(newApplianceList[0] || {})
+    await ModelStore.deleteAppliance(currentProject.id!, api, applianceId);
+    const newApplianceList = appliances.filter((r) => r.id !== applianceId);
+    setCurrentAppliance(newApplianceList[0] || {});
   }
 
   function createAppliance() {
     const newAppliance = {
       id: uuidv4(),
       name: 'New Appliance',
-      type: '',
-      hvacSystemType: '',
-      havcSystem: '',
-      fuel: '',
-      age: 0,
-      manufacturer: '',
-      modelNumber: '',
-      serialNumber: '',
-      heatingCapacity: 0,
-      coolingCapacity: 0,
-      tankVolume: 0,
-      location: '',
-      notes: '',
-      isInduction: false,
     }
 
     setCurrentAppliance(newAppliance)

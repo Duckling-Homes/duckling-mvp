@@ -1,7 +1,7 @@
 'use client'
 
-import ChipManager from '@/components/ChipManager'
 import { useEffect, useState } from 'react';
+import ChipManager from '@/components/ChipManager'
 import InsulationForm from './EnvelopesForms/InsulationForm';
 import AirSealingForm from './EnvelopesForms/AirSealingForm';
 import { Project, ProjectEnvelope } from '@/types/types';
@@ -22,10 +22,10 @@ interface EnvelopeProps {
 const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   const [envelopes, setEnvelopes] = useState<ProjectEnvelope[]>([])
   const [openCamera, setOpenCamera] = useState<boolean>(false)
-  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>()
+  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>({})
 
   useEffect(() => {
-    if (currentProject && currentProject.envelopes) {
+    if (currentProject?.envelopes) {
       setEnvelopes(currentProject.envelopes)
 
       if (!currentEnvelope) {
