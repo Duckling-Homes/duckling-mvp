@@ -56,6 +56,13 @@ export async function createImage(
             id: imageData.projectId,
           },
         },
+        duplicatedFrom: imageData.duplicatedFromId
+          ? {
+              connect: {
+                id: imageData.duplicatedFromId,
+              },
+            }
+          : undefined, // If duplicatedFromId is not provided, it will remain undefined
       },
     })
 
@@ -74,7 +81,6 @@ export async function createImage(
     throw new Error('Organization context does not match')
   }
 }
-
 // Get all images for a particular project
 export async function getImagesByProjectId(
   projectId: string,

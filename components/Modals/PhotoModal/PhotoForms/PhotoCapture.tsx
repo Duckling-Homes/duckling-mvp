@@ -19,7 +19,7 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({ project, photo, onChange })
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [imageX, setImageX] = useState<number>(0)
   const [imageY, setImageY] = useState<number>(0)
-  const [cameraFacingEnvironment, setCameraFacingEnvironment] = useState<'user' | 'environment'>('user');
+  const [cameraFacingEnvironment, setCameraFacingEnvironment] = useState<'user' | 'environment'>('environment');
 
   const videoStreamRef = useRef<MediaStream | null>(null) // Create a ref instead of state
 

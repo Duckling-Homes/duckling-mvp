@@ -13,6 +13,7 @@ import { SelectInput } from "@/components/Inputs";
 import { Button } from "@mui/material";
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
+import PhotoDisplay from "@/components/PhotoDisplay";
 
 const TYPES = [
   { name: 'HVAC', value: 'hvac' },
@@ -274,6 +275,10 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
             options={TYPES}
           />
           {renderForm()}
+          <PhotoDisplay
+              currentProject={currentProject}
+              filterCriteria={ { applianceId: currentAppliance.id! } }
+          ></PhotoDisplay>
           {currentAppliance?.type && (
             <Button
               variant="contained"

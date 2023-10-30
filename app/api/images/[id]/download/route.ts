@@ -11,6 +11,8 @@ type ContextType = {
   }
 }
 
+export const validImageTypes = ['ORIGINAL', 'CROPPED']
+
 export async function GET(
   request: NextRequest,
   context: ContextType
@@ -28,6 +30,14 @@ export async function GET(
     }
     const imageType: ImageType =
       (request.nextUrl.searchParams.get('type') as ImageType) || 'ORIGINAL'
+    if (!validImageTypes.includes(imageType)) {
+      return new NextResponse('Type param must be ORIGINAL or CROPPED', {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    }
 
     const s3Key = constructS3ImageKey(orgContext, imageType, id)
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Readable } from 'stream'
 import { ImageType, constructS3ImageKey, getS3Client } from '@/app/utils/s3'
 import { isImageInOrganization } from '@/app/utils/repositories/image'
+import { validImageTypes } from '../download/route'
 
 // Initialize the S3 client
 const s3 = getS3Client()
@@ -29,6 +30,14 @@ export async function POST(
     }
     const imageType: ImageType =
       (request.nextUrl.searchParams.get('type') as ImageType) || 'ORIGINAL'
+    if (!validImageTypes.includes(imageType)) {
+      return new NextResponse('Type param must be ORIGINAL or CROPPED', {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    }
     const buffer = await request.arrayBuffer()
     const readableStream = new Readable({
       read() {

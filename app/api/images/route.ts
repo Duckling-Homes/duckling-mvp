@@ -14,6 +14,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     applianceId,
     electricalId,
     isHeroPhoto,
+    duplicatedFromId,
   } = await req.json()
 
   const orgContext = req.headers.get('organization-context') || ''
@@ -33,6 +34,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
         applianceId,
         electricalId,
         isHeroPhoto,
+        duplicatedFromId,
       },
       orgContext
     )

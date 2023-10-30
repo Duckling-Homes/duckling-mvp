@@ -13,6 +13,7 @@ import { v4 } from 'uuid';
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import { Button } from '@mui/material';
+import PhotoDisplay from '@/components/PhotoDisplay';
 
 interface EnvelopeProps {
   currentProject: Project
@@ -193,6 +194,10 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
               options={['Insulation', 'AirSealing']}
             />
             {renderForm()}
+            <PhotoDisplay
+              currentProject={currentProject}
+              filterCriteria={ { envelopeId: currentEnvelope.id! } }
+            ></PhotoDisplay>
             <Button
               variant="contained"
               startIcon={<CameraAltOutlinedIcon />}

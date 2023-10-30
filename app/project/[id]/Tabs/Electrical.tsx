@@ -15,6 +15,7 @@ import { SelectInput } from "@/components/Inputs";
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import { Button } from "@mui/material";
+import PhotoDisplay from "@/components/PhotoDisplay";
 
 const TYPES = [
   { name: 'Electrical Panel', value: 'electricalpanel' },
@@ -272,6 +273,10 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
             options={TYPES}
           />
           {renderForm()}
+          <PhotoDisplay
+              currentProject={currentProject}
+              filterCriteria={ { electricalId: currentElectrical.id! } }
+          ></PhotoDisplay>
           <Button
             variant="contained"
             startIcon={<CameraAltOutlinedIcon />}
