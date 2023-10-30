@@ -11,6 +11,26 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   manifest: '/manifest.json',
+  title: {
+    template: '%s | Duckling',
+    default: 'Duckling',
+  },
+  description:
+    'Duckling Sales Platform: To sign up for a demo email john@getduckling.com',
+  applicationName: 'Duckling Sales Platform',
+  authors: [
+    {
+      url: 'https://getduckling.com',
+      name: 'Duckling',
+    },
+  ],
+  keywords: [
+    'Duckling',
+    'Sales',
+    'Platform',
+    'Home Electrification',
+    'Contractor SaaS',
+  ],
 }
 
 export default function RootLayout({

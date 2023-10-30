@@ -61,7 +61,7 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
         }
       ></PhotoDisplay>
     </>
-  )
+  );
 }
 
 export default Photos
