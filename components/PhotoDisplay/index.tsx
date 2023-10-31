@@ -5,7 +5,6 @@ import ModelStore from '@/app/stores/modelStore'
 import PhotoCaptureModal from '../Modals/PhotoModal'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { observer } from 'mobx-react-lite'
-import { toJS } from 'mobx'
 
 const PhotoDisplay: React.FC<{
   currentProject: Project
