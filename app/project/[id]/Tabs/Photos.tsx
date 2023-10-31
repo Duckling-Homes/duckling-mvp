@@ -7,12 +7,13 @@ import {
 } from '@mui/material'
 import { ProjectRoom, Project } from '@/types/types'
 import PhotoDisplay from '@/components/PhotoDisplay'
+import { observer } from 'mobx-react-lite'
 
 interface PhotosTabProps {
   currentProject: Project
 }
 
-const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
+const Photos: React.FC<PhotosTabProps> = observer(({ currentProject }) => {
   const [rooms, setRooms] = useState<ProjectRoom[]>([])
   const [roomFilter, setRoomFilter] = useState<string>('UNSELECTED')
 
@@ -62,6 +63,6 @@ const Photos: React.FC<PhotosTabProps> = ({ currentProject }) => {
       ></PhotoDisplay>
     </>
   );
-}
+})
 
 export default Photos
