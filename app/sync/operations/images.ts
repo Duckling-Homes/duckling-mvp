@@ -78,7 +78,7 @@ export class ImageSyncOperations {
       const cached = await this._getCachedContent(imageID);
 
       if (cached) {
-        console.log("RESOLVED CACHE!");
+        console.log("RESOLVED IMAGE CACHE!");
         data = cached;
       } 
       else {
