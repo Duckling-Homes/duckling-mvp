@@ -1,5 +1,7 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
+
+// TODO: Upgrade to aws-sdk v3
 import AWS from 'aws-sdk'
-// @ts-ignore
 require('aws-sdk/lib/maintenance_mode_message').suppress = true
 
 export type ImageType = 'ORIGINAL' | 'CROPPED'
