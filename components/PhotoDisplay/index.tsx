@@ -5,6 +5,7 @@ import ModelStore from '@/app/stores/modelStore'
 import PhotoCaptureModal from '../Modals/PhotoModal'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { observer } from 'mobx-react-lite'
+import { toJS } from 'mobx'
 
 const PhotoDisplay: React.FC<{
   currentProject: Project
@@ -15,6 +16,8 @@ const PhotoDisplay: React.FC<{
   const [photoToDelete, setPhotoToDelete] = React.useState<PhotoDetails>({});
 
   useEffect(() => {
+    if (!currentProject) return;
+
     if (currentProject?.images && currentProject.images.length > 0) {
       const downloadPromises = currentProject.images.map(
         (image: PhotoDetails) => {
@@ -33,10 +36,10 @@ const PhotoDisplay: React.FC<{
         })
     }
     // Images were deleted
-    else if (photos && currentProject.images?.length === 0) {
+    else if (currentProject.images?.length === 0) {
       setPhotos([]);
     }
-  }, [currentProject?.images])
+  }, [currentProject, currentProject?.images])
 
   const handleOpenDeleteModal = (image: PhotoDetails) => {
     setPhotoToDelete(image);

@@ -33,11 +33,7 @@ const DataCollection = observer(() => {
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0)
   const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [heroPhoto, setHeroPhoto] = useState<PhotoDetails>({})
-
-  useEffect(() => {
-    ModelStore.init()
-  }, []);
-
+  
   const currentProject = ModelStore.currentProject
   const router = useRouter()
   const { id } = useParams()

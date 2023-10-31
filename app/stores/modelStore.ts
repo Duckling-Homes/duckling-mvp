@@ -35,15 +35,17 @@ export class _ModelStore {
 
   init = async () => {
     if (!this.isInitialized) {
+      this.isInitialized = true;
       SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
       SyncAPI.onNewChanges = this._onNewSyncAPIChanges;
       await SyncAPI.sync();
       const projects = await SyncAPI.projects.list()
       for (const proj of projects) {
-        this.projectsByID.set(proj.id!, proj)
+        if (!this.projectsByID.has(proj.id!)) {
+          this.projectsByID.set(proj.id!, proj);
+        }
       }
     }
-    this.isInitialized = true;
   }
 
   _onNewSyncAPIChanges = () => {
