@@ -129,7 +129,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   }
 
   async function patchAppliance(propName: string, updatedAppliance = currentAppliance) {
-    if (updatedAppliance?.id) {
+    if (updatedAppliance?.id && updatedAppliance?.type) {
 
       const applianceToUpdate = {
         id: updatedAppliance.id,

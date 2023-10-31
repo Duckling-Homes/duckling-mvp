@@ -120,7 +120,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('total70AmpCircuits', parseInt(value))
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('total70AmpCircuits')}
       />
       {/* Location */}
       <TextInput

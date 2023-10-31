@@ -104,6 +104,7 @@ export interface ProjectAppliance {
   location?: string
   notes?: string
   isInduction?: boolean
+  [key: string]: number | string | string[] | boolean | undefined
 }
 
 export interface ProjectElectrical {
