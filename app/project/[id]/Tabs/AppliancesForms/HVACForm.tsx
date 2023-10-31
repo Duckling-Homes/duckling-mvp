@@ -29,7 +29,7 @@ const FUEL = [
 
 interface HVACFormProps {
   onChange: (key: string, value: string | number | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
   currentAppliance: ProjectAppliance
 }
 
@@ -45,7 +45,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         label="HVAC System Type"
         value={currentAppliance?.hvacSystemType || ''}
         onChange={(value) => onChange('hvacSystemType', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('hvacSystemType')}
         options={HVAC_TYPES}
       />
       {/* System */}
@@ -53,7 +53,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         label="HVAC System"
         value={currentAppliance?.havcSystem || ''}
         onChange={(value) => onChange('havcSystem', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('havcSystem')}
         disabled={currentAppliance?.hvacSystemType ? false : true}
         options={HVAC_SYSTEMS}
         parent={currentAppliance?.hvacSystemType}
@@ -66,7 +66,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         label="Fuel"
         value={currentAppliance?.fuel || ''}
         onChange={(value) => onChange('fuel', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('fuel')}
         disabled={currentAppliance?.hvacSystemType ? false : true}
         options={FUEL}
         parent={currentAppliance?.hvacSystemType}
@@ -80,7 +80,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         placeholder="Age"
         type="tel"
         onChange={(value) => onChange('age', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('age')}
         value={currentAppliance?.age || ''}
         endAdornment='Years'
       />
@@ -89,7 +89,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         label="Manufacturer"
         placeholder="Manufacturer"
         onChange={(value) => onChange('manufacturer', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('manufacturer')}
         value={currentAppliance?.manufacturer || ''}
       />
       {/* model number */}
@@ -97,7 +97,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         label="Model Number"
         placeholder="Model Number"
         onChange={(value) => onChange('modelNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('modelNumber')}
         value={currentAppliance?.modelNumber || ''}
       />
       {/* serial number */}
@@ -105,7 +105,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         label="Serial Number"
         placeholder="Serial Number"
         onChange={(value) => onChange('serialNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('serialNumber')}
         value={currentAppliance?.serialNumber || ''}
       />
       {/* heating */}
@@ -114,7 +114,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         placeholder="Heating Capacity"
         type="tel"
         onChange={(value) => onChange('heatingCapacity', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('heatingCapacity')}
         value={currentAppliance?.heatingCapacity || ''}
         endAdornment='BTU/hr'
       />
@@ -124,7 +124,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         placeholder="Cooling Capacity"
         type="tel"
         onChange={(value) => onChange('coolingCapacity', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('coolingCapacity')}
         value={currentAppliance?.coolingCapacity || ''}
         endAdornment='BTU/hr'
       />
@@ -133,7 +133,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         label="Location"
         placeholder="Location"
         onChange={(value) => onChange('location', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('location')}
         value={currentAppliance?.location || ''}
       />
       {/* notes */}
@@ -141,7 +141,7 @@ const HVACForm: React.FC<HVACFormProps> = ({
         label="Notes"
         placeholder="Notes"
         onChange={(value) => onChange('notes', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
         value={currentAppliance?.notes || ''}
         multiline={true}
       />
