@@ -6,7 +6,7 @@ import { ProjectElectrical } from "@/types/types";
 interface ElectricalPanelFormProps {
   currentElectrical: ProjectElectrical
   onChange: (name: string, value: string | number | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
 }
 
 const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
@@ -21,7 +21,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         label="Panel Type"
         value={currentElectrical?.panelType || ''}
         onChange={(value) => onChange('panelType', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('panelType')}
         options={['Main Panel', 'Sub-Panel']}
       />
       {/* Amperage Rating */}
@@ -31,7 +31,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         type="tel"
         value={currentElectrical?.panelAmperageRating || ''}
         onChange={(value) => onChange('panelAmperageRating', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('panelAmperageRating')}
         endAdornment='Amps'
       />
       {/* Available Slot for New Circuits */}
@@ -43,7 +43,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
           onChange={
             (value) => onChange('availableNewCircuits', parseInt(value))
           }
-          onBlur={onUpdate}
+          onBlur={() => onUpdate('availableNewCircuits')}
         />
       {/* Total 15 Amp Circuits */}
       <TextInput
@@ -54,7 +54,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('total15AmpCircuits', parseInt(value))
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('total15AmpCircuits')}
       />
       {/* Total 20 Amp Circuits */}
       <TextInput
@@ -65,7 +65,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('total20AmpCircuits', parseInt(value))
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('total20AmpCircuits')}
       />
       {/* Total 30 Amp Circuits */}
       <TextInput
@@ -76,7 +76,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('total30AmpCircuits', parseInt(value))
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('total30AmpCircuits')}
       />
       {/* Total 40 Amp Circuits */}
       <TextInput
@@ -87,7 +87,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('total40AmpCircuits', parseInt(value))
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('total40AmpCircuits')}
       />
       {/* Total 50 Amp Circuits */}
       <TextInput
@@ -98,7 +98,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('total50AmpCircuits', parseInt(value))
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('total50AmpCircuits')}
       />
       {/* Total 60 Amp Circuits */}
       <TextInput
@@ -109,7 +109,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('total60AmpCircuits', parseInt(value))
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('total60AmpCircuits')}
       />
       {/* Total 70 Amp Circuits */}
       <TextInput
@@ -130,7 +130,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('location', value)
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('location')}
       />
       {/* Notes */}
       <TextInput
@@ -140,7 +140,7 @@ const ElectricalPanelForm: React.FC<ElectricalPanelFormProps> = ({
         onChange={
           (value) => onChange('notes', value)
         }
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
       />
     </>
   )

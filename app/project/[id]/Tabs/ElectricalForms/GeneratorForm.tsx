@@ -10,7 +10,7 @@ const FUEL = ['Natural gas', 'Propane', 'Diesel', 'Gasoline']
 interface GeneratorFormProps {
   currentElectrical: ProjectElectrical
   onChange: (name: string, value: string | number | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
 }
 
 const GeneratorForm: React.FC<GeneratorFormProps> = ({
@@ -25,7 +25,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         label="Generator Type"
         value={currentElectrical?.generatorType || ''}
         onChange={(value) => onChange('generatorType', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('generatorType')}
         options={['Standby', 'Portable']}
       />
       {/* Fuel Type */}
@@ -33,7 +33,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         label="Fuel Type"
         value={currentElectrical?.fuelType || ''}
         onChange={(value) => onChange('fuelType', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('fuelType')}
         options={FUEL}
       />
       {/* Rated Continuous Wattage */}
@@ -43,7 +43,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         type="tel"
         value={currentElectrical?.ratedContinuousWattage || ''}
         onChange={(value) => onChange('ratedContinuousWattage', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('ratedContinuousWattage')}
         endAdornment='kW'
       />
       {/* Rated Peak Wattage */}
@@ -53,7 +53,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         type="tel"
         value={currentElectrical?.ratedPeakWattage || ''}
         onChange={(value) => onChange('ratedPeakWattage', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('ratedPeakWattage')}
         endAdornment='kW'
       />
       {/* Voltage */}
@@ -63,7 +63,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         type="tel"
         value={currentElectrical?.voltage || ''}
         onChange={(value) => onChange('voltage', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('voltage')}
         endAdornment='Amps'
       />
       {/* Number of Phases */}
@@ -71,7 +71,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         label="Number of Phases"
         value={currentElectrical?.numberOfPhases || ''}
         onChange={(value) => onChange('numberOfPhases', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('numberOfPhases')}
         options={[{name: '1-Phase', value: '1'}, {name: '3-Phase', value: '3'}]}
       />
       {/* Transfer Switch */}
@@ -79,7 +79,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         label="Transfer Switch"
         value={currentElectrical?.transferSwitch || ''}
         onChange={(value) => onChange('transferSwitch', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('transferSwitch')}
         options={['Automatic', 'Manual']}
       />
       {/* Connection Method */}
@@ -87,7 +87,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         label="Connection Method"
         value={currentElectrical?.connection || ''}
         onChange={(value) => onChange('connection', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('connection')}
         options={['Interlock', 'Main Panel', 'Sub-Panel']}
       />
       {/* Location */}
@@ -96,14 +96,14 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         placeholder="Location"
         value={currentElectrical?.location || ''}
         onChange={(value) => onChange('location', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('location')}
       />
       {/* Year Installed */}
       <DatePickerInput
         label="Year Installed"
         onChange={(e) => {
           onChange('yearInstalled', e!.year());
-          onUpdate();
+          onUpdate('yearInstalled');
         }}
         value={currentElectrical && typeof currentElectrical.yearInstalled === 'number' ? dayjs(new Date(currentElectrical.yearInstalled, 0)) : dayjs()}
         maxDate={dayjs()}
@@ -114,7 +114,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         placeholder="Manufacturer"
         value={currentElectrical?.manufacturer || ''}
         onChange={(value) => onChange('manufacturer', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('manufacturer')}
       />
       {/* Model Number */}
       <TextInput
@@ -122,7 +122,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         placeholder="Model Number"
         value={currentElectrical?.modelNumber || ''}
         onChange={(value) => onChange('modelNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('modelNumber')}
       />
       {/* Serial Number */}
       <TextInput
@@ -130,7 +130,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         placeholder="Serial Number"
         value={currentElectrical?.serialNumber || ''}
         onChange={(value) => onChange('serialNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('serialNumber')}
       />
       {/* notes */}
       <TextInput
@@ -138,7 +138,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         placeholder="Notes"
         value={currentElectrical?.notes || ''}
         onChange={(value) => onChange('notes', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
         multiline={true}
       />
     </>

@@ -56,7 +56,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     setCurrentElectrical(newElectrical)
   }
 
-  const handleTypeChange = (name: string, value: string) => {
+  function handleTypeChange(name: string, value: string) {
     const updatedElectrical = { ...currentElectrical, [name]: value }
     handlePostElectrical(updatedElectrical, value)
   }
@@ -70,7 +70,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       currentProject.id!,
       updatedElectrical
     )
-    
+
     const updatedElectricals = electricals.map((electrical) => {
       if (electrical.id === updatedElectrical.id) {
         return { ...electrical, ...createdElectrical }
@@ -108,26 +108,25 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     setCurrentElectrical(newElectricalsList[0] || {})
   }
 
-  async function patchElectrical() {
-    const updatedElectrical = {...currentElectrical}
-
-    if (!updatedElectrical?.type) {
-      return
-    }
-
-    if (updatedElectrical) {
-      const response = await ModelStore.updateElectrical(
-        currentProject.id!,
-        updatedElectrical
-      )
-      response.type = updatedElectrical.type
+  async function patchElectrical(propName: string, updatedElectrical = currentElectrical) {
+    if (updatedElectrical?.id) {
+      const electricalToUpdate = {
+        id: updatedElectrical.id,
+        type: updatedElectrical.type,
+        [propName]: updatedElectrical[propName]
+      }
 
       const updatedElectricals = electricals.map((electrical) => {
         if (electrical.id === updatedElectrical.id) {
-          return { ...electrical, ...updatedElectrical }
+          return { ...electrical, [propName]: updatedElectrical[propName] }
         }
         return electrical
       })
+
+      await ModelStore.updateElectrical(
+        currentProject.id!,
+        electricalToUpdate
+      )
 
       setElectricals(updatedElectricals)
     }
@@ -151,7 +150,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       case 'electricalpanel':
         return (
           <ElectricalPanelForm
-            onUpdate={patchElectrical}
+            onUpdate={(propName: string) => patchElectrical(propName)}
             onChange={handleInputChange}
             currentElectrical={currentElectrical}
           />
@@ -159,7 +158,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       case 'solar':
         return (
           <SolarPanelForm
-            onUpdate={patchElectrical}
+            onUpdate={(propName: string) => patchElectrical(propName)}
             onChange={handleInputChange}
             currentElectrical={currentElectrical}
           />
@@ -167,7 +166,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       case 'battery':
         return (
           <BatteryForm
-            onUpdate={patchElectrical}
+            onUpdate={(propName: string) => patchElectrical(propName)}
             onChange={handleInputChange}
             currentElectrical={currentElectrical}
           />
@@ -175,7 +174,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       case 'evcharger':
         return (
           <EVChargerForm
-            onUpdate={patchElectrical}
+            onUpdate={(propName: string) => patchElectrical(propName)}
             onChange={handleInputChange}
             currentElectrical={currentElectrical}
           />
@@ -183,7 +182,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       case 'generator':
         return (
           <GeneratorForm
-            onUpdate={patchElectrical}
+            onUpdate={(propName: string) => patchElectrical(propName)}
             onChange={handleInputChange}
             currentElectrical={currentElectrical}
           />
