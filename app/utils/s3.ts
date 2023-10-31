@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk'
+// @ts-ignore
 require('aws-sdk/lib/maintenance_mode_message').suppress = true
 
 export type ImageType = 'ORIGINAL' | 'CROPPED'
