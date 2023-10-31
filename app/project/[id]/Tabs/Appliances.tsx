@@ -66,8 +66,8 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   }
 
   async function deleteAppliance(applianceId: string) {
-    const appliances = currentProject.appliances ?? [];
-    const applianceToDelete = appliances.find(
+    const appliancesList = [...appliances]
+    const applianceToDelete = appliancesList.find(
       (appliance) => appliance.id === applianceId
     );
 
@@ -75,34 +75,32 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       return;
     }
 
-    const api = applianceToDelete?.type ?
-      getTypeApi(applianceToDelete.type) : '';
+    const api = applianceToDelete?.type ? getTypeApi(applianceToDelete.type) : '';
 
 
-    if (!applianceToDelete.type) {
-      const newApplianceList = appliances.filter((r) => r.id !== applianceId);
-      setCurrentAppliance(newApplianceList[0] || {});
-      return;
+    if (applianceToDelete.type) {
+      await ModelStore.deleteAppliance(currentProject.id!, api, applianceId);
     }
 
-    await ModelStore.deleteAppliance(currentProject.id!, api, applianceId);
-    const newApplianceList = appliances.filter((r) => r.id !== applianceId);
+    const newApplianceList = appliancesList.filter((r) => r.id !== applianceId);
+    setAppliances(newApplianceList);
     setCurrentAppliance(newApplianceList[0] || {});
   }
 
   function createAppliance() {
     const newAppliance = {
       id: uuidv4(),
-      name: 'New Appliance',
+      name: "New Appliance",
     }
     const newApplianceList = [...appliances];
     newApplianceList.push(newAppliance);
-    
+
     setAppliances(newApplianceList);
     setCurrentAppliance(newAppliance);
   }
 
   const handleTypeChange = (name: string, value: string) => {
+    console.log(name)
     const updatedAppliance = { ...currentAppliance, [name]: value }
     handlePostAppliance(updatedAppliance, value)
   }
@@ -111,58 +109,50 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     updatedAppliance: ProjectAppliance,
     type: string
   ) {
-    let api = ''
-    switch (type.toLowerCase()) {
-      case 'hvac':
-        api = 'hvac'
-        break
-      case 'cooktop':
-        api = 'cooktop'
-        break
-      case 'waterheater':
-        api = 'waterHeater'
-        break
-      default:
-        api = 'other'
-        break
-    }
+    const api = getTypeApi(type);
 
-    const appliance = await ModelStore.createAppliance(
+    const createdAppliance = await ModelStore.createAppliance(
       currentProject.id!,
       api,
       updatedAppliance
-    )
-    setCurrentAppliance(appliance)
+    );
+
+    const updatedAppliances = appliances.map((appliance) => {
+      if (appliance.id === updatedAppliance.id) {
+        return { ...appliance, ...updatedAppliance }
+      }
+      return appliance
+    });
+
+    setAppliances(updatedAppliances);
+    setCurrentAppliance(createdAppliance);
   }
 
-  async function patchAppliance() {
-    const updatedAppliance = currentAppliance
-    let api = ''
+  async function patchAppliance(propName: string, updatedAppliance = currentAppliance) {
+    if (updatedAppliance?.id) {
 
-    if (updatedAppliance.type) {
-      switch (updatedAppliance.type.toLowerCase()) {
-        case 'hvac':
-          api = 'hvac'
-          break
-        case 'cooktop':
-          api = 'cooktop'
-          break
-        case 'waterheater':
-          api = 'waterHeater'
-          break
-        default:
-          api = 'other'
-          break
+      const applianceToUpdate = {
+        id: updatedAppliance.id,
+        type: updatedAppliance.type,
+        [propName]: updatedAppliance[propName]
       }
-    }
 
-    if (updatedAppliance) {
-      const updated = await ModelStore.updateAppliance(
+      const updatedEnvelopes = appliances.map((appliance) => {
+        if (appliance.id === updatedAppliance.id) {
+          return { ...appliance, [propName]: updatedAppliance[propName] };
+        }
+        return appliance;
+      })
+
+      const api = getTypeApi(updatedAppliance?.type)
+
+      await ModelStore.updateAppliance(
         currentProject.id!,
         api,
-        updatedAppliance
+        applianceToUpdate
       )
-      setCurrentAppliance(updated)
+
+      setAppliances(updatedEnvelopes)
     }
   }
 
@@ -181,7 +171,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'hvac':
         return (
           <HVACForm
-            onUpdate={() => patchAppliance()}
+            onUpdate={(inputName) => patchAppliance(inputName)}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -189,7 +179,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'waterheater':
         return (
           <WaterHeaterForm
-            onUpdate={() => patchAppliance()}
+            onUpdate={(inputName) => patchAppliance(inputName)}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -197,7 +187,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
       case 'cooktop':
         return (
           <CooktopForm
-            onUpdate={() => patchAppliance()}
+            onUpdate={(inputName) => patchAppliance(inputName)}
             onChange={handleInputChange}
             currentAppliance={currentAppliance}
           />
@@ -206,7 +196,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         if (currentAppliance?.type) {
           return (
             <DefaultForm
-              onUpdate={() => patchAppliance()}
+              onUpdate={(inputName) => patchAppliance(inputName)}
               onChange={handleInputChange}
               currentAppliance={currentAppliance}
             />

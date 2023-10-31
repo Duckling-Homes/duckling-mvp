@@ -7,7 +7,7 @@ const FUEL = ['Electricity', 'Natural Gas', 'Propane', 'Fuel Oil', 'Other']
 
 interface CooktopFormProps {
   onChange: (key: string, value: string | number | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
   currentAppliance: ProjectAppliance
 }
 
@@ -23,7 +23,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         label="Manufacturer"
         placeholder="Manufacturer"
         onChange={(value) => onChange('manufacturer', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('manufacturer')}
         value={currentAppliance?.manufacturer || ''}
       />
       {/* model number */}
@@ -31,7 +31,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         label="Model Number"
         placeholder="Model Number"
         onChange={(value) => onChange('modelNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('modelNumber')}
         value={currentAppliance?.modelNumber || ''}
       />
       {/* serial number */}
@@ -39,7 +39,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         label="Serial Number"
         placeholder="Serial Number"
         onChange={(value) => onChange('serialNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('serialNumber')}
         value={currentAppliance?.serialNumber || ''}
       />
       {/* fuel */}
@@ -47,7 +47,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         label="Fuel"
         value={currentAppliance?.fuel || ''}
         onChange={(value) => onChange('fuel', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('fuel')}
         options={FUEL}
       />
       {/* induction */}
@@ -55,7 +55,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         label="Is Induction?"
         value={currentAppliance?.isInduction ? 'true' : 'false'}
         onChange={(value) => onChange('isInduction', value === 'true')}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('isInduction')}
         options={[{name: 'Yes', value: 'true'}, {name: 'No', value: 'false'}]}
       />
       {/* age */}
@@ -64,7 +64,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         placeholder="Age"
         type="tel"
         onChange={(value) => onChange('age', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('age')}
         value={currentAppliance?.age || ''}
         endAdornment='Years'
       />
@@ -73,7 +73,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         label="Location"
         placeholder="Location"
         onChange={(value) => onChange('location', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('location')}
         value={currentAppliance?.location || ''}
       />
       {/* notes */}
@@ -81,7 +81,7 @@ const CooktopForm: React.FC<CooktopFormProps> = ({
         label="Notes"
         placeholder="Notes"
         onChange={(value) => onChange('notes', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
         value={currentAppliance?.notes || ''}
         multiline={true}
       />
