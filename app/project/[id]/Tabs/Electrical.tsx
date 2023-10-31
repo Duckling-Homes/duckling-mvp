@@ -49,46 +49,6 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     const newElectrical = {
       id: uuidv4(),
       name: 'New Electrical',
-      type: '',
-      panelType: '',
-      panelAmperageRating: 0,
-      availableNewCircuits: 0,
-      total15AmpCircuits: 0,
-      total20AmpCircuits: 0,
-      total30AmpCircuits: 0,
-      total40AmpCircuits: 0,
-      total50AmpCircuits: 0,
-      total60AmpCircuits: 0,
-      total70AmpCircuits: 0,
-      notes: '',
-      ownership: '',
-      moduleType: '',
-      tracking: '',
-      arrayOrientation: '',
-      arrayTilt: 0,
-      maxPowerOutput: 0,
-      numberOfPanels: 0,
-      annualOutput: 0,
-      chargingLevel: '',
-      amperage: 0,
-      acPowerSourceVolatge: 0,
-      maxChargingPower: 0,
-      totalCapacity: 0,
-      ratedPowerOutput: 0,
-      ratedPeakOutput: 0,
-      gridConnected: '',
-      generatorType: '',
-      fuelType: '',
-      ratedContinuousWattage: 0,
-      ratedPeakWattage: 0,
-      numberOfPhases: '',
-      transferSwitch: '',
-      connection: '',
-      yearInstalled: 0,
-      manufacturer: '',
-      modelNumber: '',
-      serialNumber: '',
-      location: '',
     }
 
     const newElectricalsList = [...electricals, newElectrical]
@@ -106,11 +66,11 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     type: string
   ) {
     updatedElectrical.type = type
-    const response = await ModelStore.createElectrical(
+    const createdElectrical = await ModelStore.createElectrical(
       currentProject.id!,
       updatedElectrical
     )
-    const createdElectrical = { ...response, type: updatedElectrical.type }
+    
     const updatedElectricals = electricals.map((electrical) => {
       if (electrical.id === updatedElectrical.id) {
         return { ...electrical, ...createdElectrical }
@@ -142,7 +102,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
       electricalToDelete.type,
       electricalToDelete.id!
     )
-    console.log('Electrical deleted successfully.')
+
     const newElectricalsList = electricals.filter((r) => r.id !== electricalId)
     setElectricals(newElectricalsList)
     setCurrentElectrical(newElectricalsList[0] || {})
