@@ -59,6 +59,9 @@ const DataCollection = observer(() => {
         setHeroPhoto({ photoUrl: response })
       })
     }
+    else {
+      setHeroPhoto({});
+    }
   }, [currentProject?.heroImageId])
 
   const renderTabContent = (index: number, component: JSX.Element) => (
