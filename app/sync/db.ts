@@ -1,11 +1,14 @@
 // Dexie (IndexedDB wrapper module declaration)
 // Table definitions
 import Dexie, { Table } from 'dexie'
+import debounce from 'lodash/debounce'
+import { isOnline } from './utils'
 
 export interface _Object {
   id: string
   type: string
   json: unknown
+  added?: number
 }
 
 export interface _Request {
@@ -18,6 +21,7 @@ export interface _Request {
 export class DucklingDexie extends Dexie {
   objects!: Table<_Object, string>
   requests!: Table<_Request, number>
+  onNewChanges?: () => void
 
   constructor() {
     super('DucklingDexie')
@@ -28,6 +32,7 @@ export class DucklingDexie extends Dexie {
   }
 
   putObject = async (obj: _Object) => {
+    obj.added = Date.now();
     obj.json = JSON.parse(JSON.stringify(obj.json))
     return this.objects.put(obj, obj.id)
   }
@@ -52,6 +57,38 @@ export class DucklingDexie extends Dexie {
   dequeueRequest = async (reqID: number) => {
     return this.requests.delete(reqID)
   }
+
+  publishChanges = debounce(async () => {
+    if (!isOnline()) return false
+  
+    let nextReq
+    let didChange = false
+    do {
+      try {
+        nextReq = await db.peekNextRequest()
+        if (nextReq) {
+          await fetch(nextReq!.url, nextReq!.options)
+          await db.dequeueRequest(nextReq.id!)
+          console.log(
+            'Dequeued',
+            nextReq.options?.method,
+            nextReq.url,
+            nextReq.id
+          )
+          didChange = true
+        }
+      } catch (err) {
+        console.error('REQUEST FAILED TO PUSH...', { nextReq, err })
+      }
+    } while (nextReq)
+
+    if (didChange) {
+      this.onNewChanges && this.onNewChanges();
+    }
+
+    return didChange
+  }, 200)
+
 }
 
 export const db = new DucklingDexie()

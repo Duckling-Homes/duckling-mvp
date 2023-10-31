@@ -23,6 +23,7 @@ export class _ModelStore {
   projectsByID: Map<string, Project> = observable.map(new Map())
   currentProject: Project | null = null
   organization: Organization | null = null
+  isInitialized = false;
 
   constructor() {
     makeAutoObservable(this)
@@ -33,11 +34,18 @@ export class _ModelStore {
   }
 
   init = async () => {
-    SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
-    await SyncAPI.sync()
-    const projects = await SyncAPI.projects.list()
-    for (const proj of projects) {
-      this.projectsByID.set(proj.id!, proj)
+    if (!this.isInitialized) {
+      SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
+      SyncAPI.onNewChanges = this._onNewSyncAPIChanges;
+      await SyncAPI.sync();
+    }
+    this.isInitialized = true;
+  }
+
+  _onNewSyncAPIChanges = () => {
+    console.log("Detected change");
+    if (this.currentProject) {
+      this.loadProject(this.currentProject.id!);
     }
   }
 
@@ -53,6 +61,7 @@ export class _ModelStore {
 
   loadProject = async (projectID: string) => {
     console.log('loading')
+    this.init();
     const project = await SyncAPI.projects.get(projectID)
     if (this.currentProject?.id === projectID) {
       this.currentProject = project

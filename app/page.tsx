@@ -10,12 +10,12 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { observer } from 'mobx-react-lite'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import ModelStore from './stores/modelStore'
 
 import './style.scss'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import dayjs from 'dayjs'
+import ModelStore from './stores/modelStore'
 
 const Home = observer(() => {
   const { user } = useUser()
@@ -49,7 +49,7 @@ const Home = observer(() => {
 
   useEffect(() => {
     ModelStore.init()
-  }, [])
+  }, []);
 
   useEffect(() => {
     setFilteredProjects(projects)

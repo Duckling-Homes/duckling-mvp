@@ -4,11 +4,13 @@ import { PhotoDetails, Project } from '@/types/types'
 import ModelStore from '@/app/stores/modelStore'
 import PhotoCaptureModal from '../Modals/PhotoModal'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import { observer } from 'mobx-react-lite'
+import { toJS } from 'mobx'
 
 const PhotoDisplay: React.FC<{
   currentProject: Project
   filterCriteria: { [key: string]: string }
-}> = ({ currentProject, filterCriteria }) => {
+}> = observer(({ currentProject, filterCriteria }) => {
   const [editPhoto, setEditPhoto] = useState<PhotoDetails>({})
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const [photoToDelete, setPhotoToDelete] = React.useState<PhotoDetails>({});
@@ -30,6 +32,10 @@ const PhotoDisplay: React.FC<{
         .catch((error) => {
           console.error('Failed to download photos:', error)
         })
+    }
+    // Images were deleted
+    else if (photos && currentProject.images?.length === 0) {
+      setPhotos([]);
     }
   }, [currentProject?.images])
 
@@ -136,6 +142,6 @@ const PhotoDisplay: React.FC<{
       </div>
     </>
   )
-}
+})
 
 export default PhotoDisplay

@@ -1,4 +1,4 @@
-import { isOnline, publishChanges } from './utils'
+import { isOnline } from './utils'
 import { ProjectSyncOperations } from './operations/project'
 import { OrganizationSyncOperations } from './operations/organization'
 import { ApplianceSyncOperations } from './operations/appliances'
@@ -6,6 +6,7 @@ import { EnvelopeSyncOperations } from './operations/envelope'
 import { ElectricalSyncOperations } from './operations/electrical'
 import { RoomSyncOperations } from './operations/room'
 import { ImageSyncOperations } from './operations/images'
+import { db } from './db'
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
@@ -36,7 +37,6 @@ import { ImageSyncOperations } from './operations/images'
  */
 class _SyncAPI {
   bgSyncInterval: NodeJS.Timeout | null = null
-  onNewChanges: () => void = () => {}
 
   // Define Sub-APIs
   organizations = new OrganizationSyncOperations()
@@ -57,10 +57,7 @@ class _SyncAPI {
   }
 
   pushChanges = async () => {
-    const didChange = await publishChanges()
-    if (didChange) {
-      this.onNewChanges()
-    }
+    await db.publishChanges()
   }
 
   pullLatest = async () => {
@@ -75,6 +72,11 @@ class _SyncAPI {
     if (enabled) {
       this.bgSyncInterval = setInterval(this.sync, intervalMS)
     }
+  }
+
+  set onNewChanges (cb: () => void) {
+    db.onNewChanges = cb;
+    console.log("DID SET CB", db, db.onNewChanges)
   }
 }
 
