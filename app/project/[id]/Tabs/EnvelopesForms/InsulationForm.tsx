@@ -4,9 +4,9 @@ import { SelectInput, TextInput } from '@/components/Inputs';
 import { ProjectEnvelope } from '@/types/types';
 
 interface InsulationFormProps {
-  onChange: (inputName: string, value: string) => void
-  onUpdate: () => void
-  currentEnvelope: ProjectEnvelope
+  onChange: (inputName: string, value: string) => void;
+  onUpdate: (inputName: string) => void;
+  currentEnvelope: ProjectEnvelope;
 }
 
 const LOCATIONS = [
@@ -34,20 +34,20 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
         placeholder="Name"
         value={currentEnvelope?.name || ''}
         onChange={(value) => onChange('name', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('name')}
       />
       <SelectInput
         label="Insulation Location"
         value={currentEnvelope?.insulationLocation || ''}
         onChange={(value) => onChange('insulationLocation', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('insulationLocation')}
         options={LOCATIONS}
       />
       <SelectInput
         label="Insulation Condition"
         value={currentEnvelope?.insulationCondition || ''}
         onChange={(value) => onChange('insulationCondition', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('insulationCondition')}
         options={CONDITIONS}
       />
       <TextInput
@@ -55,7 +55,7 @@ const InsulationForm: React.FC<InsulationFormProps> = ({ onChange, currentEnvelo
         placeholder="User Notes"
         value={currentEnvelope?.notes || ''}
         onChange={(value) => onChange('notes', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
         multiline={true}
       />
     </>

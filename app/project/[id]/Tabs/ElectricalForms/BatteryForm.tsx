@@ -6,7 +6,7 @@ import { ProjectElectrical } from "@/types/types";
 interface BatteryFormProps {
   currentElectrical: ProjectElectrical
   onChange: (key: string, value: number | string | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
 }
 
 const BatteryForm: React.FC<BatteryFormProps> = ({
@@ -23,7 +23,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         type="tel"
         value={currentElectrical?.totalCapacity || ''}
         onChange={(value) => onChange('totalCapacity', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('totalCapacity')}
         endAdornment='amp/hours'
       />
       {/* Rated Power Output */}
@@ -33,7 +33,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         type="tel"
         value={currentElectrical?.ratedPowerOutput || ''}
         onChange={(value) => onChange('ratedPowerOutput', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('ratedPowerOutput')}
         endAdornment='kW'
       />
       {/* Peak Power Output */}
@@ -43,7 +43,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         type="tel"
         value={currentElectrical?.ratedPeakOutput || ''}
         onChange={(value) => onChange('ratedPeakOutput', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('ratedPeakOutput')}
         endAdornment='kW'
       />
       {/* Voltage */}
@@ -53,7 +53,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         type="tel"
         value={currentElectrical?.voltage || ''}
         onChange={(value) => onChange('voltage', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('voltage')}
         endAdornment='V'
       />
       {/* Grid Connected */}
@@ -61,7 +61,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         label="Grid Connected"
         value={currentElectrical?.gridConnected || ''}
         onChange={(value) => onChange('gridConnected', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('gridConnected')}
         options={[{name: 'Yes', value: 'true'}, {name: 'No', value: 'false'}]}
       />
       {/* Manufacturer */}
@@ -70,7 +70,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         placeholder="Manufacturer"
         value={currentElectrical?.manufacturer || ''}
         onChange={(value) => onChange('manufacturer', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('manufacturer')}
       />
       {/* Model Number */}
       <TextInput
@@ -78,7 +78,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         placeholder="Model Number"
         value={currentElectrical?.modelNumber || ''}
         onChange={(value) => onChange('modelNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('modelNumber')}
       />
       {/* Serial Number */}
       <TextInput
@@ -86,7 +86,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         placeholder="Serial Number"
         value={currentElectrical?.serialNumber || ''}
         onChange={(value) => onChange('serialNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('serialNumber')}
       />
       {/* notes */}
       <TextInput
@@ -94,7 +94,7 @@ const BatteryForm: React.FC<BatteryFormProps> = ({
         placeholder="Notes"
         value={currentElectrical?.notes || ''}
         onChange={(value) => onChange('notes', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
       />
     </>
   )

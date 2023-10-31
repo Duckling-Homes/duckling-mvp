@@ -12,7 +12,7 @@ const LEAKINESS = [
 ]
 interface AirSealingFormProps {
   onChange: (inputName: string, value: string) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
   currentEnvelope: ProjectEnvelope
 }
 
@@ -35,13 +35,13 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({
           placeholder="Name"
           value={currentEnvelope?.name || ''}
           onChange={(value) => onChange('name', value)}
-          onBlur={onUpdate}
+          onBlur={() => onUpdate('name')}
         />
         <SelectInput
           label="Leakiness Description"
           value={currentEnvelope?.leakinessDescription || ''}
           onChange={(value) => onChange('leakinessDescription', value)}
-          onBlur={onUpdate}
+          onBlur={() => onUpdate('leakinessDescription')}
           options={LEAKINESS}
         />
         <TextInput
@@ -49,7 +49,7 @@ const AirSealingForm: React.FC<AirSealingFormProps> = ({
           placeholder="User Notes"
           value={currentEnvelope?.notes || ''}
           onChange={(value) => onChange('notes', value)}
-          onBlur={onUpdate}
+          onBlur={() => onUpdate('notes')}
           multiline={true}
         />
       </div>

@@ -8,7 +8,7 @@ const CHARGING_LEVELS = ['Level 1', 'Level 2', 'Level 3']
 interface EVChargerFormProps {
   currentElectrical: ProjectElectrical
   onChange: (name: string, value: string | number | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
 }
 
 const EVChargerForm: React.FC<EVChargerFormProps> = ({
@@ -23,7 +23,7 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         label="Charging Level"
         value={currentElectrical?.chargingLevel || ''}
         onChange={(value) => onChange('chargingLevel', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
         options={CHARGING_LEVELS}
       />
       {/* Amperage */}
@@ -33,7 +33,7 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         type="tel"
         value={currentElectrical?.amperage || ''}
         onChange={(value) => onChange('amperage', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('amperage')}
         endAdornment='Amps'
       />
       {/* AC Power Source Voltage */}
@@ -43,7 +43,7 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         type="tel"
         value={currentElectrical?.acPowerSourceVolatge || ''}
         onChange={(value) => onChange('acPowerSourceVolatge', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('acPowerSourceVolatge')}
         endAdornment='V'
       />
       {/* Max Charging Power */}
@@ -53,7 +53,7 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         type="tel"
         value={currentElectrical?.maxChargingPower || ''}
         onChange={(value) => onChange('maxChargingPower', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('maxChargingPower')}
         endAdornment='kW'
       />
       {/* Manufacturer */}
@@ -62,7 +62,7 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         placeholder="Manufacturer"
         value={currentElectrical?.manufacturer || ''}
         onChange={(value) => onChange('manufacturer', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('manufacturer')}
       />
       {/* Model Number */}
       <TextInput
@@ -70,7 +70,7 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         placeholder="Model Number"
         value={currentElectrical?.modelNumber || ''}
         onChange={(value) => onChange('modelNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('modelNumber')}
       />
       {/* Serial Number */}
       <TextInput
@@ -78,7 +78,7 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         placeholder="Serial Number"
         value={currentElectrical?.serialNumber || ''}
         onChange={(value) => onChange('serialNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('serialNumber')}
       />
       {/* notes */}
       <TextInput
@@ -86,7 +86,7 @@ const EVChargerForm: React.FC<EVChargerFormProps> = ({
         placeholder="Notes"
         value={currentElectrical?.notes || ''}
         onChange={(value) => onChange('notes', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
         multiline={true}
       />
     </>

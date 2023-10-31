@@ -14,7 +14,7 @@ const FUEL = ['Electricity', 'Natural Gas', 'Propane', 'Fuel Oil', 'Other']
 
 interface WaterHeaterFormProps {
   onChange: (key: string, value: string | number | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
   currentAppliance: ProjectAppliance
 }
 
@@ -30,7 +30,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         label="System Type"
         value={currentAppliance?.systemType || ''}
         onChange={(value) => onChange('systemType', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('systemType')}
         options={SYSTEM_TYPE}
       />
       {/* fuel */}
@@ -38,7 +38,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         label="Fuel"
         value={currentAppliance?.fuel || ''}
         onChange={(value) => onChange('fuel', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('fuel')}
         options={FUEL}
       />
       {/* age */}
@@ -47,7 +47,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         placeholder="Age"
         type="tel"
         onChange={(value) => onChange('age', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('age')}
         value={currentAppliance?.age || ''}
         endAdornment='Years'
       />
@@ -56,7 +56,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         label="Manufacturer"
         placeholder="Manufacturer"
         onChange={(value) => onChange('manufacturer', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('manufacturer')}
         value={currentAppliance?.manufacturer || ''}
       />
       {/* model number */}
@@ -64,7 +64,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         label="Model Number"
         placeholder="Model Number"
         onChange={(value) => onChange('modelNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('modelNumber')}
         value={currentAppliance?.modelNumber || ''}
       />
       {/* serial number */}
@@ -72,7 +72,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         label="Serial Number"
         placeholder="Serial Number"
         onChange={(value) => onChange('serialNumber', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('serialNumber')}
         value={currentAppliance?.serialNumber || ''}
       />
       {/* Tank Volume */}
@@ -81,7 +81,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         placeholder="Tank Volume"
         type="tel"
         onChange={(value) => onChange('tankVolume', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('tankVolume')}
         value={currentAppliance?.tankVolume || ''}
         endAdornment='Gallons'
       />
@@ -90,7 +90,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         label="Location"
         placeholder="Location"
         onChange={(value) => onChange('location', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('location')}
         value={currentAppliance?.location || ''}
       />
       {/* notes */}
@@ -98,7 +98,7 @@ const WaterHeaterForm: React.FC<WaterHeaterFormProps> = ({
         label="Notes"
         placeholder="Notes"
         onChange={(value) => onChange('notes', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
         value={currentAppliance?.notes || ''}
         multiline={true}
       />

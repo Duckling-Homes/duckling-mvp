@@ -13,7 +13,7 @@ const FUEL = [
 
 interface DefaultFormProps {
   onChange: (key: string, value: string | number | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
   currentAppliance: ProjectAppliance
 }
 
@@ -29,7 +29,7 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
         label="Manufacturer"
         placeholder="Manufacturer"
         onChange={(value) => onChange('manufacturer', value)}
-        onBlur={() => onUpdate()}
+        onBlur={() => onUpdate('manufacturer')}
         value={currentAppliance?.manufacturer || ''}
       />
       {/* model number */}
@@ -37,7 +37,7 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
         label="Model Number"
         placeholder="Model Number"
         onChange={(value) => onChange('modelNumber', value)}
-        onBlur={() => onUpdate()}
+        onBlur={() => onUpdate('modelNumber')}
         value={currentAppliance?.modelNumber || ''}
       />
       {/* serial number */}
@@ -45,7 +45,7 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
         label="Serial Number"
         placeholder="Serial Number"
         onChange={(value) => onChange('serialNumber', value)}
-        onBlur={() => onUpdate()}
+        onBlur={() => onUpdate('serialNumber')}
         value={currentAppliance?.serialNumber || ''}
       />
       {/* fuel */}
@@ -53,7 +53,7 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
         label="Fuel"
         value={currentAppliance?.fuel || ''}
         onChange={(value) => onChange('fuel', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('fuel')}
         options={FUEL}
       />
       {/* age */}
@@ -62,7 +62,7 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
         placeholder="Age"
         type="tel"
         onChange={(value) => onChange('age', parseInt(value))}
-        onBlur={() => onUpdate()}
+        onBlur={() => onUpdate('age')}
         value={currentAppliance?.age || ''}
         endAdornment='Years'
       />
@@ -71,7 +71,7 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
         label="Location"
         placeholder="Location"
         onChange={(value) => onChange('location', value)}
-        onBlur={() => onUpdate()}
+        onBlur={() => onUpdate('location')}
         value={currentAppliance?.location || ''}
       />
       {/* notes */}
@@ -79,7 +79,7 @@ const DefaultForm: React.FC<DefaultFormProps> = ({
         label="Notes"
         placeholder="Notes"
         onChange={(value) => onChange('notes', value)}
-        onBlur={() => onUpdate()}
+        onBlur={() => onUpdate('notes')}
         value={currentAppliance?.notes || ''}
         multiline={true}
       />

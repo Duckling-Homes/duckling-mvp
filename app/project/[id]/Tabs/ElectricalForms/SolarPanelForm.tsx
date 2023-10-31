@@ -27,7 +27,7 @@ const ORIENTATIONS = [
 interface SolarPanelFormProps {
   currentElectrical: ProjectElectrical
   onChange: (name: string, value: string | number | boolean) => void
-  onUpdate: () => void
+  onUpdate: (inputName: string) => void
 }
 
 const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
@@ -42,7 +42,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         label="Location"
         value={currentElectrical?.location || ''}
         onChange={(value) => onChange('location', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('location')}
         options={LOCATIONS}
       />
       {/* Ownership */}
@@ -50,7 +50,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         label="Ownership"
         value={currentElectrical?.ownership || ''}
         onChange={(value) => onChange('ownership', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('ownership')}
         options={OWNERSHIPS}
       />
       {/* Module Type */}
@@ -58,7 +58,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         label="Module Type"
         value={currentElectrical?.moduleType || ''}
         onChange={(value) => onChange('moduleType', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('moduleType')}
         options={MODULE_TYPES}
       />
       {/* Tracking */}
@@ -66,7 +66,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         label="Tracking"
         value={currentElectrical?.tracking || ''}
         onChange={(value) => onChange('tracking', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('tracking')}
         options={TRACKINGS}
       />
       {/* Orientation */}
@@ -74,7 +74,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         label="Orientation"
         value={currentElectrical?.arrayOrientation || ''}
         onChange={(value) => onChange('arrayOrientation', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('arrayOrientation')}
         options={ORIENTATIONS}
       />
       {/* Tilt */}
@@ -84,7 +84,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         type="tel"
         value={currentElectrical?.arrayTilt || ''}
         onChange={(value) => onChange('arrayTilt', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('arrayTilt')}
         endAdornment='Degrees'
       />
       {/* Max Output */}
@@ -94,7 +94,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         type="tel"
         value={currentElectrical?.maxPowerOutput || ''}
         onChange={(value) => onChange('maxPowerOutput', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('maxPowerOutput')}
         endAdornment='DC Watts'
       />
       {/* Number of Panels */} 
@@ -104,14 +104,14 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         type="tel"
         value={currentElectrical?.numberOfPanels || ''}
         onChange={(value) => onChange('numberOfPanels', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('numberOfPanels')}
       />
       {/* Year Installed */}
       <DatePickerInput
         label="Year Installed"
         onChange={(e) => {
           onChange('yearInstalled', e!.year());
-          onUpdate();
+          onUpdate('yearInstalled');
         }}
         value={currentElectrical && typeof currentElectrical.yearInstalled === 'number' ? dayjs(new Date(currentElectrical.yearInstalled, 0)) : dayjs()}
         maxDate={dayjs()}
@@ -123,7 +123,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         type="tel"
         value={currentElectrical?.annualOutput || ''}
         onChange={(value) => onChange('annualOutput', parseInt(value))}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('annualOutput')}
         endAdornment='kWh'
       />
       {/* Notes */}
@@ -132,7 +132,7 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         placeholder="Notes"
         value={currentElectrical?.notes || ''}
         onChange={(value) => onChange('notes', value)}
-        onBlur={onUpdate}
+        onBlur={() => onUpdate('notes')}
         multiline={true}
       />
     </>
