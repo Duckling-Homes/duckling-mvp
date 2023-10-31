@@ -38,6 +38,10 @@ export class _ModelStore {
       SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
       SyncAPI.onNewChanges = this._onNewSyncAPIChanges;
       await SyncAPI.sync();
+      const projects = await SyncAPI.projects.list()
+      for (const proj of projects) {
+        this.projectsByID.set(proj.id!, proj)
+      }
     }
     this.isInitialized = true;
   }

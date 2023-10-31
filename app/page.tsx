@@ -48,7 +48,7 @@ const Home = observer(() => {
   const projects = ModelStore.projects
 
   useEffect(() => {
-    ModelStore.init()
+    ModelStore.init();
   }, []);
 
   useEffect(() => {
