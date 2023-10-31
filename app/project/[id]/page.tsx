@@ -21,11 +21,11 @@ import DeleteProjectModal from '@/components/Modals/DeleteProject'
 import { useRouter } from 'next/navigation'
 import { observer } from 'mobx-react-lite'
 import ProjectModal from '@/components/Modals/ProjectModal'
-import ModelStore from '@/app/stores/modelStore'
 
 import './style.scss'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import dayjs from 'dayjs'
+import ModelStore from '@/app/stores/modelStore'
 
 const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false)
@@ -33,7 +33,7 @@ const DataCollection = observer(() => {
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0)
   const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [heroPhoto, setHeroPhoto] = useState<PhotoDetails>({})
-
+  
   const currentProject = ModelStore.currentProject
   const router = useRouter()
   const { id } = useParams()
@@ -54,6 +54,9 @@ const DataCollection = observer(() => {
       ModelStore.downloadPhoto(currentProject.heroImageId).then((response) => {
         setHeroPhoto({ photoUrl: response })
       })
+    }
+    else {
+      setHeroPhoto({});
     }
   }, [currentProject?.heroImageId])
 

@@ -4,22 +4,21 @@ import { PhotoDetails } from '@/types/types'
 import { db } from '../db'
 
 export class ImageSyncOperations {
+
   create = async (
     projectID: string,
     imgDataUrl: string,
     photoDetails: PhotoDetails
   ) => {
     photoDetails.id = photoDetails.id ?? uuidv4()
-    await fetch(`/api/images`, {
+    await db.enqueueRequest(`/api/images`, {
       method: 'POST',
       body: JSON.stringify({
         ...photoDetails,
         projectId: projectID,
       }),
-    }).then(async (_) => {
-      await this.upload(photoDetails.id!, imgDataUrl)
     })
-
+    await this.upload(photoDetails.id!, imgDataUrl);
     const photo = {
       ...photoDetails,
       photoUrl: imgDataUrl,
@@ -36,12 +35,28 @@ export class ImageSyncOperations {
     return photo
   }
 
+  _putCachedContent = async (imageID: string, content: ArrayBuffer) => {
+    const urlKey = 'url:' + imageID;
+    const b64encodedContent = Buffer.from(content).toString('base64');
+    return db.putObject({id: urlKey, type: "ImageURL", json: b64encodedContent })
+  }
+
+  _getCachedContent = async (imageID: string) : Promise<ArrayBuffer| null> => {
+    const urlKey = 'url:' + imageID;
+    const resolved = await db.objects.get(urlKey);
+    if (resolved?.json) {
+      return Buffer.from(resolved.json as string, 'base64');
+    }
+
+    return null;
+  }
+
   upload = async (imageID: string, photoUrl: string) => {
     try {
       const response = await fetch(photoUrl)
       const arrayBuffer = await response.arrayBuffer()
-
-      await fetch(`/api/images/${imageID}/upload`, {
+      await this._putCachedContent(imageID, arrayBuffer);
+      await db.enqueueRequest(`/api/images/${imageID}/upload`, {
         method: 'POST',
         body: arrayBuffer,
         headers: {
@@ -55,17 +70,30 @@ export class ImageSyncOperations {
     return photoUrl
   }
 
+
   download = async (imageID: string) => {
     try {
-      const response = await fetch(`/api/images/${imageID}/download`, {
-        method: 'GET',
-      })
 
-      if (!response.ok) {
-        throw new Error(`Failed to download image. Status: ${response.status}`)
+      let data;
+      const cached = await this._getCachedContent(imageID);
+
+      if (cached) {
+        console.log("RESOLVED IMAGE CACHE!");
+        data = cached;
+      } 
+      else {
+        const response = await fetch(`/api/images/${imageID}/download`, {
+          method: 'GET',
+        })
+  
+        if (!response.ok) {
+          throw new Error(`Failed to download image. Status: ${response.status}`)
+        }
+  
+        data = await response.arrayBuffer()
+        await this._putCachedContent(imageID, data);
       }
 
-      const data = await response.arrayBuffer()
       const blob = new Blob([data], { type: 'image/png' })
       const objectURL = URL.createObjectURL(blob)
       return objectURL
