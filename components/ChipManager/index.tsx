@@ -1,17 +1,17 @@
 'use client'
 
-import { useState } from 'react'
-import { Add } from '@mui/icons-material'
-import { Button, Chip, Modal } from '@mui/material'
 import {
   ProjectAppliance,
   ProjectElectrical,
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
+import { Add } from '@mui/icons-material'
+import { Button, Chip, Modal } from '@mui/material'
+import { useState } from 'react'
 
-import './style.scss'
 import { observer } from 'mobx-react-lite'
+import './style.scss'
 
 interface ChipManagerProps {
   chips: (
