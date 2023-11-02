@@ -1,12 +1,12 @@
-import { isOnline } from './utils'
-import { ProjectSyncOperations } from './operations/project'
-import { OrganizationSyncOperations } from './operations/organization'
-import { ApplianceSyncOperations } from './operations/appliances'
-import { EnvelopeSyncOperations } from './operations/envelope'
-import { ElectricalSyncOperations } from './operations/electrical'
-import { RoomSyncOperations } from './operations/room'
-import { ImageSyncOperations } from './operations/images'
 import { db } from './db'
+import { ApplianceSyncOperations } from './operations/appliances'
+import { ElectricalSyncOperations } from './operations/electrical'
+import { EnvelopeSyncOperations } from './operations/envelope'
+import { ImageSyncOperations } from './operations/images'
+import { OrganizationSyncOperations } from './operations/organization'
+import { ProjectSyncOperations } from './operations/project'
+import { RoomSyncOperations } from './operations/room'
+import { isOnline } from './utils'
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
@@ -57,7 +57,7 @@ class _SyncAPI {
   }
 
   pushChanges = async () => {
-    await db.publishChanges()
+    await db.publicDeDupedChanges()
   }
 
   pullLatest = async () => {
@@ -74,9 +74,9 @@ class _SyncAPI {
     }
   }
 
-  set onNewChanges (cb: () => void) {
-    db.onNewChanges = cb;
-    console.log("DID SET CB", db, db.onNewChanges)
+  set onNewChanges(cb: () => void) {
+    db.onNewChanges = cb
+    console.log('DID SET CB', db, db.onNewChanges)
   }
 }
 

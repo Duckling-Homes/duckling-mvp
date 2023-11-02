@@ -5,6 +5,6 @@ export const isOnline = () => {
 }
 
 export const synchronizedFetch = async (url: string, options?: RequestInit) => {
-  await db.publishChanges()
+  await db.publicDeDupedChanges()
   return fetch(url, options)
 }
