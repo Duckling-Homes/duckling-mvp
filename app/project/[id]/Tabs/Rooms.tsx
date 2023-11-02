@@ -62,9 +62,6 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
 
   const rooms = currentProject.rooms || []
 
-  console.log('on load rooms')
-  console.log(rooms.length)
-
   useEffect(() => {
     if (!currentRoom && currentProject?.rooms) {
       setCurrentRoom(currentProject.rooms[0])
