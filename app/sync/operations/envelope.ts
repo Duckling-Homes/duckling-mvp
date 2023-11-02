@@ -34,9 +34,8 @@ export class EnvelopeSyncOperations {
     await SyncAPI.projects._swap(projectID, (proj) => {
       const idx = proj.envelopes?.findIndex((env) => env.id === envelope.id) ?? -1;
       if (idx > -1) {
-        proj.envelopes?.splice(idx, 1)
+        proj.envelopes?.splice(idx, 1, envelope)
       }
-      proj.envelopes?.push(envelope)
       return proj
     })
 

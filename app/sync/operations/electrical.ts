@@ -55,9 +55,8 @@ export class ElectricalSyncOperations {
         (elec) => elec.id === electrical.id
       ) ?? -1
       if (idx > -1) {
-        proj.electrical?.splice(idx, 1)
+        proj.electrical?.splice(idx, 1, electrical)
       }
-      proj.electrical?.push(electrical)
       return proj
     })
 
