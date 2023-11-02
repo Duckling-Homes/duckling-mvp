@@ -32,11 +32,10 @@ export class EnvelopeSyncOperations {
     })
 
     await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.envelopes?.findIndex((env) => env.id === envelope.id)
-      if (idx) {
-        proj.envelopes?.splice(idx, 1)
+      const idx = proj.envelopes?.findIndex((env) => env.id === envelope.id) ?? -1;
+      if (idx > -1) {
+        proj.envelopes?.splice(idx, 1, envelope)
       }
-      proj.envelopes?.push(envelope)
       return proj
     })
 
@@ -52,8 +51,8 @@ export class EnvelopeSyncOperations {
       method: 'DELETE',
     })
     await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.envelopes?.findIndex((env) => env.id === envelopeID)
-      if (idx) {
+      const idx = proj.envelopes?.findIndex((env) => env.id === envelopeID) ?? -1
+      if (idx > -1) {
         proj.envelopes?.splice(idx, 1)
       }
       return proj

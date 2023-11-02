@@ -51,12 +51,12 @@ export class _ModelStore {
   _onNewSyncAPIChanges = () => {
     console.log("Detected change");
     if (this.currentProject) {
-      this.loadProject(this.currentProject.id!);
+      this.syncProject(this.currentProject.id!);
     }
   }
 
   setCurrentProject = async (projectId: string) => {
-    const project = await this.loadProject(projectId)
+    const project = await this.syncProject(projectId)
     this.currentProject = project
     return project
   }
@@ -65,7 +65,8 @@ export class _ModelStore {
     this.currentProject = null
   }
 
-  loadProject = async (projectID: string) => {
+  // NOTE: This needs to be called after every mutation to trigger front-end callbacks for reactivity.
+  syncProject = async (projectID: string) => {
     console.log('loading')
     this.init();
     const project = await SyncAPI.projects.get(projectID)
@@ -101,7 +102,7 @@ export class _ModelStore {
       projectId,
       projectData
     )
-    this.loadProject(projectId)
+    this.syncProject(projectId)
     return data
   }
 
@@ -120,7 +121,7 @@ export class _ModelStore {
       applianceType,
       appliance
     )
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
     return created
   }
 
@@ -134,7 +135,7 @@ export class _ModelStore {
       applianceType,
       appliance
     )
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
     return updated
   }
 
@@ -144,33 +145,35 @@ export class _ModelStore {
     applianceId: string
   ) => {
     await SyncAPI.appliances.delete(projectID, applianceType, applianceId)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
   }
 
   createRoom = async (projectID: string, room: ProjectRoom) => {
     const created = await SyncAPI.rooms.create(projectID, room)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
     return created
   }
 
   updateRoom = async (projectID: string, room: ProjectRoom) => {
     const updated = await SyncAPI.rooms.update(projectID, room)
+    await this.syncProject(projectID)
     return updated
   }
 
   deleteRoom = async (projectID: string, roomID: string) => {
     await SyncAPI.rooms.delete(projectID, roomID)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
   }
 
   createEnvelope = async (projectID: string, envelope: ProjectEnvelope) => {
     const created = await SyncAPI.envelopes.create(projectID, envelope)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
     return created
   }
 
   updateEnvelope = async (projectID: string, envelope: ProjectEnvelope) => {
     const updated = await SyncAPI.envelopes.update(projectID, envelope)
+    await this.syncProject(projectID)
     return updated
   }
 
@@ -180,7 +183,7 @@ export class _ModelStore {
     envelopeID: string
   ) => {
     await SyncAPI.envelopes.delete(projectID, envelopeType, envelopeID)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
   }
 
   createElectrical = async (
@@ -188,7 +191,7 @@ export class _ModelStore {
     electrical: ProjectElectrical
   ) => {
     const created = await SyncAPI.electrical.create(projectID, electrical)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
     return created
   }
 
@@ -197,7 +200,7 @@ export class _ModelStore {
     electrical: ProjectElectrical
   ) => {
     const updated = await SyncAPI.electrical.update(projectID, electrical)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
     return updated
   }
 
@@ -207,7 +210,7 @@ export class _ModelStore {
     electricalID: string
   ) => {
     await SyncAPI.electrical.delete(projectID, electricalType, electricalID)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
   }
 
   createPhotoEntry = async (
@@ -220,7 +223,7 @@ export class _ModelStore {
       imgDataUrl,
       photoDetails
     )
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
     return created
   }
 
@@ -230,13 +233,13 @@ export class _ModelStore {
 
   patchPhotoDetails = async (projectID: string, photoDetails: PhotoDetails) => {
     const updated = await SyncAPI.images.update(projectID, photoDetails)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
     return updated
   }
 
   deletePhoto = async (projectID: string, imageID: string) => {
     await SyncAPI.images.delete(projectID, imageID)
-    await this.loadProject(projectID)
+    await this.syncProject(projectID)
   }
 }
 

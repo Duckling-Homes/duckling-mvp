@@ -49,21 +49,20 @@ interface RoomsProps {
 }
 
 const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
-  const [rooms, setRooms] = useState<ProjectRoom[]>([])
   const [openCamera, setOpenCamera] = useState<boolean>(false)
-  const [currentRoom, setCurrentRoom] = useState<ProjectRoom>({})
+  const [currentRoom, setCurrentRoom] = useState<ProjectRoom>()
+
+  const rooms = currentProject.rooms!;
 
   useEffect(() => {
-    if (currentProject && currentProject.rooms) {
-      setRooms(currentProject.rooms)
+    if (!currentRoom && currentProject?.rooms) {
       setCurrentRoom(currentProject.rooms[0])
     }
-  }, [currentProject])
+  }, [currentProject?.rooms, currentRoom])
 
   async function deleteRoom(roomId: string) {
     await ModelStore.deleteRoom(currentProject.id!, roomId)
     const newRooms = rooms.filter((r) => r.id !== roomId)
-    setRooms(newRooms)
     setCurrentRoom(newRooms[0] || {})
   }
 
@@ -72,9 +71,6 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
       name: 'New Room',
       projectId: currentProject.id,
     })
-    const newRoomList = [...rooms, createdRoom]
-
-    setRooms(newRoomList)
     setCurrentRoom(createdRoom)
   }
 
@@ -84,19 +80,11 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
       const roomToUpdate: ProjectRoom = { id: updatedRoom.id }
       roomToUpdate[propName] = updatedRoom[propName]
 
-      const updatedRooms = rooms.map((room) => {
-        if (room.id === updatedRoom.id) {
-          return { ...room, [propName]: updatedRoom[propName] }
-        }
-        return room
-      })
-
       await ModelStore.updateRoom(
         currentProject.id!,
         roomToUpdate
       )
 
-      setRooms(updatedRooms)
     }
   }
 
