@@ -25,8 +25,6 @@ export class _ModelStore {
   organization: Organization | null = null
   isInitialized = false;
 
-  currentRoomID: string | null = null;
-
   constructor() {
     makeAutoObservable(this)
   }
@@ -242,12 +240,6 @@ export class _ModelStore {
   deletePhoto = async (projectID: string, imageID: string) => {
     await SyncAPI.images.delete(projectID, imageID)
     await this.syncProject(projectID)
-  }
-
-
-  // Room Page specific APIS
-  get currentRoom() {
-    return this.currentProject?.rooms?.find(r => r.id === this.currentRoomID);
   }
 }
 
