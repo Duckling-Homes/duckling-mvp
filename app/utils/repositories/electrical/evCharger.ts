@@ -43,6 +43,7 @@ export async function deleteProjectEvCharger(id: string) {
 export async function getProjectEvChargers(projectId: string) {
   return await prisma.evCharger.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 

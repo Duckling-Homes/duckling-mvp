@@ -47,6 +47,7 @@ export async function deleteProjectElectricalPanel(id: string) {
 export async function getProjectElectricalPanels(projectId: string) {
   return await prisma.electricalPanel.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 

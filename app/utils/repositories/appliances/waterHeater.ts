@@ -44,6 +44,7 @@ export async function deleteWaterHeaterAppliance(id: string) {
 export async function getProjectWaterHeaterAppliances(projectId: string) {
   return await prisma.waterHeater.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 

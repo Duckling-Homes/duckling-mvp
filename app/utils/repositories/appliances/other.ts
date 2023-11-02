@@ -43,6 +43,7 @@ export async function deleteOtherAppliance(id: string) {
 export async function getProjectOtherAppliances(projectId: string) {
   return await prisma.otherAppliance.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 
