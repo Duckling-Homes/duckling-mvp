@@ -53,11 +53,10 @@ export class ElectricalSyncOperations {
     await SyncAPI.projects._swap(projectID, (proj) => {
       const idx = proj.electrical?.findIndex(
         (elec) => elec.id === electrical.id
-      )
-      if (idx) {
-        proj.electrical?.splice(idx, 1)
+      ) ?? -1
+      if (idx > -1) {
+        proj.electrical?.splice(idx, 1, electrical)
       }
-      proj.electrical?.push(electrical)
       return proj
     })
 
@@ -77,8 +76,8 @@ export class ElectricalSyncOperations {
     )
 
     await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.electrical?.findIndex((elec) => elec.id === electricalID)
-      if (idx) {
+      const idx = proj.electrical?.findIndex((elec) => elec.id === electricalID) ?? -1
+      if (idx > -1) {
         proj.electrical?.splice(idx, 1)
       }
       return proj

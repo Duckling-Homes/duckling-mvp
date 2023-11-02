@@ -26,11 +26,10 @@ export class RoomSyncOperations {
       body: JSON.stringify(room),
     })
     await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.rooms?.findIndex((r) => r.id === room.id)
-      if (idx) {
-        proj.rooms?.splice(idx, 1)
+      const idx = proj.rooms?.findIndex((r) => r.id === room.id) ?? -1;
+      if (idx > -1) {
+        proj.rooms?.splice(idx, 1, room)
       }
-      proj.rooms?.push(room)
       return proj
     })
     return room
@@ -42,8 +41,8 @@ export class RoomSyncOperations {
     })
 
     await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.rooms?.findIndex((r) => r.id === roomID)
-      if (idx) {
+      const idx = proj.rooms?.findIndex((r) => r.id === roomID) ?? -1;
+      if (idx > -1) {
         proj.rooms?.splice(idx, 1)
       }
       return proj

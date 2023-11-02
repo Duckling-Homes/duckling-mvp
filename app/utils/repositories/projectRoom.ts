@@ -45,7 +45,7 @@ export async function deleteProjectRoom(id: string) {
 export async function getProjectRooms(projectId: string) {
   return await prisma.projectRoom.findMany({
     where: { projectId },
-  })
+    orderBy: [{ createdAt: 'asc' }]  })
 }
 
 export async function getProjectRoom(id: string) {
