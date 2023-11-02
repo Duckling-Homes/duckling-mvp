@@ -1,19 +1,19 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import ChipManager from "@/components/ChipManager";
-import HVACForm from "./AppliancesForms/HVACForm";
-import WaterHeaterForm from "./AppliancesForms/WaterHeaterForm";
-import CooktopForm from "./AppliancesForms/CooktopForm";
-import DefaultForm from "./AppliancesForms/DefaultForm";
-import { Project, ProjectAppliance } from "@/types/types";
-import { v4 as uuidv4 } from 'uuid';
-import ModelStore from "@/app/stores/modelStore";
-import { SelectInput } from "@/components/Inputs";
-import { Button } from "@mui/material";
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import ModelStore from '@/app/stores/modelStore'
+import ChipManager from '@/components/ChipManager'
+import { SelectInput } from '@/components/Inputs'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
-import PhotoDisplay from "@/components/PhotoDisplay";
+import PhotoDisplay from '@/components/PhotoDisplay'
+import { Project, ProjectAppliance } from '@/types/types'
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
+import { Button } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import CooktopForm from './AppliancesForms/CooktopForm'
+import DefaultForm from './AppliancesForms/DefaultForm'
+import HVACForm from './AppliancesForms/HVACForm'
+import WaterHeaterForm from './AppliancesForms/WaterHeaterForm'
 
 const TYPES = [
   { name: 'HVAC', value: 'hvac' },
@@ -31,19 +31,16 @@ interface AppliancesProps {
 }
 
 const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
-  const [appliances, setAppliances] = useState<ProjectAppliance[]>([])
   const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({})
 
-  useEffect(() => {
-    if (currentProject?.appliances) {
-      setAppliances(currentProject.appliances)
+  const appliances = currentProject.appliances || []
 
-      if (!currentAppliance) {
-        setCurrentAppliance(currentProject.appliances[0])
-      }
+  useEffect(() => {
+    if (currentProject?.appliances && !currentAppliance) {
+      setCurrentAppliance(currentProject.appliances[0])
     }
-  }, [currentProject, currentProject?.appliances])
+  }, [currentProject, currentProject?.appliances, currentAppliance])
 
   function getTypeApi(type: string) {
     let api = ''
@@ -66,37 +63,39 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   }
 
   async function deleteAppliance(applianceId: string) {
+    if (!currentProject || !currentProject.id) return
+    const startingLength = appliances.length
     const appliancesList = [...appliances]
+
     const applianceToDelete = appliancesList.find(
       (appliance) => appliance.id === applianceId
-    );
+    )
 
     if (!applianceToDelete) {
-      return;
+      return
     }
-
-    const api = applianceToDelete?.type ? getTypeApi(applianceToDelete.type) : '';
-
 
     if (applianceToDelete.type) {
-      await ModelStore.deleteAppliance(currentProject.id!, api, applianceId);
+      const api = getTypeApi(applianceToDelete.type)
+      await ModelStore.deleteAppliance(currentProject.id, api, applianceId)
     }
 
-    const newApplianceList = appliancesList.filter((r) => r.id !== applianceId);
-    setAppliances(newApplianceList);
-    setCurrentAppliance(newApplianceList[0] || {});
+    if (startingLength === 1) {
+      console.log('setting empty appliance')
+      setCurrentAppliance({})
+    } else {
+      console.log('setting current appliance')
+      setCurrentAppliance(appliances[0])
+    }
   }
 
   function createAppliance() {
     const newAppliance = {
       id: uuidv4(),
-      name: "New Appliance",
+      name: 'New Appliance',
     }
-    const newApplianceList = [...appliances];
-    newApplianceList.push(newAppliance);
 
-    setAppliances(newApplianceList);
-    setCurrentAppliance(newAppliance);
+    setCurrentAppliance(newAppliance)
   }
 
   const handleTypeChange = (name: string, value: string) => {
@@ -109,40 +108,27 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     updatedAppliance: ProjectAppliance,
     type: string
   ) {
-    const api = getTypeApi(type);
+    const api = getTypeApi(type)
 
     const createdAppliance = await ModelStore.createAppliance(
       currentProject.id!,
       api,
       updatedAppliance
-    );
+    )
 
-    const updatedAppliances = appliances.map((appliance) => {
-      if (appliance.id === updatedAppliance.id) {
-        return { ...appliance, ...updatedAppliance }
-      }
-      return appliance
-    });
-
-    setAppliances(updatedAppliances);
-    setCurrentAppliance(createdAppliance);
+    setCurrentAppliance(createdAppliance)
   }
 
-  async function patchAppliance(propName: string, updatedAppliance = currentAppliance) {
+  async function patchAppliance(
+    propName: string,
+    updatedAppliance = currentAppliance
+  ) {
     if (updatedAppliance?.id && updatedAppliance?.type) {
-
       const applianceToUpdate = {
         id: updatedAppliance.id,
         type: updatedAppliance.type,
-        [propName]: updatedAppliance[propName]
+        [propName]: updatedAppliance[propName],
       }
-
-      const updatedEnvelopes = appliances.map((appliance) => {
-        if (appliance.id === updatedAppliance.id) {
-          return { ...appliance, [propName]: updatedAppliance[propName] };
-        }
-        return appliance;
-      })
 
       const api = getTypeApi(updatedAppliance?.type)
 
@@ -151,8 +137,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         api,
         applianceToUpdate
       )
-
-      setAppliances(updatedEnvelopes)
     }
   }
 
@@ -167,6 +151,9 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   }
 
   const renderForm = () => {
+    if (appliances.length === 0) {
+      return null
+    }
     switch (currentAppliance?.type?.toLowerCase()) {
       case 'hvac':
         return (
@@ -231,37 +218,43 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
           photo={{ applianceId: currentAppliance?.id }}
         />
       )}
-      {currentAppliance?.id && <div style={{
-        width: '100%',
-      }}>
-        <form style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-        }}>
-          <SelectInput
-            label="Type"
-            value={(currentAppliance?.type)?.toLowerCase() || ''}
-            onChange={(value) => handleTypeChange('type', value)}
-            disabled={currentAppliance?.type ? true : false}
-            options={TYPES}
-          />
-          {renderForm()}
-          <PhotoDisplay
+      {currentAppliance?.id && (
+        <div
+          style={{
+            width: '100%',
+          }}
+        >
+          <form
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+          >
+            <SelectInput
+              label="Type"
+              value={currentAppliance?.type?.toLowerCase() || ''}
+              onChange={(value) => handleTypeChange('type', value)}
+              disabled={currentAppliance?.type ? true : false}
+              options={TYPES}
+            />
+            {renderForm()}
+            <PhotoDisplay
               currentProject={currentProject}
-              filterCriteria={ { applianceId: currentAppliance.id! } }
-          ></PhotoDisplay>
-          {currentAppliance?.type && (
-            <Button
-              variant="contained"
-              startIcon={<CameraAltOutlinedIcon />}
-              onClick={() => setOpenCamera(true)}
-            >
-              Add Photo
-            </Button>
-          )}
-        </form>
-      </div>}
+              filterCriteria={{ applianceId: currentAppliance.id! }}
+            ></PhotoDisplay>
+            {currentAppliance?.type && (
+              <Button
+                variant="contained"
+                startIcon={<CameraAltOutlinedIcon />}
+                onClick={() => setOpenCamera(true)}
+              >
+                Add Photo
+              </Button>
+            )}
+          </form>
+        </div>
+      )}
     </div>
   )
 }

@@ -44,6 +44,7 @@ export async function deleteProjectBattery(id: string) {
 export async function getProjectBatteries(projectId: string) {
   return await prisma.battery.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 

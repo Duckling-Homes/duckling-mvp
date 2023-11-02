@@ -46,6 +46,7 @@ export async function deleteHVACAppliance(id: string) {
 export async function getProjectHVACAppliances(projectId: string) {
   return await prisma.hVAC.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 
