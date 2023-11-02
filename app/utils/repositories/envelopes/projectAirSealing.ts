@@ -44,6 +44,7 @@ export async function getProjectAirSealingById(id: string) {
 export async function getProjectAirSealing(projectId: string) {
   return await prisma.projectAirSealing.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 
