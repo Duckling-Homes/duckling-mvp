@@ -43,8 +43,8 @@ export class ApplianceSyncOperations {
     )
 
     await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.appliances?.findIndex((app) => app.id === appliance.id)
-      if (idx) {
+      const idx = proj.appliances?.findIndex((app) => app.id === appliance.id) ?? -1
+      if (idx > -1) {
         proj.appliances?.splice(idx, 1)
       }
       proj.appliances?.push(appliance)
@@ -64,8 +64,8 @@ export class ApplianceSyncOperations {
     })
 
     await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.appliances?.findIndex((app) => app.id === applianceId)
-      if (idx) {
+      const idx = proj.appliances?.findIndex((app) => app.id === applianceId) ?? -1
+      if (idx > -1) {
         proj.appliances?.splice(idx, 1)
       }
       return proj

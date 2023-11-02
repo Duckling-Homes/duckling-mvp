@@ -61,6 +61,7 @@ const DeleteModal: React.FC<{
 
 const ChipManager: React.FC<ChipManagerProps> = observer(
   ({ chips, currentChip, chipType, onChipClick, onDelete, onCreate }) => {
+
     const [deleteEnvelope, setDeleteEnvelope] = useState<{
       id: string
       name: string
@@ -97,7 +98,7 @@ const ChipManager: React.FC<ChipManagerProps> = observer(
             gap: '16px',
           }}
         >
-          {chips.map((chip, i) => (
+          {chips?.map((chip, i) => (
             <Chip
               label={chip.name || `${chip.type} ${i + 1}`}
               key={i}
