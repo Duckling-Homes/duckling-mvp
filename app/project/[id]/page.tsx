@@ -116,7 +116,7 @@ const DataCollection = observer(() => {
                 )}
                 {heroPhoto?.photoUrl && (
                   <img
-                    style={{ width: '150px', height: '150px', objectFit: 'fill' }}
+                    style={{ width: '150px', height: '150px', objectFit: 'cover' }}
                     src={heroPhoto.photoUrl}
                   ></img>
                 )}

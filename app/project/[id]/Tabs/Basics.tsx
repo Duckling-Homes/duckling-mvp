@@ -2,16 +2,13 @@
 
 import React, { useEffect, useState } from 'react'
 import ModelStore from '@/app/stores/modelStore'
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import {
-  Button,
   Divider,
 } from "@mui/material";
 import { Project, ProjectData } from "@/types/types";
 import dayjs from "dayjs";
 import { SelectInput, TextInput } from "@/components/Inputs";
 import DatePickerInput from "@/components/Inputs/DatePickerInput";
-import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 
 interface BasicsProps {
   currentProject: Project
@@ -19,7 +16,6 @@ interface BasicsProps {
 
 const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
   const [data, setData] = useState<Project['data']>()
-  const [openCamera, setOpenCamera] = useState<boolean>(false)
 
   useEffect(() => {
     if (!data && currentProject?.data) {
@@ -43,13 +39,6 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
 
   return (
     <>
-     {currentProject && (
-        <PhotoCaptureModal
-          open={openCamera}
-          project={currentProject}
-          onClose={() => setOpenCamera(false)}
-        />
-      )}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -113,24 +102,6 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
             onBlur={updateData}
           />
         </form>
-        <Divider />
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Button
-            variant="contained"
-            size="small"
-            style={ {top: '20px'} }
-            startIcon={<CameraAltOutlinedIcon />}
-            onClick={() => setOpenCamera(true)}
-          >
-            Add Photos
-          </Button>
-        </div>
       </div>
     </>
   )
