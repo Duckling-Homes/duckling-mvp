@@ -2,9 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import ModelStore from '@/app/stores/modelStore'
-import {
-  Divider,
-} from "@mui/material";
 import { Project, ProjectData } from "@/types/types";
 import dayjs from "dayjs";
 import { SelectInput, TextInput } from "@/components/Inputs";
