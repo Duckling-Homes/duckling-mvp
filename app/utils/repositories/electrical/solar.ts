@@ -46,6 +46,7 @@ export async function deleteProjectSolar(id: string) {
 export async function getAllProjectSolar(projectId: string) {
   return await prisma.solar.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 

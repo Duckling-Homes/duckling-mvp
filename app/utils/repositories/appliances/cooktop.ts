@@ -43,6 +43,7 @@ export async function deleteCooktopAppliance(id: string) {
 export async function getProjectCooktopAppliances(projectId: string) {
   return await prisma.cooktop.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 

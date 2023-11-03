@@ -49,6 +49,7 @@ export async function deleteProjectGenerator(id: string) {
 export async function getProjectGenerators(projectId: string) {
   return await prisma.generator.findMany({
     where: { projectId },
+    orderBy: [{ createdAt: 'asc' }],
   })
 }
 
