@@ -8,6 +8,7 @@ import {
 import { ProjectRoom, Project } from '@/types/types'
 import PhotoDisplay from '@/components/PhotoDisplay'
 import { observer } from 'mobx-react-lite'
+import AddPhotoButton from '@/components/AddPhotoButton'
 
 interface PhotosTabProps {
   currentProject: Project
@@ -28,13 +29,12 @@ const Photos: React.FC<PhotosTabProps> = observer(({ currentProject }) => {
       <div
         style={{
           display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           padding: '32px',
-          gap: '32px',
-          justifyContent: 'flex-start',
-          width: '300px',
         }}
       >
-        <FormControl fullWidth>
+        <FormControl style={{ width: '300px' }}>
           <InputLabel id="photo-filter-label">Photos Filter</InputLabel>
           <Select
             labelId="photo-filter-label"
@@ -54,13 +54,20 @@ const Photos: React.FC<PhotosTabProps> = observer(({ currentProject }) => {
             )}
           </Select>
         </FormControl>
+        <AddPhotoButton />
       </div>
-      <PhotoDisplay
-        currentProject={currentProject}
-        filterCriteria={
-          roomFilter == 'UNSELECTED' ? {} : { roomId: roomFilter }
-        }
-      ></PhotoDisplay>
+      <div
+        style={{
+          padding: '32px'
+        }}
+      >
+        <PhotoDisplay
+          currentProject={currentProject}
+          filterCriteria={
+            roomFilter == 'UNSELECTED' ? {} : { roomId: roomFilter }
+          }
+        ></PhotoDisplay>
+      </div>
     </>
   );
 })

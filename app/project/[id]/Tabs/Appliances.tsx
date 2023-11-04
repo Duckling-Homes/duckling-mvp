@@ -3,17 +3,15 @@
 import ModelStore from '@/app/stores/modelStore'
 import ChipManager from '@/components/ChipManager'
 import { SelectInput } from '@/components/Inputs'
-import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import PhotoDisplay from '@/components/PhotoDisplay'
 import { Project, ProjectAppliance } from '@/types/types'
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
-import { Button } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import CooktopForm from './AppliancesForms/CooktopForm'
 import DefaultForm from './AppliancesForms/DefaultForm'
 import HVACForm from './AppliancesForms/HVACForm'
 import WaterHeaterForm from './AppliancesForms/WaterHeaterForm'
+import AddPhotoButton from '@/components/AddPhotoButton'
 
 const TYPES = [
   { name: 'HVAC', value: 'hvac' },
@@ -31,7 +29,6 @@ interface AppliancesProps {
 }
 
 const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
-  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentAppliance, setCurrentAppliance] = useState<ProjectAppliance>({})
 
   const appliances = currentProject.appliances || []
@@ -210,14 +207,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
         currentChip={currentAppliance?.id || ''}
         onChipClick={(i: number) => setCurrentAppliance(appliances[i])}
       />
-      {currentAppliance && (
-        <PhotoCaptureModal
-          open={openCamera}
-          project={currentProject}
-          onClose={() => setOpenCamera(false)}
-          photo={{ applianceId: currentAppliance?.id }}
-        />
-      )}
       {currentAppliance?.id && (
         <div
           style={{
@@ -243,15 +232,9 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
               currentProject={currentProject}
               filterCriteria={{ applianceId: currentAppliance.id! }}
             ></PhotoDisplay>
-            {currentAppliance?.type && (
-              <Button
-                variant="contained"
-                startIcon={<CameraAltOutlinedIcon />}
-                onClick={() => setOpenCamera(true)}
-              >
-                Add Photo
-              </Button>
-            )}
+            <AddPhotoButton 
+              photoUpdates={{ applianceId: currentAppliance?.id }}
+            />
           </form>
         </div>
       )}

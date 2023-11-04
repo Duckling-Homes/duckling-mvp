@@ -67,8 +67,8 @@ const PhotoDisplay: React.FC<{
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: '20px',
-          padding: '32px',
+          gap: '10px',
+          columnGap: '10px',
         }}
       >
         {photos
@@ -98,26 +98,27 @@ const PhotoDisplay: React.FC<{
                   style={{
                     width: '200px',
                     height: '200px',
-                    objectFit: 'fill',
+                    objectFit: 'cover',
                   }}
                 />
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  handleOpenDeleteModal(image)
-                }}
-                style={{
-                  position: 'absolute',
-                  bottom: '20px',
-                  right: '20px',
-                  fontSize: '12px',
-                  minWidth: '0',
-                  padding: '6px',
-                  lineHeight: '1',
-                }}
-              >
-                <DeleteOutlineOutlinedIcon />
+                <Button
+                  variant="contained"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenDeleteModal(image);
+                  }}
+                  style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    right: '20px',
+                    fontSize: '12px',
+                    minWidth: '0',
+                    padding: '6px',
+                    lineHeight: '1',
+                  }}
+                >
+                  <DeleteOutlineOutlinedIcon />
+                </Button>
               </Button>
             </div>
           ))}
