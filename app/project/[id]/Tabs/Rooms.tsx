@@ -1,14 +1,12 @@
 'use client'
 
 import ModelStore from '@/app/stores/modelStore'
+import AddPhotoButton from '@/components/AddPhotoButton'
 import ChipManager from '@/components/ChipManager'
 import { SelectInput, TextInput } from '@/components/Inputs'
-import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import PhotoDisplay from '@/components/PhotoDisplay'
 import { Project, ProjectRoom } from '@/types/types'
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
 import {
-  Button,
   Chip,
   FormControl,
   FormGroup,
@@ -57,7 +55,6 @@ interface RoomsProps {
 }
 
 const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
-  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentRoom, setCurrentRoom] = useState<ProjectRoom>()
 
   const rooms = currentProject.rooms || []
@@ -137,14 +134,6 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
         chipType="Room"
         onChipClick={(i: number) => setCurrentRoom(rooms[i])}
       />
-      {currentRoom && (
-        <PhotoCaptureModal
-          open={openCamera}
-          project={currentProject}
-          onClose={() => setOpenCamera(false)}
-          photo={{ roomId: currentRoom?.id }}
-        />
-      )}
       <div
         style={{
           width: '100%',
@@ -304,13 +293,9 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                 currentProject={currentProject}
                 filterCriteria={{ roomId: currentRoom.id! }}
               ></PhotoDisplay>
-              <Button
-                variant="contained"
-                startIcon={<CameraAltOutlinedIcon />}
-                onClick={() => setOpenCamera(true)}
-              >
-                Add Photo
-              </Button>
+              <AddPhotoButton 
+                photoUpdates={{ roomId: currentRoom?.id }}
+              />
             </div>
           </form>
         ) : (

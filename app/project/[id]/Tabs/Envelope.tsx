@@ -3,24 +3,21 @@
 import ModelStore from '@/app/stores/modelStore'
 import ChipManager from '@/components/ChipManager'
 import { SelectInput } from '@/components/Inputs'
-import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import PhotoDisplay from '@/components/PhotoDisplay'
 import { Project, ProjectEnvelope } from '@/types/types'
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined'
-import { Button } from '@mui/material'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import { v4 } from 'uuid'
 import AirSealingForm from './EnvelopesForms/AirSealingForm'
 import InsulationForm from './EnvelopesForms/InsulationForm'
+import AddPhotoButton from '@/components/AddPhotoButton'
 
 interface EnvelopeProps {
   currentProject: Project
 }
 
 const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
-  const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>({})
 
   const envelopes = currentProject.envelopes || []
@@ -144,14 +141,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
             setCurrentEnvelope(envelopes[i])
           }}
         />
-        {currentEnvelope && (
-          <PhotoCaptureModal
-            open={openCamera}
-            project={currentProject}
-            onClose={() => setOpenCamera(false)}
-            photo={{ envelopeId: currentEnvelope?.id }}
-          />
-        )}
         <div
           style={{
             width: '100%',
@@ -177,13 +166,9 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
                 currentProject={currentProject}
                 filterCriteria={{ envelopeId: currentEnvelope.id! }}
               ></PhotoDisplay>
-              <Button
-                variant="contained"
-                startIcon={<CameraAltOutlinedIcon />}
-                onClick={() => setOpenCamera(true)}
-              >
-                Add Photo
-              </Button>
+              <AddPhotoButton 
+                photoUpdates={{ envelopeId: currentEnvelope?.id }}
+              />
             </form>
           )}
         </div>
