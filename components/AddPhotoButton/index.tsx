@@ -13,7 +13,7 @@ const AddPhotoButton: React.FC<{
     const [anchorOptions, setAnchorOptions] = useState<null | HTMLElement>(null)
     const [openCamera, setOpenCamera] = useState<boolean>(false)
     const [openPhotoPicker, setOpenPhotoPicker] = useState<boolean>(false)
-    const [isUploading, setIsUploading] = useState<boolean>(false) // State to track upload status
+    const [isUploading, setIsUploading] = useState<boolean>(false)
 
     const buttonRef = useRef<HTMLButtonElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
