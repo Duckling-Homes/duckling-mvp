@@ -10,7 +10,6 @@ import PhotoPickerModal from '../Modals/PhotoPicker'
 const AddPhotoButton: React.FC<{
   photoUpdates?: PhotoDetails
 }> = observer(({ photoUpdates }) => {
-  console.log(photoUpdates)
   const [anchorOptions, setAnchorOptions] = useState<null | HTMLElement>(null)
   const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [openPhotoPicker, setOpenPhotoPicker] = useState<boolean>(false)

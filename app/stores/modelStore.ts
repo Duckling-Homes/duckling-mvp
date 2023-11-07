@@ -49,7 +49,6 @@ export class _ModelStore {
   }
 
   _onNewSyncAPIChanges = () => {
-    console.log('Detected change')
     if (this.currentProject) {
       this.syncProject(this.currentProject.id!)
     }
@@ -218,7 +217,6 @@ export class _ModelStore {
     imgDataUrl: string,
     photoDetails: PhotoDetails
   ) => {
-    console.log('Axel in the create', photoDetails)
     const created = await SyncAPI.images.create(
       projectID,
       imgDataUrl,
