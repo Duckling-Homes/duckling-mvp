@@ -117,9 +117,8 @@ export class ImageSyncOperations {
       )
       const newImages = proj.images ? [...proj.images] : []
       if (idx !== undefined && idx !== -1) {
-        newImages.splice(idx, 1)
+        newImages.splice(idx, 1, photoDetails)
       }
-      newImages.push(photoDetails)
 
       return {
         ...proj,
@@ -138,12 +137,12 @@ export class ImageSyncOperations {
     )
 
     await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.images?.findIndex((image) => image.id === imageID)
-      if(imageID == proj.heroImageId) {
+      const idx = proj.images?.findIndex((image) => image.id === imageID) ?? -1;
+      if(imageID === proj.heroImageId) {
         proj.heroImageId = undefined
       }
 
-      if(idx != undefined) {
+      if(idx !== -1) {
         proj.images?.splice(idx, 1)
       }
       return proj

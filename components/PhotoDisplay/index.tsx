@@ -17,6 +17,8 @@ const PhotoDisplay: React.FC<{
   useEffect(() => {
     if (!currentProject) return;
 
+    console.log("currentProject", currentProject);
+
     if (currentProject?.images && currentProject.images.length > 0) {
       const downloadPromises = currentProject.images.map(
         (image: PhotoDetails) => {
@@ -38,7 +40,7 @@ const PhotoDisplay: React.FC<{
     else if (currentProject.images?.length === 0) {
       setPhotos([]);
     }
-  }, [currentProject, currentProject?.images])
+  }, [currentProject, currentProject.images?.length])
 
   const handleOpenDeleteModal = (image: PhotoDetails) => {
     setPhotoToDelete(image);
