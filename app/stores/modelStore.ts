@@ -23,7 +23,7 @@ export class _ModelStore {
   projectsByID: Map<string, Project> = observable.map(new Map())
   currentProject: Project | null = null
   organization: Organization | null = null
-  isInitialized = false;
+  isInitialized = false
 
   constructor() {
     makeAutoObservable(this)
@@ -35,23 +35,22 @@ export class _ModelStore {
 
   init = async () => {
     if (!this.isInitialized) {
-      this.isInitialized = true;
+      this.isInitialized = true
       SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
-      SyncAPI.onNewChanges = this._onNewSyncAPIChanges;
-      await SyncAPI.sync();
+      SyncAPI.onNewChanges = this._onNewSyncAPIChanges
+      await SyncAPI.sync()
       const projects = await SyncAPI.projects.list()
       for (const proj of projects) {
         if (!this.projectsByID.has(proj.id!)) {
-          this.projectsByID.set(proj.id!, proj);
+          this.projectsByID.set(proj.id!, proj)
         }
       }
     }
   }
 
   _onNewSyncAPIChanges = () => {
-    console.log("Detected change");
     if (this.currentProject) {
-      this.syncProject(this.currentProject.id!);
+      this.syncProject(this.currentProject.id!)
     }
   }
 
@@ -68,7 +67,7 @@ export class _ModelStore {
   // NOTE: This needs to be called after every mutation to trigger front-end callbacks for reactivity.
   syncProject = async (projectID: string) => {
     console.log('loading')
-    this.init();
+    this.init()
     const project = await SyncAPI.projects.get(projectID)
     if (this.currentProject?.id === projectID) {
       this.currentProject = project
