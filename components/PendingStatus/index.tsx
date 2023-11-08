@@ -2,10 +2,9 @@ import ModelStore from "@/app/stores/modelStore";
 import { isOnline } from "@/app/sync/utils";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import { OfflineBolt, SyncOutlined } from "@mui/icons-material";
+import { SyncOutlined } from "@mui/icons-material";
 
 const PendingStatus = observer(() => {
-
     const [isOffline, setIsOffline] = useState(false);
 
     useEffect(() => {

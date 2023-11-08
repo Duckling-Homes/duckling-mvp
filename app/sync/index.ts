@@ -75,11 +75,6 @@ class _SyncAPI {
     }
   }
 
-  set onNewChanges (cb: () => void) {
-    db.onNewChanges = cb;
-    console.log("DID SET CB", db, db.onNewChanges)
-  }
-
   set onPendingStatusUpdate (cb: (status: boolean) => void) {
     clearInterval(this.pendingStatusCheckInterval!);
     this.pendingStatusCheckInterval = setInterval(async () => {

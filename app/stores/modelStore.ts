@@ -39,7 +39,6 @@ export class _ModelStore {
     if (!this.isInitialized) {
       this.isInitialized = true
       SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
-      SyncAPI.onNewChanges = this._onNewSyncAPIChanges
       SyncAPI.onPendingStatusUpdate = (status: boolean) => {
         this.hasPendingChanges = status;
       }
@@ -50,12 +49,6 @@ export class _ModelStore {
           this.projectsByID.set(proj.id!, proj)
         }
       }
-    }
-  }
-
-  _onNewSyncAPIChanges = () => {
-    if (this.currentProject) {
-      this.syncProject(this.currentProject.id!)
     }
   }
 

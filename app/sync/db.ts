@@ -21,7 +21,6 @@ export interface _Request {
 export class DucklingDexie extends Dexie {
   objects!: Table<_Object, string>
   requests!: Table<_Request, number>
-  onNewChanges?: () => void
 
   constructor() {
     super('DucklingDexie')
@@ -86,10 +85,6 @@ export class DucklingDexie extends Dexie {
         console.error('REQUEST FAILED TO PUSH...', { nextReq, err })
       }
     } while (nextReq)
-
-    if (didChange) {
-      this.onNewChanges && this.onNewChanges();
-    }
 
     return didChange
   }, 200)
