@@ -37,6 +37,7 @@ import { db } from './db'
  */
 class _SyncAPI {
   bgSyncInterval: NodeJS.Timeout | null = null
+  pendingStatusCheckInterval: NodeJS.Timeout | null = null
 
   // Define Sub-APIs
   organizations = new OrganizationSyncOperations()
@@ -77,6 +78,14 @@ class _SyncAPI {
   set onNewChanges (cb: () => void) {
     db.onNewChanges = cb;
     console.log("DID SET CB", db, db.onNewChanges)
+  }
+
+  set onPendingStatusUpdate (cb: (status: boolean) => void) {
+    clearInterval(this.pendingStatusCheckInterval!);
+    this.pendingStatusCheckInterval = setInterval(async () => {
+      const pendingStatus = await db.hasPendingChanges();
+      cb(pendingStatus);
+    }, 1000);
   }
 }
 

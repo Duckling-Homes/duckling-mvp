@@ -20,10 +20,12 @@ import { SyncAPI } from '../sync'
  * properties so that UI components can get automatic updates on the changes.
  */
 export class _ModelStore {
+
   projectsByID: Map<string, Project> = observable.map(new Map())
   currentProject: Project | null = null
   organization: Organization | null = null
   isInitialized = false
+  hasPendingChanges = false
 
   constructor() {
     makeAutoObservable(this)
@@ -38,6 +40,9 @@ export class _ModelStore {
       this.isInitialized = true
       SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
       SyncAPI.onNewChanges = this._onNewSyncAPIChanges
+      SyncAPI.onPendingStatusUpdate = (status: boolean) => {
+        this.hasPendingChanges = status;
+      }
       await SyncAPI.sync()
       const projects = await SyncAPI.projects.list()
       for (const proj of projects) {

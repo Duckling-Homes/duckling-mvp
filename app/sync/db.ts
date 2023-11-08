@@ -58,6 +58,11 @@ export class DucklingDexie extends Dexie {
     return this.requests.delete(reqID)
   }
 
+  hasPendingChanges = async () => {
+    const pending = await this.requests.count();
+    return pending > 0;
+  }
+
   publishChanges = debounce(async () => {
     if (!isOnline()) return false
   
