@@ -48,13 +48,13 @@ export class _ModelStore {
       runInAction(() => this.hasPendingChanges = status);
     });
 
-    SyncAPI.events.on('did-go-online', (at) => {
+    SyncAPI.events.on('did-go-online', (_) => {
       runInAction(() => {
         this.onlineStatus = 'online';
       });
     });
 
-    SyncAPI.events.on('did-go-offline', (at) => {
+    SyncAPI.events.on('did-go-offline', (_) => {
       runInAction(() => {
         this.onlineStatus = 'offline';
       });
