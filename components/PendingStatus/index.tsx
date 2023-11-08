@@ -16,7 +16,7 @@ const PendingStatus = observer(() => {
         { ModelStore.onlineStatus === 'offline' &&
             <div> 
                 <div>Sync status <SyncOutlined fontSize="inherit"/> Offline.</div>
-                <div>Changes will be synced once you're back online. </div>
+                <div>{`Changes will be synced once you're back online.`}</div>
             </div>
         }
         { ModelStore.onlineStatus === 'online' && ModelStore.hasPendingChanges &&
