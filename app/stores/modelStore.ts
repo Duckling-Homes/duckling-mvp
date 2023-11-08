@@ -8,8 +8,9 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable } from 'mobx'
+import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
+import { isOnline } from '../sync/utils'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -20,10 +21,14 @@ import { SyncAPI } from '../sync'
  * properties so that UI components can get automatic updates on the changes.
  */
 export class _ModelStore {
+
+  isInitialized = false
+
   projectsByID: Map<string, Project> = observable.map(new Map())
   currentProject: Project | null = null
   organization: Organization | null = null
-  isInitialized = false
+  hasPendingChanges = false
+  onlineStatus: 'online' | 'offline' = isOnline() ? 'online' : 'offline';
 
   constructor() {
     makeAutoObservable(this)
@@ -34,23 +39,33 @@ export class _ModelStore {
   }
 
   init = async () => {
-    if (!this.isInitialized) {
-      this.isInitialized = true
-      SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
-      SyncAPI.onNewChanges = this._onNewSyncAPIChanges
-      await SyncAPI.sync()
-      const projects = await SyncAPI.projects.list()
-      for (const proj of projects) {
-        if (!this.projectsByID.has(proj.id!)) {
-          this.projectsByID.set(proj.id!, proj)
-        }
-      }
-    }
-  }
+    if (this.isInitialized) return;
 
-  _onNewSyncAPIChanges = () => {
-    if (this.currentProject) {
-      this.syncProject(this.currentProject.id!)
+    this.isInitialized = true;
+    SyncAPI.setBackgroundSync(true, 5 * 60 * 1000);
+
+    SyncAPI.events.on('has-pending-changes', (status: boolean) => {
+      runInAction(() => this.hasPendingChanges = status);
+    });
+
+    SyncAPI.events.on('did-go-online', (at) => {
+      runInAction(() => {
+        this.onlineStatus = 'online';
+      });
+    });
+
+    SyncAPI.events.on('did-go-offline', (at) => {
+      runInAction(() => {
+        this.onlineStatus = 'offline';
+      });
+    });
+
+    await SyncAPI.sync()
+    const projects = await SyncAPI.projects.list()
+    for (const proj of projects) {
+      if (!this.projectsByID.has(proj.id!)) {
+        this.projectsByID.set(proj.id!, proj)
+      }
     }
   }
 

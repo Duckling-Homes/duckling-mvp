@@ -17,11 +17,12 @@ export class ProjectSyncOperations {
   _doSyncList = async () => {
     const response = await synchronizedFetch('/api/projects/')
     const projectList: Project[] = await response.json()
-    // Clear all stored projects
-    await db.objects.where('type').equals('Project').delete()
     await Promise.all(
-      projectList.map((proj) => {
-        db.putObject({ id: proj.id!, type: 'Project', json: proj })
+      projectList?.map((proj) => {
+        // NOTE: Caution - what if found is newer than proj?
+        const found = db.objects.get(proj.id!) ?? {};
+        const updated = {...found, ...proj};
+        db.putObject({ id: proj.id!, type: 'Project', json: updated })
       })
     )
   }

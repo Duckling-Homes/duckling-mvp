@@ -12,6 +12,7 @@ import Link from 'next/link'
 import './styles.scss'
 import ModelStore from '@/app/stores/modelStore'
 import { Organization } from '@/types/types'
+import PendingStatus from '../PendingStatus'
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -50,6 +51,7 @@ const Header = () => {
   const device = checkDeviceType()
 
   return (
+    <>
     <div className="header">
       {device !== 'phone' && (
         <Link href="/" passHref>
@@ -86,6 +88,8 @@ const Header = () => {
         handleClose={handleClose}
       />
     </div>
+    <PendingStatus/>
+    </>
   )
 }
 

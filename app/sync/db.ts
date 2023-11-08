@@ -21,7 +21,6 @@ export interface _Request {
 export class DucklingDexie extends Dexie {
   objects!: Table<_Object, string>
   requests!: Table<_Request, number>
-  onNewChanges?: () => void
 
   constructor() {
     super('DucklingDexie')
@@ -58,6 +57,11 @@ export class DucklingDexie extends Dexie {
     return this.requests.delete(reqID)
   }
 
+  hasPendingChanges = async () => {
+    const pending = await this.requests.count();
+    return pending > 0;
+  }
+
   publishChanges = debounce(async () => {
     if (!isOnline()) return false
   
@@ -81,10 +85,6 @@ export class DucklingDexie extends Dexie {
         console.error('REQUEST FAILED TO PUSH...', { nextReq, err })
       }
     } while (nextReq)
-
-    if (didChange) {
-      this.onNewChanges && this.onNewChanges();
-    }
 
     return didChange
   }, 200)

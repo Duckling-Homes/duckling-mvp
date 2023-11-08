@@ -7,6 +7,7 @@ import { ElectricalSyncOperations } from './operations/electrical'
 import { RoomSyncOperations } from './operations/room'
 import { ImageSyncOperations } from './operations/images'
 import { db } from './db'
+import { SyncAPIEvents } from './events'
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
@@ -36,7 +37,9 @@ import { db } from './db'
  *
  */
 class _SyncAPI {
+  events = SyncAPIEvents;
   bgSyncInterval: NodeJS.Timeout | null = null
+  loopingInterval: NodeJS.Timeout | null = null
 
   // Define Sub-APIs
   organizations = new OrganizationSyncOperations()
@@ -46,6 +49,14 @@ class _SyncAPI {
   envelopes = new EnvelopeSyncOperations()
   rooms = new RoomSyncOperations()
   images = new ImageSyncOperations()
+
+  // Metadata
+  lastOnlineStatus: 'online'| 'offline' = isOnline() ? 'online' : 'offline';
+
+  constructor() {
+    clearInterval(this.loopingInterval!);
+    this.loopingInterval = setInterval(this._loop, 200);
+  }
 
   sync = async () => {
     if (!isOnline()) {
@@ -74,9 +85,22 @@ class _SyncAPI {
     }
   }
 
-  set onNewChanges (cb: () => void) {
-    db.onNewChanges = cb;
-    console.log("DID SET CB", db, db.onNewChanges)
+  _loop = () => {
+    this._loopTaskCheckPending();
+    this._loopTaskCheckOnline();
+  }
+
+  _loopTaskCheckPending = async () => {
+    const status = await db.hasPendingChanges();
+    this.events.emit('has-pending-changes', status);
+  }
+
+  _loopTaskCheckOnline = async () => {
+    const currentStatus = isOnline() ? 'online' : 'offline';
+    if (currentStatus !== this.lastOnlineStatus) {
+      this.events.emit(`did-go-${currentStatus}`, Date.now());
+    }
+    this.lastOnlineStatus = currentStatus;
   }
 }
 
