@@ -33,6 +33,7 @@ model Organization {
   comfortTags ComfortTag[]
   healthAndSafetyTags HealthAndSafetyTag[]
   goalTags GoalTag[]
+  productCatalogue ProductCatalogue[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -359,4 +360,56 @@ model Image {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+enum Category {
+  HomePerformance
+  HVAC
+  Appliances
+  Electrical
+}
+
+enum CatalogEntryType {
+  Equipment
+  Service
+  Other
+}
+
+enum PricingType {
+  PerUnit
+  ScaledPricing
+}
+
+model ProductCatalogue {
+  id                   String          @id @default(uuid())
+  category             Category 
+  subcategory          String?
+  name                 String
+  description          String?
+  type                 CatalogEntryType
+  pricingType          PricingType     @default(PerUnit) // Set default to PerUnit
+  scaledPricingMetric  String?
+  basePricePer         Float
+  brand                String?
+  modelNumber          String?
+  ahriNumber           String?         // Nullable, only relevant for HVAC equipment
+  incentives           Incentive[]     // No need for `references` here
+
+  organizationId       String
+  organization         Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @default(now()) @updatedAt
+}
+
+model Incentive {
+  id                   String          @id @default(uuid())
+  productCatalogue     ProductCatalogue @relation(fields: [productCatalogueId], references: [id])
+  productCatalogueId   String
+  
+  // Fill in later
+
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @default(now()) @updatedAt
 }
