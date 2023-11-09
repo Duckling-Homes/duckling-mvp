@@ -1,21 +1,21 @@
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
 import { Project, ProjectData } from '@/types/types'
-import { isOnline, synchronizedFetch } from '../utils'
 import { SyncAPI } from '..'
+import { FetchOperationOpts } from './types'
 
 export class ProjectSyncOperations {
-  list = async () => {
-    if (isOnline()) {
-      await this._doSyncList()
-    }
 
-    const objs = await db.objects.where('type').equals('Project').toArray()
+  list = async (opts?: FetchOperationOpts) => {
+    if (opts?.forceSync) {
+      await this._doSyncList();
+    }
+    const objs = await db.objects.where('type').equals('Project').toArray() ?? [];
     return objs.map((obj) => obj.json) as Project[]
   }
 
   _doSyncList = async () => {
-    const response = await synchronizedFetch('/api/projects/')
+    const response = await fetch('/api/projects/')
     const projectList: Project[] = await response.json()
     await Promise.all(
       projectList?.map((proj) => {
@@ -27,9 +27,9 @@ export class ProjectSyncOperations {
     )
   }
 
-  get = async (projectID: string) => {
-    if (isOnline()) {
-      await this._doSyncGet(projectID)
+  get = async (projectID: string, opts?: FetchOperationOpts) => {
+    if (opts?.forceSync) {
+      this._doSyncGet(projectID)
     }
     const obj = await db.objects.where('id').equals(projectID).first()
     console.log('GOT', projectID, obj?.json)
@@ -37,7 +37,7 @@ export class ProjectSyncOperations {
   }
 
   _doSyncGet = async (projectID: string) => {
-    const response = await synchronizedFetch(`/api/projects/${projectID}`, {
+    const response = await fetch(`/api/projects/${projectID}`, {
       method: 'GET',
     })
     const proj: Project = await response.json()

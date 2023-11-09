@@ -51,34 +51,36 @@ class _SyncAPI {
   images = new ImageSyncOperations()
 
   // Metadata
-  lastOnlineStatus: 'online'| 'offline' = isOnline() ? 'online' : 'offline';
+  lastOnlineStatus: 'online'| 'offline' = 'online'
 
-  constructor() {
+  init () {
     clearInterval(this.loopingInterval!);
     this.loopingInterval = setInterval(this._loop, 200);
   }
 
   sync = async () => {
-    if (!isOnline()) {
+    if (!this.loopingInterval) this.init();
+    if (this.lastOnlineStatus === 'offline') {
       console.warn('Ignore sync, is offline...')
       return
     }
-    await this.pushChanges()
+    const didChange = await this.pushChanges() ?? false;
     await this.pullLatest()
+    this.events.emit('did-sync', didChange);
   }
 
   pushChanges = async () => {
-    await db.publishChanges()
+    return await db.publishChanges()
   }
 
   pullLatest = async () => {
     const projects = await this.projects.list()
     projects.forEach((p) => {
-      this.projects.get(p.id!)
+      this.projects.get(p.id!, {forceSync: true})
     })
   }
 
-  setBackgroundSync = (enabled: boolean, intervalMS: number = 15000) => {
+  setBackgroundSync = (enabled: boolean, intervalMS: number = 5000) => {
     clearInterval(this.bgSyncInterval!)
     if (enabled) {
       this.bgSyncInterval = setInterval(this.sync, intervalMS)

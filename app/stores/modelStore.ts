@@ -10,7 +10,6 @@ import {
 } from '@/types/types'
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
-import { isOnline } from '../sync/utils'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -28,7 +27,7 @@ export class _ModelStore {
   currentProject: Project | null = null
   organization: Organization | null = null
   hasPendingChanges = false
-  onlineStatus: 'online' | 'offline' = isOnline() ? 'online' : 'offline';
+  onlineStatus: 'online' | 'offline' = 'online';
 
   constructor() {
     makeAutoObservable(this)
@@ -43,6 +42,14 @@ export class _ModelStore {
 
     this.isInitialized = true;
     SyncAPI.setBackgroundSync(true, 5 * 60 * 1000);
+
+    // TODO: Charles - look into this...?
+    // SyncAPI.events.on('did-sync', () => {
+    //   console.log("ModelStore got didsync")
+    //   for (const proj of this.projects) {
+    //     this.syncProject(proj.id!);
+    //   }
+    // })
 
     SyncAPI.events.on('has-pending-changes', (status: boolean) => {
       runInAction(() => this.hasPendingChanges = status);
@@ -61,7 +68,7 @@ export class _ModelStore {
     });
 
     await SyncAPI.sync()
-    const projects = await SyncAPI.projects.list()
+    const projects = await SyncAPI.projects.list({forceSync: true});
     for (const proj of projects) {
       if (!this.projectsByID.has(proj.id!)) {
         this.projectsByID.set(proj.id!, proj)
@@ -83,7 +90,8 @@ export class _ModelStore {
   syncProject = async (projectID: string) => {
     console.log('loading')
     this.init()
-    const project = await SyncAPI.projects.get(projectID)
+
+    const project = await SyncAPI.projects.get(projectID, {forceSync: true})
     if (this.currentProject?.id === projectID) {
       this.currentProject = project
     }
@@ -93,7 +101,7 @@ export class _ModelStore {
 
   createProject = async (newProject: Project) => {
     const created = await SyncAPI.projects.create(newProject)
-    this.projectsByID.set(created.id!, created)
+    this.projectsByID.set(created.id!, created);
     return created
   }
 
@@ -116,12 +124,12 @@ export class _ModelStore {
       projectId,
       projectData
     )
-    this.syncProject(projectId)
+    await this.syncProject(projectId)
     return data
   }
 
   fetchOrganization = async (organizationId: string) => {
-    this.organization = await SyncAPI.organizations.get(organizationId)
+    this.organization = await SyncAPI.organizations.get(organizationId, {forceSync: true})
     return this.organization
   }
 

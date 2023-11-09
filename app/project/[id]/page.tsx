@@ -40,7 +40,7 @@ const DataCollection = observer(() => {
 
   useEffect(() => {
     if (typeof id === 'string') {
-      ModelStore.setCurrentProject(id)
+      ModelStore.setCurrentProject(id);
     }
 
     return () => {

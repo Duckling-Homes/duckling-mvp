@@ -1,11 +1,11 @@
 import { db } from '../db'
 import { Organization } from '@/types/types'
-import { isOnline, synchronizedFetch } from '../utils'
+import { FetchOperationOpts } from './types'
 
 export class OrganizationSyncOperations {
-  get = async (organizationID: string) => {
-    if (isOnline()) {
-      const response = await synchronizedFetch(
+  get = async (organizationID: string, opts?: FetchOperationOpts) => {
+    if (opts?.forceSync) {
+      const response = await fetch(
         `/api/organizations/${organizationID}`,
         {
           method: 'GET',
@@ -16,6 +16,7 @@ export class OrganizationSyncOperations {
         id: organizationID,
         type: 'Organizations',
         json: org,
+        added: Date.now(),
       })
     }
 

@@ -38,7 +38,7 @@ export class ImageSyncOperations {
   _putCachedContent = async (imageID: string, content: ArrayBuffer) => {
     const urlKey = 'url:' + imageID;
     const b64encodedContent = Buffer.from(content).toString('base64');
-    return db.putObject({id: urlKey, type: "ImageURL", json: b64encodedContent })
+    return db.putObject({id: urlKey, type: "ImageURL", json: b64encodedContent, added: Date.now() })
   }
 
   _getCachedContent = async (imageID: string) : Promise<ArrayBuffer| null> => {
