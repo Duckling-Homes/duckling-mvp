@@ -245,7 +245,7 @@ export class _ModelStore {
       imgDataUrl,
       photoDetails
     )
-    await this.syncProject(projectID)
+    await this.syncProject(projectID);
     return created
   }
 

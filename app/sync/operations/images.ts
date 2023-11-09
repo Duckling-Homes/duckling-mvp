@@ -32,6 +32,7 @@ export class ImageSyncOperations {
       proj.images.push(photo)
       return proj
     })
+    SyncAPI.pushChanges();
     return photo
   }
 
@@ -63,6 +64,7 @@ export class ImageSyncOperations {
           'Content-Type': 'application/octet-stream',
         },
       })
+      SyncAPI.pushChanges();
     } catch (error) {
       console.error('Error uploading the photo:', error)
     }
@@ -127,6 +129,8 @@ export class ImageSyncOperations {
         images: newImages,
       }
     })
+    
+    SyncAPI.pushChanges();
 
     return photoDetails
   }
@@ -148,5 +152,7 @@ export class ImageSyncOperations {
       }
       return proj
     })
+
+    SyncAPI.pushChanges();
   }
 }

@@ -18,7 +18,11 @@ export class ProjectSyncOperations {
     const response = await fetch('/api/projects/')
     const projectList: Project[] = await response.json()
     await Promise.all(
-      projectList?.map((proj) => {
+      projectList?.map(async (proj) => {
+        const hydrated = await fetch(`/api/projects/${proj.id}`, {
+          method: 'GET',
+        })
+        proj = await hydrated.json();
         // NOTE: Caution - what if found is newer than proj?
         const found = db.objects.get(proj.id!) ?? {};
         const updated = {...found, ...proj};
