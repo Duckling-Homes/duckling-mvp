@@ -17,6 +17,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import { PhotoDetails, Project } from '@/types/types'
 import ModelStore from '@/app/stores/modelStore'
 import { TextInput } from '@/components/Inputs'
+import { observer } from 'mobx-react-lite'
 
 interface PhotoFormProps {
   onClose: () => void
@@ -28,7 +29,7 @@ interface PhotoFormProps {
   }) => void
 }
 
-const PhotoForm: React.FC<PhotoFormProps> = ({
+const PhotoForm: React.FC<PhotoFormProps> = observer(({
   onClose,
   currentPhoto,
   setCurrentPhoto,
@@ -234,9 +235,8 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
       <FormControlLabel
         control={
           <Checkbox
-            checked={
-              currentPhoto?.id == project?.heroImageId ||
-              currentPhoto?.isHeroPhoto
+            defaultChecked={
+              currentPhoto?.id === project?.heroImageId 
             }
             onChange={(e) => {
               patchPhotoDetails({
@@ -254,6 +254,6 @@ const PhotoForm: React.FC<PhotoFormProps> = ({
       </Button>
     </div>
   )
-}
+})
 
 export default PhotoForm

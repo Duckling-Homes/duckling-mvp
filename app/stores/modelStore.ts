@@ -85,13 +85,15 @@ export class _ModelStore {
   clearCurrentProject() {
     this.currentProject = null
   }
+  
+  // TODO: We should just have a hook to do this whenever sync api updates a project id.
 
   // NOTE: This needs to be called after every mutation to trigger front-end callbacks for reactivity.
   syncProject = async (projectID: string) => {
     console.log('loading')
     this.init()
 
-    const project = await SyncAPI.projects.get(projectID, {forceSync: true})
+    const project = await SyncAPI.projects.get(projectID);
     if (this.currentProject?.id === projectID) {
       this.currentProject = project
     }
