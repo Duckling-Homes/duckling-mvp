@@ -25,21 +25,6 @@ export async function isProductCatalogueInOrganization(
   }
 }
 
-export async function createProductCatalogue(
-  productData: Prisma.ProductCatalogueUncheckedCreateInput,
-  organizationContext: string
-) {
-  // Verify the organization context
-  if (productData.organizationId !== organizationContext) {
-    throw new Error('Organization context does not match')
-  }
-
-  // Create the product catalogue entry
-  return await prisma.productCatalogue.create({
-    data: productData,
-  })
-}
-
 // Get all product catalogue entries for a particular organization
 export async function getProductCatalogueByOrganizationId(
   organizationId: string
@@ -71,34 +56,5 @@ export async function getProductCatalogueById(
 export async function deleteProductCatalogue(id: string) {
   return await prisma.productCatalogue.delete({
     where: { id },
-  })
-}
-
-type ExtendedProductCatalogueUpdateInput =
-  Prisma.ProductCatalogueUpdateInput & {
-    // Additional fields can be added here if needed
-  }
-
-// Update a product catalogue entry by its ID
-export async function updateProductCatalogue(
-  id: string,
-  catalogueUpdates: ExtendedProductCatalogueUpdateInput,
-  organizationContext: string
-) {
-  const productCatalogue = await prisma.productCatalogue.findUnique({
-    where: { id },
-  })
-
-  if (!productCatalogue) {
-    return null
-  }
-
-  if (productCatalogue.organizationId !== organizationContext) {
-    throw new Error('Organization context does not match')
-  }
-
-  return await prisma.productCatalogue.update({
-    where: { id },
-    data: catalogueUpdates,
   })
 }
