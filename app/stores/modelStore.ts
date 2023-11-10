@@ -10,7 +10,6 @@ import {
 } from '@/types/types'
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
-import { isOnline } from '../sync/utils'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -28,7 +27,7 @@ export class _ModelStore {
   currentProject: Project | null = null
   organization: Organization | null = null
   hasPendingChanges = false
-  onlineStatus: 'online' | 'offline' = isOnline() ? 'online' : 'offline';
+  onlineStatus: 'online' | 'offline' = 'online';
 
   constructor() {
     makeAutoObservable(this)
@@ -60,6 +59,17 @@ export class _ModelStore {
       });
     });
 
+    SyncAPI.events.on('on-modify-project', (projectID: string, project: Project| null) => {
+      runInAction(() => {
+        if (project) {
+          this.projectsByID.set(projectID, project);
+        }
+        else {
+          this.projectsByID.delete(projectID);
+        }
+      });
+    })
+
     await SyncAPI.sync()
     const projects = await SyncAPI.projects.list()
     for (const proj of projects) {
@@ -78,12 +88,14 @@ export class _ModelStore {
   clearCurrentProject() {
     this.currentProject = null
   }
+  
+  // TODO: We should just have a hook to do this whenever sync api updates a project id.
 
   // NOTE: This needs to be called after every mutation to trigger front-end callbacks for reactivity.
   syncProject = async (projectID: string) => {
     console.log('loading')
     this.init()
-    const project = await SyncAPI.projects.get(projectID)
+    const project = await SyncAPI.projects.get(projectID);
     if (this.currentProject?.id === projectID) {
       this.currentProject = project
     }

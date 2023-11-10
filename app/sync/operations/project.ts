@@ -5,43 +5,59 @@ import { isOnline, synchronizedFetch } from '../utils'
 import { SyncAPI } from '..'
 
 export class ProjectSyncOperations {
+
   list = async () => {
     if (isOnline()) {
-      await this._doSyncList()
+      await this._listAndUpdateDB()
     }
-
     const objs = await db.objects.where('type').equals('Project').toArray()
     return objs.map((obj) => obj.json) as Project[]
   }
 
-  _doSyncList = async () => {
+  _listAndUpdateDB = async () => {
     const response = await synchronizedFetch('/api/projects/')
-    const projectList: Project[] = await response.json()
+    const projectList: Project[] = await response.json();
+
     await Promise.all(
       projectList?.map((proj) => {
         // NOTE: Caution - what if found is newer than proj?
         const found = db.objects.get(proj.id!) ?? {};
         const updated = {...found, ...proj};
-        db.putObject({ id: proj.id!, type: 'Project', json: updated })
+        db.putObject({ id: proj.id!, type: 'Project', json: updated, source: 'api'})
       })
     )
   }
 
   get = async (projectID: string) => {
-    if (isOnline()) {
-      await this._doSyncGet(projectID)
+    let obj = await db.objects.where('id').equals(projectID).first();
+  
+    switch (obj?.source) {
+      // If written by client, don't wait for background update
+      case 'client': 
+        break;
+      // If doesn't exist
+      case undefined:
+      // If last view was written by api
+      case 'api':
+      // Catch-all
+      default:
+        await this._fetchAndUpdateDB(projectID);
+        obj = await db.objects.where('id').equals(projectID).first();
     }
-    const obj = await db.objects.where('id').equals(projectID).first()
-    console.log('GOT', projectID, obj?.json)
+
+    console.log('GOT', projectID, obj?.json);
     return obj?.json as Project
   }
 
-  _doSyncGet = async (projectID: string) => {
+  _fetchAndUpdateDB = async (projectID: string) => {
     const response = await synchronizedFetch(`/api/projects/${projectID}`, {
       method: 'GET',
     })
-    const proj: Project = await response.json()
-    await db.putObject({ id: proj.id!, type: 'Project', json: proj })
+    const proj: Project = await response.json();
+
+    if (projectID && proj) {
+      await db.putObject({ id: proj.id!, type: 'Project', json: proj, source: 'api' })
+    }
   }
 
   update = async (project: Project) => {
@@ -49,7 +65,7 @@ export class ProjectSyncOperations {
       method: 'PATCH',
       body: JSON.stringify(project),
     })
-    await db.putObject({ id: project.id!, type: 'Project', json: project })
+    await db.putObject({ id: project.id!, type: 'Project', json: project, source: 'client' })
     SyncAPI.pushChanges()
     return project
   }
@@ -73,7 +89,7 @@ export class ProjectSyncOperations {
       method: 'POST',
       body: JSON.stringify(project),
     })
-    await db.putObject({ id: project.id!, type: 'Project', json: project })
+    await db.putObject({ id: project.id!, type: 'Project', json: project, source: 'client' })
     SyncAPI.pushChanges()
     return project
   }
@@ -87,6 +103,6 @@ export class ProjectSyncOperations {
   _swap = async (projectID: string, edit: (project: Project) => Project) => {
     const project = await this.get(projectID)
     const edited = edit(project)
-    db.putObject({ id: project.id!, type: 'Project', json: edited })
+    db.putObject({ id: project.id!, type: 'Project', json: edited , source: 'client'})
   }
 }
