@@ -6,8 +6,9 @@ import { EnvelopeSyncOperations } from './operations/envelope'
 import { ElectricalSyncOperations } from './operations/electrical'
 import { RoomSyncOperations } from './operations/room'
 import { ImageSyncOperations } from './operations/images'
-import { db } from './db'
+import { _Object, _Request, db } from './db'
 import { SyncAPIEvents } from './events'
+import { Project } from '@/types/types'
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
@@ -51,14 +52,36 @@ class _SyncAPI {
   images = new ImageSyncOperations()
 
   // Metadata
-  lastOnlineStatus: 'online'| 'offline' = isOnline() ? 'online' : 'offline';
+  lastOnlineStatus: 'online'| 'offline' = 'online';
 
-  constructor() {
+  init () {
     clearInterval(this.loopingInterval!);
     this.loopingInterval = setInterval(this._loop, 200);
+
+    this.events.on('did-push-requests', (requests: _Request[]) => {
+      requests.map(async (request) => {
+        // NOTE: This is kind of brute force.
+        const body = request.options?.body as any ?? {};
+        const projectID = body?.projectId ?? body?.id;
+        if (projectID) {
+          this.projects._fetchAndUpdateDB(projectID)
+        }
+      });
+    })
+
+    this.events.on('did-modify-object', (objectID: string, value: _Object | null) => {
+      if (value?.type === 'Project') {
+        this.events.emit('on-modify-project', value.id, value.json as Project)
+      }
+      // Just forwarding all deletes over.
+      if (!value) {
+        this.events.emit('on-modify-project', objectID, null)
+      }
+    })
   }
 
   sync = async () => {
+    if (!this.loopingInterval) this.init();
     if (!isOnline()) {
       console.warn('Ignore sync, is offline...')
       return
@@ -68,7 +91,7 @@ class _SyncAPI {
   }
 
   pushChanges = async () => {
-    await db.publishChanges()
+    return await db.publishChanges()
   }
 
   pullLatest = async () => {
@@ -78,7 +101,7 @@ class _SyncAPI {
     })
   }
 
-  setBackgroundSync = (enabled: boolean, intervalMS: number = 15000) => {
+  setBackgroundSync = (enabled: boolean, intervalMS: number = 5000) => {
     clearInterval(this.bgSyncInterval!)
     if (enabled) {
       this.bgSyncInterval = setInterval(this.sync, intervalMS)

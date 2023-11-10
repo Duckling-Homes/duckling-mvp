@@ -32,13 +32,14 @@ export class ImageSyncOperations {
       proj.images.push(photo)
       return proj
     })
+    SyncAPI.pushChanges();
     return photo
   }
 
   _putCachedContent = async (imageID: string, content: ArrayBuffer) => {
     const urlKey = 'url:' + imageID;
     const b64encodedContent = Buffer.from(content).toString('base64');
-    return db.putObject({id: urlKey, type: "ImageURL", json: b64encodedContent })
+    return db.putObject({id: urlKey, type: "ImageURL", json: b64encodedContent, source: 'client' })
   }
 
   _getCachedContent = async (imageID: string) : Promise<ArrayBuffer| null> => {
@@ -66,7 +67,7 @@ export class ImageSyncOperations {
     } catch (error) {
       console.error('Error uploading the photo:', error)
     }
-
+    SyncAPI.pushChanges();
     return photoUrl
   }
 
@@ -127,7 +128,7 @@ export class ImageSyncOperations {
         images: newImages,
       }
     })
-
+    SyncAPI.pushChanges();
     return photoDetails
   }
 
@@ -148,5 +149,6 @@ export class ImageSyncOperations {
       }
       return proj
     })
+    SyncAPI.pushChanges();
   }
 }

@@ -10,7 +10,6 @@ import {
 } from '@/types/types'
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
-import { isOnline } from '../sync/utils'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -28,7 +27,7 @@ export class _ModelStore {
   currentProject: Project | null = null
   organization: Organization | null = null
   hasPendingChanges = false
-  onlineStatus: 'online' | 'offline' = isOnline() ? 'online' : 'offline';
+  onlineStatus: 'online' | 'offline' = 'online';
 
   constructor() {
     makeAutoObservable(this)
@@ -59,6 +58,17 @@ export class _ModelStore {
         this.onlineStatus = 'offline';
       });
     });
+
+    SyncAPI.events.on('on-modify-project', (projectID: string, project: Project| null) => {
+      runInAction(() => {
+        if (project) {
+          this.projectsByID.set(projectID, project);
+        }
+        else {
+          this.projectsByID.delete(projectID);
+        }
+      });
+    })
 
     await SyncAPI.sync()
     const projects = await SyncAPI.projects.list()

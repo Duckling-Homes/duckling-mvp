@@ -16,6 +16,7 @@ export class OrganizationSyncOperations {
         id: organizationID,
         type: 'Organizations',
         json: org,
+        source: 'api'
       })
     }
 
