@@ -61,7 +61,7 @@ class _SyncAPI {
     this.events.on('did-push-requests', (requests: _Request[]) => {
       requests.map(async (request) => {
         // NOTE: This is kind of brute force.
-        const body = request.options?.body as any ?? {};
+        const body = (request.options?.body ?? {}) as {projectId?: string, id?: string} ;
         const projectID = body?.projectId ?? body?.id;
         if (projectID) {
           this.projects._fetchAndUpdateDB(projectID)
