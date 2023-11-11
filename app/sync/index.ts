@@ -35,6 +35,7 @@ import { Project } from '@/types/types'
  * - Only reads can happen directly against the API and should happen after publishing changes.
  * - All writes must be queued against the outbound requests db.
  * - For reading data, flush the outbound requests before pulling in new data.
+ * - If there are outbound requests, only data written by "client" will be served back (this will get replaced by an "api" view once requests are flushed)
  *
  */
 class _SyncAPI {
@@ -58,6 +59,8 @@ class _SyncAPI {
     clearInterval(this.loopingInterval!);
     this.loopingInterval = setInterval(this._loop, 200);
 
+    // This hook inspects all requests and force pulls updates the API once the request queue is empty
+    // NOTE: Still not 100% fool proof, fix only if buggy
     this.events.on('did-push-requests', (requests: _Request[]) => {
       requests.map(async (request) => {
         // NOTE: This is kind of brute force.
