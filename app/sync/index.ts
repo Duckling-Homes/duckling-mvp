@@ -64,19 +64,10 @@ class _SyncAPI {
         const body = (request.options?.body ?? {}) as {projectId?: string, id?: string} ;
         const projectID = body?.projectId ?? body?.id;
         if (projectID) {
-          this.projects._fetchAndUpdateDB(projectID)
+          // NOTE: We only want to update IndexeDB with API view if request queue is empty!
+          this.projects._pullProjectFromAPI(projectID)
         }
       });
-    })
-
-    this.events.on('did-modify-object', (objectID: string, value: _Object | null) => {
-      if (value?.type === 'Project') {
-        this.events.emit('on-modify-project', value.id, value.json as Project)
-      }
-      // Just forwarding all deletes over.
-      if (!value) {
-        this.events.emit('on-modify-project', objectID, null)
-      }
     })
   }
 
@@ -86,8 +77,8 @@ class _SyncAPI {
       console.warn('Ignore sync, is offline...')
       return
     }
-    await this.pushChanges()
-    await this.pullLatest()
+    await this.pushChanges();
+    await this.pullLatest();
   }
 
   pushChanges = async () => {

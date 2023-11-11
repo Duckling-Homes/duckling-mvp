@@ -35,12 +35,12 @@ export class DucklingDexie extends Dexie {
   putObject = async (obj: _Object) => {
     obj.added = Date.now();
     obj.json = JSON.parse(JSON.stringify(obj.json))
-    SyncAPIEvents.emit('did-modify-object', obj.id, obj);
+    SyncAPIEvents.emit('did-modify-dbobject', obj.id, obj);
     return this.objects.put(obj, obj.id)
   }
 
   removeObject = async (objID: string) => {
-    SyncAPIEvents.emit('did-modify-object', objID, null);
+    SyncAPIEvents.emit('did-modify-dbobject', objID, null);
     return this.objects.delete(objID)
   }
 
