@@ -1,6 +1,6 @@
 import ModelStore from "@/app/stores/modelStore";
 import { observer } from "mobx-react-lite";
-import { Mode, SyncOutlined } from "@mui/icons-material";
+import { SyncOutlined } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 
 const PendingStatus = observer(() => {

@@ -6,9 +6,8 @@ import { EnvelopeSyncOperations } from './operations/envelope'
 import { ElectricalSyncOperations } from './operations/electrical'
 import { RoomSyncOperations } from './operations/room'
 import { ImageSyncOperations } from './operations/images'
-import { _Object, _Request, db } from './db'
+import { _Request, db } from './db'
 import { SyncAPIEvents } from './events'
-import { Project } from '@/types/types'
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
