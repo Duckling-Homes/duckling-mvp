@@ -72,7 +72,12 @@ class _SyncAPI {
         }
       });
     })
+
+    this.events.on('did-go-online', (_) => {
+      this.pushChanges();
+    })
   }
+
 
   sync = async () => {
     if (!this.loopingInterval) this.init();

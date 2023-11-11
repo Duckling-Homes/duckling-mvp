@@ -9,6 +9,7 @@ const withPWA = require('@ducanh2912/next-pwa').default({
     document: '/~offline',
   },
   cacheOnFrontEndNav: true,
+  reloadOnOnline: false,
 })
 
 const nextConfig = {}

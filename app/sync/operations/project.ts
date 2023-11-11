@@ -47,6 +47,8 @@ export class ProjectSyncOperations {
   }
 
   _pullProjectFromAPI = async (projectID: string) => {
+    if (!isOnline()) return;
+    
     const response = await synchronizedFetch(`/api/projects/${projectID}`, {
       method: 'GET',
     })

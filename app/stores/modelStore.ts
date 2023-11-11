@@ -73,7 +73,7 @@ export class _ModelStore {
           this.projectsByID.delete(objectID);
         }
       });
-    })
+    });
 
     await SyncAPI.sync()
     const projects = await SyncAPI.projects.list()
