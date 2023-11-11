@@ -8,19 +8,18 @@ export class ProjectSyncOperations {
 
   list = async () => {
     if (isOnline()) {
-      await this._listAndUpdateDB()
+      await this._pullProjectsFromAPI()
     }
     const objs = await db.objects.where('type').equals('Project').toArray()
     return objs.map((obj) => obj.json) as Project[]
   }
 
-  _listAndUpdateDB = async () => {
+  _pullProjectsFromAPI = async () => {
     const response = await synchronizedFetch('/api/projects/')
     const projectList: Project[] = await response.json();
 
     await Promise.all(
       projectList?.map((proj) => {
-        // NOTE: Caution - what if found is newer than proj?
         const found = db.objects.get(proj.id!) ?? {};
         const updated = {...found, ...proj};
         db.putObject({ id: proj.id!, type: 'Project', json: updated, source: 'api'})
@@ -29,19 +28,17 @@ export class ProjectSyncOperations {
   }
 
   get = async (projectID: string) => {
+    // Only pull latest if last view was not written by client
     let obj = await db.objects.where('id').equals(projectID).first();
   
     switch (obj?.source) {
-      // If written by client, don't wait for background update
       case 'client': 
         break;
-      // If doesn't exist
+
       case undefined:
-      // If last view was written by api
       case 'api':
-      // Catch-all
       default:
-        await this._fetchAndUpdateDB(projectID);
+        await this._pullProjectFromAPI(projectID);
         obj = await db.objects.where('id').equals(projectID).first();
     }
 
@@ -49,7 +46,9 @@ export class ProjectSyncOperations {
     return obj?.json as Project
   }
 
-  _fetchAndUpdateDB = async (projectID: string) => {
+  _pullProjectFromAPI = async (projectID: string) => {
+    if (!isOnline()) return;
+    
     const response = await synchronizedFetch(`/api/projects/${projectID}`, {
       method: 'GET',
     })

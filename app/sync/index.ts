@@ -6,9 +6,8 @@ import { EnvelopeSyncOperations } from './operations/envelope'
 import { ElectricalSyncOperations } from './operations/electrical'
 import { RoomSyncOperations } from './operations/room'
 import { ImageSyncOperations } from './operations/images'
-import { _Object, _Request, db } from './db'
+import { _Request, db } from './db'
 import { SyncAPIEvents } from './events'
-import { Project } from '@/types/types'
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
@@ -35,6 +34,7 @@ import { Project } from '@/types/types'
  * - Only reads can happen directly against the API and should happen after publishing changes.
  * - All writes must be queued against the outbound requests db.
  * - For reading data, flush the outbound requests before pulling in new data.
+ * - If there are outbound requests, only data written by "client" will be served back (this will get replaced by an "api" view once requests are flushed)
  *
  */
 class _SyncAPI {
@@ -58,27 +58,25 @@ class _SyncAPI {
     clearInterval(this.loopingInterval!);
     this.loopingInterval = setInterval(this._loop, 200);
 
+    // This hook inspects all requests and force pulls updates the API once the request queue is empty
+    // NOTE: Still not 100% fool proof, fix only if buggy
     this.events.on('did-push-requests', (requests: _Request[]) => {
       requests.map(async (request) => {
         // NOTE: This is kind of brute force.
         const body = (request.options?.body ?? {}) as {projectId?: string, id?: string} ;
         const projectID = body?.projectId ?? body?.id;
         if (projectID) {
-          this.projects._fetchAndUpdateDB(projectID)
+          // NOTE: We only want to update IndexeDB with API view if request queue is empty!
+          this.projects._pullProjectFromAPI(projectID)
         }
       });
     })
 
-    this.events.on('did-modify-object', (objectID: string, value: _Object | null) => {
-      if (value?.type === 'Project') {
-        this.events.emit('on-modify-project', value.id, value.json as Project)
-      }
-      // Just forwarding all deletes over.
-      if (!value) {
-        this.events.emit('on-modify-project', objectID, null)
-      }
+    this.events.on('did-go-online', (_) => {
+      this.pushChanges();
     })
   }
+
 
   sync = async () => {
     if (!this.loopingInterval) this.init();
@@ -86,8 +84,8 @@ class _SyncAPI {
       console.warn('Ignore sync, is offline...')
       return
     }
-    await this.pushChanges()
-    await this.pullLatest()
+    await this.pushChanges();
+    await this.pullLatest();
   }
 
   pushChanges = async () => {

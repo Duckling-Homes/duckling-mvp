@@ -10,6 +10,7 @@ import {
 } from '@/types/types'
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
+import { _Object } from '../sync/db'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -59,16 +60,20 @@ export class _ModelStore {
       });
     });
 
-    SyncAPI.events.on('on-modify-project', (projectID: string, project: Project| null) => {
+    // Any time a Project is updated by the SyncAPI, this hook will trigger to update MobX
+    SyncAPI.events.on('did-modify-dbobject', (objectID: string, value: _Object | null) => {
+      const object = value?.json;
+      const objectType = value?.type;
+
       runInAction(() => {
-        if (project) {
-          this.projectsByID.set(projectID, project);
+        if (objectType === 'Project') {
+          this._updateMobxProject(object as Project);
         }
-        else {
-          this.projectsByID.delete(projectID);
+        else if (!object) {
+          this.projectsByID.delete(objectID);
         }
       });
-    })
+    });
 
     await SyncAPI.sync()
     const projects = await SyncAPI.projects.list()
@@ -80,7 +85,7 @@ export class _ModelStore {
   }
 
   setCurrentProject = async (projectId: string) => {
-    const project = await this.syncProject(projectId)
+    const project = await this.reloadProject(projectId)
     this.currentProject = project
     return project
   }
@@ -89,18 +94,23 @@ export class _ModelStore {
     this.currentProject = null
   }
   
-  // TODO: We should just have a hook to do this whenever sync api updates a project id.
-
-  // NOTE: This needs to be called after every mutation to trigger front-end callbacks for reactivity.
-  syncProject = async (projectID: string) => {
+  /**
+   * This function retrieves the latest view of the project from the SyncAPI for the specified projectID and should be
+   * called on every model store mutation to make keep the ModelStore and SyncAPI views in lockstep.
+   */
+  reloadProject = async (projectID: string) => {
     console.log('loading')
     this.init()
     const project = await SyncAPI.projects.get(projectID);
-    if (this.currentProject?.id === projectID) {
+    this._updateMobxProject(project);
+    return project
+  }
+
+  private _updateMobxProject = async (project: Project) => {
+    if (this.currentProject?.id === project.id) {
       this.currentProject = project
     }
-    this.projectsByID.set(projectID, project)
-    return project
+    this.projectsByID.set(project.id!, project)
   }
 
   createProject = async (newProject: Project) => {
@@ -128,7 +138,7 @@ export class _ModelStore {
       projectId,
       projectData
     )
-    this.syncProject(projectId)
+    this.reloadProject(projectId)
     return data
   }
 
@@ -147,7 +157,7 @@ export class _ModelStore {
       applianceType,
       appliance
     )
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return created
   }
 
@@ -161,7 +171,7 @@ export class _ModelStore {
       applianceType,
       appliance
     )
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return updated
   }
 
@@ -171,35 +181,35 @@ export class _ModelStore {
     applianceId: string
   ) => {
     await SyncAPI.appliances.delete(projectID, applianceType, applianceId)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
   }
 
   createRoom = async (projectID: string, room: ProjectRoom) => {
     const created = await SyncAPI.rooms.create(projectID, room)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return created
   }
 
   updateRoom = async (projectID: string, room: ProjectRoom) => {
     const updated = await SyncAPI.rooms.update(projectID, room)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return updated
   }
 
   deleteRoom = async (projectID: string, roomID: string) => {
     await SyncAPI.rooms.delete(projectID, roomID)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
   }
 
   createEnvelope = async (projectID: string, envelope: ProjectEnvelope) => {
     const created = await SyncAPI.envelopes.create(projectID, envelope)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return created
   }
 
   updateEnvelope = async (projectID: string, envelope: ProjectEnvelope) => {
     const updated = await SyncAPI.envelopes.update(projectID, envelope)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return updated
   }
 
@@ -209,7 +219,7 @@ export class _ModelStore {
     envelopeID: string
   ) => {
     await SyncAPI.envelopes.delete(projectID, envelopeType, envelopeID)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
   }
 
   createElectrical = async (
@@ -217,7 +227,7 @@ export class _ModelStore {
     electrical: ProjectElectrical
   ) => {
     const created = await SyncAPI.electrical.create(projectID, electrical)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return created
   }
 
@@ -226,7 +236,7 @@ export class _ModelStore {
     electrical: ProjectElectrical
   ) => {
     const updated = await SyncAPI.electrical.update(projectID, electrical)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return updated
   }
 
@@ -236,7 +246,7 @@ export class _ModelStore {
     electricalID: string
   ) => {
     await SyncAPI.electrical.delete(projectID, electricalType, electricalID)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
   }
 
   createPhotoEntry = async (
@@ -249,7 +259,7 @@ export class _ModelStore {
       imgDataUrl,
       photoDetails
     )
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return created
   }
 
@@ -259,13 +269,13 @@ export class _ModelStore {
 
   patchPhotoDetails = async (projectID: string, photoDetails: PhotoDetails) => {
     const updated = await SyncAPI.images.update(projectID, photoDetails)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
     return updated
   }
 
   deletePhoto = async (projectID: string, imageID: string) => {
     await SyncAPI.images.delete(projectID, imageID)
-    await this.syncProject(projectID)
+    await this.reloadProject(projectID)
   }
 }
 
