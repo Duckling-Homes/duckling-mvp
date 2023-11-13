@@ -99,14 +99,14 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({
         onBlur={() => onUpdate('location')}
       />
       {/* Year Installed */}
-      <DatePickerInput
+      <TextInput
         label="Year Installed"
-        onChange={(e) => {
-          onChange('yearInstalled', e!.year());
-          onUpdate('yearInstalled');
-        }}
-        value={currentElectrical && typeof currentElectrical.yearInstalled === 'number' ? dayjs(new Date(currentElectrical.yearInstalled, 0)) : dayjs()}
-        maxDate={dayjs()}
+        placeholder="Year Installed"
+        type="tel"
+        onChange={(value) =>
+          onChange('yearInstalled', parseInt(value))}
+        onBlur={() => onUpdate('yearInstalled')}
+        value={currentElectrical?.yearInstalled || ''}
       />
       {/* Manufacturer */}
       <TextInput

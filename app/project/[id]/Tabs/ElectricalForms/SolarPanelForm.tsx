@@ -107,14 +107,13 @@ const SolarPanelForm: React.FC<SolarPanelFormProps> = ({
         onBlur={() => onUpdate('numberOfPanels')}
       />
       {/* Year Installed */}
-      <DatePickerInput
+      <TextInput
         label="Year Installed"
-        onChange={(e) => {
-          onChange('yearInstalled', e!.year());
-          onUpdate('yearInstalled');
-        }}
-        value={currentElectrical && typeof currentElectrical.yearInstalled === 'number' ? dayjs(new Date(currentElectrical.yearInstalled, 0)) : dayjs()}
-        maxDate={dayjs()}
+        placeholder="Year Installed"
+        onChange={(value) =>
+          onChange('yearInstalled', value)}
+        onBlur={() => onUpdate('yearInstalled')}
+        value={currentElectrical?.yearInstalled || ''}
       />
       {/* Annual Output */}
       <TextInput

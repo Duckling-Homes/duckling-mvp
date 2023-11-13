@@ -81,15 +81,13 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
             onChange={(value) => handleInputChange('stories', parseInt(value))}
             onBlur={updateData}
           />
-          <DatePickerInput
+          <TextInput
             label="Year Built"
-            onChange={(e) => handleInputChange('yearBuilt', e!.year())}
-            value={
-              data && typeof data.yearBuilt === 'number'
-                ? dayjs(new Date(data.yearBuilt, 0))
-                : dayjs()
-            }
-            maxDate={dayjs()}
+            placeholder="Year Built"
+            type="tel"
+            value={data?.yearBuilt || ''}
+            onChange={(value) => handleInputChange('yearBuilt', parseInt(value))}
+            onBlur={updateData}
           />
           <SelectInput
             label="Basement Type"
