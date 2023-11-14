@@ -8,14 +8,10 @@ import { observer } from 'mobx-react-lite'
 interface MarkupVisualizerProps {
   setShowVisualizer: (show: boolean) => void
   currentPhoto?: PhotoDetails
-  project: Project
-  onChange: (values: {
-    [key: string]: string | number | boolean | undefined
-  }) => void
 }
 
 const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
-  ({ setShowVisualizer, currentPhoto, project, onChange }) => {
+  ({ setShowVisualizer, currentPhoto }) => {
     return (
       <div
         style={{

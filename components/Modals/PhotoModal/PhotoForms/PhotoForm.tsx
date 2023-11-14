@@ -83,8 +83,6 @@ const PhotoForm: React.FC<PhotoFormProps> = observer(
           <MarkupVisualizer
             setShowVisualizer={setShowVisualizer}
             currentPhoto={currentPhoto}
-            project={project}
-            onChange={onChange}
           />
         )}
         {!showVisualizer && (
