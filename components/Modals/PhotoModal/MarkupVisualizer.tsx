@@ -2,7 +2,7 @@
 
 import { Button } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
-import { PhotoDetails, Project } from '@/types/types'
+import { PhotoDetails } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 
 interface MarkupVisualizerProps {
