@@ -17,8 +17,6 @@ interface MarkupVisualizerProps {
 
 const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
   ({ setShowVisualizer, currentPhoto, project, onChange }) => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-
     return (
       <div
         style={{

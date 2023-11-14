@@ -11,7 +11,6 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { PhotoDetails, Project } from '@/types/types'
