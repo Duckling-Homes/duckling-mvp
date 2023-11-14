@@ -1,7 +1,6 @@
 'use client'
 
 import { Button } from '@mui/material'
-import { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 import { PhotoDetails, Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
