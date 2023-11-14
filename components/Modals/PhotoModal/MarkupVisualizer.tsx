@@ -4,7 +4,6 @@ import { Button } from '@mui/material'
 import { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 import { PhotoDetails, Project } from '@/types/types'
-import ModelStore from '@/app/stores/modelStore'
 import { observer } from 'mobx-react-lite'
 
 interface MarkupVisualizerProps {
