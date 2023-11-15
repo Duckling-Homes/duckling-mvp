@@ -1,6 +1,8 @@
 'use client';
 
 import { InputAdornment, TextField } from "@mui/material";
+import { forwardRef } from "react";
+import { IMaskInput } from "react-imask";
 
 interface TextInputProps {
   label: string;
@@ -9,10 +11,35 @@ interface TextInputProps {
   value: string | number;
   multiline?: boolean;
   onChange: (value: string) => void;
-  onBlur: () => void;
+  onBlur?: () => void;
   startAdornment?: string | number;
   endAdornment?: string | number;
+  masked?: string;
 }
+
+interface CustomProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
+    
+const TextMaskCustom = forwardRef<HTMLInputElement, CustomProps>(
+  function TextMaskCustom(props, ref) {
+    const { onChange, ...other } = props;
+    
+    return (
+      <IMaskInput
+        {...other}
+        mask="(#00) 000-0000"
+        definitions={{
+          '#': /[1-9]/,
+        }}
+        inputRef={ref}
+        onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
+        overwrite
+      />
+    );
+  },
+);
 
 const TextInput: React.FC<TextInputProps> = ({
   label,
@@ -23,7 +50,8 @@ const TextInput: React.FC<TextInputProps> = ({
   onChange,
   onBlur,
   startAdornment,
-  endAdornment
+  endAdornment,
+  masked
 }) => {
 
   const blurActiveElement = () => {
@@ -46,6 +74,7 @@ const TextInput: React.FC<TextInputProps> = ({
       onWheel={blurActiveElement}
       multiline={multiline || false}
       InputProps={{
+        inputComponent: masked ? TextMaskCustom as any : null,
         startAdornment: <InputAdornment position="start">{startAdornment}</InputAdornment>,
         endAdornment: <InputAdornment position="start">{endAdornment}</InputAdornment>,
       }}
