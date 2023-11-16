@@ -32,6 +32,9 @@ export async function getProductCatalogueByOrganizationId(
     where: {
       organizationId,
     },
+    include: {
+      incentives: true,
+    },
   })
 }
 
