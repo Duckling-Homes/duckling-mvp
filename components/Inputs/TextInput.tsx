@@ -34,6 +34,7 @@ const TextMaskCustom = forwardRef<HTMLInputElement, CustomProps>(
           '#': /[1-9]/,
         }}
         inputRef={ref}
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
         overwrite
       />
@@ -74,7 +75,8 @@ const TextInput: React.FC<TextInputProps> = ({
       onWheel={blurActiveElement}
       multiline={multiline || false}
       InputProps={{
-        inputComponent: masked ? TextMaskCustom as any : null,
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        inputComponent: masked ? TextMaskCustom as any : undefined,
         startAdornment: <InputAdornment position="start">{startAdornment}</InputAdornment>,
         endAdornment: <InputAdornment position="start">{endAdornment}</InputAdornment>,
       }}

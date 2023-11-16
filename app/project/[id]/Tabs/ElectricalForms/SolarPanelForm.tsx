@@ -1,9 +1,7 @@
 'use client'
 
 import { SelectInput, TextInput } from "@/components/Inputs";
-import DatePickerInput from "@/components/Inputs/DatePickerInput";
 import { ProjectElectrical } from "@/types/types";
-import dayjs from "dayjs";
 
 const LOCATIONS = ['Roof', 'Ground', 'Other']
 

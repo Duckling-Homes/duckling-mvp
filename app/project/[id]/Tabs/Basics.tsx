@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import ModelStore from '@/app/stores/modelStore'
 import { Project, ProjectData } from "@/types/types";
-import dayjs from "dayjs";
 import { SelectInput, TextInput } from "@/components/Inputs";
-import DatePickerInput from "@/components/Inputs/DatePickerInput";
 
 interface BasicsProps {
   currentProject: Project
