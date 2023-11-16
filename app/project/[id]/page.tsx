@@ -22,10 +22,13 @@ import { useRouter } from 'next/navigation'
 import { observer } from 'mobx-react-lite'
 import ProjectModal from '@/components/Modals/ProjectModal'
 
-import './style.scss'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import dayjs from 'dayjs'
 import ModelStore from '@/app/stores/modelStore'
+import Plans from './plans/page'
+import Presentation from './presentation/page'
+
+import './style.scss'
 
 const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false)
@@ -33,7 +36,7 @@ const DataCollection = observer(() => {
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0)
   const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [heroPhoto, setHeroPhoto] = useState<PhotoDetails>({})
-  
+  const [currentContent, setCurrentContent] = useState('tabs')
   const currentProject = ModelStore.currentProject
   const router = useRouter()
   const { id } = useParams()
@@ -76,6 +79,63 @@ const DataCollection = observer(() => {
 
   function handleUpdateProject(updatedProject: Project) {
     ModelStore.patchProject(updatedProject)
+  }
+  
+  function renderContent() {
+    switch(currentContent) {
+      case "tabs":
+        return (
+          <div>
+            <Tabs
+              sx={{ background: '#FAFAFA' }}
+              variant="fullWidth"
+              value={currentTabIndex}
+              onChange={handleChangeTab}
+            >
+              <Tab label="Basics" />
+              <Tab label="Objectives" />
+              <Tab label="Envelope" />
+              <Tab label="Rooms" />
+              <Tab label="Appliances" />
+              <Tab label="Electrical" />
+              <Tab label="Photos" />
+            </Tabs>
+            {renderTabContent(
+              0,
+              <Basics currentProject={currentProject} />
+            )}
+            {renderTabContent(
+              1,
+              <Objectives currentProject={currentProject} />
+            )}
+            {renderTabContent(
+              2,
+              <Envelope currentProject={currentProject} />
+            )}
+            {renderTabContent(3, <Rooms currentProject={currentProject} />)}
+            {renderTabContent(
+              4,
+              <Appliances currentProject={currentProject} />
+            )}
+            {renderTabContent(
+              5,
+              <Electrical currentProject={currentProject} />
+            )}
+            {renderTabContent(
+              6,
+              <Photos currentProject={currentProject} />
+            )}
+          </div>
+        )
+      case "plans":
+        return (
+          <Plans />
+        )
+      case "presentation":
+        return (
+          <Presentation />
+        )
+    }
   }
 
   return (
@@ -182,53 +242,16 @@ const DataCollection = observer(() => {
               }}
             >
               <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                <Button>Home Info</Button>
-                <Button>Plans</Button>
-                <Button>Present</Button>
+                <Button
+                  onClick={() => setCurrentContent('tabs')}>Home Info</Button>
+                <Button
+                  onClick={() => setCurrentContent('plans')}>Plans</Button>
+                <Button
+                  onClick={() => setCurrentContent('presentation')}>Present</Button>
               </ButtonGroup>
             </div>
             {currentProject ? (
-              <div>
-                <Tabs
-                  sx={{ background: '#FAFAFA' }}
-                  variant="fullWidth"
-                  value={currentTabIndex}
-                  onChange={handleChangeTab}
-                >
-                  <Tab label="Basics" />
-                  <Tab label="Objectives" />
-                  <Tab label="Envelope" />
-                  <Tab label="Rooms" />
-                  <Tab label="Appliances" />
-                  <Tab label="Electrical" />
-                  <Tab label="Photos" />
-                </Tabs>
-                {renderTabContent(
-                  0,
-                  <Basics currentProject={currentProject} />
-                )}
-                {renderTabContent(
-                  1,
-                  <Objectives currentProject={currentProject} />
-                )}
-                {renderTabContent(
-                  2,
-                  <Envelope currentProject={currentProject} />
-                )}
-                {renderTabContent(3, <Rooms currentProject={currentProject} />)}
-                {renderTabContent(
-                  4,
-                  <Appliances currentProject={currentProject} />
-                )}
-                {renderTabContent(
-                  5,
-                  <Electrical currentProject={currentProject} />
-                )}
-                {renderTabContent(
-                  6,
-                  <Photos currentProject={currentProject} />
-                )}
-              </div>
+              renderContent()
             ) : null}
           </div>
         </Container>
