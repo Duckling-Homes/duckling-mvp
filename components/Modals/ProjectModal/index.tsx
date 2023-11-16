@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material'
 import { observer } from 'mobx-react-lite'
+import { TextInput } from '@/components/Inputs'
 
 type ProjectModalProps = {
   open: boolean
@@ -137,16 +138,14 @@ const ProjectModal: React.FC<ProjectModalProps> = observer(
               />
             </FormControl>
             <FormControl>
-              <TextField
-                onChange={({ target }) =>
-                  handleDataChange('homeownerPhone', target.value)
+              <TextInput
+                onChange={(value) =>
+                  handleDataChange('homeownerPhone', value)
                 }
-                id="outlined-basic"
                 label="Client Phone Number"
-                variant="outlined"
-                value={projectData.homeownerPhone}
-                required
+                value={projectData?.homeownerPhone || ""}
                 placeholder="Client Phone Number"
+                masked='phone'
               />
             </FormControl>
           </form>
