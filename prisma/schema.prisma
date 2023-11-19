@@ -393,7 +393,7 @@ model ProductCatalogue {
   brand                String?
   modelNumber          String?
   ahriNumber           String?         // Nullable, only relevant for HVAC equipment
-  incentives           Incentive[]     // No need for `references` here
+  incentives          Incentive[]     @relation("ProductCatalogueToIncentive")
 
   organizationId       String
   organization         Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -403,12 +403,38 @@ model ProductCatalogue {
   updatedAt            DateTime        @default(now()) @updatedAt
 }
 
+enum RebateOrg {
+  FederalGovernment
+  BayREN
+  IRA
+  NYSERDA
+}
+
+enum CalculationType {
+  Percentage
+  PerUnit
+  FlatRate
+}
+
+enum IncentiveType {
+  Rebate
+  TaxCredit
+}
+
 model Incentive {
   id                   String          @id @default(uuid())
-  productCatalogue     ProductCatalogue @relation(fields: [productCatalogueId], references: [id])
-  productCatalogueId   String
-  
-  // Fill in later
+
+  name                 String
+  rebateOrg            RebateOrg      
+  type                 IncentiveType
+  calculationType      CalculationType
+  calculationRateValue Float           
+  maxLimit             Float?          
+  descriptionText      String
+  criteria             String?
+  notes                String?   
+
+  productCatalogues    ProductCatalogue[] @relation("ProductCatalogueToIncentive") // Updated relation      
 
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @default(now()) @updatedAt
