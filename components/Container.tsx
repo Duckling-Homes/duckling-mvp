@@ -13,9 +13,7 @@ export const Container = (props: {
       }}
     >
       <Header />
-      <div style={{
-        padding: '16px'
-      }}>{props.children}</div>
+      <div>{props.children}</div>
     </div>
   )
 }

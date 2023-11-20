@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Button, ButtonGroup, Tab, Tabs } from '@mui/material'
-import { CalendarMonth, Delete, Edit, Home, Person } from '@mui/icons-material'
+import { CalendarMonth, Delete, Edit, FormatListNumbered, Home, Person, Tune } from '@mui/icons-material'
 import Image from 'next/image'
 import { Container } from '@/components/Container'
 import PlaceHolderPhoto from '../../assets/placeholder-image.png'
@@ -64,7 +64,9 @@ const DataCollection = observer(() => {
   }, [currentProject?.heroImageId])
 
   const renderTabContent = (index: number, component: JSX.Element) => (
-    <div hidden={currentTabIndex !== index}>{component}</div>
+    <div style={{
+      backgroundColor: "#FFF"
+    }} hidden={currentTabIndex !== index}>{component}</div>
   )
 
   function handleChangeTab(event: React.SyntheticEvent, newValue: number) {
@@ -202,7 +204,6 @@ const DataCollection = observer(() => {
                     {currentProject?.homeownerName}
                   </span>
                   <span className="dataCollection__info">
-                    {/* TODO: make this beautiful */}
                     <CalendarMonth />
                     {dayjs(currentProject?.createdAt).format('MMMM D, YYYY')}
                   </span>
@@ -235,20 +236,44 @@ const DataCollection = observer(() => {
               </div>
             </div>
             <div
-              style={{
-                padding: '8px 24px 16px 24px',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
+              className='dataCollection__buttonGroup'
             >
-              <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                <Button
-                  onClick={() => setCurrentContent('tabs')}>Home Info</Button>
-                <Button
-                  onClick={() => setCurrentContent('plans')}>Plans</Button>
-                <Button
-                  onClick={() => setCurrentContent('presentation')}>Present</Button>
-              </ButtonGroup>
+              <Button
+                sx={{
+                  backgroundColor: "#FFF",
+                  textTransform: "capitalize",
+                  fontWeight: "400",
+                  padding: "16px 0px",
+                  width: "200px",
+                  color: currentContent === 'tabs' ? "#2196F3" : "rgba(0,0,0,0.6)",
+                  border: currentContent === 'tabs' && "2px solid #2196F3"
+                }}
+                startIcon={<Home />}
+                onClick={() => setCurrentContent('tabs')}>Home Info</Button>
+              <Button
+                sx={{
+                  backgroundColor: "#FFF",
+                  textTransform: "capitalize",
+                  fontWeight: "400",
+                  padding: "16px 0px",
+                  width: "200px",
+                  color: currentContent === 'plans' ? "#2196F3" : "rgba(0,0,0,0.6)",
+                  border: currentContent === 'plans' && "2px solid #2196F3"
+                }}
+                startIcon={<Tune />}
+                onClick={() => setCurrentContent('plans')}>Plans</Button>
+              <Button
+                sx={{
+                  backgroundColor: "#FFF",
+                  textTransform: "capitalize",
+                  fontWeight: "400",
+                  padding: "16px 0px",
+                  width: "200px",
+                  color: currentContent === 'presentation' ? "#2196F3" : "rgba(0,0,0,0.6)",
+                  border: currentContent === 'presentation' && "2px solid #2196F3"
+                }}
+                startIcon={<FormatListNumbered />}
+                onClick={() => setCurrentContent('presentation')}>Present</Button>
             </div>
             {currentProject ? (
               renderContent()

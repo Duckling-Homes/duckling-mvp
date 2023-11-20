@@ -68,7 +68,7 @@ const Header = () => {
           </IconButton>
         </Link>
       )}
-      <p>{organization?.name}</p>
+      <p className='header__title'>{organization?.name}</p>
       <IconButton
         sx={{
           borderRadius: '4px',
