@@ -17,13 +17,8 @@ import { PhotoDetails, Project } from '@/types/types'
 import ModelStore from '@/app/stores/modelStore'
 import { TextInput } from '@/components/Inputs'
 import { observer } from 'mobx-react-lite'
-// import MarkupVisualizer from './MarkupVisualizer'
+import MarkupVisualizer from './MarkupVisualizer'
 import dynamic from 'next/dynamic'
-
-
-const MarkupVisualizer = dynamic(() => import("./MarkupVisualizer"), {
-  ssr: false,
-});
 
 interface PhotoFormProps {
   onClose: () => void

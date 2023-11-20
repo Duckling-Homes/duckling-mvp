@@ -162,4 +162,5 @@ export interface VizualizerTextBlock {
   color: string
   text: string
   position: { x: number; y: number }
+  scale: number
 }

@@ -7,7 +7,9 @@ import { observer } from 'mobx-react-lite'
 import TextFieldsIcon from '@mui/icons-material/TextFields'
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined'
 import { useState } from 'react'
-import Draggable, { DraggableEvent } from 'react-draggable'
+import { Layer, Stage } from 'react-konva'
+import DraggableText from '@/components/Vizualizer/DraggableText'
+import dynamic from 'next/dynamic'
 import EditTextModal from '@/components/Vizualizer/EditTextModal'
 
 interface MarkupVisualizerProps {
@@ -17,51 +19,45 @@ interface MarkupVisualizerProps {
 
 const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
   ({ setShowVisualizer, currentPhoto }) => {
-    const [openTextMarkup, setOpenTextMarkup] = useState<boolean>(false)
-
-    const [textBlocks, setTextBlocks] = useState<VizualizerTextBlock[]>([])
+    const [texts, setTexts] = useState<VizualizerTextBlock[]>([])
+    const [selectedId, selectShape] = useState(null)
+    const [imageSize, setImageSize] = useState({ width: 600, height: 600 }) // Default values
     const [selectedTextBlock, setSelectedTextBlock] =
       useState<VizualizerTextBlock | null>(null)
 
-    const addTextBlock = () => {
-      const newTextBlock = {
-        id: Date.now(),
-        text: 'New Text',
-        color: 'black',
-        position: {
-          x: window.innerWidth / 2 - 100,
-          y: window.innerHeight / 2 - 50,
-        },
+    const onImageLoad = ({ target: img }) => {
+      setImageSize({ width: img.offsetWidth, height: img.offsetHeight })
+    }
+
+    const checkDeselect = (e) => {
+      const clickedOnEmpty = e.target === e.target.getStage()
+      if (clickedOnEmpty) {
+        selectShape(null)
       }
-      setTextBlocks([...textBlocks, newTextBlock])
     }
 
-    const updateTextPosition = (
-      e: DraggableEvent,
-      data: { x: number; y: number },
-      id: number
-    ) => {
-      const newTextBlocks = textBlocks.map((block) => {
-        if (block.id === id) {
-          return { ...block, position: { x: data.x, y: data.y } }
-        }
-        return block
-      })
-      setTextBlocks(newTextBlocks)
+    const addText = () => {
+      console.log('adding new text')
+      const id = texts.length + 1 // Need a new id pattern cause what if I add delete?
+      const newText = {
+        position: { x: imageSize.width / 2, y: imageSize.height / 2 },
+        text: 'New Text',
+        id: `text${id}`,
+        scale: 1,
+        color: 'black',
+      }
+      setTexts(texts.concat([newText]))
+      selectShape(`text${id}`)
     }
 
-    const updateTextBlock = (
-      blockId: number,
-      newText: string,
-      newColor: string
-    ) => {
-      const updatedTextBlocks = textBlocks.map((block) => {
-        if (block.id === blockId) {
-          return { ...block, text: newText, color: newColor }
+    const updateTextBlock = (id: number, newAttrs) => {
+      const updatedTexts = texts.map((t) => {
+        if (t.id === id) {
+          return { ...t, ...newAttrs }
         }
-        return block
+        return t
       })
-      setTextBlocks(updatedTextBlocks)
+      setTexts(updatedTexts)
     }
 
     const saveMarkupPhoto = () => {
@@ -72,12 +68,22 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
       <>
         {selectedTextBlock && (
           <EditTextModal
-            open={openTextMarkup}
-            onClose={() => setOpenTextMarkup(false)}
+            open={!!selectedTextBlock}
+            onClose={() => setSelectedTextBlock(null)}
             block={selectedTextBlock}
-            setBlockDetails={updateTextBlock}
+            setBlockDetails={(text: string, color: string) => {
+              updateTextBlock(selectedTextBlock.id, {
+                text: text,
+                color: color,
+              })
+            }}
           />
         )}
+        {/* <ApplianceMarkupSelection
+          open={openApplianceMarkup}
+          onClose={() => setOpenApplianceMarkup(false)}
+          addSticker={addApplianceSticker}
+        /> */}
         <div
           style={{
             display: 'flex',
@@ -91,6 +97,7 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
         >
           <img
             src={currentPhoto?.photoUrl}
+            onLoad={onImageLoad}
             style={{
               maxWidth: '100%',
               maxHeight: '100%',
@@ -100,36 +107,32 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
             alt="Preview"
           />
 
-          {textBlocks.map((block) => (
-            <Draggable
-              key={block.id}
-              position={block.position}
-              onStop={(e, data) => updateTextPosition(e, data, block.id)}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  zIndex: 1000,
-                  padding: '1px',
-                  fontSize: '20px',
-                  display: 'flex',
-                  color: block.color,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                }}
-                onDoubleClick={() => {
-                  setSelectedTextBlock(block)
-                  setOpenTextMarkup(true)
-                }}
-                onMouseDown={(e) => e.stopPropagation()}
-              >
-                {block.text}
-              </div>
-            </Draggable>
-          ))}
-
+          <Stage
+            width={imageSize.width}
+            height={imageSize.height}
+            onMouseDown={checkDeselect}
+            onTouchStart={checkDeselect}
+            style={{ position: 'absolute', top: 0, left: 0 }}
+          >
+            <Layer>
+              {texts.map((text, i) => (
+                <DraggableText
+                  key={i}
+                  textBlock={text}
+                  isSelected={text.id === selectedId}
+                  onSelect={() => {
+                    selectShape(text.id)
+                  }}
+                  onChange={(newAttrs) => {
+                    updateTextBlock(text.id, newAttrs)
+                  }}
+                  onClick={() => {
+                    setSelectedTextBlock(text)
+                  }}
+                />
+              ))}
+            </Layer>
+          </Stage>
           <div
             style={{
               position: 'absolute',
@@ -141,10 +144,15 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
               gap: '10px',
             }}
           >
-            <Button variant="contained">
+            <Button
+              variant="contained"
+              onClick={() => {
+                // setOpenApplianceMarkup(true)
+              }}
+            >
               <WorkOutlineOutlinedIcon />
             </Button>
-            <Button variant="contained" onClick={addTextBlock}>
+            <Button variant="contained" onClick={addText}>
               <TextFieldsIcon />
             </Button>
             <Button variant="contained" onClick={saveMarkupPhoto}>
@@ -157,4 +165,6 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
   }
 )
 
-export default MarkupVisualizer
+export default dynamic(() => Promise.resolve(MarkupVisualizer), {
+  ssr: false,
+})

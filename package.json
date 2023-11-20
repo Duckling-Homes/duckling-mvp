@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest",
+    "tver": "next --version"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.25.1",
@@ -41,6 +42,7 @@
     "react-dom": "18.2.0",
     "react-draggable": "^4.4.6",
     "react-konva": "^18.2.10",
+    "react-resizable": "^3.0.5",
     "sass": "^1.68.0",
     "typescript": "5.2.2",
     "uuid": "^9.0.1",
@@ -49,6 +51,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.200",
+    "@types/react-resizable": "^3.0.7",
     "@types/uuid": "^9.0.4",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "eslint-config-prettier": "^9.0.0",

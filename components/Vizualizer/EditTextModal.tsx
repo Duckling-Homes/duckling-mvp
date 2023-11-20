@@ -16,7 +16,7 @@ const EditTextModal: React.FC<{
   open: boolean
   onClose: () => void
   block: VizualizerTextBlock
-  setBlockDetails: (blockId: number, text: string, color: string) => void
+  setBlockDetails: (text: string, color: string) => void
 }> = observer(({ open, onClose, block, setBlockDetails }) => {
   const [textContent, setTextContent] = useState<string>(block.text)
   const [textColor, setTextColor] = useState<string>(block.color)
@@ -27,7 +27,7 @@ const EditTextModal: React.FC<{
   }, [block])
 
   const handleUpdateText = () => {
-    setBlockDetails(block.id, textContent, textColor)
+    setBlockDetails(textContent, textColor)
     onClose()
   }
 
