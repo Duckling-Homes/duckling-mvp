@@ -1,7 +1,7 @@
 'use client'
 
 import PlanCreationModal from "@/components/Modals/PlanCreationModal"
-import { Add, Bolt, Build, CameraAlt, Check, Delete, Edit, Home, Thermostat } from "@mui/icons-material"
+import { Add, AttachMoney, Bolt, Build, CameraAlt, Check, Delete, DoubleArrow, Edit, Home, Thermostat } from "@mui/icons-material"
 import { Button, Chip, IconButton } from "@mui/material"
 import { useState } from "react"
 
@@ -101,6 +101,25 @@ const Plans = () => {
               <ApplianceUpgrades />
               <EnergyStorage />
               <Photos />
+            </div>
+            <div className="planCreation__rightContainer">
+              <div className="planCreation__rightHeader">
+                <IconButton sx={{
+                    borderRadius: '4px',
+                    border: '1px solid #2196F3',
+                    color: '#2196F3',
+                    padding: '4px 11px',
+                  }}>
+                  <DoubleArrow/>
+                </IconButton>
+                <p>Finance & Impact</p>
+              </div>
+              <div className="planCreation__cost">
+                <p><AttachMoney />Cost</p>
+              </div>
+              <div className="planCreation__upgradeImpact">
+
+              </div>
             </div>
           </div>
         )}

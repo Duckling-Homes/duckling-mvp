@@ -15,10 +15,13 @@
 
   &__wrapper {
     padding: 16px;
+    display: flex;
+    justify-content: space-between;
   }
 
   #{$self}__leftContainer{
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 16px;
     #{$self}__leftHeader {
