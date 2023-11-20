@@ -5,7 +5,7 @@ const checkArguments = () => {
   const dbUrl = process.argv[2]
   if (!dbUrl) {
     throw new Error(
-      'Database URL not provided. Usage: node script.js <database_url>'
+      'Database URL not provided. Usage: ts-node seedLocalOrganization.ts <database_url>'
     )
   }
   return dbUrl
