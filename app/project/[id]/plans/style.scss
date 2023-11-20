@@ -1,0 +1,37 @@
+.planCreation {
+  $self: &;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  &__buttons {
+    background-color: #FFF;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  &__wrapper {
+    padding: 16px;
+  }
+
+  #{$self}__leftContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    #{$self}__leftHeader {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      #{$self}__title {
+        font-size: 20px;
+        font-weight: 500;
+      }
+    }
+  }
+
+
+}
