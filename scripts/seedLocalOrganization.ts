@@ -1,9 +1,22 @@
 const { PrismaClient } = require('@prisma/client')
 
+// Function to throw an error if the database URL is not provided
+const checkArguments = () => {
+  const dbUrl = process.argv[2]
+  if (!dbUrl) {
+    throw new Error(
+      'Database URL not provided. Usage: ts-node seedLocalOrganization.ts <database_url>'
+    )
+  }
+  return dbUrl
+}
+
+const dbUrl = checkArguments()
+
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: 'postgresql://admin:admin@localhost:5447/postgres',
+      url: dbUrl,
     },
   },
 })
@@ -37,7 +50,8 @@ const run = async () => {
 
 run()
   .catch((e) => {
-    throw e
+    console.error('Error occurred:', e.message)
+    process.exit(1)
   })
   .finally(async () => {
     await prisma.$disconnect()

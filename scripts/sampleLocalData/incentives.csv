@@ -1,0 +1,11 @@
+id,name,rebateOrg,type,calculationType,calculationRateValue,maxLimit,descriptionText,criteria,notes
+"uuid-101","Solar Panel Rebate","FederalGovernment","Rebate","Percentage",0.10,5000,"Rebate for solar panel installation","Must install by certified technician","Valid through 2023"
+"uuid-102","Energy Efficient Appliances","BayREN","Rebate","PerUnit",50,, "Discount on energy-efficient appliances","Energy Star Rated","Limited stock"
+"uuid-103","Green Home Tax Credit","IRA","TaxCredit","FlatRate",1000,, "Tax credit for green home improvements","Include receipts","Claim during tax filing"
+"uuid-104","HVAC Upgrade Rebate","NYSERDA","Rebate","Percentage",0.15,2000,"Rebate for upgrading to energy-efficient HVAC system","For homes over 10 years old","Apply within 6 months of installation"
+"uuid-105","Electric Car Charger Install","FederalGovernment","Rebate","PerUnit",200,, "Rebate for installing electric car chargers","Residential installation only","Expires end of 2023"
+"uuid-106","Window Insulation Rebate","BayREN","Rebate","FlatRate",500,1500,"Rebate for window insulation upgrades","For homes with single-pane windows","Valid for installations in 2023"
+"uuid-107","Rainwater Harvest System","IRA","TaxCredit","Percentage",0.20,3000,"Tax credit for installing rainwater harvest systems","Must capture at least 1000 gallons","Valid until 2024"
+"uuid-108","LED Lighting Upgrade","NYSERDA","Rebate","PerUnit",10,, "Rebate on LED lighting upgrades","Minimum 10 units","For commercial properties"
+"uuid-109","Thermostat Upgrade Rebate","FederalGovernment","Rebate","FlatRate",75,, "Rebate for smart thermostat upgrades","Must replace a non-programmable thermostat","Offer valid through 2023"
+"uuid-110","Roof Insulation Tax Credit","IRA","TaxCredit","Percentage",0.12,2500,"Tax credit for adding roof insulation","For homes older than 15 years","Claim in the next tax year"
