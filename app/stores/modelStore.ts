@@ -21,14 +21,13 @@ import { _Object } from '../sync/db'
  * properties so that UI components can get automatic updates on the changes.
  */
 export class _ModelStore {
-
   isInitialized = false
 
   projectsByID: Map<string, Project> = observable.map(new Map())
   currentProject: Project | null = null
   organization: Organization | null = null
   hasPendingChanges = false
-  onlineStatus: 'online' | 'offline' = 'online';
+  onlineStatus: 'online' | 'offline' = 'online'
 
   constructor() {
     makeAutoObservable(this)
@@ -39,41 +38,43 @@ export class _ModelStore {
   }
 
   init = async () => {
-    if (this.isInitialized) return;
+    if (this.isInitialized) return
 
-    this.isInitialized = true;
-    SyncAPI.setBackgroundSync(true, 5 * 60 * 1000);
+    this.isInitialized = true
+    SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
 
     SyncAPI.events.on('has-pending-changes', (status: boolean) => {
-      runInAction(() => this.hasPendingChanges = status);
-    });
+      runInAction(() => (this.hasPendingChanges = status))
+    })
 
     SyncAPI.events.on('did-go-online', (_) => {
       runInAction(() => {
-        this.onlineStatus = 'online';
-      });
-    });
+        this.onlineStatus = 'online'
+      })
+    })
 
     SyncAPI.events.on('did-go-offline', (_) => {
       runInAction(() => {
-        this.onlineStatus = 'offline';
-      });
-    });
+        this.onlineStatus = 'offline'
+      })
+    })
 
     // Any time a Project is updated by the SyncAPI, this hook will trigger to update MobX
-    SyncAPI.events.on('did-modify-dbobject', (objectID: string, value: _Object | null) => {
-      const object = value?.json;
-      const objectType = value?.type;
+    SyncAPI.events.on(
+      'did-modify-dbobject',
+      (objectID: string, value: _Object | null) => {
+        const object = value?.json
+        const objectType = value?.type
 
-      runInAction(() => {
-        if (objectType === 'Project') {
-          this._updateMobxProject(object as Project);
-        }
-        else if (!object) {
-          this.projectsByID.delete(objectID);
-        }
-      });
-    });
+        runInAction(() => {
+          if (objectType === 'Project') {
+            this._updateMobxProject(object as Project)
+          } else if (!object) {
+            this.projectsByID.delete(objectID)
+          }
+        })
+      }
+    )
 
     await SyncAPI.sync()
     const projects = await SyncAPI.projects.list()
@@ -93,7 +94,7 @@ export class _ModelStore {
   clearCurrentProject() {
     this.currentProject = null
   }
-  
+
   /**
    * This function retrieves the latest view of the project from the SyncAPI for the specified projectID and should be
    * called on every model store mutation to make keep the ModelStore and SyncAPI views in lockstep.
@@ -101,8 +102,8 @@ export class _ModelStore {
   reloadProject = async (projectID: string) => {
     console.log('loading')
     this.init()
-    const project = await SyncAPI.projects.get(projectID);
-    this._updateMobxProject(project);
+    const project = await SyncAPI.projects.get(projectID)
+    this._updateMobxProject(project)
     return project
   }
 
@@ -265,6 +266,16 @@ export class _ModelStore {
 
   downloadPhoto = async (imageID: string) => {
     return await SyncAPI.images.download(imageID)
+  }
+
+  patchPhotoUrl = async (
+    projectID: string,
+    imageId: string,
+    newImageUrl: string
+  ) => {
+    const updated = await SyncAPI.images.upload(imageId, newImageUrl)
+    await this.reloadProject(projectID)
+    return updated
   }
 
   patchPhotoDetails = async (projectID: string, photoDetails: PhotoDetails) => {

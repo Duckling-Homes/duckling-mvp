@@ -156,3 +156,18 @@ export interface ProjectElectrical {
 export interface Organization {
   name: string
 }
+
+export interface VisualizerTextBlock {
+  id: string
+  color: string
+  text: string
+  position: { x: number; y: number }
+  scale: number
+}
+
+export interface UpdateVisualizerTextBlock {
+  color?: string
+  text?: string
+  position?: { x: number; y: number }
+  scale?: number
+}
