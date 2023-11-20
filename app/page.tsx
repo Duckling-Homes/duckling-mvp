@@ -138,44 +138,47 @@ const Home = observer(() => {
         onClose={() => setOpenModal(false)}
       />
       <Container>
-        <div className="projectList__upperWrapper">
-          <div className="projectList__header">
-            <p>My Projects</p>
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={() => setOpenModal(true)}
-              color="primary"
-            >
-              New Project
-            </Button>
+        <div className='projectList'>
+          <div className="projectList__upperWrapper">
+            <div className="projectList__header">
+              <p>My Projects</p>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={() => setOpenModal(true)}
+                color="primary"
+              >
+                New Project
+              </Button>
+            </div>
+            <TextField
+              id="outlined-basic"
+              label="Search"
+              variant="outlined"
+              placeholder="Name, address, date, etc..."
+              sx={{
+                width: 300,
+              }}
+              onChange={({ target }) => searchData(target.value)}
+            />
           </div>
-          <TextField
-            id="outlined-basic"
-            label="Search"
-            variant="outlined"
-            placeholder="Name, address, date, etc..."
-            sx={{
-              width: 300,
+          <DataGrid
+            rows={filteredProjects}
+            columns={device === 'phone' ? mobileColumns : columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 },
+              },
             }}
-            onChange={({ target }) => searchData(target.value)}
+            sx={{
+              borderTopLeftRadius: '0px',
+              borderTopRightRadius: '0px',
+              borderWidth: '0px',
+            }}
+            pageSizeOptions={[5, 10]}
           />
         </div>
-        <DataGrid
-          rows={filteredProjects}
-          columns={device === 'phone' ? mobileColumns : columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          sx={{
-            borderTopLeftRadius: '0px',
-            borderTopRightRadius: '0px',
-            borderWidth: '0px',
-          }}
-          pageSizeOptions={[5, 10]}
-        />
+
       </Container>
     </main>
   )
