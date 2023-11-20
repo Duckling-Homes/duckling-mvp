@@ -8,7 +8,13 @@ RUN apk add --update nodejs npm
 RUN npm install -g ts-node
 
 # Copy the shell script and TypeScript scripts into the image
-COPY . /.
+COPY ./scripts /scripts/
+COPY ./prisma /prisma/
+COPY ./app /app/
+COPY ./package.json /package.json
+COPY ./tsconfig.json /tsconfig.json
+
+
 RUN npm i
 
 

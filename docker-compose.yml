@@ -29,3 +29,13 @@ services:
       dockerfile: setupMinio.Dockerfile
     depends_on:
       - minio
+
+  seed_local_data:
+    build:
+      context: .
+      dockerfile: seedLocalData.Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://admin:admin@postgres:5432/postgres
+      - ORG_ID=a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
