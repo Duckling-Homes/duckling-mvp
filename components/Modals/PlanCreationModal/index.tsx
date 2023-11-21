@@ -1,12 +1,9 @@
 import React, { useState } from 'react'
-import { Project } from '@/types/types'
 import { Check, Close } from '@mui/icons-material'
 import {
   Button,
-  FormControl,
   IconButton,
   Modal,
-  TextField,
 } from '@mui/material'
 import { TextInput } from '@/components/Inputs'
 

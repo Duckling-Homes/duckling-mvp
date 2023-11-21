@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Button, ButtonGroup, Tab, Tabs } from '@mui/material'
+import { Button, Tab, Tabs } from '@mui/material'
 import { CalendarMonth, Delete, Edit, FormatListNumbered, Home, Person, Tune } from '@mui/icons-material'
 import Image from 'next/image'
 import { Container } from '@/components/Container'
@@ -37,7 +37,7 @@ const DataCollection = observer(() => {
   const [openCamera, setOpenCamera] = useState<boolean>(false)
   const [heroPhoto, setHeroPhoto] = useState<PhotoDetails>({})
   const [currentContent, setCurrentContent] = useState('tabs')
-  const currentProject = ModelStore.currentProject
+  const currentProject = ModelStore.currentProject as Project
   const router = useRouter()
   const { id } = useParams()
 
@@ -239,38 +239,38 @@ const DataCollection = observer(() => {
               className='dataCollection__buttonGroup'
             >
               <Button
-                sx={{
+                style={{
                   backgroundColor: "#FFF",
                   textTransform: "capitalize",
                   fontWeight: "400",
                   padding: "16px 0px",
                   width: "200px",
                   color: currentContent === 'tabs' ? "#2196F3" : "rgba(0,0,0,0.6)",
-                  border: currentContent === 'tabs' && "2px solid #2196F3"
+                  border: currentContent === 'tabs' ? "2px solid #2196F3" : 'none'
                 }}
                 startIcon={<Home />}
                 onClick={() => setCurrentContent('tabs')}>Home Info</Button>
               <Button
-                sx={{
+                style={{
                   backgroundColor: "#FFF",
                   textTransform: "capitalize",
                   fontWeight: "400",
                   padding: "16px 0px",
                   width: "200px",
                   color: currentContent === 'plans' ? "#2196F3" : "rgba(0,0,0,0.6)",
-                  border: currentContent === 'plans' && "2px solid #2196F3"
+                  border: currentContent === 'plans' ? "2px solid #2196F3" : 'none'
                 }}
                 startIcon={<Tune />}
                 onClick={() => setCurrentContent('plans')}>Plans</Button>
               <Button
-                sx={{
+                style={{
                   backgroundColor: "#FFF",
                   textTransform: "capitalize",
                   fontWeight: "400",
                   padding: "16px 0px",
                   width: "200px",
                   color: currentContent === 'presentation' ? "#2196F3" : "rgba(0,0,0,0.6)",
-                  border: currentContent === 'presentation' && "2px solid #2196F3"
+                  border: currentContent === 'presentation' ? "2px solid #2196F3" : 'none'
                 }}
                 startIcon={<FormatListNumbered />}
                 onClick={() => setCurrentContent('presentation')}>Present</Button>

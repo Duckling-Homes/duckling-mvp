@@ -1,7 +1,7 @@
 'use client'
 
 import PlanCreationModal from "@/components/Modals/PlanCreationModal"
-import { Add, AttachMoney, Bolt, Build, CameraAlt, Check, Delete, DoubleArrow, Edit, Home, Star, Thermostat, Tune } from "@mui/icons-material"
+import { Add, AttachMoney, Check, Delete, DoubleArrow, Edit, Home, Star, Tune } from "@mui/icons-material"
 import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
 import { useState } from "react"
 
@@ -11,10 +11,8 @@ import Hvac from "./Upgrades/Hvac"
 import ApplianceUpgrades from "./Upgrades/ApplianceUpgrade"
 import EnergyStorage from "./Upgrades/EnergyStorage"
 import Photos from "./Upgrades/Photos"
-import { SelectInput } from "@/components/Inputs"
 
 const Plans = () => {
-  const [plans, setPlans] = useState([])
   const [currentPlan, setCurrentPlan] = useState('')
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
@@ -151,8 +149,6 @@ const Plans = () => {
                   Financing Options
                   <div className="planCreation__financingItem">
                     Loan Options:
-                    <SelectInput
-                    />
                     Loan Amount:
                     <Stack>
                       <span>-</span><Slider/>

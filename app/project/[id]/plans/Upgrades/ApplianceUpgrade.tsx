@@ -1,6 +1,6 @@
 'use client'
 
-import { Add, Construction, Home } from "@mui/icons-material"
+import { Add, Construction } from "@mui/icons-material"
 import { Button } from "@mui/material"
 
 import './style.scss'
