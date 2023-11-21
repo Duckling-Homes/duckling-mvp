@@ -1,8 +1,8 @@
 'use client'
 
 import PlanCreationModal from "@/components/Modals/PlanCreationModal"
-import { Add, AttachMoney, Bolt, Build, CameraAlt, Check, Delete, DoubleArrow, Edit, Home, Thermostat } from "@mui/icons-material"
-import { Button, Chip, IconButton } from "@mui/material"
+import { Add, AttachMoney, Bolt, Build, CameraAlt, Check, Delete, DoubleArrow, Edit, Home, Star, Thermostat, Tune } from "@mui/icons-material"
+import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
 import { useState } from "react"
 
 import "./style.scss"
@@ -11,11 +11,13 @@ import Hvac from "./Upgrades/Hvac"
 import ApplianceUpgrades from "./Upgrades/ApplianceUpgrade"
 import EnergyStorage from "./Upgrades/EnergyStorage"
 import Photos from "./Upgrades/Photos"
+import { SelectInput } from "@/components/Inputs"
 
 const Plans = () => {
   const [plans, setPlans] = useState([])
   const [currentPlan, setCurrentPlan] = useState('')
   const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [hideFinance, setHideFinance] = useState(false)
 
   return (
     <>
@@ -109,16 +111,98 @@ const Plans = () => {
                     border: '1px solid #2196F3',
                     color: '#2196F3',
                     padding: '4px 11px',
-                  }}>
+                  }}
+                  onClick={() => setHideFinance(!hideFinance)}>
                   <DoubleArrow/>
                 </IconButton>
                 <p>Finance & Impact</p>
               </div>
               <div className="planCreation__cost">
-                <p><AttachMoney />Cost</p>
+                <div className="planCreation__sectionHeader">
+                  <div>
+                    <AttachMoney fontSize="small" />
+                    <p>Cost</p>
+                  </div>
+                  <IconButton sx={{
+                    borderRadius: '4px',
+                    backgroundColor: '#2196F3',
+                    color: '#fff',
+                    padding: '4px 11px',
+                  }}>
+                    <Tune/>
+                  </IconButton>
+                </div>
+                <div className="planCreation__sectionItem">
+                  Estimated Cost
+                  <span>-</span>
+                </div>
+                <Divider />
+                <div className="planCreation__sectionItem">
+                  Incentives
+                  <span>-</span>
+                </div>
+                <Divider />
+                <div className="planCreation__sectionItem">
+                  Cost
+                  <span>-</span>
+                </div>
+                <Divider />
+                <div className="planCreation__financing">
+                  Financing Options
+                  <div className="planCreation__financingItem">
+                    Loan Options:
+                    <SelectInput
+                    />
+                    Loan Amount:
+                    <Stack>
+                      <span>-</span><Slider/>
+                    </Stack>
+                  </div>
+                  <Divider />
+                  <div className="planCreation__financingItem">
+                    Upfront Cost:
+                    <span>-</span>
+                    Monthly Payment:
+                    <span>-</span>
+                  </div>
+                </div>
               </div>
               <div className="planCreation__upgradeImpact">
-
+                <div className="planCreation__sectionHeader">
+                  <div>
+                    <Home fontSize="small" />
+                    <p>Upgrade Impact</p>
+                  </div>
+                </div>
+                <div className="planCreation__sectionItem">
+                  Comfort:
+                  <div className="planCreation__sectionStars">
+                    <Star />
+                    <Star />
+                  </div>
+                </div>
+                <div className="planCreation__sectionItem">
+                  Health & Safety:
+                  <div className="planCreation__sectionStars">
+                    <Star />
+                    <Star />
+                    <Star />
+                  </div>
+                </div>
+                <div className="planCreation__sectionItem">
+                  Performance
+                  <div className="planCreation__sectionStars">
+                    <Star />
+                    <Star />
+                  </div>
+                </div>
+                <div className="planCreation__sectionItem">
+                  Emissions
+                  <div className="planCreation__sectionStars">
+                    <Star />
+                    <Star />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

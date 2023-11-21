@@ -16,12 +16,12 @@
   &__wrapper {
     padding: 16px;
     display: flex;
-    justify-content: space-between;
+    gap: 16px;
   }
 
   #{$self}__leftContainer{
     display: flex;
-    flex: 1;
+    flex: 2;
     flex-direction: column;
     gap: 16px;
     #{$self}__leftHeader {
@@ -32,6 +32,64 @@
       #{$self}__title {
         font-size: 20px;
         font-weight: 500;
+      }
+    }
+  }
+
+  #{$self}__rightContainer {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 16px;
+    #{$self}__rightHeader {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #{$self}__cost, #{$self}__upgradeImpact {
+      background-color: #FFF;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      border-radius: 8px;
+      #{$self}__sectionHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        div {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          font-weight: 500;
+          gap: 8px;
+        }
+      }
+      #{$self}__sectionItem {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 400;
+        #{$self}__sectionStars {
+          svg {
+            color: #FFB300;
+          }
+        }
+      }
+      #{$self}__financing {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        font-weight: 400;
+        gap: 8px;
+        #{$self}__financingItem {
+          display: flex;
+          flex-direction: column;
+          font-size: 12px;
+          gap: 8px;
+        }
       }
     }
   }
