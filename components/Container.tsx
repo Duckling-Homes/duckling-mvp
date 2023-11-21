@@ -9,6 +9,7 @@ export const Container = (props: {
     <div
       style={{
         minHeight: '100vh',
+        backgroundColor: '#E8EAF6'
       }}
     >
       <Header />

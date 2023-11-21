@@ -1,5 +1,5 @@
-// TODO: Change this to Roboto
-import { Inter } from 'next/font/google'
+// TODO: Search why this is not working. I had to put an import at globals.sccs for the font to work
+import { Roboto } from 'next/font/google'
 
 import { Metadata } from 'next'
 
@@ -7,7 +7,12 @@ import { ClerkProvider } from '@clerk/nextjs'
 import './globals.scss'
 // import ducklingTheme from "./style/theme/theme" // Here whenever we decide to move to our own theme
 
-const inter = Inter({ subsets: ['latin'] })
+const roboto = Roboto({ subsets: ['latin'],
+  display: 'swap',
+  weight: [
+  '300', '400', '500', '700', '900'
+  ]
+})
 
 export const metadata: Metadata = {
   manifest: '/manifest.json',
@@ -40,8 +45,8 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
+      <html lang="en" className={roboto.className}>
+        <body>{children}</body>
       </html>
     </ClerkProvider>
   )
