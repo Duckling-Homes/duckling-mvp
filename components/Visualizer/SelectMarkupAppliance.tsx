@@ -290,7 +290,9 @@ const SelectMarkupAppliance: React.FC<SelectMarkupApplianceProps> = ({
                 onChange={handleChange('type')}
               >
                 {Object.keys(nestedApplianceImages).map((type) => (
-                  <MenuItem value={type}>{type}</MenuItem>
+                  <MenuItem key={type} value={type}>
+                    {type}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -307,7 +309,11 @@ const SelectMarkupAppliance: React.FC<SelectMarkupApplianceProps> = ({
                 {selectedAppliance?.type &&
                   Object.keys(
                     nestedApplianceImages[selectedAppliance.type]
-                  ).map((make) => <MenuItem value={make}>{make}</MenuItem>)}
+                  ).map((make) => (
+                    <MenuItem key={make} value={make}>
+                      {make}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
             <FormControl fullWidth>
@@ -325,7 +331,11 @@ const SelectMarkupAppliance: React.FC<SelectMarkupApplianceProps> = ({
                     nestedApplianceImages[
                       selectedAppliance.type as keyof typeof nestedApplianceImages
                     ][selectedAppliance.make]
-                  ).map((model) => <MenuItem value={model}>{model}</MenuItem>)}
+                  ).map((model) => (
+                    <MenuItem key={model} value={model}>
+                      {model}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
             <FormControl fullWidth>
@@ -345,7 +355,11 @@ const SelectMarkupAppliance: React.FC<SelectMarkupApplianceProps> = ({
                     ][
                       selectedAppliance.make as keyof typeof nestedApplianceImages
                     ][selectedAppliance.model]
-                  ).map((angle) => <MenuItem value={angle}>{angle}</MenuItem>)}
+                  ).map((angle) => (
+                    <MenuItem key={angle} value={angle}>
+                      {angle}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
             {previewImage && (
