@@ -11,6 +11,7 @@ import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelope
 import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
 import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
 import { getImagesByProjectId } from '@/app/utils/repositories/image'
+import { getPlansByProjectId } from '@/app/utils/repositories/plan'
 
 /**
  * Get project by id
@@ -34,6 +35,7 @@ export const GET = withErrorHandler(
     const appliances = await getProjectAppliances(params.id)
     const electrical = await getProjectElectrical(params.id)
     const images = await getImagesByProjectId(params.id, orgContext)
+    const plans = await getPlansByProjectId(params.id)
 
     return NextResponse.json({
       ...project,
@@ -43,6 +45,7 @@ export const GET = withErrorHandler(
       appliances,
       electrical,
       images,
+      plans,
     })
   }
 )

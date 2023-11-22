@@ -67,6 +67,7 @@ model Project {
   generators        Generator[]
   evChargers        EvCharger[]
   relatedImages     Image[] @relation(name: "ProjectToImage")
+  plans             Plan[] @relation(name: "ProjectToPlan")
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -436,6 +437,19 @@ model Incentive {
 
   productCatalogues    ProductCatalogue[] @relation("ProductCatalogueToIncentive") // Updated relation      
 
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @default(now()) @updatedAt
+}
+
+model Plan {
+  id                   String          @id @default(uuid())
+  name                 String?
+  planDetails          Json?
+
+  projectId            String
+  project              Project @relation(name: "ProjectToPlan", fields: [projectId], references: [id], onDelete: Cascade)
+  
+  
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @default(now()) @updatedAt
 }
