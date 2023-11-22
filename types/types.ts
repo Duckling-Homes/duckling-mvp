@@ -171,3 +171,24 @@ export interface UpdateVisualizerTextBlock {
   position?: { x: number; y: number }
   scale?: number
 }
+
+export interface ApplianceMarkupSticker {
+  type?: string
+  make?: string
+  model?: string
+  angle?: string
+  sticker?: string
+}
+
+export interface ApplianceSticker {
+  id: string
+  image: HTMLImageElement
+  position: { x: number; y: number }
+  scale: number
+}
+
+export interface UpdateApplianceSticker {
+  url?: string
+  position?: { x: number; y: number }
+  scale?: number
+}
