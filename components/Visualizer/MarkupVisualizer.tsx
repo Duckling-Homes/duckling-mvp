@@ -3,8 +3,10 @@
 import { Button } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import {
+  ApplianceSticker,
   PhotoDetails,
   Project,
+  UpdateApplianceSticker,
   UpdateVisualizerTextBlock,
   VisualizerTextBlock,
 } from '@/types/types'
@@ -19,6 +21,8 @@ import { v4 as uuidv4 } from 'uuid'
 import Konva from 'konva'
 import EditTextModal from './EditTextModal'
 import ModelStore from '@/app/stores/modelStore'
+import SelectMarkupAppliance from './SelectMarkupAppliance'
+import DraggableSticker from './DraggableSticker'
 
 interface MarkupVisualizerProps {
   setShowVisualizer: (show: boolean) => void
@@ -39,6 +43,12 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
     const [textBlocks, setTextBlocks] = useState<VisualizerTextBlock[]>([])
     const [editingTextBlock, setEditingTextBlock] =
       useState<VisualizerTextBlock | null>(null)
+
+    const [openSelectAppliance, setOpenSelectAppliance] =
+      useState<boolean>(false)
+    const [applianceStickers, setApplianceStickers] = useState<
+      ApplianceSticker[]
+    >([])
 
     const [selectedId, selectShape] = useState<string | null>(null)
 
@@ -111,11 +121,54 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
       setTextBlocks(updatedTexts)
     }
 
+    const addApplianceSticker = (stickerUrl: string) => {
+      const id = uuidv4().toString()
+
+      const overlay = document.createElement('img')
+      overlay.src = stickerUrl
+      overlay.onload = () => {
+        const scale = Math.min(
+          (stageSize.width / overlay.width) * 0.5,
+          (stageSize.height / overlay.height) * 0.5
+        )
+        const x = (stageSize.width - overlay.width * scale) / 2
+        const y = (stageSize.height - overlay.height * scale) / 2
+
+        const newSticker = {
+          id,
+          position: { x, y },
+          image: overlay,
+          scale,
+        }
+        setApplianceStickers(applianceStickers.concat([newSticker]))
+        selectShape(id)
+      }
+    }
+
+    const updateApplinaceSticker = (
+      id: string,
+      newAttrs: UpdateApplianceSticker
+    ) => {
+      const updatedStickers = applianceStickers.map((sticker) => {
+        if (sticker.id === id) {
+          return { ...sticker, ...newAttrs }
+        }
+        return sticker
+      })
+      setApplianceStickers(updatedStickers)
+    }
+
     const saveMarkupPhoto = async () => {
       selectShape(null)
+
       const stage = stageRef.current
       if (!stage) {
         return
+      }
+
+      const transformers = stage.find('Transformer')
+      for (const transformer of transformers) {
+        transformer.visible(false)
       }
 
       const dataURL = stage.toDataURL({
@@ -141,6 +194,11 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
             }}
           />
         )}
+        <SelectMarkupAppliance
+          open={openSelectAppliance}
+          onClose={() => setOpenSelectAppliance(false)}
+          addApplianceSticker={addApplianceSticker}
+        />
         {konvaImage && (
           <Stage
             ref={stageRef}
@@ -179,6 +237,19 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
                   }}
                 />
               ))}
+              {applianceStickers.map((sticker, i) => (
+                <DraggableSticker
+                  key={i}
+                  sticker={sticker}
+                  isSelected={sticker.id === selectedId}
+                  onSelect={() => {
+                    selectShape(sticker.id)
+                  }}
+                  onChange={(newAttrs) => {
+                    updateApplinaceSticker(sticker.id, newAttrs)
+                  }}
+                />
+              ))}
             </Layer>
           </Stage>
         )}
@@ -194,7 +265,12 @@ const MarkupVisualizer: React.FC<MarkupVisualizerProps> = observer(
             zIndex: 100,
           }}
         >
-          <Button variant="contained" onClick={() => {}}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setOpenSelectAppliance(true)
+            }}
+          >
             <WorkOutlineOutlinedIcon />
           </Button>
           <Button variant="contained" onClick={addText}>
