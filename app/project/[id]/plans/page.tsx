@@ -20,8 +20,13 @@ const Plans = ({currentProject}) => {
   const [hideFinance, setHideFinance] = useState(false)
 
   function handlePlanCreation(planName: string) {
-    ModelStore.createPlan(currentProject.id, planName)
-    setCurrentPlan(planName)
+    const newPlan = ModelStore.createPlan(currentProject.id, planName)
+    setCurrentPlan(newPlan)
+  }
+
+  function handlePlanDeletion() {
+    ModelStore.deletePlan(currentProject.id, currentPlan.id)
+    setCurrentPlan(plans[0] || {})
   }
 
   return (
@@ -72,7 +77,7 @@ const Plans = ({currentProject}) => {
           </Button>)
           }
         </div>
-        {currentPlan && (
+        {currentPlan.id && (
           <div className="planCreation__wrapper">
             <div className="planCreation__leftContainer">
               <div className="planCreation__leftHeader">
@@ -97,7 +102,7 @@ const Plans = ({currentProject}) => {
                   }}
                   aria-label="add"
                 >
-                  <Delete />
+                  <Delete onClick={() => handlePlanDeletion()}/>
                 </IconButton>
                 <Button
                   variant="contained"

@@ -6,7 +6,7 @@ export class PlansSyncOperations {
 
   create = async (projectID: string, name: string) => {
 
-    const a = await db.enqueueRequest(
+    const newPlan = await db.enqueueRequest(
       `/api/plans`,
       {
         method: 'POST',
@@ -19,6 +19,17 @@ export class PlansSyncOperations {
     
     SyncAPI.pushChanges()
 
-    return a
+    return newPlan
+  }
+
+  delete = async (planID: string) => {
+    await db.enqueueRequest(
+      `/api/plans/${planID}`,
+      {
+        method: 'DELETE'
+      }
+    )
+
+    SyncAPI.pushChanges()
   }
 }
