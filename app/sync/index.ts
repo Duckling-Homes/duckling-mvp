@@ -6,6 +6,7 @@ import { EnvelopeSyncOperations } from './operations/envelope'
 import { ElectricalSyncOperations } from './operations/electrical'
 import { RoomSyncOperations } from './operations/room'
 import { ImageSyncOperations } from './operations/images'
+import { PlansSyncOperations } from './operations/plans'
 import { _Request, db } from './db'
 import { SyncAPIEvents } from './events'
 /**
@@ -50,6 +51,7 @@ class _SyncAPI {
   envelopes = new EnvelopeSyncOperations()
   rooms = new RoomSyncOperations()
   images = new ImageSyncOperations()
+  plans = new PlansSyncOperations()
 
   // Metadata
   lastOnlineStatus: 'online'| 'offline' = 'online';

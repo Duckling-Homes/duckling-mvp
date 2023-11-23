@@ -288,6 +288,12 @@ export class _ModelStore {
     await SyncAPI.images.delete(projectID, imageID)
     await this.reloadProject(projectID)
   }
+
+  createPlan = async (projectID: string, name: string) => {
+    const created = await SyncAPI.plans.create(projectID, name)
+
+    return created
+  }
 }
 
 const ModelStore = new _ModelStore()

@@ -1,39 +1,55 @@
 'use client'
 
+import { useState } from "react"
 import PlanCreationModal from "@/components/Modals/PlanCreationModal"
 import { Add, AttachMoney, Check, Delete, DoubleArrow, Edit, Home, Star, Tune } from "@mui/icons-material"
 import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
-import { useState } from "react"
-
-import "./style.scss"
 import HomePerformance from "./Upgrades/HomePerformance"
 import Hvac from "./Upgrades/Hvac"
 import ApplianceUpgrades from "./Upgrades/ApplianceUpgrade"
 import EnergyStorage from "./Upgrades/EnergyStorage"
 import Photos from "./Upgrades/Photos"
 
-const Plans = () => {
-  const [currentPlan, setCurrentPlan] = useState('')
+import "./style.scss"
+import ModelStore from "@/app/stores/modelStore"
+
+const Plans = ({currentProject}) => {
+  const plans = currentProject.plans
+  const [currentPlan, setCurrentPlan] = useState(plans[0] || {})
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
+
+  function handlePlanCreation(planName: string) {
+    ModelStore.createPlan(currentProject.id, planName)
+    setCurrentPlan(planName)
+  }
 
   return (
     <>
       <PlanCreationModal
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
-        onConfirm={(name) => setCurrentPlan(name)}
+        onConfirm={(name) => handlePlanCreation(name)}
       />
       <div className="planCreation">
         <div className="planCreation__buttons">
-          {currentPlan ? (
+          {plans.length > 0 ? (
             <div style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               gap: "8px",
             }}>
-              <Chip label={currentPlan} color="primary"/>
+              {plans?.map((plan) => 
+                <Chip
+                  label={plan.name}
+                  color={
+                    currentPlan?.id === plan.id
+                      ? 'primary'
+                      : 'default'
+                  }
+                  onClick={() => setCurrentPlan(plan)}/>
+              )}
               <IconButton
                 sx={{
                   borderRadius: '4px',
@@ -60,7 +76,7 @@ const Plans = () => {
           <div className="planCreation__wrapper">
             <div className="planCreation__leftContainer">
               <div className="planCreation__leftHeader">
-                <p className="planCreation__title">{currentPlan}</p>
+                <p className="planCreation__title">{currentPlan.name}</p>
                 <IconButton
                   sx={{
                     borderRadius: '4px',

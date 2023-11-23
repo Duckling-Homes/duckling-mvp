@@ -131,7 +131,7 @@ const DataCollection = observer(() => {
         )
       case "plans":
         return (
-          <Plans />
+          <Plans currentProject={currentProject}/>
         )
       case "presentation":
         return (
