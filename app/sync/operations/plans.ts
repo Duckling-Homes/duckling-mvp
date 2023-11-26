@@ -48,4 +48,31 @@ export class PlansSyncOperations {
 
     SyncAPI.pushChanges()
   }
+
+  update = async (projectID: string, plan: Plan) => {
+    await db.enqueueRequest(
+      `/api/plans/${plan.id}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({
+          ...plan,
+          projectId: projectID,
+        }),
+      }
+    )
+
+    await SyncAPI.projects._swap(projectID, (proj) => {
+      const idx = proj.plans?.findIndex(
+        (pl) => pl.id === plan.id
+      ) ?? -1
+      if (idx > -1) {
+        proj.plans?.splice(idx, 1, plan)
+      }
+      return proj
+    })
+
+    SyncAPI.pushChanges()
+
+    return plan
+  }
 }

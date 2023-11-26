@@ -296,6 +296,12 @@ export class _ModelStore {
     return created
   }
 
+  patchPlan = async (projectID: string, plan: Plan) => {
+    const updated = await SyncAPI.plans.update(projectID, plan)
+    await this.reloadProject(projectID)
+    return updated
+  }
+
   deletePlan = async (projectID: string, planID: string) => {
     await SyncAPI.plans.delete(projectID, planID)
     await this.reloadProject(projectID)

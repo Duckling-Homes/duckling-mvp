@@ -15,18 +15,20 @@ import {
 
 import "./style.scss"
 import { Plan } from "@/types/types"
+import DeletePlanModal from "@/components/Modals/DeletePlan"
 
 const Plans = ({currentProject}) => {
-  const [plans, setPlans] = useState([])
+  const [plans, setPlans] = useState<Plan[]>([])
   const [currentPlan, setCurrentPlan] = useState({})
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
 
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
       setPlans(currentProject.plans)
-      if (!currentPlan) {
+      if (!currentPlan?.id) {
         setCurrentPlan(currentProject.plans[0])
       }
     }
@@ -37,6 +39,7 @@ const Plans = ({currentProject}) => {
       name: name
     }
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
+
     setCurrentPlan(newPlan)
   }
 
@@ -44,13 +47,30 @@ const Plans = ({currentProject}) => {
     await ModelStore.deletePlan(currentProject.id, currentPlan.id)
 
     const newPlansList = plans.filter((plan) => plan.id !== currentPlan.id)
+    
     setPlans(newPlansList)
     setCurrentPlan(newPlansList[0] || {})
+  }
 
+  async function handlePlanEdition(name: string) {
+    const updatedPlan: Plan = {
+      id: currentPlan.id,
+      name: name
+    }
+
+    await ModelStore.patchPlan(currentProject.id, updatedPlan)
+    
+    setCurrentPlan(updatedPlan)
   }
 
   return (
     <>
+      <DeletePlanModal
+        open={deleteModal}
+        onConfirm={handlePlanDeletion}
+        onClose={() => setDeleteModal(false)}
+        plan={currentPlan}
+      />
       <PlanModal
         open={createModalOpen}
         onClose={() => {
@@ -58,7 +78,8 @@ const Plans = ({currentProject}) => {
           setEditMode(false)
         }}
         onConfirm={(name) => handlePlanCreation(name)}
-        currentName={currentPlan.name}
+        onEditConfirm={(name) => handlePlanEdition(name)}
+        currentName={currentPlan?.name}
         editMode={editMode}
       />
       <div className="planCreation">
@@ -132,7 +153,7 @@ const Plans = ({currentProject}) => {
                   }}
                   aria-label="add"
                 >
-                  <Icons.Delete onClick={() => handlePlanDeletion()}/>
+                  <Icons.Delete onClick={() => setDeleteModal(true)}/>
                 </IconButton>
                 <Button
                   variant="contained"

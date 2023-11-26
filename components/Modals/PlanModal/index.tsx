@@ -13,23 +13,32 @@ type PlanModalProps = {
   onConfirm: (name: string) => void
   editMode: boolean
   currentName: string
+  onEditConfirm: (name: string) => void
 }
 
 const PlanModal: React.FC<PlanModalProps> =
-  ({ open, onClose, onConfirm, editMode, currentName }) => {
+  ({ open, onClose, onConfirm, editMode, currentName, onEditConfirm }) => {
     const [name, setName] = useState('')
 
     useEffect(() => {
-      if (editMode === true) {
-        setName(currentName)
+
+      if (editMode && currentName) {
+        setName(currentName);
+      } else {
+        setName('');
       }
-    })
+    }, [editMode, currentName]);
 
     const resetState = () => {
       setName('')
     }
 
     const onConfirmClick = () => {
+      if (editMode) {
+        onEditConfirm(name)
+        onClose()
+        return
+      }
       onConfirm(name)
       onClose()
     }
