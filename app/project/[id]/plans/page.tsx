@@ -1,44 +1,69 @@
 'use client'
 
-import { useState } from "react"
-import PlanCreationModal from "@/components/Modals/PlanCreationModal"
-import { Add, AttachMoney, Check, Delete, DoubleArrow, Edit, Home, Star, Tune } from "@mui/icons-material"
+import { useEffect, useState } from "react"
+import PlanModal from "@/components/Modals/PlanModal"
+import * as Icons from "@mui/icons-material"
 import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
-import HomePerformance from "./Upgrades/HomePerformance"
-import Hvac from "./Upgrades/Hvac"
-import ApplianceUpgrades from "./Upgrades/ApplianceUpgrade"
-import EnergyStorage from "./Upgrades/EnergyStorage"
-import Photos from "./Upgrades/Photos"
+import ModelStore from "@/app/stores/modelStore"
+import { 
+  HomePerformance,
+  Hvac,
+  ApplianceUpgrades,
+  EnergyStorage,
+  Photos
+} from "./Upgrades"
 
 import "./style.scss"
-import ModelStore from "@/app/stores/modelStore"
+import { Plan } from "@/types/types"
 
 const Plans = ({currentProject}) => {
-  const plans = currentProject.plans
-  const [currentPlan, setCurrentPlan] = useState(plans[0] || {})
+  const [plans, setPlans] = useState([])
+  const [currentPlan, setCurrentPlan] = useState({})
   const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
 
-  function handlePlanCreation(planName: string) {
-    const newPlan = ModelStore.createPlan(currentProject.id, planName)
+  useEffect(() => {
+    if (currentProject && currentProject?.plans) {
+      setPlans(currentProject.plans)
+      if (!currentPlan) {
+        setCurrentPlan(currentProject.plans[0])
+      }
+    }
+  })
+
+  async function handlePlanCreation(name: string) {
+    const plan : Plan = {
+      name: name
+    }
+    const newPlan = await ModelStore.createPlan(currentProject.id, plan)
     setCurrentPlan(newPlan)
   }
 
-  function handlePlanDeletion() {
-    ModelStore.deletePlan(currentProject.id, currentPlan.id)
-    setCurrentPlan(plans[0] || {})
+  async function handlePlanDeletion() {
+    await ModelStore.deletePlan(currentProject.id, currentPlan.id)
+
+    const newPlansList = plans.filter((plan) => plan.id !== currentPlan.id)
+    setPlans(newPlansList)
+    setCurrentPlan(newPlansList[0] || {})
+
   }
 
   return (
     <>
-      <PlanCreationModal
+      <PlanModal
         open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
+        onClose={() => {
+          setCreateModalOpen(false)
+          setEditMode(false)
+        }}
         onConfirm={(name) => handlePlanCreation(name)}
+        currentName={currentPlan.name}
+        editMode={editMode}
       />
       <div className="planCreation">
         <div className="planCreation__buttons">
-          {plans.length > 0 ? (
+          {plans?.length > 0 ? (
             <div style={{
               display: "flex",
               justifyContent: "center",
@@ -63,8 +88,9 @@ const Plans = ({currentProject}) => {
                   padding: '4px 11px',
                 }}
                 aria-label="add"
+                onClick={() => setCreateModalOpen(true)}
               >
-                <Add />
+                <Icons.Add />
               </IconButton>
             </div>
           ) :
@@ -72,12 +98,12 @@ const Plans = ({currentProject}) => {
             variant="contained"
             size="small"
             onClick={() => setCreateModalOpen(true)}
-            startIcon={<Add />}>
+            startIcon={<Icons.Add />}>
               Create new plan
           </Button>)
           }
         </div>
-        {currentPlan.id && (
+        {currentPlan?.id && (
           <div className="planCreation__wrapper">
             <div className="planCreation__leftContainer">
               <div className="planCreation__leftHeader">
@@ -90,8 +116,12 @@ const Plans = ({currentProject}) => {
                     padding: '4px 11px',
                   }}
                   aria-label="add"
+                  onClick={() => {
+                    setEditMode(true)
+                    setCreateModalOpen(true)
+                  }}
                 >
-                  <Edit />
+                  <Icons.Edit />
                 </IconButton>
                 <IconButton
                   sx={{
@@ -102,13 +132,13 @@ const Plans = ({currentProject}) => {
                   }}
                   aria-label="add"
                 >
-                  <Delete onClick={() => handlePlanDeletion()}/>
+                  <Icons.Delete onClick={() => handlePlanDeletion()}/>
                 </IconButton>
                 <Button
                   variant="contained"
                   size="small"
                   onClick={() => setCreateModalOpen(true)}
-                  startIcon={<Check />}
+                  startIcon={<Icons.Check />}
                   sx={{
                     backgroundColor: "#2E7D32"
                   }}
@@ -132,14 +162,14 @@ const Plans = ({currentProject}) => {
                     padding: '4px 11px',
                   }}
                   onClick={() => setHideFinance(!hideFinance)}>
-                  <DoubleArrow/>
+                  <Icons.DoubleArrow/>
                 </IconButton>
                 <p>Finance & Impact</p>
               </div>
               <div className="planCreation__cost">
                 <div className="planCreation__sectionHeader">
                   <div>
-                    <AttachMoney fontSize="small" />
+                    <Icons.AttachMoney fontSize="small" />
                     <p>Cost</p>
                   </div>
                   <IconButton sx={{
@@ -148,7 +178,7 @@ const Plans = ({currentProject}) => {
                     color: '#fff',
                     padding: '4px 11px',
                   }}>
-                    <Tune/>
+                    <Icons.Tune/>
                   </IconButton>
                 </div>
                 <div className="planCreation__sectionItem">
@@ -187,37 +217,37 @@ const Plans = ({currentProject}) => {
               <div className="planCreation__upgradeImpact">
                 <div className="planCreation__sectionHeader">
                   <div>
-                    <Home fontSize="small" />
+                    <Icons.Home fontSize="small" />
                     <p>Upgrade Impact</p>
                   </div>
                 </div>
                 <div className="planCreation__sectionItem">
                   Comfort:
                   <div className="planCreation__sectionStars">
-                    <Star />
-                    <Star />
+                    <Icons.Star />
+                    <Icons.Star />
                   </div>
                 </div>
                 <div className="planCreation__sectionItem">
                   Health & Safety:
                   <div className="planCreation__sectionStars">
-                    <Star />
-                    <Star />
-                    <Star />
+                    <Icons.Star />
+                    <Icons.Star />
+                    <Icons.Star />
                   </div>
                 </div>
                 <div className="planCreation__sectionItem">
                   Performance
                   <div className="planCreation__sectionStars">
-                    <Star />
-                    <Star />
+                    <Icons.Star />
+                    <Icons.Star />
                   </div>
                 </div>
                 <div className="planCreation__sectionItem">
                   Emissions
                   <div className="planCreation__sectionStars">
-                    <Star />
-                    <Star />
+                    <Icons.Star />
+                    <Icons.Star />
                   </div>
                 </div>
               </div>

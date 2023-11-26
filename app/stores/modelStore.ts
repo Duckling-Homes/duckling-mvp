@@ -1,6 +1,7 @@
 import {
   Organization,
   PhotoDetails,
+  Plan,
   Project,
   ProjectAppliance,
   ProjectData,
@@ -289,14 +290,14 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  createPlan = async (projectID: string, name: string) => {
-    const created = await SyncAPI.plans.create(projectID, name)
+  createPlan = async (projectID: string, plan: Plan) => {
+    const created = await SyncAPI.plans.create(projectID, plan)
     await this.reloadProject(projectID)
     return created
   }
 
   deletePlan = async (projectID: string, planID: string) => {
-    await SyncAPI.plans.delete(planID)
+    await SyncAPI.plans.delete(projectID, planID)
     await this.reloadProject(projectID)
   }
 }

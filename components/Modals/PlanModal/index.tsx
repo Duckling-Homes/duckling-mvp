@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Check, Close } from '@mui/icons-material'
 import {
   Button,
@@ -7,15 +7,23 @@ import {
 } from '@mui/material'
 import { TextInput } from '@/components/Inputs'
 
-type PlanCreationModalProps = {
+type PlanModalProps = {
   open: boolean
   onClose: () => void
   onConfirm: (name: string) => void
+  editMode: boolean
+  currentName: string
 }
 
-const PlanCreationModal: React.FC<PlanCreationModalProps> =
-  ({ open, onClose, onConfirm }) => {
+const PlanModal: React.FC<PlanModalProps> =
+  ({ open, onClose, onConfirm, editMode, currentName }) => {
     const [name, setName] = useState('')
+
+    useEffect(() => {
+      if (editMode === true) {
+        setName(currentName)
+      }
+    })
 
     const resetState = () => {
       setName('')
@@ -23,9 +31,6 @@ const PlanCreationModal: React.FC<PlanCreationModalProps> =
 
     const onConfirmClick = () => {
       onConfirm(name)
-      if (!name) {
-        resetState()
-      }
       onClose()
     }
 
@@ -84,4 +89,4 @@ const PlanCreationModal: React.FC<PlanCreationModalProps> =
     )
   }
 
-export default PlanCreationModal
+export default PlanModal

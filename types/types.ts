@@ -12,6 +12,7 @@ export interface Project {
   electrical?: ProjectElectrical[]
   envelopes?: ProjectEnvelope[]
   images?: PhotoDetails[]
+  plans?: Plan[]
   heroImageId?: string
 }
 
@@ -153,6 +154,7 @@ export interface ProjectElectrical {
   location?: string
   [key: string]: number | string | string[] | boolean | undefined
 }
+
 export interface Organization {
   name: string
 }
@@ -191,4 +193,9 @@ export interface UpdateApplianceSticker {
   url?: string
   position?: { x: number; y: number }
   scale?: number
+}
+
+export interface Plan {
+  id?: string
+  name: string
 }
