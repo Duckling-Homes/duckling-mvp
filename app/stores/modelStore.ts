@@ -149,6 +149,11 @@ export class _ModelStore {
     return this.organization
   }
 
+  fetchCatalogue = async () => {
+    const catalogue = await SyncAPI.organizations.getCatalogue()
+    return catalogue
+  }
+
   createAppliance = async (
     projectID: string,
     applianceType: string,

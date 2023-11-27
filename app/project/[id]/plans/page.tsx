@@ -14,7 +14,7 @@ import {
 } from "./Upgrades"
 
 import "./style.scss"
-import { Plan } from "@/types/types"
+import { Organization, Plan } from "@/types/types"
 import DeletePlanModal from "@/components/Modals/DeletePlan"
 
 const Plans = ({currentProject}) => {
@@ -24,6 +24,7 @@ const Plans = ({currentProject}) => {
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+  const [catalogue, setCatalogue] = useState([])
 
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
@@ -33,6 +34,16 @@ const Plans = ({currentProject}) => {
       }
     }
   })
+
+  useEffect(() => {
+    const getCatalogue = async () => {
+      const cat = await ModelStore.fetchCatalogue()
+      setCatalogue(cat)
+    }
+    if (!catalogue.length) {
+      getCatalogue()
+    }
+   })
 
   async function handlePlanCreation(name: string) {
     const plan : Plan = {
@@ -61,6 +72,10 @@ const Plans = ({currentProject}) => {
     await ModelStore.patchPlan(currentProject.id, updatedPlan)
     
     setCurrentPlan(updatedPlan)
+  }
+
+  async function fetchCatalogue() {
+    console.log(catalogue)
   }
 
   return (
@@ -158,7 +173,7 @@ const Plans = ({currentProject}) => {
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => setCreateModalOpen(true)}
+                  onClick={() => fetchCatalogue()}
                   startIcon={<Icons.Check />}
                   sx={{
                     backgroundColor: "#2E7D32"
@@ -168,7 +183,9 @@ const Plans = ({currentProject}) => {
                 </Button>
               </div>
               <small>Click on “+ ADD” buttons to start adding projects.</small>
-              <HomePerformance />
+              <HomePerformance
+                catalogue={catalogue}
+              />
               <Hvac />
               <ApplianceUpgrades />
               <EnergyStorage />
