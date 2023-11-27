@@ -5,6 +5,10 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export default authMiddleware({
   afterAuth(auth, req: NextRequest, evt) {
+    if (req.nextUrl.pathname.startsWith('/api/export')) {
+      return // don't do anything for the export route
+    }
+
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url })
     }
