@@ -11,11 +11,11 @@ import { observer } from 'mobx-react-lite'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-import './style.scss'
 import { useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
 import dayjs from 'dayjs'
+import { useRouter } from 'next/navigation'
 import ModelStore from './stores/modelStore'
+import './style.scss'
 
 const Home = observer(() => {
   const { user } = useUser()
@@ -170,7 +170,7 @@ const Home = observer(() => {
               columns={device === 'phone' ? mobileColumns : columns}
               initialState={{
                 pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
+                  paginationModel: { page: 0, pageSize: 10 },
                 },
               }}
               sx={{

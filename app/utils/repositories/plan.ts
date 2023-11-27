@@ -46,6 +46,9 @@ export async function getPlansByProjectId(projectId: string) {
     where: {
       projectId: projectId,
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   })
 }
 

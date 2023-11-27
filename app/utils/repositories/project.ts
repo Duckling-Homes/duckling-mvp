@@ -24,6 +24,9 @@ export async function createProject(
 export async function getProjects(organizationId: string) {
   return await prisma.project.findMany({
     where: { organizationId },
+    orderBy: {
+      createdAt: 'desc',
+    },
   })
 }
 
