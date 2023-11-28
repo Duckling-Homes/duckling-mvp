@@ -199,3 +199,22 @@ export interface Plan {
   id?: string
   name?: string
 }
+
+export interface CatalogueItem {
+  id: string
+  customId?: string
+  category: string
+  subcategory: string
+  name: string
+  description: string
+  type: string
+  pricingType: string
+  scaledPricingMetric: string
+  basePricePer: number
+  brand: string
+  modelNumber: string
+  ahriNumber: string
+  incentives: string
+  organizationId: string
+  organization: Organization
+}

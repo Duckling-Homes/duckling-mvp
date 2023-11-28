@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Close, Delete } from '@mui/icons-material'
 import {
   Button,
@@ -7,8 +8,6 @@ import {
   TextField,
 } from '@mui/material'
 import { Plan } from '@/types/types'
-import { useEffect, useState } from 'react'
-import { flushSync } from 'react-dom'
 
 const DeletePlanModal: React.FC<{
   open: boolean

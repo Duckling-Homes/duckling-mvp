@@ -1,18 +1,22 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Add, Clear, Home } from "@mui/icons-material"
-import { Button, Divider, IconButton, Menu, MenuItem } from "@mui/material"
+import { Button, Divider, IconButton, Menu, MenuItem, TextField } from "@mui/material"
 import { v4 as uuidv4 } from 'uuid'
+import { CatalogueItem } from "@/types/types"
 
 import './style.scss'
-import { TextInput } from "@/components/Inputs"
 
-const HomePerformance = ({ catalogue }) => {
-  const [items, setItems] = useState([])
+interface HomePerformanceProps {
+  catalogue: CatalogueItem[]
+}
+
+const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue }) => {
+  const [items, setItems] = useState<CatalogueItem[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
-  const [workItems, setWorkItems] = useState([])
+  const [workItems, setWorkItems] = useState<CatalogueItem[]>([])
 
   useEffect(() => {
     setItems(
@@ -28,41 +32,41 @@ const HomePerformance = ({ catalogue }) => {
     setAnchorEl(null)
   }
 
-  function addWorkItem(item) {
-    let newWorkItem = {
-      id: uuidv4(),
-      name: '',
+  function addWorkItem(item: CatalogueItem) {
+    const newWorkItem = {
+      customId: uuidv4(),
       ...item
     }
 
-    let newWorkItemsList = workItems
+    const newWorkItemsList = workItems
     newWorkItemsList.push(newWorkItem)
     setWorkItems(newWorkItemsList)
   }
 
-  function removeWorkItem(itemId) {
+  function removeWorkItem(itemCustomId: string  | undefined) {
     let newWorkItemsList = workItems
 
-    newWorkItemsList = newWorkItemsList.filter(item => item.id !== itemId)
+    newWorkItemsList = newWorkItemsList.filter(item => item.customId !== itemCustomId)
     setWorkItems(newWorkItemsList)
   }
 
   function renderWorkItems() {
-    return workItems.map((item, index) => (
-      <>
+    return workItems.map((item) => (
+      <React.Fragment key={item.customId}>
         <Divider />
-        <div className="homePerformance__workItem">
+        <div className="homePerformance__workItem" key={item.customId}>
           <div className="homePerformance__workItemHeader">
             <span>{item.subcategory}</span>
             <span>Estimated Cost: $5,500</span>
           </div>
           <div className="homePerformance__workItemContent">
-            <TextInput
+            <TextField
               label="Name"
               placeholder="Name"
               value={item.name || ''}
+              size="small"
             />
-            <TextInput
+            <TextField
               label={
                 item.pricingType === 'PerUnit' ? 'Quantity' : item.pricingType
               }
@@ -70,6 +74,7 @@ const HomePerformance = ({ catalogue }) => {
                 item.pricingType === 'PerUnit' ? 'Quantity' : item.pricingType
               }
               value={''}
+              size="small"
             />
             <IconButton
               sx={{
@@ -79,13 +84,13 @@ const HomePerformance = ({ catalogue }) => {
                 padding: '4px 11px',
               }}
               aria-label="remove-work-item"
-              onClick={() => removeWorkItem(item.id)}
+              onClick={() => removeWorkItem(item.customId)}
             >
               <Clear/>
             </IconButton>
           </div>
         </div>  
-      </>
+      </React.Fragment>
     ))
   }
 
@@ -115,7 +120,9 @@ const HomePerformance = ({ catalogue }) => {
         >
           {
             items.map(item => (
-              <MenuItem onClick={() => {
+              <MenuItem
+              key={item.id}
+              onClick={() => {
                 addWorkItem(item)
                 handleClose()
               }}>{item?.subcategory}</MenuItem>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import PlanModal from "@/components/Modals/PlanModal"
 import * as Icons from "@mui/icons-material"
 import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
@@ -12,14 +12,18 @@ import {
   EnergyStorage,
   Photos
 } from "./Upgrades"
-
-import "./style.scss"
-import { Organization, Plan } from "@/types/types"
+import { Plan, Project } from "@/types/types"
 import DeletePlanModal from "@/components/Modals/DeletePlan"
 
-const Plans = ({currentProject}) => {
+import "./style.scss"
+
+interface PlansProps {
+  currentProject: Project
+}
+
+const Plans: React.FC<PlansProps> = ({ currentProject }) => {
   const [plans, setPlans] = useState<Plan[]>([])
-  const [currentPlan, setCurrentPlan] = useState({})
+  const [currentPlan, setCurrentPlan] = useState<Plan>({})
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
@@ -46,6 +50,10 @@ const Plans = ({currentProject}) => {
    })
 
   async function handlePlanCreation(name: string) {
+    if (!currentProject.id) {
+      return
+    }
+
     const plan : Plan = {
       name: name
     }
@@ -55,6 +63,10 @@ const Plans = ({currentProject}) => {
   }
 
   async function handlePlanDeletion() {
+    if (!currentProject.id || !currentPlan.id) {
+      return
+    }
+    
     await ModelStore.deletePlan(currentProject.id, currentPlan.id)
 
     const newPlansList = plans.filter((plan) => plan.id !== currentPlan.id)
@@ -69,7 +81,7 @@ const Plans = ({currentProject}) => {
       name: name
     }
 
-    await ModelStore.patchPlan(currentProject.id, updatedPlan)
+    await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
     
     setCurrentPlan(updatedPlan)
   }
@@ -94,7 +106,7 @@ const Plans = ({currentProject}) => {
         }}
         onConfirm={(name) => handlePlanCreation(name)}
         onEditConfirm={(name) => handlePlanEdition(name)}
-        currentName={currentPlan?.name}
+        currentName={currentPlan?.name || ''}
         editMode={editMode}
       />
       <div className="planCreation">
@@ -108,6 +120,7 @@ const Plans = ({currentProject}) => {
             }}>
               {plans?.map((plan) => 
                 <Chip
+                  key={plan.id}
                   label={plan.name}
                   color={
                     currentPlan?.id === plan.id
@@ -186,9 +199,15 @@ const Plans = ({currentProject}) => {
               <HomePerformance
                 catalogue={catalogue}
               />
-              <Hvac />
-              <ApplianceUpgrades />
-              <EnergyStorage />
+              <Hvac
+                catalogue={catalogue}
+              />
+              <ApplianceUpgrades
+                catalogue={catalogue}
+              />
+              <EnergyStorage
+                catalogue={catalogue}
+              />
               <Photos />
             </div>
             <div className="planCreation__rightContainer">
@@ -297,6 +316,5 @@ const Plans = ({currentProject}) => {
 
   )
 }
-
 
 export default Plans
