@@ -25,7 +25,7 @@ import ProjectModal from '@/components/Modals/ProjectModal'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import dayjs from 'dayjs'
 import ModelStore from '@/app/stores/modelStore'
-import Plans from './plans/page'
+import Plans from './plans/Plans'
 import Presentation from './presentation/page'
 
 import './style.scss'
@@ -131,7 +131,7 @@ const DataCollection = observer(() => {
         )
       case "plans":
         return (
-          <Plans />
+          <Plans currentProject={currentProject}/>
         )
       case "presentation":
         return (

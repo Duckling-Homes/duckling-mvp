@@ -1,39 +1,134 @@
 'use client'
 
-import PlanCreationModal from "@/components/Modals/PlanCreationModal"
-import { Add, AttachMoney, Check, Delete, DoubleArrow, Edit, Home, Star, Tune } from "@mui/icons-material"
+import React, { useEffect, useState } from "react"
+import PlanModal from "@/components/Modals/PlanModal"
+import * as Icons from "@mui/icons-material"
 import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
-import { useState } from "react"
+import ModelStore from "@/app/stores/modelStore"
+import { 
+  HomePerformance,
+  Hvac,
+  ApplianceUpgrades,
+  EnergyStorage,
+  Photos
+} from "./Upgrades"
+import { Plan, Project } from "@/types/types"
+import DeletePlanModal from "@/components/Modals/DeletePlan"
 
 import "./style.scss"
-import HomePerformance from "./Upgrades/HomePerformance"
-import Hvac from "./Upgrades/Hvac"
-import ApplianceUpgrades from "./Upgrades/ApplianceUpgrade"
-import EnergyStorage from "./Upgrades/EnergyStorage"
-import Photos from "./Upgrades/Photos"
 
-const Plans = () => {
-  const [currentPlan, setCurrentPlan] = useState('')
+interface PlansProps {
+  currentProject: Project
+}
+
+const Plans: React.FC<PlansProps> = ({ currentProject }) => {
+  const [plans, setPlans] = useState<Plan[]>([])
+  const [currentPlan, setCurrentPlan] = useState<Plan>({})
   const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [catalogue, setCatalogue] = useState([])
+
+  useEffect(() => {
+    if (currentProject && currentProject?.plans) {
+      setPlans(currentProject.plans)
+      if (!currentPlan?.id) {
+        setCurrentPlan(currentProject.plans[0])
+      }
+    }
+  })
+
+  useEffect(() => {
+    const getCatalogue = async () => {
+      const cat = await ModelStore.fetchCatalogue()
+      setCatalogue(cat)
+    }
+    if (!catalogue.length) {
+      getCatalogue()
+    }
+   })
+
+  async function handlePlanCreation(name: string) {
+    if (!currentProject.id) {
+      return
+    }
+
+    const plan : Plan = {
+      name: name
+    }
+    const newPlan = await ModelStore.createPlan(currentProject.id, plan)
+
+    setCurrentPlan(newPlan)
+  }
+
+  async function handlePlanDeletion() {
+    if (!currentProject.id || !currentPlan.id) {
+      return
+    }
+    
+    await ModelStore.deletePlan(currentProject.id, currentPlan.id)
+
+    const newPlansList = plans.filter((plan) => plan.id !== currentPlan.id)
+    
+    setPlans(newPlansList)
+    setCurrentPlan(newPlansList[0] || {})
+  }
+
+  async function handlePlanEdition(name: string) {
+    const updatedPlan: Plan = {
+      id: currentPlan.id,
+      name: name
+    }
+
+    await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
+    
+    setCurrentPlan(updatedPlan)
+  }
+
+  async function fetchCatalogue() {
+    console.log(catalogue)
+  }
 
   return (
     <>
-      <PlanCreationModal
+      <DeletePlanModal
+        open={deleteModal}
+        onConfirm={handlePlanDeletion}
+        onClose={() => setDeleteModal(false)}
+        plan={currentPlan}
+      />
+      <PlanModal
         open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        onConfirm={(name) => setCurrentPlan(name)}
+        onClose={() => {
+          setCreateModalOpen(false)
+          setEditMode(false)
+        }}
+        onConfirm={(name) => handlePlanCreation(name)}
+        onEditConfirm={(name) => handlePlanEdition(name)}
+        currentName={currentPlan?.name || ''}
+        editMode={editMode}
       />
       <div className="planCreation">
         <div className="planCreation__buttons">
-          {currentPlan ? (
+          {plans?.length > 0 ? (
             <div style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               gap: "8px",
             }}>
-              <Chip label={currentPlan} color="primary"/>
+              {plans?.map((plan) => 
+                <Chip
+                  key={plan.id}
+                  label={plan.name}
+                  color={
+                    currentPlan?.id === plan.id
+                      ? 'primary'
+                      : 'default'
+                  }
+                  onClick={() => setCurrentPlan(plan)}/>
+              )}
               <IconButton
                 sx={{
                   borderRadius: '4px',
@@ -42,8 +137,9 @@ const Plans = () => {
                   padding: '4px 11px',
                 }}
                 aria-label="add"
+                onClick={() => setCreateModalOpen(true)}
               >
-                <Add />
+                <Icons.Add />
               </IconButton>
             </div>
           ) :
@@ -51,16 +147,16 @@ const Plans = () => {
             variant="contained"
             size="small"
             onClick={() => setCreateModalOpen(true)}
-            startIcon={<Add />}>
+            startIcon={<Icons.Add />}>
               Create new plan
           </Button>)
           }
         </div>
-        {currentPlan && (
+        {currentPlan?.id && (
           <div className="planCreation__wrapper">
             <div className="planCreation__leftContainer">
               <div className="planCreation__leftHeader">
-                <p className="planCreation__title">{currentPlan}</p>
+                <p className="planCreation__title">{currentPlan.name}</p>
                 <IconButton
                   sx={{
                     borderRadius: '4px',
@@ -69,8 +165,12 @@ const Plans = () => {
                     padding: '4px 11px',
                   }}
                   aria-label="add"
+                  onClick={() => {
+                    setEditMode(true)
+                    setCreateModalOpen(true)
+                  }}
                 >
-                  <Edit />
+                  <Icons.Edit />
                 </IconButton>
                 <IconButton
                   sx={{
@@ -81,13 +181,13 @@ const Plans = () => {
                   }}
                   aria-label="add"
                 >
-                  <Delete />
+                  <Icons.Delete onClick={() => setDeleteModal(true)}/>
                 </IconButton>
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => setCreateModalOpen(true)}
-                  startIcon={<Check />}
+                  onClick={() => fetchCatalogue()}
+                  startIcon={<Icons.Check />}
                   sx={{
                     backgroundColor: "#2E7D32"
                   }}
@@ -96,10 +196,18 @@ const Plans = () => {
                 </Button>
               </div>
               <small>Click on “+ ADD” buttons to start adding projects.</small>
-              <HomePerformance />
-              <Hvac />
-              <ApplianceUpgrades />
-              <EnergyStorage />
+              <HomePerformance
+                catalogue={catalogue}
+              />
+              <Hvac
+                catalogue={catalogue}
+              />
+              <ApplianceUpgrades
+                catalogue={catalogue}
+              />
+              <EnergyStorage
+                catalogue={catalogue}
+              />
               <Photos />
             </div>
             <div className="planCreation__rightContainer">
@@ -111,14 +219,14 @@ const Plans = () => {
                     padding: '4px 11px',
                   }}
                   onClick={() => setHideFinance(!hideFinance)}>
-                  <DoubleArrow/>
+                  <Icons.DoubleArrow/>
                 </IconButton>
                 <p>Finance & Impact</p>
               </div>
               <div className="planCreation__cost">
                 <div className="planCreation__sectionHeader">
                   <div>
-                    <AttachMoney fontSize="small" />
+                    <Icons.AttachMoney fontSize="small" />
                     <p>Cost</p>
                   </div>
                   <IconButton sx={{
@@ -127,7 +235,7 @@ const Plans = () => {
                     color: '#fff',
                     padding: '4px 11px',
                   }}>
-                    <Tune/>
+                    <Icons.Tune/>
                   </IconButton>
                 </div>
                 <div className="planCreation__sectionItem">
@@ -166,37 +274,37 @@ const Plans = () => {
               <div className="planCreation__upgradeImpact">
                 <div className="planCreation__sectionHeader">
                   <div>
-                    <Home fontSize="small" />
+                    <Icons.Home fontSize="small" />
                     <p>Upgrade Impact</p>
                   </div>
                 </div>
                 <div className="planCreation__sectionItem">
                   Comfort:
                   <div className="planCreation__sectionStars">
-                    <Star />
-                    <Star />
+                    <Icons.Star />
+                    <Icons.Star />
                   </div>
                 </div>
                 <div className="planCreation__sectionItem">
                   Health & Safety:
                   <div className="planCreation__sectionStars">
-                    <Star />
-                    <Star />
-                    <Star />
+                    <Icons.Star />
+                    <Icons.Star />
+                    <Icons.Star />
                   </div>
                 </div>
                 <div className="planCreation__sectionItem">
                   Performance
                   <div className="planCreation__sectionStars">
-                    <Star />
-                    <Star />
+                    <Icons.Star />
+                    <Icons.Star />
                   </div>
                 </div>
                 <div className="planCreation__sectionItem">
                   Emissions
                   <div className="planCreation__sectionStars">
-                    <Star />
-                    <Star />
+                    <Icons.Star />
+                    <Icons.Star />
                   </div>
                 </div>
               </div>
@@ -208,6 +316,5 @@ const Plans = () => {
 
   )
 }
-
 
 export default Plans

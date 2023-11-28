@@ -1,13 +1,18 @@
 .homePerformance, .applianceUpgrades, .hvac, .energyStorage, .photos {
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 16px;
   background-color: #FFF;
   padding: 16px;
   border-radius: 8px;
   border: 1px solid rgba(0,0,0,0.12);
   box-sizing: border-box;
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   &__text {
     display: flex;
     gap: 8px;
@@ -16,5 +21,21 @@
       font-size: 16px;
       font-weight: 500;
     }
+  }
+  &__workItem {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  &__workItemHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &__workItemContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
   }
 }

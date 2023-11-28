@@ -23,4 +23,17 @@ export class OrganizationSyncOperations {
     const resp = await db.objects.where('id').equals(organizationID).first()
     return resp?.json as Organization
   }
+
+  getCatalogue = async () => {
+    const response = await synchronizedFetch(
+      `/api/productCatalogue/`,
+      {
+        method: 'GET',
+      }
+    )
+    const catalogue = await response.json()
+
+    return catalogue
+
+  }
 }

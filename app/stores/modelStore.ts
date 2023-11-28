@@ -1,6 +1,7 @@
 import {
   Organization,
   PhotoDetails,
+  Plan,
   Project,
   ProjectAppliance,
   ProjectData,
@@ -148,6 +149,11 @@ export class _ModelStore {
     return this.organization
   }
 
+  fetchCatalogue = async () => {
+    const catalogue = await SyncAPI.organizations.getCatalogue()
+    return catalogue
+  }
+
   createAppliance = async (
     projectID: string,
     applianceType: string,
@@ -286,6 +292,23 @@ export class _ModelStore {
 
   deletePhoto = async (projectID: string, imageID: string) => {
     await SyncAPI.images.delete(projectID, imageID)
+    await this.reloadProject(projectID)
+  }
+
+  createPlan = async (projectID: string, plan: Plan) => {
+    const created = await SyncAPI.plans.create(projectID, plan)
+    await this.reloadProject(projectID)
+    return created
+  }
+
+  patchPlan = async (projectID: string, plan: Plan) => {
+    const updated = await SyncAPI.plans.update(projectID, plan)
+    await this.reloadProject(projectID)
+    return updated
+  }
+
+  deletePlan = async (projectID: string, planID: string) => {
+    await SyncAPI.plans.delete(projectID, planID)
     await this.reloadProject(projectID)
   }
 }
