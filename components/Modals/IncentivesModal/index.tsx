@@ -4,8 +4,6 @@ import {
   Button,
   Checkbox,
   Divider,
-  FormControlLabel,
-  FormGroup,
   IconButton,
   Modal,
   Step,
@@ -224,7 +222,7 @@ const IncentivesModal: React.FC<{
 
   function handleNext() {
     if (activeStep === STEPS.length - 1) {
-      console.log('save plan')
+      onConfirm()
       setActiveStep(0)
       onClose()
       return
@@ -275,7 +273,7 @@ const IncentivesModal: React.FC<{
         </div>
         <div className="incentivesModal__body">
           <Stepper activeStep={activeStep}>
-            {STEPS.map((label, index) => {
+            {STEPS.map((label) => {
               const stepProps: { completed?: boolean } = {};
               const labelProps: {
                 optional?: React.ReactNode;

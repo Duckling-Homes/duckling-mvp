@@ -42,10 +42,12 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
   })
 
   useEffect(() => {
-    ModelStore.fetchCatalogue().then((data) =>
-      setCatalogue(data)
-    )
-  })
+    if (catalogue.length === 0) {
+      ModelStore.fetchCatalogue().then((data) =>
+        setCatalogue(data)
+      )
+    }
+  } , [])
 
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
