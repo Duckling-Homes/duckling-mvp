@@ -16,6 +16,7 @@ import { Plan, Project } from "@/types/types"
 import DeletePlanModal from "@/components/Modals/DeletePlan"
 
 import "./style.scss"
+import IncentivesModal from "@/components/Modals/IncentivesModal"
 
 interface PlansProps {
   currentProject: Project
@@ -28,6 +29,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+  const [incentivesModal, setIncentivesModal] = useState(false)
   const [catalogue, setCatalogue] = useState([])
 
   useEffect(() => {
@@ -47,7 +49,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
     if (!catalogue.length) {
       getCatalogue()
     }
-   })
+  })
 
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
@@ -92,6 +94,11 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
 
   return (
     <>
+      <IncentivesModal
+        open={incentivesModal}
+        onClose={() => setIncentivesModal(false)}
+        onConfirm={() => console.log(123)}
+      />
       <DeletePlanModal
         open={deleteModal}
         onConfirm={handlePlanDeletion}
@@ -186,7 +193,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => fetchCatalogue()}
+                  onClick={() => setIncentivesModal(true)}
                   startIcon={<Icons.Check />}
                   sx={{
                     backgroundColor: "#2E7D32"
