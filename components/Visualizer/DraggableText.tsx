@@ -25,6 +25,7 @@ const DraggableText: React.FC<{
     <>
       <Text
         onClick={onSelect}
+        onTap={onSelect}
         ref={shapeRef}
         text={textBlock.text}
         fill={textBlock.color}

@@ -23,6 +23,7 @@ const DraggableSticker: React.FC<{
     <>
       <KonvaImage
         onClick={onSelect}
+        onTap={onSelect}
         ref={shapeRef}
         image={sticker.image}
         draggable
