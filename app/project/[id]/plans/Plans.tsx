@@ -42,13 +42,9 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
   })
 
   useEffect(() => {
-    const getCatalogue = async () => {
-      const cat = await ModelStore.fetchCatalogue()
-      setCatalogue(cat)
-    }
-    if (!catalogue.length) {
-      getCatalogue()
-    }
+    ModelStore.fetchCatalogue().then((data) =>
+      setCatalogue(data)
+    )
   })
 
   async function handlePlanCreation(name: string) {
@@ -86,10 +82,6 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
     
     setCurrentPlan(updatedPlan)
-  }
-
-  async function fetchCatalogue() {
-    console.log(catalogue)
   }
 
   return (
