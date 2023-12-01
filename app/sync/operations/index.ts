@@ -1,9 +1,10 @@
 import { SyncAPI } from "..";
 
 /** Every mutating operation should use this wrapper! */
-export const syncAPImutation = <T extends Array<any>, U> (_op: (...args: T) => U) => {
+// @ts-expect-error es-lint doesnt accept any so this is my workaround 
+export const syncAPImutation = <TArgs extends Array<T> , U> (_op: (...args: TArgs) => U) => {
 
-    const wrapperThatAlwaysPushesChanges = async (...args: T) => {
+    const wrapperThatAlwaysPushesChanges = async (...args: TArgs) => {
         const result = await _op(...args);
         SyncAPI.pushChanges();
         return result;
