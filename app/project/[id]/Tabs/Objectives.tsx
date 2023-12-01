@@ -46,7 +46,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
   }
 
   const handleChipChange = (inputName: string, value: string) => {
-    let array = data ? (data[inputName] as string[]) : []
+    let array = (data?.[inputName] as string[]) ?? [];
 
     if (array && array.includes(value)) {
       array = array.filter((item) => item !== value)
@@ -55,6 +55,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
     }
 
     const updatedData = { ...data, [inputName]: array }
+
     projectUpdate(updatedData)
   }
 
