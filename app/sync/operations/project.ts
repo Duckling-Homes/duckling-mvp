@@ -3,6 +3,7 @@ import { db } from '../db'
 import { Project, ProjectData } from '@/types/types'
 import { isOnline, synchronizedFetch } from '../utils'
 import { SyncAPI } from '..'
+import { syncAPImutation } from '.'
 
 export class ProjectSyncOperations {
 
@@ -27,7 +28,7 @@ export class ProjectSyncOperations {
     )
   }
 
-  get = async (projectID: string) => {
+  get = syncAPImutation(async (projectID: string) => {
     // Only pull latest if last view was not written by client
     let obj = await db.objects.where('id').equals(projectID).first();
   
@@ -44,7 +45,7 @@ export class ProjectSyncOperations {
 
     console.log('GOT', projectID, obj?.json);
     return obj?.json as Project
-  }
+  })
 
   _pullProjectFromAPI = async (projectID: string) => {
     if (!isOnline()) return;
@@ -59,7 +60,7 @@ export class ProjectSyncOperations {
     }
   }
 
-  update = async (project: Project) => {
+  update = syncAPImutation(async (project: Project) => {
     await db.enqueueRequest(`/api/projects/${project.id}`, {
       method: 'PATCH',
       body: JSON.stringify(project),
@@ -67,9 +68,9 @@ export class ProjectSyncOperations {
     await db.putObject({ id: project.id!, type: 'Project', json: project, source: 'client' })
     SyncAPI.pushChanges()
     return project
-  }
+  })
 
-  updateProjectData = async (projectID: string, data: ProjectData) => {
+  updateProjectData = syncAPImutation(async (projectID: string, data: ProjectData) => {
     await db.enqueueRequest(`/api/projects/${projectID}/data`, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -80,9 +81,9 @@ export class ProjectSyncOperations {
     })
     SyncAPI.pushChanges()
     return data
-  }
+  })
 
-  create = async (project: Project) => {
+  create = syncAPImutation(async (project: Project) => {
     project.id = project.id ?? uuidv4()
     await db.enqueueRequest('/api/projects/', {
       method: 'POST',
@@ -91,13 +92,13 @@ export class ProjectSyncOperations {
     await db.putObject({ id: project.id!, type: 'Project', json: project, source: 'client' })
     SyncAPI.pushChanges()
     return project
-  }
+  })
 
-  delete = async (projectID: string) => {
+  delete = syncAPImutation(async (projectID: string) => {
     await db.enqueueRequest(`/api/projects/${projectID}`, { method: 'DELETE' })
     await db.removeObject(projectID)
     SyncAPI.pushChanges()
-  }
+  })
 
   _swap = async (projectID: string, edit: (project: Project) => Project) => {
     const project = await this.get(projectID)

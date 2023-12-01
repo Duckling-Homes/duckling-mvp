@@ -2,10 +2,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { SyncAPI } from '..'
 import { PhotoDetails } from '@/types/types'
 import { db } from '../db'
+import { syncAPImutation } from '.'
 
 export class ImageSyncOperations {
 
-  create = async (
+  create = syncAPImutation(async (
     projectID: string,
     imgDataUrl: string,
     photoDetails: PhotoDetails
@@ -34,7 +35,7 @@ export class ImageSyncOperations {
     })
     SyncAPI.pushChanges();
     return photo
-  }
+  })
 
   _putCachedContent = async (imageID: string, content: ArrayBuffer) => {
     const urlKey = 'url:' + imageID;
@@ -52,7 +53,7 @@ export class ImageSyncOperations {
     return null;
   }
 
-  upload = async (imageID: string, photoUrl: string) => {
+  upload = syncAPImutation(async (imageID: string, photoUrl: string) => {
     try {
       const response = await fetch(photoUrl)
       const arrayBuffer = await response.arrayBuffer()
@@ -69,7 +70,7 @@ export class ImageSyncOperations {
     }
     SyncAPI.pushChanges();
     return photoUrl
-  }
+  })
 
 
   download = async (imageID: string) => {
@@ -103,7 +104,7 @@ export class ImageSyncOperations {
     }
   }
 
-  update = async (projectID: string, photoDetails: PhotoDetails) => {
+  update = syncAPImutation(async (projectID: string, photoDetails: PhotoDetails) => {
     await db.enqueueRequest(`/api/images/${photoDetails.id}`, {
       method: 'PATCH',
       body: JSON.stringify(photoDetails),
@@ -130,9 +131,9 @@ export class ImageSyncOperations {
     })
     SyncAPI.pushChanges();
     return photoDetails
-  }
+  })
 
-  delete = async (projectID: string, imageID: string) => {
+  delete = syncAPImutation(async (projectID: string, imageID: string) => {
     await db.enqueueRequest(
       `/api/images/${imageID}`,
       {method: 'DELETE'}
@@ -150,5 +151,5 @@ export class ImageSyncOperations {
       return proj
     })
     SyncAPI.pushChanges();
-  }
+  })
 }

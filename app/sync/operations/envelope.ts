@@ -2,9 +2,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
 import { ProjectEnvelope } from '@/types/types'
 import { SyncAPI } from '..'
+import { syncAPImutation } from '.'
 
 export class EnvelopeSyncOperations {
-  create = async (projectID: string, envelope: ProjectEnvelope) => {
+  create = syncAPImutation(async (projectID: string, envelope: ProjectEnvelope) => {
     envelope.id = envelope.id ?? uuidv4()
     await db.enqueueRequest(`/api/project${envelope.type}`, {
       method: 'POST',
@@ -20,9 +21,9 @@ export class EnvelopeSyncOperations {
       return proj
     })
     return envelope
-  }
+  })
 
-  update = async (projectID: string, envelope: ProjectEnvelope) => {
+  update = syncAPImutation(async (projectID: string, envelope: ProjectEnvelope) => {
     await db.enqueueRequest(`/api/project${envelope.type}/${envelope.id}`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -40,9 +41,9 @@ export class EnvelopeSyncOperations {
     })
 
     return envelope
-  }
+  })
 
-  delete = async (
+  delete = syncAPImutation(async (
     projectID: string,
     envelopeType: string,
     envelopeID: string
@@ -57,5 +58,5 @@ export class EnvelopeSyncOperations {
       }
       return proj
     })
-  }
+  })
 }
