@@ -16,11 +16,11 @@ import PhotoDisplay from "@/components/PhotoDisplay";
 import AddPhotoButton from "@/components/AddPhotoButton";
 
 const TYPES = [
-  { name: 'Electrical Panel', value: 'electricalpanel' },
-  { name: 'Solar', value: 'solar' },
-  { name: 'Battery', value: 'battery' },
-  { name: 'EV Charger', value: 'evcharger' },
-  { name: 'Generator', value: 'generator' },
+  { name: 'Electrical Panel', value: 'ElectricalPanel' },
+  { name: 'Solar', value: 'Solar' },
+  { name: 'Battery', value: 'Battery' },
+  { name: 'EV Charger', value: 'EvCharger' },
+  { name: 'Generator', value: 'Generator' },
 ]
 
 interface ElectricalProps {
@@ -45,11 +45,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
   function createElectrical() {
     const newElectrical = {
       id: uuidv4(),
-      name: 'New Electrical',
     }
-
-    const newElectricalsList = [...electricals, newElectrical]
-    setElectricals(newElectricalsList)
     setCurrentElectrical(newElectrical)
   }
 
@@ -62,19 +58,15 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     updatedElectrical: ProjectElectrical,
     type: string
   ) {
+
     updatedElectrical.type = type
     const createdElectrical = await ModelStore.createElectrical(
       currentProject.id!,
       updatedElectrical
     )
 
-    const updatedElectricals = electricals.map((electrical) => {
-      if (electrical.id === updatedElectrical.id) {
-        return { ...electrical, ...createdElectrical }
-      }
-      return electrical
-    })
-    setElectricals(updatedElectricals)
+    const newElectricalsList = [...electricals, updatedElectrical]
+    setElectricals(newElectricalsList)
     setCurrentElectrical(createdElectrical)
   }
 
