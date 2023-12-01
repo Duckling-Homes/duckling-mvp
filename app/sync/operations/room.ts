@@ -2,9 +2,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
 import { ProjectRoom } from '@/types/types'
 import { SyncAPI } from '..'
+import { syncAPImutation } from '.'
 
 export class RoomSyncOperations {
-  create = async (projectID: string, room: ProjectRoom) => {
+  create = syncAPImutation(async (projectID: string, room: ProjectRoom) => {
     room.id = room.id ?? uuidv4()
     await db.enqueueRequest('/api/projectRooms', {
       method: 'POST',
@@ -17,10 +18,11 @@ export class RoomSyncOperations {
       return proj
     })
 
+    SyncAPI.pushChanges();
     return room
-  }
+  })
 
-  update = async (projectID: string, room: ProjectRoom) => {
+  update = syncAPImutation(async (projectID: string, room: ProjectRoom) => {
     await db.enqueueRequest(`/api/projectRooms/${room.id}`, {
       method: 'PATCH',
       body: JSON.stringify(room),
@@ -32,10 +34,12 @@ export class RoomSyncOperations {
       }
       return proj
     })
-    return room
-  }
 
-  delete = async (projectID: string, roomID: string) => {
+    SyncAPI.pushChanges();
+    return room
+  })
+
+  delete = syncAPImutation(async (projectID: string, roomID: string) => {
     await db.enqueueRequest(`/api/projectRooms/${roomID}`, {
       method: 'DELETE',
     })
@@ -47,5 +51,7 @@ export class RoomSyncOperations {
       }
       return proj
     })
-  }
+
+    SyncAPI.pushChanges();
+  })
 }

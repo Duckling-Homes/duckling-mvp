@@ -2,10 +2,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
 import { SyncAPI } from '..'
 import { Plan } from '@/types/types'
+import { syncAPImutation } from '.'
 
 export class PlansSyncOperations {
 
-  create = async (projectID: string, plan: Plan) => {
+  create = syncAPImutation(async (projectID: string, plan: Plan) => {
     plan.id = plan.id ?? uuidv4()
 
     await db.enqueueRequest(
@@ -28,9 +29,9 @@ export class PlansSyncOperations {
     SyncAPI.pushChanges()
 
     return plan
-  }
+  })
 
-  delete = async (projectID: string, planID: string) => {
+  delete = syncAPImutation(async (projectID: string, planID: string) => {
     await db.enqueueRequest(
       `/api/plans/${planID}`,
       {
@@ -47,9 +48,9 @@ export class PlansSyncOperations {
     })
 
     SyncAPI.pushChanges()
-  }
+  })
 
-  update = async (projectID: string, plan: Plan) => {
+  update = syncAPImutation(async (projectID: string, plan: Plan) => {
     await db.enqueueRequest(
       `/api/plans/${plan.id}`,
       {
@@ -74,5 +75,5 @@ export class PlansSyncOperations {
     SyncAPI.pushChanges()
 
     return plan
-  }
+  })
 }

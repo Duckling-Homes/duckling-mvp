@@ -83,11 +83,12 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
     if (!updatedRoom) {
       return
     }
+    
+    // TODO: Support propName selective updates!
+    // const roomToUpdate: ProjectRoom = { id: updatedRoom.id }
+    // roomToUpdate[propName] = updatedRoom[propName]
 
-    const roomToUpdate: ProjectRoom = { id: updatedRoom.id }
-    roomToUpdate[propName] = updatedRoom[propName]
-
-    await ModelStore.updateRoom(currentProject.id!, roomToUpdate)
+    await ModelStore.updateRoom(currentProject.id!, updatedRoom)
   }
 
   const toggleTagValue = (array: string[], value: string) => {
