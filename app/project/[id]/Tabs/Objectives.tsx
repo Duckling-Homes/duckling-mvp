@@ -84,7 +84,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               <Chip
                 onClick={() => handleChipChange('comfortIssueTags', issue)}
                 label={issue}
-                key={i}
+                key={issue}
                 color={
                   data?.comfortIssueTags?.includes(issue)
                     ? 'primary'
@@ -119,7 +119,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               <Chip
                 onClick={() => handleChipChange('healthSafetyIssueTags', issue)}
                 label={issue}
-                key={i}
+                key={issue}
                 color={
                   data?.healthSafetyIssueTags?.includes(issue)
                     ? 'primary'
@@ -154,7 +154,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               <Chip
                 onClick={() => handleChipChange('homeownerGoalsTags', goal)}
                 label={goal}
-                key={i}
+                key={goal}
                 color={
                   data?.homeownerGoalsTags?.includes(goal)
                     ? 'primary'
