@@ -55,8 +55,6 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
     }
 
     const updatedData = { ...data, [inputName]: array }
-
-    setData(updatedData)
     projectUpdate(updatedData)
   }
 
