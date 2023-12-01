@@ -89,13 +89,15 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
       return
     }
 
-    const envelopeToUpdate = {
-      id: updatedEnvelope.id,
-      type: updatedEnvelope.type,
-      [propName]: updatedEnvelope[propName],
-    }
+    // TODO: make use of propName
+    
+    // const envelopeToUpdate = {
+    //   id: updatedEnvelope.id,
+    //   type: updatedEnvelope.type,
+    //   [propName]: updatedEnvelope[propName],
+    // }
 
-    await ModelStore.updateEnvelope(currentProject.id!, envelopeToUpdate)
+    await ModelStore.updateEnvelope(currentProject.id!, updatedEnvelope)
   }
 
   const renderForm = () => {

@@ -107,11 +107,14 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
 
   async function patchElectrical(propName: string, updatedElectrical = currentElectrical) {
     if (updatedElectrical?.id) {
-      const electricalToUpdate = {
-        id: updatedElectrical.id,
-        type: updatedElectrical.type,
-        [propName]: updatedElectrical[propName]
-      }
+      
+      // TODO: make use of propName!
+
+      // const electricalToUpdate = {
+      //   id: updatedElectrical.id,
+      //   type: updatedElectrical.type,
+      //   [propName]: updatedElectrical[propName]
+      // }
 
       const updatedElectricals = electricals.map((electrical) => {
         if (electrical.id === updatedElectrical.id) {
@@ -122,7 +125,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
 
       await ModelStore.updateElectrical(
         currentProject.id!,
-        electricalToUpdate
+        updatedElectrical
       )
 
       setElectricals(updatedElectricals)

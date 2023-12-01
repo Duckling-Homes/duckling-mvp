@@ -121,18 +121,21 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     updatedAppliance = currentAppliance
   ) {
     if (updatedAppliance?.id && updatedAppliance?.type) {
-      const applianceToUpdate = {
-        id: updatedAppliance.id,
-        type: updatedAppliance.type,
-        [propName]: updatedAppliance[propName],
-      }
+
+      // TODO: Make use of propName!
+      
+      // const applianceToUpdate = {
+      //   id: updatedAppliance.id,
+      //   type: updatedAppliance.type,
+      //   [propName]: updatedAppliance[propName],
+      // }
 
       const api = getTypeApi(updatedAppliance?.type)
 
       await ModelStore.updateAppliance(
         currentProject.id!,
         api,
-        applianceToUpdate
+        updatedAppliance
       )
     }
   }
