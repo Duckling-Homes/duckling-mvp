@@ -1,4 +1,5 @@
 import {
+  CatalogueItem,
   Organization,
   PhotoDetails,
   Plan,
@@ -9,7 +10,7 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction } from 'mobx'
+import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 
@@ -29,6 +30,7 @@ export class _ModelStore {
   organization: Organization | null = null
   hasPendingChanges = false
   onlineStatus: 'online' | 'offline' = 'online'
+  plans: Plan[] = []
 
   constructor() {
     makeAutoObservable(this)
@@ -89,6 +91,9 @@ export class _ModelStore {
   setCurrentProject = async (projectId: string) => {
     const project = await this.reloadProject(projectId)
     this.currentProject = project
+    if (project.plans && this.plans.length === 0) {
+      this.plans = project.plans
+    }
     return project
   }
 
@@ -311,6 +316,62 @@ export class _ModelStore {
     await SyncAPI.plans.delete(projectID, planID)
     await this.reloadProject(projectID)
   }
+
+  addCatalogItem = (planId: string, item: CatalogueItem, propertyName: string, projectId: string) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((plan) => plan.id === planId)
+    
+    if (!currentPlan) {
+      console.error("There is no plan with this ID")
+      return
+    }
+    
+    if (!currentPlan.planDetails) {
+      currentPlan.planDetails = {}
+    }
+
+    if (typeof currentPlan.planDetails === 'string') {
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
+    }
+
+    if (!currentPlan.planDetails[propertyName]) {
+      currentPlan.planDetails[propertyName] = [];
+    }
+
+    currentPlan.planDetails[propertyName].push(item);
+
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = currentPlan
+      }
+    })
+
+    this.plans = plans
+  }
+
+  removeCatalogItem = (planId: string, itemCustomId: string, propertyName: string) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((plan) => plan.id === planId)
+
+    if (typeof currentPlan?.planDetails === 'string') {
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
+    }
+
+    currentPlan?.planDetails[propertyName].forEach((item, index) => {
+      if (item.customId === itemCustomId) {
+        currentPlan?.planDetails[propertyName].splice(index, 1)
+      }
+    })
+
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = currentPlan
+      }
+    })
+
+    this.plans = plans
+  }
+
 }
 
 const ModelStore = new _ModelStore()

@@ -198,11 +198,15 @@ export interface UpdateApplianceSticker {
 export interface Plan {
   id?: string
   name?: string
+  planDetails: {}
+  projectId: string
 }
 
 export interface CatalogueItem {
   id: string
   customId?: string
+  customName: string
+  quantity: number
   category: string
   subcategory: string
   name: string

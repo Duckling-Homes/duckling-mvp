@@ -199,6 +199,8 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
               <small>Click on “+ ADD” buttons to start adding projects.</small>
               <HomePerformance
                 catalogue={catalogue}
+                plan={currentPlan}
+                projectId={currentProject.id}
               />
               <Hvac
                 catalogue={catalogue}

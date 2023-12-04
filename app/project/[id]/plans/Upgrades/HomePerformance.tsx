@@ -7,12 +7,13 @@ import { v4 as uuidv4 } from 'uuid'
 import { CatalogueItem } from "@/types/types"
 
 import './style.scss'
+import ModelStore from "@/app/stores/modelStore"
 
 interface HomePerformanceProps {
   catalogue: CatalogueItem[]
 }
 
-const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue }) => {
+const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, projectId }) => {
   const [items, setItems] = useState<CatalogueItem[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
@@ -23,6 +24,12 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue }) => {
       catalogue.filter(item => item.category === "HomePerformance")
     )
   }, [catalogue])
+
+  useEffect(() => {
+    setWorkItems(
+      JSON.parse(plan.planDetails).homePerformance
+    )
+  }, [plan])
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -35,19 +42,24 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue }) => {
   function addWorkItem(item: CatalogueItem) {
     const newWorkItem = {
       customId: uuidv4(),
+      customName: '',
+      quantity: 0,
       ...item
     }
 
     const newWorkItemsList = workItems
     newWorkItemsList.push(newWorkItem)
     setWorkItems(newWorkItemsList)
+    ModelStore.addCatalogItem(plan.id, newWorkItem,'homePerformance')
   }
 
-  function removeWorkItem(itemCustomId: string  | undefined) {
+  function removeWorkItem(itemCustomId: string) {
     let newWorkItemsList = workItems
 
     newWorkItemsList = newWorkItemsList.filter(item => item.customId !== itemCustomId)
     setWorkItems(newWorkItemsList)
+    ModelStore.removeCatalogItem(plan.id, itemCustomId,'homePerformance')
+
   }
 
   function renderWorkItems() {
@@ -57,13 +69,13 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue }) => {
         <div className="homePerformance__workItem" key={item.customId}>
           <div className="homePerformance__workItemHeader">
             <span>{item.subcategory}</span>
-            <span>Estimated Cost: $5,500</span>
+            <span>Estimated Cost: ${item.quantity * item.basePricePer}</span>
           </div>
           <div className="homePerformance__workItemContent">
             <TextField
               label="Name"
               placeholder="Name"
-              value={item.name || ''}
+              value={item?.customName || ''}
               size="small"
             />
             <TextField
@@ -73,7 +85,8 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue }) => {
               placeholder={
                 item.pricingType === 'PerUnit' ? 'Quantity' : item.pricingType
               }
-              value={''}
+              value={item?.quantity || 0}
+              type="tel"
               size="small"
             />
             <IconButton
