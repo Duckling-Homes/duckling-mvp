@@ -413,8 +413,6 @@ export class _ModelStore {
     const plans = toJS(this.plans)
     const plan = plans.find((p) => p.id === planId)
 
-    console.log(plan)
-
     const allIncentives = [];
 
     Object.values(plan.planDetails).forEach(categoryArray => {
@@ -426,6 +424,44 @@ export class _ModelStore {
     });
 
     return allIncentives
+  }
+
+  getSelectedIncentives = (planId: string) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((p) => p.id === planId)
+
+    if (typeof currentPlan?.planDetails === 'string') {
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+    }
+
+    const selectedIncentives = currentPlan?.planDetails.selectedIncentives || [];
+
+    return selectedIncentives
+  }
+
+  updateSelectedIncentives = (selectedIncentives: string[], planId: string) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((p) => p.id === planId)
+
+    if (typeof currentPlan?.planDetails === 'string') {
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+    }
+
+    if (!currentPlan?.planDetails.selectedIncentives) {
+      currentPlan.planDetails.selectedIncentives = []
+    }
+
+    currentPlan.planDetails.selectedIncentives = selectedIncentives
+
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = currentPlan;
+      }
+    });
+
+    this.plans = plans;
+
+    console.log(toJS(this.plans))
   }
 
 }
