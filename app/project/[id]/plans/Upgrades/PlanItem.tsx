@@ -35,7 +35,7 @@ const PlanItem: React.FC<PlanItemProps> = (
   }, [catalogue])
 
   useEffect(() => {
-    if (plan.planDetails) {
+    if (plan.planDetails && typeof plan.planDetails === 'string') {
       const itemsFromPlan = JSON.parse(plan.planDetails)[property] as CatalogueItem[];
       const uniqueWorkItems = removeDuplicates(itemsFromPlan, 'id');
       setWorkItems(uniqueWorkItems);
@@ -69,7 +69,7 @@ const PlanItem: React.FC<PlanItemProps> = (
     const newWorkItemsList = [...workItems]
     newWorkItemsList.push(newWorkItem)
     setWorkItems(newWorkItemsList)
-    ModelStore.addCatalogItem(plan.id, newWorkItem, property)
+    ModelStore.addCatalogItem(plan?.id as string, newWorkItem, property)
   }
 
   function removeWorkItem(itemCustomId: string) {
@@ -77,7 +77,7 @@ const PlanItem: React.FC<PlanItemProps> = (
 
     newWorkItemsList = newWorkItemsList.filter(item => item.customId !== itemCustomId)
     setWorkItems(newWorkItemsList)
-    ModelStore.removeCatalogItem(plan.id, itemCustomId, property)
+    ModelStore.removeCatalogItem(plan?.id as string, itemCustomId, property)
 
   }
 
@@ -89,13 +89,13 @@ const PlanItem: React.FC<PlanItemProps> = (
     setWorkItems(updatedWorkItemsList);
 
     if (propertyName === 'quantity') {
-      ModelStore.updateCatalogItemProperty(plan.id, customId, property, newValue, 'quantity');
+      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'quantity');
     } else if (propertyName === 'customName') {
-      ModelStore.updateCatalogItemProperty(plan.id, customId, property, newValue, 'customName');
+      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'customName');
     }
   };
 
-  const calculateCost = (item) => {
+  const calculateCost = (item: CatalogueItem) => {
     let quantValue = 0
 
     if (!item || !item.pricingType) {
@@ -103,13 +103,13 @@ const PlanItem: React.FC<PlanItemProps> = (
     }
 
     if (item.quantity) {
-      quantValue = parseInt(item.quantity)
+      quantValue = parseInt(item.quantity as string)
     }
 
     if (item.pricingType === 'PerUnit') {
       return `$${quantValue * item.basePricePer}`
     } else if (item.pricingType === 'ScaledPricing') {
-      return `$${quantValue * item.scaledPricingMetric}`
+      return `$${quantValue * parseInt(item.scaledPricingMetric)}`
     }
 
   }
@@ -129,7 +129,7 @@ const PlanItem: React.FC<PlanItemProps> = (
               placeholder="Name"
               value={item?.customName || ''}
               size="small"
-              onChange={(e) => handlePropertyChange(item.customId, 'customName', e.target.value)}
+              onChange={(e) => handlePropertyChange(item.customId as string, 'customName', e.target.value)}
             />
             <TextField
               label={
@@ -143,7 +143,7 @@ const PlanItem: React.FC<PlanItemProps> = (
               size="small"
               onChange={(e) => {
                 const newQuantity = parseInt(e.target.value, 10) || 0;
-                handlePropertyChange(item.customId, 'quantity', newQuantity);
+                handlePropertyChange(item.customId as string, 'quantity', newQuantity);
               }}
             />
             <IconButton
@@ -154,7 +154,7 @@ const PlanItem: React.FC<PlanItemProps> = (
                 padding: '4px 11px',
               }}
               aria-label="remove-work-item"
-              onClick={() => removeWorkItem(item.customId)}
+              onClick={() => removeWorkItem(item.customId as string)}
             >
               <Clear/>
             </IconButton>

@@ -205,8 +205,8 @@ export interface Plan {
 export interface CatalogueItem {
   id: string
   customId?: string
-  customName: string
-  quantity: number
+  customName?: string
+  quantity?: number | string
   category: string
   subcategory: string
   name: string
