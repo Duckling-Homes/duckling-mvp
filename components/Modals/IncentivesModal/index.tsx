@@ -23,6 +23,19 @@ const Incentives = ({ rebates, taxCredits, onCheck, plan }) => {
     setSelectedIncentives(ModelStore.getSelectedIncentives(plan.id))
   }
 
+  function calculateIncentiveValue(incentive) {
+    switch(incentive.calculationType) {
+      case 'FlatRate':
+        return `up to $${incentive.calculationRateValue} per project`
+      case 'PerUnit':
+        return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
+      case 'Percentage':
+        return `${incentive.calculationRateValue}%, up to $${incentive.maxLimit}`
+    }
+
+    return 'aa'
+  }
+
   return (
     <div style={{
       display: "flex",
@@ -60,7 +73,7 @@ const Incentives = ({ rebates, taxCredits, onCheck, plan }) => {
                   <small>{incentive.descriptionText}</small>  
                 </div>
                 <span>
-                  {`$${incentive.maxLimit}`}
+                  {calculateIncentiveValue(incentive)}
                 </span>
               </div>
               <Divider />
@@ -96,7 +109,7 @@ const Incentives = ({ rebates, taxCredits, onCheck, plan }) => {
                   <small>{incentive.descriptionText}</small>  
                 </div>
                 <span>
-                  {`$${incentive.maxLimit}`}
+                  {calculateIncentiveValue(incentive)}
                 </span>
               </div>
               <Divider />
