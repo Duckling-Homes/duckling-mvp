@@ -204,12 +204,18 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
               />
               <Hvac
                 catalogue={catalogue}
+                plan={currentPlan}
+                projectId={currentProject.id}
               />
               <ApplianceUpgrades
                 catalogue={catalogue}
+                plan={currentPlan}
+                projectId={currentProject.id}
               />
               <EnergyStorage
                 catalogue={catalogue}
+                plan={currentPlan}
+                projectId={currentProject.id}
               />
               <Photos />
             </div>

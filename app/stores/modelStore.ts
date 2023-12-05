@@ -317,7 +317,7 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addCatalogItem = (planId: string, item: CatalogueItem, propertyName: string, projectId: string) => {
+  addCatalogItem = (planId: string, item: CatalogueItem, propertyName: string) => {
     const plans = toJS(this.plans)
     const currentPlan = plans.find((plan) => plan.id === planId)
     

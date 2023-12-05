@@ -7,12 +7,13 @@ import { v4 as uuidv4 } from 'uuid'
 import { CatalogueItem } from "@/types/types"
 
 import './style.scss'
+import ModelStore from "@/app/stores/modelStore"
 
 interface HvacProps {
   catalogue: CatalogueItem[]
 }
 
-const Hvac: React.FC<HvacProps> = ({ catalogue }) => {
+const Hvac: React.FC<HvacProps> = ({ catalogue, plan, projectId }) => {
   const [items, setItems] = useState<CatalogueItem[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
@@ -35,20 +36,39 @@ const Hvac: React.FC<HvacProps> = ({ catalogue }) => {
   function addWorkItem(item: CatalogueItem) {
     const newWorkItem = {
       customId: uuidv4(),
+      customName: '',
+      quantity: 0,
       ...item
     }
 
     const newWorkItemsList = workItems
     newWorkItemsList.push(newWorkItem)
     setWorkItems(newWorkItemsList)
+    ModelStore.addCatalogItem(plan.id, newWorkItem,'Hvac')
   }
 
-  function removeWorkItem(itemCustomId: string | undefined) {
+  function removeWorkItem(itemCustomId: string) {
     let newWorkItemsList = workItems
 
     newWorkItemsList = newWorkItemsList.filter(item => item.customId !== itemCustomId)
     setWorkItems(newWorkItemsList)
+    ModelStore.removeCatalogItem(plan.id, itemCustomId,'Hvac')
+
   }
+
+  const handlePropertyChange = (customId: string, propertyName: string, newValue: any) => {
+    const updatedWorkItemsList = workItems.map((item) =>
+      item.customId === customId ? { ...item, [propertyName]: newValue } : item
+    );
+
+    setWorkItems(updatedWorkItemsList);
+
+    if (propertyName === 'quantity') {
+      ModelStore.updateCatalogItemProperty(plan.id, customId, 'Hvac', newValue, 'quantity');
+    } else if (propertyName === 'customName') {
+      ModelStore.updateCatalogItemProperty(plan.id, customId, 'Hvac', newValue, 'customName');
+    }
+  };
 
   function renderWorkItems() {
     return workItems.map(item => (
@@ -57,14 +77,15 @@ const Hvac: React.FC<HvacProps> = ({ catalogue }) => {
         <div className="hvac__workItem" key={item.customId}>
           <div className="hvac__workItemHeader">
             <span>{item.subcategory}</span>
-            <span>Estimated Cost: $5,500</span>
+            <span>Estimated Cost: ${item.quantity * item.basePricePer}</span>
           </div>
           <div className="hvac__workItemContent">
             <TextField
               label="Name"
               placeholder="Name"
-              value={item.name || ''}
+              value={item?.customName || ''}
               size="small"
+              onChange={(e) => handlePropertyChange(item.customId, 'customName', e.target.value)}
             />
             <TextField
               label={
@@ -73,8 +94,13 @@ const Hvac: React.FC<HvacProps> = ({ catalogue }) => {
               placeholder={
                 item.pricingType === 'PerUnit' ? 'Quantity' : item.pricingType
               }
-              value={''}
+              value={item?.quantity || 0}
+              type="tel"
               size="small"
+              onChange={(e) => {
+                const newQuantity = parseInt(e.target.value, 10) || 0;
+                handlePropertyChange(item.customId, 'quantity', newQuantity);
+              }}
             />
             <IconButton
               sx={{
