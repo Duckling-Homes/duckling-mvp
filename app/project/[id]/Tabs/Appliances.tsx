@@ -224,7 +224,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
           >
             <SelectInput
               label="Type"
-              value={currentAppliance?.type?.toLowerCase() || ''}
+              value={currentAppliance?.type ?? ''}
               onChange={(value) => handleTypeChange('type', value)}
               disabled={currentAppliance?.type ? true : false}
               options={TYPES}
