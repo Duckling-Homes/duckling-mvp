@@ -19,7 +19,7 @@ interface PlansProps {
 
 const Plans: React.FC<PlansProps> = ({ currentProject }) => {
   const [plans, setPlans] = useState<Plan[]>([])
-  const [currentPlan, setCurrentPlan] = useState<Plan>({})
+  const [currentPlan, setCurrentPlan] = useState<Plan>({} as Plan)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
@@ -86,9 +86,8 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
       <IncentivesModal
         open={incentivesModal}
         onClose={() => setIncentivesModal(false)}
-        onConfirm={() => console.log(123)}
-        currentPlanId={currentPlan.id}
-        projectId={currentProject.id}
+        currentPlanId={currentPlan.id as string}
+        projectId={currentProject.id as string}
       />
       <DeletePlanModal
         open={deleteModal}
@@ -197,28 +196,24 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
-                projectId={currentProject.id}
                 title={'Home Performance'}
                 property={'HomePerformance'}
               />
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
-                projectId={currentProject.id}
                 title={'HVAC'}
                 property={'HVAC'}
               />
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
-                projectId={currentProject.id}
                 title={'Appliance Upgrades'}
                 property={'Appliances'}
               />
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
-                projectId={currentProject.id}
                 title={'Energy and Storage'}
                 property={'Electrical'}
               />

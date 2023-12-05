@@ -198,8 +198,8 @@ export interface UpdateApplianceSticker {
 export interface Plan {
   id?: string
   name?: string
-  planDetails: {}
-  projectId: string
+  planDetails?: {} | string
+  projectId?: string
 }
 
 export interface CatalogueItem {
@@ -218,7 +218,17 @@ export interface CatalogueItem {
   brand: string
   modelNumber: string
   ahriNumber: string
-  incentives: string
+  incentives: Incentive[]
   organizationId: string
   organization: Organization
+}
+
+export interface Incentive {
+  id?: string
+  name?: string
+  descriptionText?: string
+  calculationType?: string
+  calculationRateValue?: string
+  maxLimit?: string
+  type?: string
 }
