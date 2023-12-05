@@ -98,7 +98,10 @@ const Incentives = ({ rebates, taxCredits, onCheck, plan }) => {
                 alignItems: "center",
                 gap: "8px"
               }}>
-                <Checkbox onChange={() => onCheck(incentive.id)} checked={selectedIncentives.includes(incentive.id)}/>
+                <Checkbox onChange={() => {
+                  onCheck(incentive.id)
+                  reloadSelectedIncentives()
+                }} checked={selectedIncentives.includes(incentive.id)}/>
                 <div style={{
                   display: "flex",
                   flexDirection: "column",

@@ -12,7 +12,6 @@ import './style.scss'
 interface PlanItemProps {
   catalogue: CatalogueItem[],
   plan: Plan,
-  projectId: string,
   title: string,
   property: string,
 }
@@ -21,7 +20,6 @@ const PlanItem: React.FC<PlanItemProps> = (
   {
     catalogue,
     plan,
-    projectId,
     title,
     property
   }) => {
@@ -37,7 +35,7 @@ const PlanItem: React.FC<PlanItemProps> = (
   }, [catalogue])
 
   useEffect(() => {
-    if (plan.planDetails && plan.planDetails[property]?.length > 0) {
+    if (plan.planDetails) {
       const itemsFromPlan = JSON.parse(plan.planDetails)[property] as CatalogueItem[];
       const uniqueWorkItems = removeDuplicates(itemsFromPlan, 'id');
       setWorkItems(uniqueWorkItems);
