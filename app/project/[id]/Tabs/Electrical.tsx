@@ -210,7 +210,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
         }}>
           <SelectInput
             label="Type"
-            value={currentElectrical?.type?.toLowerCase() || ''}
+            value={currentElectrical?.type ?? ''}
             onChange={(value) => handleTypeChange('type', value)}
             disabled={currentElectrical?.type ? true : false}
             options={TYPES}
