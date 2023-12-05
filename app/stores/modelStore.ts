@@ -372,6 +372,32 @@ export class _ModelStore {
     this.plans = plans
   }
 
+
+  updateCatalogItemProperty = (planId: string, itemCustomId: string, category: string, newValue: any, propertyName: string) => {
+    const plans = toJS(this.plans);
+    const currentPlan = plans.find((plan) => plan.id === planId);
+
+    if (typeof currentPlan?.planDetails === 'string') {
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+    }
+
+    const updatedItems = (currentPlan?.planDetails[category] || []).map((item) =>
+      item.customId === itemCustomId ? { ...item, [propertyName]: newValue } : item
+    );
+
+    currentPlan.planDetails[category] = updatedItems;
+
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = currentPlan;
+      }
+    });
+
+    this.plans = plans;
+    console.log(toJS(this.plans))
+  };
+
+
 }
 
 const ModelStore = new _ModelStore()

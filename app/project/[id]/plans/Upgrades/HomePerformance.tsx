@@ -62,6 +62,20 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
 
   }
 
+  const handlePropertyChange = (customId: string, propertyName: string, newValue: any) => {
+    const updatedWorkItemsList = workItems.map((item) =>
+      item.customId === customId ? { ...item, [propertyName]: newValue } : item
+    );
+
+    setWorkItems(updatedWorkItemsList);
+
+    if (propertyName === 'quantity') {
+      ModelStore.updateCatalogItemProperty(plan.id, customId, 'homePerformance', newValue, 'quantity');
+    } else if (propertyName === 'customName') {
+      ModelStore.updateCatalogItemProperty(plan.id, customId, 'homePerformance', newValue, 'customName');
+    }
+  };
+
   function renderWorkItems() {
     return workItems.map((item) => (
       <React.Fragment key={item.customId}>
@@ -77,6 +91,7 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
               placeholder="Name"
               value={item?.customName || ''}
               size="small"
+              onChange={(e) => handlePropertyChange(item.customId, 'customName', e.target.value)}
             />
             <TextField
               label={
@@ -88,6 +103,10 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
               value={item?.quantity || 0}
               type="tel"
               size="small"
+              onChange={(e) => {
+                const newQuantity = parseInt(e.target.value, 10) || 0;
+                handlePropertyChange(item.customId, 'quantity', newQuantity);
+              }}
             />
             <IconButton
               sx={{
