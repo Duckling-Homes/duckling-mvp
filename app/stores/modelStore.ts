@@ -347,6 +347,8 @@ export class _ModelStore {
     })
 
     this.plans = plans
+
+    console.log(toJS(this.plans))
   }
 
   removeCatalogItem = (planId: string, itemCustomId: string, propertyName: string) => {
@@ -394,9 +396,37 @@ export class _ModelStore {
     });
 
     this.plans = plans;
-    console.log(toJS(this.plans))
   };
 
+  getPlan = (planId: string) => {
+    const plans = toJS(this.plans)
+    const plan = plans.find((p) => p.id === planId)
+
+    if (plan && typeof plan?.planDetails === 'string') {
+      plan.planDetails = JSON.parse(plan.planDetails || '{}')
+    }
+
+    return plan
+  }
+
+  getIncentives = (planId: string) => {
+    const plans = toJS(this.plans)
+    const plan = plans.find((p) => p.id === planId)
+
+    console.log(plan)
+
+    const allIncentives = [];
+
+    Object.values(plan.planDetails).forEach(categoryArray => {
+      categoryArray.forEach(item => {
+        if (item.incentives && item.incentives.length > 0) {
+          allIncentives.push(...item.incentives);
+        }
+      });
+    });
+
+    return allIncentives
+  }
 
 }
 

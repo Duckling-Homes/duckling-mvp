@@ -1,19 +1,30 @@
 'use client'
 
 import React, { useEffect, useState } from "react"
-import { Add, Clear, Home } from "@mui/icons-material"
+import { Add, Bolt, Clear, Construction, DeviceThermostat, Home } from "@mui/icons-material"
 import { Button, Divider, IconButton, Menu, MenuItem, TextField } from "@mui/material"
 import { v4 as uuidv4 } from 'uuid'
-import { CatalogueItem } from "@/types/types"
-
-import './style.scss'
+import { CatalogueItem, Plan } from "@/types/types"
 import ModelStore from "@/app/stores/modelStore"
 
-interface HomePerformanceProps {
-  catalogue: CatalogueItem[]
+import './style.scss'
+
+interface PlanItemProps {
+  catalogue: CatalogueItem[],
+  plan: Plan,
+  projectId: string,
+  title: string,
+  property: string,
 }
 
-const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, projectId }) => {
+const PlanItem: React.FC<PlanItemProps> = (
+  {
+    catalogue,
+    plan,
+    projectId,
+    title,
+    property
+  }) => {
   const [items, setItems] = useState<CatalogueItem[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
@@ -21,14 +32,16 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
 
   useEffect(() => {
     setItems(
-      catalogue.filter(item => item.category === "HomePerformance")
+      catalogue.filter(item => item.category === property)
     )
   }, [catalogue])
 
   useEffect(() => {
-    setWorkItems(
-      JSON.parse(plan.planDetails).homePerformance
-    )
+    if (JSON.parse(plan.planDetails)[property].length > 0) {
+      setWorkItems(
+        JSON.parse(plan.planDetails)[property]
+      )
+    }
   }, [plan])
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -47,10 +60,10 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
       ...item
     }
 
-    const newWorkItemsList = workItems
+    const newWorkItemsList = [...workItems]
     newWorkItemsList.push(newWorkItem)
     setWorkItems(newWorkItemsList)
-    ModelStore.addCatalogItem(plan.id, newWorkItem,'homePerformance')
+    ModelStore.addCatalogItem(plan.id, newWorkItem, property)
   }
 
   function removeWorkItem(itemCustomId: string) {
@@ -58,7 +71,7 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
 
     newWorkItemsList = newWorkItemsList.filter(item => item.customId !== itemCustomId)
     setWorkItems(newWorkItemsList)
-    ModelStore.removeCatalogItem(plan.id, itemCustomId,'homePerformance')
+    ModelStore.removeCatalogItem(plan.id, itemCustomId, property)
 
   }
 
@@ -70,22 +83,22 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
     setWorkItems(updatedWorkItemsList);
 
     if (propertyName === 'quantity') {
-      ModelStore.updateCatalogItemProperty(plan.id, customId, 'homePerformance', newValue, 'quantity');
+      ModelStore.updateCatalogItemProperty(plan.id, customId, property, newValue, 'quantity');
     } else if (propertyName === 'customName') {
-      ModelStore.updateCatalogItemProperty(plan.id, customId, 'homePerformance', newValue, 'customName');
+      ModelStore.updateCatalogItemProperty(plan.id, customId, property, newValue, 'customName');
     }
   };
 
   function renderWorkItems() {
-    return workItems.map((item) => (
+    return workItems?.map((item) => (
       <React.Fragment key={item.customId}>
         <Divider />
-        <div className="homePerformance__workItem" key={item.customId}>
-          <div className="homePerformance__workItemHeader">
+        <div className="planItem__workItem" key={item.customId}>
+          <div className="planItem__workItemHeader">
             <span>{item.subcategory}</span>
             <span>Estimated Cost: ${item.quantity * item.basePricePer}</span>
           </div>
-          <div className="homePerformance__workItemContent">
+          <div className="planItem__workItemContent">
             <TextField
               label="Name"
               placeholder="Name"
@@ -126,12 +139,25 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
     ))
   }
 
+  function renderIcon() {
+    switch(title) {
+      case 'Home Performance':
+        return <Home />
+      case 'HVAC':
+        return <DeviceThermostat />
+      case 'Appliance Upgrades':
+        return <Construction />
+      case 'Energy and Storage':
+        return <Bolt />
+    }
+  }
+
   return (
-    <div className="homePerformance">
-      <div className="homePerformance__header">
-        <div className="homePerformance__text">
-          <Home/>
-          <p>Home Performance</p>
+    <div className="planItem">
+      <div className="planItem__header">
+        <div className="planItem__text">
+          {renderIcon()}
+          <p>{title}</p>
         </div>
         <Button
         variant="contained"
@@ -167,4 +193,4 @@ const HomePerformance: React.FC<HomePerformanceProps> = ({ catalogue, plan, proj
   )
 }
 
-export default HomePerformance
+export default PlanItem

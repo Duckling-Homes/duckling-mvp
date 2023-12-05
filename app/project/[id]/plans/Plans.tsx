@@ -5,18 +5,13 @@ import PlanModal from "@/components/Modals/PlanModal"
 import * as Icons from "@mui/icons-material"
 import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
 import ModelStore from "@/app/stores/modelStore"
-import { 
-  HomePerformance,
-  Hvac,
-  ApplianceUpgrades,
-  EnergyStorage,
-  Photos
-} from "./Upgrades"
 import { Plan, Project } from "@/types/types"
 import DeletePlanModal from "@/components/Modals/DeletePlan"
+import IncentivesModal from "@/components/Modals/IncentivesModal"
+import PlanItem from "./Upgrades/PlanItem"
+import Photos from "./Upgrades/Photos"
 
 import "./style.scss"
-import IncentivesModal from "@/components/Modals/IncentivesModal"
 
 interface PlansProps {
   currentProject: Project
@@ -92,6 +87,8 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
         open={incentivesModal}
         onClose={() => setIncentivesModal(false)}
         onConfirm={() => console.log(123)}
+        currentPlanId={currentPlan.id}
+        projectId={currentProject.id}
       />
       <DeletePlanModal
         open={deleteModal}
@@ -197,25 +194,33 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                 </Button>
               </div>
               <small>Click on “+ ADD” buttons to start adding projects.</small>
-              <HomePerformance
+              <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 projectId={currentProject.id}
+                title={'Home Performance'}
+                property={'HomePerformance'}
               />
-              <Hvac
+              <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 projectId={currentProject.id}
+                title={'HVAC'}
+                property={'HVAC'}
               />
-              <ApplianceUpgrades
+              <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 projectId={currentProject.id}
+                title={'Appliance Upgrades'}
+                property={'Appliances'}
               />
-              <EnergyStorage
+              <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 projectId={currentProject.id}
+                title={'Energy and Storage'}
+                property={'Electrical'}
               />
               <Photos />
             </div>
