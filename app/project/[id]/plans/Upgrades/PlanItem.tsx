@@ -37,7 +37,7 @@ const PlanItem: React.FC<PlanItemProps> = (
   }, [catalogue])
 
   useEffect(() => {
-    if (JSON.parse(plan.planDetails)[property].length > 0) {
+    if (JSON.parse(plan.planDetails)[property]?.length > 0) {
       setWorkItems(
         JSON.parse(plan.planDetails)[property]
       )
@@ -89,6 +89,25 @@ const PlanItem: React.FC<PlanItemProps> = (
     }
   };
 
+  const calculateCost = (item) => {
+    let quantValue = 0
+
+    if (!item || !item.pricingType) {
+      return 'error'
+    }
+
+    if (item.quantity) {
+      quantValue = parseInt(item.quantity)
+    }
+
+    if (item.pricingType === 'PerUnit') {
+      return `$${quantValue * item.basePricePer}`
+    } else if (item.pricingType === 'ScaledPricing') {
+      return `$${quantValue * item.scaledPricingMetric}`
+    }
+
+  }
+
   function renderWorkItems() {
     return workItems?.map((item) => (
       <React.Fragment key={item.customId}>
@@ -96,7 +115,7 @@ const PlanItem: React.FC<PlanItemProps> = (
         <div className="planItem__workItem" key={item.customId}>
           <div className="planItem__workItemHeader">
             <span>{item.subcategory}</span>
-            <span>Estimated Cost: ${item.quantity * item.basePricePer}</span>
+            <span>Estimated Cost: {calculateCost(item)}</span>
           </div>
           <div className="planItem__workItemContent">
             <TextField
