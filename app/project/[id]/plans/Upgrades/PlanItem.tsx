@@ -37,12 +37,20 @@ const PlanItem: React.FC<PlanItemProps> = (
   }, [catalogue])
 
   useEffect(() => {
-    if (JSON.parse(plan.planDetails)[property]?.length > 0) {
-      setWorkItems(
-        JSON.parse(plan.planDetails)[property]
-      )
+    if (plan.planDetails && plan.planDetails[property]?.length > 0) {
+      const itemsFromPlan = JSON.parse(plan.planDetails)[property] as CatalogueItem[];
+      const uniqueWorkItems = removeDuplicates(itemsFromPlan, 'id');
+      setWorkItems(uniqueWorkItems);
     }
-  }, [plan])
+  }, [plan, property]);
+
+  function removeDuplicates<T>(arr: T[], prop: keyof T): T[] {
+    const uniqueItems = new Map<any, T>();
+    arr.forEach(item => {
+      uniqueItems.set(item[prop], item);
+    });
+    return Array.from(uniqueItems.values());
+  }
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
