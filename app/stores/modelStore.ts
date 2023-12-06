@@ -347,7 +347,6 @@ export class _ModelStore {
     ) {
       const propertyArray = currentPlan.planDetails[propertyName] as CatalogueItem[];
       
-      // Make sure it's an array
       if (Array.isArray(propertyArray)) {
         propertyArray.push(item);
       } else {
@@ -367,29 +366,56 @@ export class _ModelStore {
   };
 
   removeCatalogItem = (planId: string, itemCustomId: string, propertyName: string) => {
-    const plans = toJS(this.plans)
-    const currentPlan = plans.find((plan) => plan.id === planId)
+    const plans = toJS(this.plans);
+    const currentPlan = plans.find((plan) => plan.id === planId);
 
-    if (typeof currentPlan?.planDetails === 'string') {
-      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
+    if (!currentPlan) {
+      console.error("There is no plan with this ID");
+      return;
     }
 
-    currentPlan?.planDetails[propertyName].forEach((item, index) => {
-      if (item.customId === itemCustomId) {
-        currentPlan?.planDetails[propertyName].splice(index, 1)
+    if (typeof currentPlan.planDetails === 'string') {
+      try {
+        currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+      } catch (error) {
+        console.error("Error parsing planDetails JSON:", error);
+        return;
       }
-    })
+    }
+
+    if (
+      currentPlan.planDetails &&
+      typeof currentPlan.planDetails === 'object' &&
+      propertyName in currentPlan.planDetails
+    ) {
+      const propertyArray = currentPlan.planDetails[propertyName];
+
+      if (Array.isArray(propertyArray)) {
+        propertyArray.forEach((item, index) => {
+          if (typeof item === 'object' && item !== null && 'customId' in item) {
+            if (item.customId === itemCustomId) {
+              propertyArray.splice(index, 1);
+            }
+          } else {
+            console.error(`Invalid item:`, item);
+          }
+        });
+      } else {
+        console.error(`${propertyName} is not an array`);
+      }
+    } else {
+      console.error(`Invalid planDetails or property:`, currentPlan.planDetails, propertyName);
+    }
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan
+        plans[index] = currentPlan;
       }
-    })
+    });
 
-    this.plans = plans
-  }
-
-
+    this.plans = plans;
+  };
+  
   updateCatalogItemProperty = (planId: string, itemCustomId: string, category: string, newValue: any, propertyName: string) => {
     const plans = toJS(this.plans);
     const currentPlan = plans.find((plan) => plan.id === planId);

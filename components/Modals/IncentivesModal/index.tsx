@@ -142,7 +142,7 @@ const IncentivesModal: React.FC<{
 }> = ({ open, onClose, currentPlanId, projectId }) => {
   const [activeStep, setActiveStep] = useState(0);
   const plan = ModelStore?.getPlan(currentPlanId)
-
+  console.log(plan)
   function getAllIncentivesByType(type: string) {
     const incentives = [] as Incentive[];
     const uniqueIds = new Set();

@@ -29,16 +29,15 @@ const PlanItem: React.FC<PlanItemProps> = (
   const [workItems, setWorkItems] = useState<CatalogueItem[]>([])
 
   useEffect(() => {
-    setItems(
-      catalogue.filter(item => item.category === property)
+    setItems(removeDuplicates(catalogue.filter(item => item.category === property), 'id')
+      
     )
   }, [catalogue])
 
   useEffect(() => {
     if (plan.planDetails && typeof plan.planDetails === 'string') {
       const itemsFromPlan = JSON.parse(plan.planDetails)[property] as CatalogueItem[];
-      const uniqueWorkItems = removeDuplicates(itemsFromPlan, 'id');
-      setWorkItems(uniqueWorkItems);
+      setWorkItems(itemsFromPlan);
     }
   }, [plan, property]);
 
