@@ -12,10 +12,36 @@ import {
 } from '@mui/material'
 
 import './styles.scss'
+import ModelStore from '@/app/stores/modelStore'
+import { CatalogueItem, Incentive, Plan } from '@/types/types'
 
-const STEPS = ['Select Incentives', 'Review Copy'];
+const STEPS = ['Select Incentives', 'Review Copy']
 
-const Incentives = () => {
+const Incentives: React.FC<{
+  rebates: Incentive[]
+  taxCredits: Incentive[]
+  onCheck: (incentiveId: string) => void
+  plan: Plan
+}> = ({ rebates, taxCredits, onCheck, plan }) => {
+  const [selectedIncentives, setSelectedIncentives] = useState(ModelStore.getSelectedIncentives(plan.id as string))
+
+  function reloadSelectedIncentives() {
+    setSelectedIncentives(ModelStore.getSelectedIncentives(plan.id as string))
+  }
+
+  function calculateIncentiveValue(incentive: Incentive) {
+    switch(incentive.calculationType) {
+      case 'FlatRate':
+        return `up to $${incentive.calculationRateValue} per project`
+      case 'PerUnit':
+        return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
+      case 'Percentage':
+        return `${incentive.calculationRateValue}%, up to $${incentive.maxLimit}`
+    }
+
+    return 'aa'
+  }
+  
   return (
     <div style={{
       display: "flex",
@@ -31,85 +57,35 @@ const Incentives = () => {
         gap: "16px"
       }}>
         Rebate
-        <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px"
-      }}>
-          <Checkbox />
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flex: 1
-          }}>
-            <span>Inflation Reduction Act Heat Pump</span>
-            <small>Lorem ipsum dolor sit amet consectetur. Mi diam nibh vulputate lobortis aenean ut. </small>  
-          </div>
-          <span>
-            $6,000.00
-          </span>
-        </div>
-        <Divider />
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px"
-        }}>
-          <Checkbox />
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flex: 1
-          }}>
-            <span>Inflation Reduction Act Heat Pump</span>
-            <small>Lorem ipsum dolor sit amet consectetur. Mi diam nibh vulputate lobortis aenean ut. </small>  
-          </div>
-          <span>
-            $6,000.00
-          </span>
-        </div>
-        <Divider />
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px"
-        }}>
-          <Checkbox />
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flex: 1
-          }}>
-            <span>Inflation Reduction Act Heat Pump</span>
-            <small>Lorem ipsum dolor sit amet consectetur. Mi diam nibh vulputate lobortis aenean ut. </small>  
-          </div>
-          <span>
-            $6,000.00
-          </span>
-        </div>
-        <Divider />
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px"
-        }}>
-          <Checkbox />
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flex: 1
-          }}>
-            <span>Inflation Reduction Act Heat Pump</span>
-            <small>Lorem ipsum dolor sit amet consectetur. Mi diam nibh vulputate lobortis aenean ut. </small>  
-          </div>
-          <span>
-            $6,000.00
-          </span>
-        </div>
+        {
+          rebates.length > 0 ? rebates.map((incentive: Incentive) => (
+            <>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}>
+                <Checkbox onChange={() => {
+                  onCheck(incentive.id as string)
+                  reloadSelectedIncentives()
+                }} checked={selectedIncentives.includes(incentive.id as string)}/>
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "4px",
+                  flex: 1
+                }}>
+                  <span>{incentive.name}</span>
+                  <small>{incentive.descriptionText}</small>  
+                </div>
+                <span>
+                  {calculateIncentiveValue(incentive)}
+                </span>
+              </div>
+              <Divider />
+            </>
+          )) : <span>There are no rebates to select</span>
+        }
       </div>
       <div style={{
         padding: "16px",
@@ -120,85 +96,35 @@ const Incentives = () => {
         gap: "16px"
       }}>
         Tax Credits
-        <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px"
-      }}>
-          <Checkbox />
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flex: 1
-          }}>
-            <span>Inflation Reduction Act Heat Pump</span>
-            <small>Lorem ipsum dolor sit amet consectetur. Mi diam nibh vulputate lobortis aenean ut. </small>  
-          </div>
-          <span>
-            $6,000.00
-          </span>
-        </div>
-        <Divider />
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px"
-        }}>
-          <Checkbox />
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flex: 1
-          }}>
-            <span>Inflation Reduction Act Heat Pump</span>
-            <small>Lorem ipsum dolor sit amet consectetur. Mi diam nibh vulputate lobortis aenean ut. </small>  
-          </div>
-          <span>
-            $6,000.00
-          </span>
-        </div>
-        <Divider />
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px"
-        }}>
-          <Checkbox />
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flex: 1
-          }}>
-            <span>Inflation Reduction Act Heat Pump</span>
-            <small>Lorem ipsum dolor sit amet consectetur. Mi diam nibh vulputate lobortis aenean ut. </small>  
-          </div>
-          <span>
-            $6,000.00
-          </span>
-        </div>
-        <Divider />
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px"
-        }}>
-          <Checkbox />
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flex: 1
-          }}>
-            <span>Inflation Reduction Act Heat Pump</span>
-            <small>Lorem ipsum dolor sit amet consectetur. Mi diam nibh vulputate lobortis aenean ut. </small>  
-          </div>
-          <span>
-            $6,000.00
-          </span>
-        </div>
+        {
+          taxCredits.length > 0 ? taxCredits.map((incentive: Incentive) => (
+            <>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}>
+                <Checkbox onChange={() => {
+                  onCheck(incentive.id as string)
+                  reloadSelectedIncentives()
+                }} checked={selectedIncentives.includes(incentive.id as string)}/>
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "4px",
+                  flex: 1
+                }}>
+                  <span>{incentive.name}</span>
+                  <small>{incentive.descriptionText}</small>  
+                </div>
+                <span>
+                  {calculateIncentiveValue(incentive)}
+                </span>
+              </div>
+              <Divider />
+            </>
+          )) : <span>There are no Tax Credits to select</span>
+        }
       </div>
     </div>
   )
@@ -216,13 +142,48 @@ const CopyReview = () => {
 const IncentivesModal: React.FC<{
   open: boolean
   onClose: () => void
-  onConfirm: () => void
-}> = ({ open, onConfirm, onClose }) => {
+  currentPlanId: string
+  projectId: string
+}> = ({ open, onClose, currentPlanId, projectId }) => {
   const [activeStep, setActiveStep] = useState(0);
+  const plan = ModelStore?.getPlan(currentPlanId)
+
+  function getAllIncentivesByType(type: string) {
+    const incentives = [] as Incentive[];
+    const uniqueIds = new Set();
+
+    if (!plan) {
+      return incentives;
+    }
+
+    if (typeof plan.planDetails === 'object') {
+      Object.values(plan.planDetails).forEach((categoryArray: (string | CatalogueItem)[]) => {
+        categoryArray.forEach((item) => {
+          // Ensure item is a CatalogueItem
+          if (typeof item === 'object' && item !== null) {
+            if (item.incentives && item.incentives.length > 0) {
+              const filteredIncentives = item.incentives.filter((incentive) => {
+                if (incentive.type === type && !uniqueIds.has(incentive.id)) {
+                  uniqueIds.add(incentive.id);
+                  return true;
+                }
+                return false;
+              });
+
+              incentives.push(...filteredIncentives);
+            }
+          }
+        });
+      });
+
+      return incentives;
+    }
+  }
+
 
   function handleNext() {
     if (activeStep === STEPS.length - 1) {
-      onConfirm()
+      savePlan()
       setActiveStep(0)
       onClose()
       return
@@ -234,17 +195,43 @@ const IncentivesModal: React.FC<{
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   }
 
+  function handleSelectIncentive(incentiveId: string) {
+    const selectedIncentives = ModelStore.getSelectedIncentives(currentPlanId)
+    const isInSelected = selectedIncentives.includes(incentiveId);
+    let updatedSelection = []
+
+    if (isInSelected) {
+      updatedSelection = selectedIncentives.filter((id: string) => id !== incentiveId);
+    } else {
+      updatedSelection = [...selectedIncentives, incentiveId];
+    }
+
+    ModelStore.updateSelectedIncentives(updatedSelection, plan?.id as string)
+  }
+
   function renderStep() {
     switch(activeStep) {
       case 0:
         return (
-          <Incentives />
+          <Incentives
+            onCheck={(incentiveId: string) => handleSelectIncentive(incentiveId)}
+            plan={plan as Plan}
+            rebates={getAllIncentivesByType('Rebate') as Incentive[]}
+            taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
+          />
         )
       case 1:
         return (
           <CopyReview />
         )
     }
+  }
+
+  function savePlan() {
+    const newPlan = { ...plan };
+
+    newPlan.planDetails = JSON.stringify(newPlan.planDetails);
+    ModelStore.patchPlan(projectId, newPlan);
   }
 
   return (

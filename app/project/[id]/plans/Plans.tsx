@@ -5,18 +5,13 @@ import PlanModal from "@/components/Modals/PlanModal"
 import * as Icons from "@mui/icons-material"
 import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
 import ModelStore from "@/app/stores/modelStore"
-import { 
-  HomePerformance,
-  Hvac,
-  ApplianceUpgrades,
-  EnergyStorage,
-  Photos
-} from "./Upgrades"
 import { Plan, Project } from "@/types/types"
 import DeletePlanModal from "@/components/Modals/DeletePlan"
+import IncentivesModal from "@/components/Modals/IncentivesModal"
+import PlanItem from "./Upgrades/PlanItem"
+import Photos from "./Upgrades/Photos"
 
 import "./style.scss"
-import IncentivesModal from "@/components/Modals/IncentivesModal"
 
 interface PlansProps {
   currentProject: Project
@@ -24,7 +19,7 @@ interface PlansProps {
 
 const Plans: React.FC<PlansProps> = ({ currentProject }) => {
   const [plans, setPlans] = useState<Plan[]>([])
-  const [currentPlan, setCurrentPlan] = useState<Plan>({})
+  const [currentPlan, setCurrentPlan] = useState<Plan>({} as Plan)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
@@ -91,7 +86,8 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
       <IncentivesModal
         open={incentivesModal}
         onClose={() => setIncentivesModal(false)}
-        onConfirm={() => console.log(123)}
+        currentPlanId={currentPlan.id as string}
+        projectId={currentProject.id as string}
       />
       <DeletePlanModal
         open={deleteModal}
@@ -197,17 +193,29 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                 </Button>
               </div>
               <small>Click on “+ ADD” buttons to start adding projects.</small>
-              <HomePerformance
+              <PlanItem
                 catalogue={catalogue}
+                plan={currentPlan}
+                title={'Home Performance'}
+                property={'HomePerformance'}
               />
-              <Hvac
+              <PlanItem
                 catalogue={catalogue}
+                plan={currentPlan}
+                title={'HVAC'}
+                property={'HVAC'}
               />
-              <ApplianceUpgrades
+              <PlanItem
                 catalogue={catalogue}
+                plan={currentPlan}
+                title={'Appliance Upgrades'}
+                property={'Appliances'}
               />
-              <EnergyStorage
+              <PlanItem
                 catalogue={catalogue}
+                plan={currentPlan}
+                title={'Energy and Storage'}
+                property={'Electrical'}
               />
               <Photos />
             </div>

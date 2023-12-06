@@ -1,7 +1,9 @@
 import {
+  CatalogueItem,
   Organization,
   PhotoDetails,
   Plan,
+  PlanDetails,
   Project,
   ProjectAppliance,
   ProjectData,
@@ -9,7 +11,7 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction } from 'mobx'
+import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 
@@ -29,6 +31,7 @@ export class _ModelStore {
   organization: Organization | null = null
   hasPendingChanges = false
   onlineStatus: 'online' | 'offline' = 'online'
+  plans: Plan[] = []
 
   constructor() {
     makeAutoObservable(this)
@@ -89,6 +92,9 @@ export class _ModelStore {
   setCurrentProject = async (projectId: string) => {
     const project = await this.reloadProject(projectId)
     this.currentProject = project
+    if (project.plans && this.plans.length === 0) {
+      this.plans = project.plans
+    }
     return project
   }
 
@@ -311,6 +317,187 @@ export class _ModelStore {
     await SyncAPI.plans.delete(projectID, planID)
     await this.reloadProject(projectID)
   }
+
+  addCatalogItem = (planId: string, item: CatalogueItem, propertyName: string) => {
+    const plans = toJS(this.plans);
+    const currentPlan = plans.find((plan) => plan.id === planId);
+
+    if (!currentPlan) {
+      console.error("There is no plan with this ID");
+      return;
+    }
+
+    if (!currentPlan.planDetails) {
+      currentPlan.planDetails = {} as PlanDetails;
+    }
+
+    if (typeof currentPlan.planDetails === 'string') {
+      try {
+        currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+      } catch (error) {
+        console.error("Error parsing planDetails JSON:", error);
+        return;
+      }
+    }
+
+    if (
+      typeof currentPlan.planDetails === 'object' &&
+      currentPlan.planDetails !== null &&
+      propertyName in currentPlan.planDetails
+    ) {
+      const propertyArray = currentPlan.planDetails[propertyName] as CatalogueItem[];
+      
+      if (Array.isArray(propertyArray)) {
+        propertyArray.push(item);
+      } else {
+        console.error(`${propertyName} is not an array`);
+      }
+    } else {
+      console.error("Invalid planDetails type or property:", typeof currentPlan.planDetails, propertyName);
+    }
+
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = currentPlan;
+      }
+    });
+
+    this.plans = plans;
+  };
+
+  removeCatalogItem = (planId: string, itemCustomId: string, propertyName: string) => {
+    const plans = toJS(this.plans);
+    const currentPlan = plans.find((plan) => plan.id === planId);
+
+    if (!currentPlan) {
+      console.error("There is no plan with this ID");
+      return;
+    }
+
+    if (typeof currentPlan.planDetails === 'string') {
+      try {
+        currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+      } catch (error) {
+        console.error("Error parsing planDetails JSON:", error);
+        return;
+      }
+    }
+
+    if (
+      currentPlan.planDetails &&
+      typeof currentPlan.planDetails === 'object' &&
+      propertyName in currentPlan.planDetails
+    ) {
+      const propertyArray = currentPlan.planDetails[propertyName];
+
+      if (Array.isArray(propertyArray)) {
+        propertyArray.forEach((item, index) => {
+          if (typeof item === 'object' && item !== null && 'customId' in item) {
+            if (item.customId === itemCustomId) {
+              propertyArray.splice(index, 1);
+            }
+          } else {
+            console.error(`Invalid item:`, item);
+          }
+        });
+      } else {
+        console.error(`${propertyName} is not an array`);
+      }
+    } else {
+      console.error(`Invalid planDetails or property:`, currentPlan.planDetails, propertyName);
+    }
+
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = currentPlan;
+      }
+    });
+
+    this.plans = plans;
+  };
+  
+  updateCatalogItemProperty = (planId: string, itemCustomId: string, category: string, newValue: string | number, propertyName: string) => {
+    const plans = toJS(this.plans);
+    const currentPlan = plans.find((plan) => plan.id === planId) as Plan;
+
+    if (typeof currentPlan?.planDetails === 'string') {
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+    }
+
+    const planDetails = currentPlan?.planDetails as PlanDetails
+    const planCategory = planDetails[category] as CatalogueItem[]
+
+    const updatedItems = planCategory.map((item: CatalogueItem) =>
+      item.customId === itemCustomId ? { ...item, [propertyName]: newValue } : item
+    );
+
+    planDetails[category] = updatedItems;
+
+    currentPlan.planDetails = { ...planDetails }
+
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = currentPlan as Plan;
+      }
+    });
+
+    this.plans = plans;
+  };
+
+  getPlan = (planId: string) => {
+    const plans = toJS(this.plans)
+    const plan = plans.find((p) => p.id === planId)
+
+    if (plan && typeof plan?.planDetails === 'string') {
+      plan.planDetails = JSON.parse(plan.planDetails || '{}')
+    }
+
+    return plan
+  }
+
+  getSelectedIncentives = (planId: string) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((p) => p.id === planId) as Plan
+
+    if (typeof currentPlan?.planDetails === 'string') {
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+    }
+
+    const planDetails = currentPlan.planDetails as PlanDetails
+    const selectedIncentives = planDetails.selectedIncentives;
+
+    return selectedIncentives
+  }
+
+  updateSelectedIncentives = (selectedIncentives: string[], planId: string) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((p) => p.id === planId) as Plan
+
+    if (typeof currentPlan?.planDetails === 'string') {
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+    }
+
+    const planDetails = currentPlan?.planDetails as PlanDetails
+
+    if (!planDetails.selectedIncentives) {
+      planDetails.selectedIncentives = [] as string[]
+    }
+
+    planDetails.selectedIncentives = selectedIncentives
+
+    currentPlan.planDetails = planDetails
+
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = currentPlan;
+      }
+    });
+
+    this.plans = plans;
+
+    console.log(toJS(this.plans))
+  }
+
 }
 
 const ModelStore = new _ModelStore()
