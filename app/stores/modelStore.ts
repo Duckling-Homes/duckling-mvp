@@ -468,7 +468,7 @@ export class _ModelStore {
       currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
     }
 
-    const planDetails = currentPlan.planDetails as PlanDetails
+    const planDetails = currentPlan?.planDetails as PlanDetails
     const selectedIncentives = planDetails?.selectedIncentives;
 
     return selectedIncentives
