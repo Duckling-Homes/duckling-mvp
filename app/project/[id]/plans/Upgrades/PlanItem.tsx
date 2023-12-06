@@ -42,7 +42,7 @@ const PlanItem: React.FC<PlanItemProps> = (
   }, [plan, property]);
 
   function removeDuplicates<T>(arr: T[], prop: keyof T): T[] {
-    const uniqueItems = new Map<any, T>();
+    const uniqueItems = new Map();
     arr.forEach(item => {
       uniqueItems.set(item[prop], item);
     });
@@ -80,7 +80,7 @@ const PlanItem: React.FC<PlanItemProps> = (
 
   }
 
-  const handlePropertyChange = (customId: string, propertyName: string, newValue: any) => {
+  const handlePropertyChange = (customId: string, propertyName: string, newValue: string | number) => {
     const updatedWorkItemsList = workItems.map((item) =>
       item.customId === customId ? { ...item, [propertyName]: newValue } : item
     );

@@ -416,23 +416,28 @@ export class _ModelStore {
     this.plans = plans;
   };
   
-  updateCatalogItemProperty = (planId: string, itemCustomId: string, category: string, newValue: any, propertyName: string) => {
+  updateCatalogItemProperty = (planId: string, itemCustomId: string, category: string, newValue: string | number, propertyName: string) => {
     const plans = toJS(this.plans);
-    const currentPlan = plans.find((plan) => plan.id === planId);
+    const currentPlan = plans.find((plan) => plan.id === planId) as Plan;
 
     if (typeof currentPlan?.planDetails === 'string') {
       currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
     }
 
-    const updatedItems = (currentPlan?.planDetails[category] || []).map((item) =>
+    const planDetails = currentPlan?.planDetails as PlanDetails
+    const planCategory = planDetails[category] as CatalogueItem[]
+
+    const updatedItems = planCategory.map((item: CatalogueItem) =>
       item.customId === itemCustomId ? { ...item, [propertyName]: newValue } : item
     );
 
-    currentPlan.planDetails[category] = updatedItems;
+    planDetails[category] = updatedItems;
+
+    currentPlan.planDetails = { ...planDetails }
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan;
+        plans[index] = currentPlan as Plan;
       }
     });
 
@@ -450,49 +455,37 @@ export class _ModelStore {
     return plan
   }
 
-  getIncentives = (planId: string) => {
-    const plans = toJS(this.plans)
-    const plan = plans.find((p) => p.id === planId)
-
-    const allIncentives = [];
-
-    Object.values(plan.planDetails).forEach(categoryArray => {
-      categoryArray.forEach(item => {
-        if (item.incentives && item.incentives.length > 0) {
-          allIncentives.push(...item.incentives);
-        }
-      });
-    });
-
-    return allIncentives
-  }
-
   getSelectedIncentives = (planId: string) => {
     const plans = toJS(this.plans)
-    const currentPlan = plans.find((p) => p.id === planId)
+    const currentPlan = plans.find((p) => p.id === planId) as Plan
 
     if (typeof currentPlan?.planDetails === 'string') {
       currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
     }
 
-    const selectedIncentives = currentPlan?.planDetails.selectedIncentives || [];
+    const planDetails = currentPlan.planDetails as PlanDetails
+    const selectedIncentives = planDetails.selectedIncentives;
 
     return selectedIncentives
   }
 
   updateSelectedIncentives = (selectedIncentives: string[], planId: string) => {
     const plans = toJS(this.plans)
-    const currentPlan = plans.find((p) => p.id === planId)
+    const currentPlan = plans.find((p) => p.id === planId) as Plan
 
     if (typeof currentPlan?.planDetails === 'string') {
       currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
     }
 
-    if (!currentPlan?.planDetails.selectedIncentives) {
-      currentPlan.planDetails.selectedIncentives = []
+    const planDetails = currentPlan?.planDetails as PlanDetails
+
+    if (!planDetails.selectedIncentives) {
+      planDetails.selectedIncentives = [] as string[]
     }
 
-    currentPlan.planDetails.selectedIncentives = selectedIncentives
+    planDetails.selectedIncentives = selectedIncentives
+
+    currentPlan.planDetails = planDetails
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {

@@ -13,15 +13,20 @@ import {
 
 import './styles.scss'
 import ModelStore from '@/app/stores/modelStore';
-import { CatalogueItem, Incentive } from '@/types/types';
+import { CatalogueItem, Incentive, Plan } from '@/types/types';
 
 const STEPS = ['Select Incentives', 'Review Copy'];
 
-const Incentives = ({ rebates, taxCredits, onCheck, plan }) => {
-  const [selectedIncentives, setSelectedIncentives] = useState(ModelStore.getSelectedIncentives(plan.id))
+const Incentives: React.FC<{
+  rebates: Incentive[]
+  taxCredits: Incentive[]
+  onCheck: (incentiveId: string) => void
+  plan: Plan
+}> = ({ rebates, taxCredits, onCheck, plan }) => {
+  const [selectedIncentives, setSelectedIncentives] = useState(ModelStore.getSelectedIncentives(plan.id as string))
 
   function reloadSelectedIncentives() {
-    setSelectedIncentives(ModelStore.getSelectedIncentives(plan.id))
+    setSelectedIncentives(ModelStore.getSelectedIncentives(plan.id as string))
   }
 
   function calculateIncentiveValue(incentive: Incentive) {
@@ -61,9 +66,9 @@ const Incentives = ({ rebates, taxCredits, onCheck, plan }) => {
                 gap: "8px"
               }}>
                 <Checkbox onChange={() => {
-                  onCheck(incentive.id)
+                  onCheck(incentive.id as string)
                   reloadSelectedIncentives()
-                }} checked={selectedIncentives.includes(incentive.id)}/>
+                }} checked={selectedIncentives.includes(incentive.id as string)}/>
                 <div style={{
                   display: "flex",
                   flexDirection: "column",
@@ -100,9 +105,9 @@ const Incentives = ({ rebates, taxCredits, onCheck, plan }) => {
                 gap: "8px"
               }}>
                 <Checkbox onChange={() => {
-                  onCheck(incentive.id)
+                  onCheck(incentive.id as string)
                   reloadSelectedIncentives()
-                }} checked={selectedIncentives.includes(incentive.id)}/>
+                }} checked={selectedIncentives.includes(incentive.id as string)}/>
                 <div style={{
                   display: "flex",
                   flexDirection: "column",
@@ -142,7 +147,7 @@ const IncentivesModal: React.FC<{
 }> = ({ open, onClose, currentPlanId, projectId }) => {
   const [activeStep, setActiveStep] = useState(0);
   const plan = ModelStore?.getPlan(currentPlanId)
-  console.log(plan)
+
   function getAllIncentivesByType(type: string) {
     const incentives = [] as Incentive[];
     const uniqueIds = new Set();
@@ -151,27 +156,30 @@ const IncentivesModal: React.FC<{
       return incentives;
     }
 
-    if(typeof plan.planDetails === 'object') {
-      Object.values(plan.planDetails).forEach(categoryArray => {
-        categoryArray.forEach((item: CatalogueItem) => {
-          if (item.incentives && item.incentives.length > 0) {
-            const filteredIncentives = item.incentives.filter(incentive => {
-              if (incentive.type === type && !uniqueIds.has(incentive.id)) {
-                uniqueIds.add(incentive.id);
-                return true;
-              }
-              return false;
-            });
+    if (typeof plan.planDetails === 'object') {
+      Object.values(plan.planDetails).forEach((categoryArray: (string | CatalogueItem)[]) => {
+        categoryArray.forEach((item) => {
+          // Ensure item is a CatalogueItem
+          if (typeof item === 'object' && item !== null) {
+            if (item.incentives && item.incentives.length > 0) {
+              const filteredIncentives = item.incentives.filter((incentive) => {
+                if (incentive.type === type && !uniqueIds.has(incentive.id)) {
+                  uniqueIds.add(incentive.id);
+                  return true;
+                }
+                return false;
+              });
 
-            incentives.push(...filteredIncentives);
+              incentives.push(...filteredIncentives);
+            }
           }
         });
       });
 
       return incentives;
     }
-
   }
+
 
   function handleNext() {
     if (activeStep === STEPS.length - 1) {
@@ -207,9 +215,9 @@ const IncentivesModal: React.FC<{
         return (
           <Incentives
             onCheck={(incentiveId: string) => handleSelectIncentive(incentiveId)}
-            plan={plan}
-            rebates={getAllIncentivesByType('Rebate')}
-            taxCredits={getAllIncentivesByType('TaxCredit')}
+            plan={plan as Plan}
+            rebates={getAllIncentivesByType('Rebate') as Incentive[]}
+            taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
           />
         )
       case 1:
