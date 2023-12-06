@@ -342,9 +342,13 @@ export class _ModelStore {
 
     if (
       typeof currentPlan.planDetails === 'object' &&
-      currentPlan.planDetails !== null &&
-      propertyName in currentPlan.planDetails
+      currentPlan.planDetails !== null
     ) {
+
+      if (!(propertyName in currentPlan.planDetails)) {
+        currentPlan.planDetails[propertyName] = []
+      }
+
       const propertyArray = currentPlan.planDetails[propertyName] as CatalogueItem[];
       
       if (Array.isArray(propertyArray)) {
@@ -352,6 +356,7 @@ export class _ModelStore {
       } else {
         console.error(`${propertyName} is not an array`);
       }
+
     } else {
       console.error("Invalid planDetails type or property:", typeof currentPlan.planDetails, propertyName);
     }
@@ -464,7 +469,7 @@ export class _ModelStore {
     }
 
     const planDetails = currentPlan.planDetails as PlanDetails
-    const selectedIncentives = planDetails.selectedIncentives;
+    const selectedIncentives = planDetails?.selectedIncentives;
 
     return selectedIncentives
   }

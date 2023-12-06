@@ -29,7 +29,7 @@ const PlanItem: React.FC<PlanItemProps> = (
   const [workItems, setWorkItems] = useState<CatalogueItem[]>([])
 
   useEffect(() => {
-    setItems(removeDuplicates(catalogue.filter(item => item.category === property), 'id')
+    setItems(removeDuplicates(catalogue.filter(item => item.category === property), 'subcategory')
       
     )
   }, [catalogue])
@@ -42,10 +42,13 @@ const PlanItem: React.FC<PlanItemProps> = (
   }, [plan, property]);
 
   function removeDuplicates<T>(arr: T[], prop: keyof T): T[] {
+    console.log(arr, 'items')
     const uniqueItems = new Map();
     arr.forEach(item => {
       uniqueItems.set(item[prop], item);
     });
+
+    console.log(Array.from(uniqueItems.values()), 'deduped items')
     return Array.from(uniqueItems.values());
   }
 

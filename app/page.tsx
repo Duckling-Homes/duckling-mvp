@@ -169,7 +169,6 @@ const Home = observer(() => {
             </div>
             {filteredProjects.length > 0 &&
               <DataGrid
-                getRowId={(row) => row.id}
                 rows={filteredProjects}
                 columns={device === 'phone' ? mobileColumns : columns}
                 initialState={{
