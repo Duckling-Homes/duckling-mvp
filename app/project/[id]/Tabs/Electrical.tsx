@@ -16,11 +16,11 @@ import PhotoDisplay from "@/components/PhotoDisplay";
 import AddPhotoButton from "@/components/AddPhotoButton";
 
 const TYPES = [
-  { name: 'Electrical Panel', value: 'electricalpanel' },
-  { name: 'Solar', value: 'solar' },
-  { name: 'Battery', value: 'battery' },
-  { name: 'EV Charger', value: 'evcharger' },
-  { name: 'Generator', value: 'generator' },
+  { name: 'Electrical Panel', value: 'ElectricalPanel' },
+  { name: 'Solar', value: 'Solar' },
+  { name: 'Battery', value: 'Battery' },
+  { name: 'EV Charger', value: 'EvCharger' },
+  { name: 'Generator', value: 'Generator' },
 ]
 
 interface ElectricalProps {
@@ -45,11 +45,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
   function createElectrical() {
     const newElectrical = {
       id: uuidv4(),
-      name: 'New Electrical',
     }
-
-    const newElectricalsList = [...electricals, newElectrical]
-    setElectricals(newElectricalsList)
     setCurrentElectrical(newElectrical)
   }
 
@@ -62,19 +58,15 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     updatedElectrical: ProjectElectrical,
     type: string
   ) {
+
     updatedElectrical.type = type
     const createdElectrical = await ModelStore.createElectrical(
       currentProject.id!,
       updatedElectrical
     )
 
-    const updatedElectricals = electricals.map((electrical) => {
-      if (electrical.id === updatedElectrical.id) {
-        return { ...electrical, ...createdElectrical }
-      }
-      return electrical
-    })
-    setElectricals(updatedElectricals)
+    const newElectricalsList = [...electricals, updatedElectrical]
+    setElectricals(newElectricalsList)
     setCurrentElectrical(createdElectrical)
   }
 
@@ -107,11 +99,14 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
 
   async function patchElectrical(propName: string, updatedElectrical = currentElectrical) {
     if (updatedElectrical?.id) {
-      const electricalToUpdate = {
-        id: updatedElectrical.id,
-        type: updatedElectrical.type,
-        [propName]: updatedElectrical[propName]
-      }
+      
+      // TODO: make use of propName!
+
+      // const electricalToUpdate = {
+      //   id: updatedElectrical.id,
+      //   type: updatedElectrical.type,
+      //   [propName]: updatedElectrical[propName]
+      // }
 
       const updatedElectricals = electricals.map((electrical) => {
         if (electrical.id === updatedElectrical.id) {
@@ -122,7 +117,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
 
       await ModelStore.updateElectrical(
         currentProject.id!,
-        electricalToUpdate
+        updatedElectrical
       )
 
       setElectricals(updatedElectricals)
@@ -215,7 +210,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
         }}>
           <SelectInput
             label="Type"
-            value={currentElectrical?.type?.toLowerCase() || ''}
+            value={currentElectrical?.type ?? ''}
             onChange={(value) => handleTypeChange('type', value)}
             disabled={currentElectrical?.type ? true : false}
             options={TYPES}

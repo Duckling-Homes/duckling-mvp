@@ -12,6 +12,7 @@ import PlanItem from "./Upgrades/PlanItem"
 import Photos from "./Upgrades/Photos"
 
 import "./style.scss"
+import IncentivesModal from "@/components/Modals/IncentivesModal"
 
 interface PlansProps {
   currentProject: Project

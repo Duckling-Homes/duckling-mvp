@@ -43,7 +43,7 @@ const PhotoPickerModal: React.FC<{
     } else if (currentProject.images?.length === 0) {
       setPhotos([])
     }
-  }, [currentProject, currentProject?.images, photoUpdates])
+  }, [currentProject?.images?.length])
 
   const handlePhotoClick = async (photoId: string) => {
     const newSelectedPhotos = new Set(selectedPhotos)

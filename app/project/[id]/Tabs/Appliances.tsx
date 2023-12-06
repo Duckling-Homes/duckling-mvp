@@ -14,15 +14,15 @@ import WaterHeaterForm from './AppliancesForms/WaterHeaterForm'
 import AddPhotoButton from '@/components/AddPhotoButton'
 
 const TYPES = [
-  { name: 'HVAC', value: 'hvac' },
-  { name: 'Water Heater', value: 'waterheater' },
-  { name: 'Refrigerator', value: 'refrigerator' },
-  { name: 'Washing Machine', value: 'washingmachine' },
-  { name: 'Dryer', value: 'dryer' },
-  { name: 'Dishwasher', value: 'dishwasher' },
-  { name: 'Cooktop', value: 'cooktop' },
-  { name: 'Oven', value: 'oven' },
-  { name: 'Other', value: 'other' },
+  { name: 'HVAC', value: 'HVAC' },
+  { name: 'Water Heater', value: 'WaterHeater' },
+  { name: 'Refrigerator', value: 'Refrigerator' },
+  { name: 'Washing Machine', value: 'WashingMachine' },
+  { name: 'Dryer', value: 'Dryer' },
+  { name: 'Dishwasher', value: 'Dishwasher' },
+  { name: 'Cooktop', value: 'Cooktop' },
+  { name: 'Oven', value: 'Oven' },
+  { name: 'Other', value: 'Other' },
 ]
 interface AppliancesProps {
   currentProject: Project
@@ -89,7 +89,6 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   function createAppliance() {
     const newAppliance = {
       id: uuidv4(),
-      name: 'New Appliance',
     }
 
     setCurrentAppliance(newAppliance)
@@ -97,7 +96,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
 
   const handleTypeChange = (name: string, value: string) => {
     console.log(name)
-    const updatedAppliance = { ...currentAppliance, [name]: value }
+    const updatedAppliance = { ...currentAppliance, [name]: value, }
     handlePostAppliance(updatedAppliance, value)
   }
 
@@ -121,18 +120,21 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     updatedAppliance = currentAppliance
   ) {
     if (updatedAppliance?.id && updatedAppliance?.type) {
-      const applianceToUpdate = {
-        id: updatedAppliance.id,
-        type: updatedAppliance.type,
-        [propName]: updatedAppliance[propName],
-      }
+
+      // TODO: Make use of propName!
+      
+      // const applianceToUpdate = {
+      //   id: updatedAppliance.id,
+      //   type: updatedAppliance.type,
+      //   [propName]: updatedAppliance[propName],
+      // }
 
       const api = getTypeApi(updatedAppliance?.type)
 
       await ModelStore.updateAppliance(
         currentProject.id!,
         api,
-        applianceToUpdate
+        updatedAppliance
       )
     }
   }
@@ -222,7 +224,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
           >
             <SelectInput
               label="Type"
-              value={currentAppliance?.type?.toLowerCase() || ''}
+              value={currentAppliance?.type ?? ''}
               onChange={(value) => handleTypeChange('type', value)}
               disabled={currentAppliance?.type ? true : false}
               options={TYPES}

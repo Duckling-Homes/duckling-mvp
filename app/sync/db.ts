@@ -66,30 +66,49 @@ export class DucklingDexie extends Dexie {
     return pending > 0;
   }
 
+
+  private collateRequests = async () => {
+    const pendingRequests = await this.requests.orderBy('added').toArray();
+
+    // Maps unique key -> Tuple (collated request, original ids related)
+    const collated = new Map<string, [_Request, number[]]>();
+
+    for (const req of pendingRequests) {
+      const uniqueKey = req.options?.method + req.url;
+      const [col, ids] = collated.get(uniqueKey) ?? [req, []];
+      Object.assign(col, req);
+      ids.push(req.id!);
+      collated.set(uniqueKey, [col, ids]);
+    }
+
+    const collatedRequestTuples = Array.from(collated.values());
+    collatedRequestTuples.sort((a,b) => a[0].added < b[0].added ? -1 : 1);
+
+    return collatedRequestTuples;
+
+  }
+
   publishChanges = debounce(async () => {
     if (!isOnline()) return false
-  
-    let nextReq
-    const publishedRequests = [];
-    do {
-      try {
-        nextReq = await db.peekNextRequest()
-        if (nextReq) {
-          await fetch(nextReq!.url, nextReq!.options)
-          await db.dequeueRequest(nextReq.id!)
-          publishedRequests.push(nextReq);
+      const publishedRequests = [];
+
+      const collated = await this.collateRequests();
+      for (const [req, ids] of collated) {
+        try {
+          await fetch(req.url, req.options);
+          await Promise.all(ids.map(db.dequeueRequest));
+          publishedRequests.push(req);
           console.log(
             'Dequeued',
-            nextReq.options?.method,
-            nextReq.url,
-            nextReq.id
+            req.options?.method,
+            req.url,
+            req.id,
+            "collated these reqs", ids
           )
+        } catch (err) {
+        console.error('REQUEST FAILED TO PUSH...', { req, err })
         }
-      } catch (err) {
-        console.error('REQUEST FAILED TO PUSH...', { nextReq, err })
       }
-    } while (nextReq)
-
 
     const didChange = publishedRequests.length > 0;
     if (didChange) {

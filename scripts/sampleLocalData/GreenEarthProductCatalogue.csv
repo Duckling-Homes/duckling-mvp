@@ -1,11 +1,367 @@
 id,name,category,subcategory,description,type,pricingType,scaledPricingMetric,basePricePer,brand,modelNumber,ahriNumber,incentiveIds,organizationId
-"uuid-pc-101","Solar Panels","HomePerformance","Solar Power","High-efficiency solar panels for residential use","Equipment","PerUnit","","1500","SunTech","ST-100","AHRI-101","uuid-101","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-102","Energy Star Refrigerator","Appliances","Kitchen","Energy-efficient refrigerator with Energy Star rating","Equipment","PerUnit","","1200","EcoFridge","EF-200","","uuid-102;uuid-103","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-103","Green Home Insulation","HomePerformance","Insulation","Eco-friendly home insulation material","Service","PerUnit","","2000","GreenInsulate","GI-300","","uuid-103;uuid-106","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-104","High-Efficiency HVAC System","HVAC","HVAC","Energy-efficient HVAC system for residential use","Equipment","PerUnit","BTU","3500","CoolAir","CA-HVAC-400","AHRI-104","uuid-104;uuid-110","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-105","Electric Car Charging Station","Electrical","Charging","Home electric car charging station","Equipment","PerUnit","","800","ChargeTech","CT-500","","uuid-105","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-106","Window Insulation Kit","HomePerformance","Windows","Kit for insulating single-pane windows","Equipment","PerUnit","","150","WinSafe","WS-600","","uuid-106;uuid-109","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-107","Rainwater Collection System","HomePerformance","Water Collection","System for collecting and storing rainwater","Equipment","PerUnit","","1000","RainSave","RS-700","","uuid-107;uuid-110","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-108","LED Lighting Retrofit Kit","Electrical","Lighting","LED retrofit kit for commercial lighting upgrade","Equipment","PerUnit","","500","BrightLED","BL-800","","uuid-108","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-109","Smart Thermostat","Electrical","Home Automation","Energy-saving smart thermostat","Equipment","PerUnit","","250","ThermoSmart","TS-900","","uuid-109","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
-"uuid-pc-110","Eco-Friendly Roofing Material","HomePerformance","Roofing","Sustainable roofing material for energy efficiency","Service","PerUnit","","1800","EcoRoof","ER-1000","","uuid-103;uuid-110","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3"
+uuid-pc-101,10 kW Automatic Standby (Generator Packaged Installation),Electrical,Generators,"Guardian Series generators provide the automatic backup power you need to protect your home and family during a power outage. Connected to your existing LP or natural gas fuel supply, it automatically kicks in within seconds of sensing power loss and runs for as long as necessary until utility power returns. A meter upgrade is included. Utility piping is excluded.
+ Installation Includes:
+ - Generator
+ - Transfer Switch
+ - Pad
+ - Cabling
+ - Battery
+ - Start-Up and Commissioning
+ - Permits
+ - 5-Year Warranty (Optional 10-year Warranty)
+ - 5 Year Remote Monitoring 
+ - Surge Protector 
+ - Power Pak
+ 
+
+ 5-Year Annual Maintenance Agreement Subscription (Service Contract)
+ - OEM Recommended / Required Maintenance based on run hours or time
+ - Priority Service
+ - Included OEM Maintenance Kit 
+ - Includes Battery Replacement 
+ - 15% discount on all services and products",Service,PerUnit,,16292.64,,,,,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-102,18 kW Automatic Standby (Generator Packaged Installation),Electrical,Generators,"Guardian Series generators provide the automatic backup power you need to protect your home and family during a power outage. Connected to your existing LP or natural gas fuel supply, it automatically kicks in within seconds of sensing power loss and runs for as long as necessary until utility power returns. A meter upgrade is included. Utility piping is excluded.
+ Installation Includes:
+ - Generator
+ - Transfer Switch
+ - Pad
+ - Cabling
+ - Battery
+ - Start-Up and Commissioning
+ - Permits
+ - 5-Year Warranty (Optional 10-year Warranty)
+ - 5 Year Remote Monitoring 
+ - Surge Protector 
+ - Power Pak
+ 
+
+ 5-Year Annual Maintenance Agreement Subscription (Service Contract)
+ - OEM Recommended / Required Maintenance based on run hours or time
+ - Priority Service
+ - Included OEM Maintenance Kit 
+ - Includes Battery Replacement 
+ - 15% discount on all services and products",Service,PerUnit,,16675.73,,,,,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-103,14 kW Automatic Standby (Generator Packaged Installation),Electrical,Generators,"Guardian Series generators provide the automatic backup power you need to protect your home and family during a power outage. Connected to your existing LP or natural gas fuel supply, it automatically kicks in within seconds of sensing power loss and runs for as long as necessary until utility power returns. A meter upgrade is included. Utility piping is excluded.
+ Installation Includes:
+ - Generator
+ - Transfer Switch
+ - Pad
+ - Cabling
+ - Battery
+ - Start-Up and Commissioning
+ - Permits
+ - 5-Year Warranty (Optional 10-year Warranty)
+ - 5 Year Remote Monitoring 
+ - Surge Protector 
+ - Power Pak
+ 
+
+ 5-Year Annual Maintenance Agreement Subscription (Service Contract)
+ - OEM Recommended / Required Maintenance based on run hours or time
+ - Priority Service
+ - Included OEM Maintenance Kit 
+ - Includes Battery Replacement 
+ - 15% discount on all services and products",Service,PerUnit,,15651.66,,,,,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-104,Aeroseal Duct Sealing Services,HomePerformance,Aeroseal,Apply Aeroseal formula to seal leaky duct system. This service does not include duct modifications.,Service,PerUnit,,2637.35,,,,"uuid-107, uuid-125, uuid-132, uuid-133, uuid-134, uuid-135","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-105,Aeroseal Duct Sealing Services w/ Duct System Optimization,HomePerformance,Aeroseal,Apply Aeroseal formula to seal leaky duct system.,Service,PerUnit,,6415.61,,,,"uuid-107, uuid-125, uuid-132, uuid-133, uuid-134, uuid-135","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-106,Air Sealing of Wall or Ceiling by sq.ft. (Includes Outlet),HomePerformance,Air Sealing,Labor and Materials for Air Sealing. Price is based on the area of the surface(s). Pricing excludes permit fees or change orders.,Service,ScaledPricing,sq ft,3.18,,,,"uuid-107, uuid-125, uuid-132, uuid-133, uuid-134, uuid-135","a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-107,Air Purifier (Hydrogen Peroxide) - Standard,HomePerformance,Indoor Air Quality,"Designed to reduce odors and indoor air pollutants, the REME is a proven winner. Utilizing electromagnetic technology the REME is effective against particulates, gasses, and microbes.
+ 
+
+ (5) year limited warranty on the ballast and a (2) year warranty on the cells.",Service,PerUnit,,2125.22,,,,,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-108,Bradford White (N.G.) 50 Gallon (Electric),Appliances,Hot Water Heaters,"Replacement of the water heater includes draining and removal of the old tank. Installation of the new heater will include a relief valve piped to within 6"" off the ground.
+ 
+
+ - Permit
+ - 6 years parts and labor warranty.",Service,PerUnit,,2796.1,,,,uuid-106,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-109,Bradford White (N.G. 50 Gallon Power Vent),Appliances,Hot Water Heaters,"Replacement of the water heater includes draining and removal of the old tank. Installation of the new heater will include a relief valve piped to within 6"" off the ground.
+ 
+
+ - Permit
+ - 6 years parts and labor warranty.",Service,PerUnit,,5200.34,,,,uuid-106,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-pc-110,Bronze - Puron® Air Conditioner System (13 SEER),HVAC,Air Conditioning Systems,"13 Seer Air Conditioner with Puron® Refrigerant, available in 1.5 to 5 ton nominal-sized single-phase units, as well as 2.5 to 5 ton 208/230V 3-Phase and 3 to 5 ton 460V 3-Phase.
+ 
+
+ - Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,17863.24,,,,uuid-102,
+uuid-pc-111,Bronze - Puron® Heat Pump (15 SEER) (Energy Star Certified),HVAC,Heat Pumps,"15 Seer Air Conditioner and Heat Pump with Puron® Refrigerant, available in 1.5 to 5 ton nominal-sized single-phase units, as well as 2.5 to 5 ton 208/230V 3-Phase and 3 to 5 ton 460V 3-Phase.
+ 
+
+ - Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,24468.47,,,,"uuid-101,uuid-119,uuid-126,uuid-136,uuid-137,uuid-138",
+uuid-pc-112,Bronze - Single-Stage 80% AFUE Furnace,HVAC,Mid Efficiency Furnaces,"The 4-way Multi-poise Gas Furnaces features QuieTech™ noise reduction system for incredibly
+ quiet induced draft operation. Applications are easy with 4-way multi-poise design, through-the-furnace downflow
+ venting, 13 different venting options, and designed for easy service access. An inner blower door is provided for tighter
+ sealing in sensitive applications. The 58SB0A furnaces are approved for use with natural or propane gas.
+ 
+
+ - Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Cleaner 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,14625,,,,uuid-104,
+uuid-pc-113,Bronze - Single-Stage 96% AFUE Furnace (Energy Star Certified),HVAC,High Efficiency Furnaces,"The Multi-poise Comfort Series Condensing Gas Furnace features an energy efficiency of 96% AFUE gas efficiency
+ and a workhorse ECM blower motor. This gas furnace also features 4-way multi-poise installation flexibility and is
+ available in nine model sizes. This furnace can be vented for direct vent/two-pipe, ventilated combustion air, or single-pipe
+ applications. All units meet California Air Quality Management District emission requirements, are design certified in
+ Canada, and are certified for mobile/manufactured home use.
+ 
+
+ - Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Cleaner 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,16339.71,,,,uuid-104,
+uuid-pc-114,Bronze 80 (80% Single Stage Furnace and Single Stage 13 Seer Air Conditioner Combination),HVAC,Combination HVAC Split Systems Bundles,"- Load Calculation
+ - Supply and Return Ductwork Connections
+ - Electrical Reconnect
+ - Fuel Line Reconnect
+ - Exhaust and Venting Reconnect
+ - Control Wiring
+ - 10 Year Warranty
+ - 10 Year Maintenance Agreement
+ - Permit
+ - Commissioning
+ - Pearl Certification",Service,PerUnit,,17828.73,,,,"uuid-102,uuid-104",
+uuid-pc-115,Bronze 80 (80% Single Stage Furnace and Single Stage 13 Seer Air Conditioner System),HVAC,Furnace and Air Conditioner Systems,"- Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Cleaner 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,24147.65,,,,"uuid-102,uuid-104",
+uuid-pc-116,Bronze 80 Heat Pump System (80% Single Stage Furnace and Single Stage 15 Seer Heat Pump System) (Energy Star Certified),HVAC,Furnace and Heat Pump Systems,"- Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Cleaner 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,29951.97,,,,"uuid-101,uuid-119,uuid-126,uuid-136,uuid-137,uuid-138",
+uuid-pc-117,Bronze 90 (96% Single Stage Furnace and Single Stage 13 Seer Air Conditioner Combination),HVAC,Combination HVAC Split Systems Bundles,"- Load Calculation
+ - Supply and Return Ductwork Connections
+ - Electrical Reconnect
+ - Fuel Line Reconnect
+ - Exhaust and Venting Reconnect
+ - Control Wiring
+ - 10 Year Warranty
+ - 10 Year Maintenance Agreement
+ - Permit
+ - Commissioning
+ - Pearl Certification",Service,PerUnit,,19315.21,,,,"uuid-102,uuid-104",
+uuid-pc-118,Bronze 90 (96% Single Stage Furnace and Single Stage 13 Seer Air Conditioner System) (Energy Star Certified),HVAC,Furnace and Air Conditioner Systems,"- Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Cleaner 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,25723.32,,,,"uuid-102,uuid-104",
+uuid-pc-119,Bronze 90 Heat Pump System (96% Single Stage Furnace and Single Stage 15 Seer Heat Pump System) (Energy Star Certified),HVAC,Furnace and Heat Pump Systems,"- Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Cleaner 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,31504.59,,,,"uuid-101,uuid-119,uuid-126,uuid-136,uuid-137,uuid-138",
+uuid-pc-120,Gold - Puron® Heat Pump System 2-Stage (17 SEER) (Energy Star Certified),HVAC,Heat Pumps,"17 Seer Air Conditioner and Heat Pump with Puron® Refrigerant, available in 1.5 to 5 ton nominal-sized single-phase units, as well as 2.5 to 5 ton 208/230V 3-Phase and 3 to 5 ton 460V 3-Phase.
+ 
+
+ - Load Calculation
+ - Demo
+ - Installation
+ - Permit
+ - 10- year parts and labor warranty
+ - 10 - year maintenance agreement
+ - High Efficiency Humidifier 
+ - Air Purifier 
+ - Surge Protector
+ - Voltage Monitor 
+ - Free Unit Replacement 
+ - No Lemon Guarantee 
+ - Model Numbers may vary
+ - Qualifies for utility rebate (restrictions apply)
+ - Qualifies for Tax Credit (restrictions apply)
+ - Commissioning
+ - Pearl Certification
+ 
+
+ Energy star ratings, tax credits, and utility rebates are only available on AHRI matched system. To accomplish AHRI matched ratings the furnace must be replaced. The SEER rated listed here is an approximate value and will not qualified for energy star ratings, tax credits, and utility rebates. Airflow performance will not improve without a duct work modification.",Service,PerUnit,,24692.21,,,,"uuid-101,uuid-119,uuid-126,uuid-136,uuid-137,uuid-138",
+uuid-pc-121,Blown-In Fiberglass,HomePerformance,Insulation,"Blown-In Fiberglass Insulation is a premium, eco-friendly solution designed for effective thermal and acoustic insulation in residential and commercial buildings. Manufactured from high-quality, recycled glass fibers, this insulation product provides superior coverage and is ideal for hard-to-reach areas, including attics, walls, and crawl spaces.",Service,ScaledPricing,sq ft,2.1,,,,"uuid-107, uuid-125, uuid-132, uuid-133, uuid-134, uuid-135",
+uuid-pc-122,Spray Foam,HomePerformance,Insulation,"Spray Foam Insulation is a highly efficient solution for thermal and acoustic insulation in both residential and commercial properties. This two-component foam expands instantly upon application, creating an airtight seal that significantly improves energy efficiency and comfort.",Service,ScaledPricing,sq ft,3.1,,,,"uuid-107, uuid-125, uuid-132, uuid-133, uuid-134, uuid-135",
+uuid-pc-123,Generac PWRcell M6 - 18kWh,Electrical,Battery,"The all-new Generac PWRcell™ 18kWh is a modern and cost-effective energy storage system. The inverter can be used to store, import, and export energy for use at home or work. When grid power fails, Generac PWRcell™ 18kWh inverter will let you stay comfortable indoors. It will power your AC, sump pump, security system, computer, refrigerator, coffee maker, and more. It can power your whole home until the grid power supply is restored.
+
+Package Includes:
+
+(1) Generac PWRcell™ 7.6kW (120/240V Single-Phase) Inverter w/ 300A CTs (XVT076A03)
+(2) Generac PWRcell™ Outdoor Rated Battery Cabinet (APKE00028)
+(6) Generac PWRcell™ 3.0kWh DCB EX Battery Module (8004)
+(1) Generac PWRcell 200A 1ph-120/240V Service Rated Nema 3R Automatic Transfer Switch (CXSW200A3)
+(2) Generac 50-Amp Smart Management Module (7000)",Service,PerUnit,,22415.98,,,,uuid-112,
+uuid-pc-124,Generac PWRcell M6 - 9kWh,Electrical,Battery,"The all-new Generac PWRcell™ 9kWh is a modern and intelligent energy storage system. The inverter can be used to store, import, and export energy in a home or work environment. When grid power fails, Generac PWRcell™ 9kWh inverter will power your AC, sump pump, security system, computer, refrigerator, coffee maker, etc. It can run all the essentials till the grid power supply is restored so you can stay comfortable.
+
+Package Includes:
+
+(1) Generac PWRcell 7.6kW 1Ph Inverter with CTs (XVT076A03)
+(1) Generac PWRcell Outdoor Battery Cabinet (APKE00028)
+(3) Generac PWRcell 3.0 kWh DCB Battery Module (8004)
+(1) Generac PWRcell Spacer Kit (APKE00008)",Service,PerUnit,,12424.99,,,,uuid-112,
+uuid-pc-125,EvoCharge iEVSE Plus 32A Level 2 Networked RFID EV Charging Station,Electrical,EV Charger,EvoCharge iEVSE Plus 32A Level 2 Networked RFID EV Charging Station is a Level 2 WiFi charging station that will make your life easier. It will fully charge your electric vehicles within 4 to 6 hours.,Service,PerUnit,,2770.95,,,,,
+uuid-pc-126,EvoCharge iEVSE 40A Level 2 Networked EV Charging Station,Electrical,EV Charger,"Future-proof your charging station and easily manage up to 40 Amps of power with the iEVSE 40, EvoCharge’s Wi-Fi electric vehicle (EV) charging station. With true OCPP and Wi-Fi connectivity, you choose the third-party network service provider for your EV charging station or connect through your own Wi-Fi—whichever works for you—giving you control and access to charging capabilities.",Service,PerUnit,,2250.95,,,,,
+uuid-pc-127,Rooftop Solar,Electrical,Rooftop Solar,"Rooftop solar is a perfect way for both residential and commercial properties to reduce energy costs, increase energy independence, and contribute positively to the environment.
+
+Cost includes:
+- Panel
+- Inverter
+- Installation
+- Permitting",Service,ScaledPricing,W,2.86,,,,uuid-111,
+uuid-pc-128,Load Center Upgrade 200 Amps,Electrical,Electrical Panel,"Labor and Materials to upgrade load center to 200 Amps:
+ 
+
+ - Riser
+ - Meter Enclosure 
+ - Cables 
+ - Grounding 
+ - Surge Protector 
+ - Breakers",Service,PerUnit,,4688.28,,,,"uuid-124, uuid-131, uuid-113",
+uuid-pc-129,ProTerra Plug-in Heat Pump Water Heater with HydroBoost,Appliances,Water Heaters,"Rheem plug-in heat pump water heater, featuring:
+
+-Up to 3.5 UEF reduces operating cost
+-LeakSense™ Built-in Leak Detection System detects any leak large or small, internal or external-
+-Factory installed plug-in power cord, direct plug-in
+-Easily replaces a standard gas water heater",Service,PerUnit,,5325.98,,,,"uuid-105, uuid-122, uuid-129, uuid-139, uuid-140",

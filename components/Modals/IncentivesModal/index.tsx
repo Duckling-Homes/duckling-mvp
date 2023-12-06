@@ -11,7 +11,7 @@ import {
   Stepper,
 } from '@mui/material'
 
-import './styles.scss'
+import './styles.scss'-
 import ModelStore from '@/app/stores/modelStore';
 import { CatalogueItem, Incentive, Plan } from '@/types/types';
 
@@ -42,6 +42,10 @@ const Incentives: React.FC<{
     return 'aa'
   }
 
+
+const STEPS = ['Select Incentives', 'Review Copy'];
+
+const Incentives = () => {
   return (
     <div style={{
       display: "flex",

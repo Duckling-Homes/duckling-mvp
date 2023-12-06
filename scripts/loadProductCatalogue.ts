@@ -66,9 +66,12 @@ async function processCSV(filePath: string, orgContext: string): Promise<void> {
         const pricingType = pricingTypeMapping[row.pricingType]
         const basePricePer = parseFloat(row.basePricePer)
 
-        const incentiveIds = row.incentiveIds
-          .split(';')
-          .map((id: string) => ({ id }))
+        let incentiveIds = (row.incentiveIds || '')
+          .split(/[;,]/) // Split on both semicolons and commas
+          .map((id: string) => id.trim()) // Trim spaces
+          .filter((id: string) => id !== '') // Filter out empty strings
+
+        incentiveIds = incentiveIds.map((id: string) => ({ id }))
 
         const rowData = {
           id: row.id,

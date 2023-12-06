@@ -46,7 +46,7 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
   }
 
   const handleChipChange = (inputName: string, value: string) => {
-    let array = data ? (data[inputName] as string[]) : []
+    let array = (data?.[inputName] as string[]) ?? [];
 
     if (array && array.includes(value)) {
       array = array.filter((item) => item !== value)
@@ -56,7 +56,6 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
 
     const updatedData = { ...data, [inputName]: array }
 
-    setData(updatedData)
     projectUpdate(updatedData)
   }
 
@@ -80,11 +79,11 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               marginBottom: '24px',
             }}
           >
-            {COMFORT_ISSUES.map((issue, i) => (
+            {COMFORT_ISSUES.map((issue) => (
               <Chip
                 onClick={() => handleChipChange('comfortIssueTags', issue)}
                 label={issue}
-                key={i}
+                key={issue}
                 color={
                   data?.comfortIssueTags?.includes(issue)
                     ? 'primary'
@@ -115,11 +114,11 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               marginBottom: '24px',
             }}
           >
-            {HEALTH_SAFETY.map((issue, i) => (
+            {HEALTH_SAFETY.map((issue) => (
               <Chip
                 onClick={() => handleChipChange('healthSafetyIssueTags', issue)}
                 label={issue}
-                key={i}
+                key={issue}
                 color={
                   data?.healthSafetyIssueTags?.includes(issue)
                     ? 'primary'
@@ -150,11 +149,11 @@ const Objectives: React.FC<{ currentProject: Project }> = ({
               marginBottom: '24px',
             }}
           >
-            {GOALS.map((goal, i) => (
+            {GOALS.map((goal) => (
               <Chip
                 onClick={() => handleChipChange('homeownerGoalsTags', goal)}
                 label={goal}
-                key={i}
+                key={goal}
                 color={
                   data?.homeownerGoalsTags?.includes(goal)
                     ? 'primary'

@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
 import { ProjectElectrical } from '@/types/types'
 import { SyncAPI } from '..'
+import { syncAPImutation } from '.'
 
 export class ElectricalSyncOperations {
   _typeToAPI = (type: string) => {
@@ -17,7 +18,7 @@ export class ElectricalSyncOperations {
     }
   }
 
-  create = async (projectID: string, electrical: ProjectElectrical) => {
+  create = syncAPImutation(async (projectID: string, electrical: ProjectElectrical) => {
     electrical.id = electrical.id ?? uuidv4()
     await db.enqueueRequest(
       `/api/electrical/${this._typeToAPI(electrical.type!)}`,
@@ -36,9 +37,9 @@ export class ElectricalSyncOperations {
       return proj
     })
     return electrical
-  }
+  })
 
-  update = async (projectID: string, electrical: ProjectElectrical) => {
+  update = syncAPImutation(async (projectID: string, electrical: ProjectElectrical) => {
     await db.enqueueRequest(
       `/api/electrical/${this._typeToAPI(electrical.type!)}/${electrical.id}`,
       {
@@ -61,7 +62,7 @@ export class ElectricalSyncOperations {
     })
 
     return electrical
-  }
+  })
 
   delete = async (
     projectID: string,

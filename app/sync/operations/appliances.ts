@@ -2,9 +2,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
 import { ProjectAppliance } from '@/types/types'
 import { SyncAPI } from '..'
+import { syncAPImutation } from '.'
 
 export class ApplianceSyncOperations {
-  create = async (
+  create = syncAPImutation(async (
     projectID: string,
     applianceType: string,
     appliance: ProjectAppliance
@@ -24,9 +25,9 @@ export class ApplianceSyncOperations {
       return proj
     })
     return appliance
-  }
+  })
 
-  update = async (
+  update = syncAPImutation(async (
     projectID: string,
     applianceType: string,
     appliance: ProjectAppliance
@@ -51,9 +52,9 @@ export class ApplianceSyncOperations {
     })
 
     return appliance
-  }
+  })
 
-  delete = async (
+  delete = syncAPImutation(async (
     projectID: string,
     applianceType: string,
     applianceId: string
@@ -69,5 +70,5 @@ export class ApplianceSyncOperations {
       }
       return proj
     })
-  }
+  })
 }
