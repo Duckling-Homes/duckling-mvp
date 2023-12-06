@@ -110,6 +110,7 @@ export class _ModelStore {
     console.log('loading')
     this.init()
     const project = await SyncAPI.projects.get(projectID)
+    this.plans = project.plans || []
     this._updateMobxProject(project)
     return project
   }
@@ -321,6 +322,9 @@ export class _ModelStore {
   addCatalogItem = (planId: string, item: CatalogueItem, propertyName: string) => {
     const plans = toJS(this.plans);
     const currentPlan = plans.find((plan) => plan.id === planId);
+
+    console.log(plans, 'plans')
+    console.log(currentPlan, 'currentPlan')
 
     if (!currentPlan) {
       console.error("There is no plan with this ID");

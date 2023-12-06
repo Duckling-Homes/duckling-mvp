@@ -53,7 +53,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
       name: name
     }
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
-
+    console.log(newPlan)
     setCurrentPlan(newPlan)
   }
 
