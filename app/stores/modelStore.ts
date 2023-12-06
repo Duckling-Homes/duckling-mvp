@@ -3,6 +3,7 @@ import {
   Organization,
   PhotoDetails,
   Plan,
+  PlanDetails,
   Project,
   ProjectAppliance,
   ProjectData,
@@ -318,38 +319,52 @@ export class _ModelStore {
   }
 
   addCatalogItem = (planId: string, item: CatalogueItem, propertyName: string) => {
-    const plans = toJS(this.plans)
-    const currentPlan = plans.find((plan) => plan.id === planId)
-    
+    const plans = toJS(this.plans);
+    const currentPlan = plans.find((plan) => plan.id === planId);
+
     if (!currentPlan) {
-      console.error("There is no plan with this ID")
-      return
+      console.error("There is no plan with this ID");
+      return;
     }
-    
+
     if (!currentPlan.planDetails) {
-      currentPlan.planDetails = {}
+      currentPlan.planDetails = {} as PlanDetails;
     }
 
     if (typeof currentPlan.planDetails === 'string') {
-      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
+      try {
+        currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+      } catch (error) {
+        console.error("Error parsing planDetails JSON:", error);
+        return;
+      }
     }
 
-    if (!currentPlan.planDetails[propertyName]) {
-      currentPlan.planDetails[propertyName] = [];
+    if (
+      typeof currentPlan.planDetails === 'object' &&
+      currentPlan.planDetails !== null &&
+      propertyName in currentPlan.planDetails
+    ) {
+      const propertyArray = currentPlan.planDetails[propertyName] as CatalogueItem[];
+      
+      // Make sure it's an array
+      if (Array.isArray(propertyArray)) {
+        propertyArray.push(item);
+      } else {
+        console.error(`${propertyName} is not an array`);
+      }
+    } else {
+      console.error("Invalid planDetails type or property:", typeof currentPlan.planDetails, propertyName);
     }
-
-    currentPlan.planDetails[propertyName].push(item);
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan
+        plans[index] = currentPlan;
       }
-    })
+    });
 
-    this.plans = plans
-
-    console.log(toJS(this.plans))
-  }
+    this.plans = plans;
+  };
 
   removeCatalogItem = (planId: string, itemCustomId: string, propertyName: string) => {
     const plans = toJS(this.plans)

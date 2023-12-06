@@ -198,8 +198,13 @@ export interface UpdateApplianceSticker {
 export interface Plan {
   id?: string
   name?: string
-  planDetails?: {} | string
+  planDetails?: PlanDetails | string
   projectId?: string
+}
+
+export interface PlanDetails {
+  selectedIncentives: string[]
+  [key: string]: CatalogueItem[] | string[]
 }
 
 export interface CatalogueItem {
