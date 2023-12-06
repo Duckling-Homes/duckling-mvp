@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { TextInput } from '@/components/Inputs'
 import { Check, Close } from '@mui/icons-material'
 import {
   Button,
   IconButton,
   Modal,
 } from '@mui/material'
-import { TextInput } from '@/components/Inputs'
+import React, { useEffect, useState } from 'react'
 
 type PlanModalProps = {
   open: boolean
@@ -45,6 +45,8 @@ const PlanModal: React.FC<PlanModalProps> =
 
     return (
       <Modal
+        // Prevents hitting "enter" from submitting the form
+        onSubmit={(e) => {e.preventDefault()}}
         open={open}
         className="createModal"
         onClose={() => {

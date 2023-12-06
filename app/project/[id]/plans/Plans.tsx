@@ -1,15 +1,15 @@
 'use client'
 
-import React, { useEffect, useState } from "react"
-import PlanModal from "@/components/Modals/PlanModal"
-import * as Icons from "@mui/icons-material"
-import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
 import ModelStore from "@/app/stores/modelStore"
-import { Plan, Project } from "@/types/types"
 import DeletePlanModal from "@/components/Modals/DeletePlan"
 import IncentivesModal from "@/components/Modals/IncentivesModal"
-import PlanItem from "./Upgrades/PlanItem"
+import PlanModal from "@/components/Modals/PlanModal"
+import { Plan, Project } from "@/types/types"
+import * as Icons from "@mui/icons-material"
+import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
+import React, { useEffect, useState } from "react"
 import Photos from "./Upgrades/Photos"
+import PlanItem from "./Upgrades/PlanItem"
 
 import "./style.scss"
 
