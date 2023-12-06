@@ -15,7 +15,6 @@ import { useUser } from '@clerk/nextjs'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import ModelStore from './stores/modelStore'
-import { v4 as uuidv4 } from 'uuid'
 
 import './style.scss'
 
