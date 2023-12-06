@@ -15,6 +15,8 @@ import { useUser } from '@clerk/nextjs'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import ModelStore from './stores/modelStore'
+import { v4 as uuidv4 } from 'uuid'
+
 import './style.scss'
 
 const Home = observer(() => {
@@ -165,21 +167,24 @@ const Home = observer(() => {
                 onChange={({ target }) => searchData(target.value)}
               />
             </div>
-            <DataGrid
-              rows={filteredProjects}
-              columns={device === 'phone' ? mobileColumns : columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 10 },
-                },
-              }}
-              sx={{
-                borderTopLeftRadius: '0px',
-                borderTopRightRadius: '0px',
-                borderWidth: '0px',
-              }}
-              pageSizeOptions={[5, 10]}
-            />
+            {filteredProjects.length > 0 &&
+              <DataGrid
+                getRowId={(row) => row.id}
+                rows={filteredProjects}
+                columns={device === 'phone' ? mobileColumns : columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 10 },
+                  },
+                }}
+                sx={{
+                  borderTopLeftRadius: '0px',
+                  borderTopRightRadius: '0px',
+                  borderWidth: '0px',
+                }}
+                pageSizeOptions={[5, 10]}
+              />
+            }
           </div>
         </div>
 

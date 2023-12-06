@@ -58,13 +58,13 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
   }
 
   async function handlePlanDeletion() {
-    if (!currentProject.id || !currentPlan.id) {
+    if (!currentProject.id || !currentPlan?.id) {
       return
     }
     
-    await ModelStore.deletePlan(currentProject.id, currentPlan.id)
+    await ModelStore.deletePlan(currentProject.id, currentPlan?.id)
 
-    const newPlansList = plans.filter((plan) => plan.id !== currentPlan.id)
+    const newPlansList = plans.filter((plan) => plan.id !== currentPlan?.id)
     
     setPlans(newPlansList)
     setCurrentPlan(newPlansList[0] || {})
@@ -72,7 +72,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
 
   async function handlePlanEdition(name: string) {
     const updatedPlan: Plan = {
-      id: currentPlan.id,
+      id: currentPlan?.id,
       name: name
     }
 
@@ -86,7 +86,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
       <IncentivesModal
         open={incentivesModal}
         onClose={() => setIncentivesModal(false)}
-        currentPlanId={currentPlan.id as string}
+        currentPlanId={currentPlan?.id as string}
         projectId={currentProject.id as string}
       />
       <DeletePlanModal
