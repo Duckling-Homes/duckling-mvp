@@ -110,6 +110,7 @@ export class _ModelStore {
     console.log('loading')
     this.init()
     const project = await SyncAPI.projects.get(projectID)
+    this.plans = project.plans || []
     this._updateMobxProject(project)
     return project
   }
@@ -322,6 +323,9 @@ export class _ModelStore {
     const plans = toJS(this.plans);
     const currentPlan = plans.find((plan) => plan.id === planId);
 
+    console.log(plans, 'plans')
+    console.log(currentPlan, 'currentPlan')
+
     if (!currentPlan) {
       console.error("There is no plan with this ID");
       return;
@@ -342,9 +346,13 @@ export class _ModelStore {
 
     if (
       typeof currentPlan.planDetails === 'object' &&
-      currentPlan.planDetails !== null &&
-      propertyName in currentPlan.planDetails
+      currentPlan.planDetails !== null
     ) {
+
+      if (!(propertyName in currentPlan.planDetails)) {
+        currentPlan.planDetails[propertyName] = []
+      }
+
       const propertyArray = currentPlan.planDetails[propertyName] as CatalogueItem[];
       
       if (Array.isArray(propertyArray)) {
@@ -352,6 +360,7 @@ export class _ModelStore {
       } else {
         console.error(`${propertyName} is not an array`);
       }
+
     } else {
       console.error("Invalid planDetails type or property:", typeof currentPlan.planDetails, propertyName);
     }
@@ -463,8 +472,8 @@ export class _ModelStore {
       currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
     }
 
-    const planDetails = currentPlan.planDetails as PlanDetails
-    const selectedIncentives = planDetails.selectedIncentives;
+    const planDetails = currentPlan?.planDetails as PlanDetails
+    const selectedIncentives = planDetails?.selectedIncentives;
 
     return selectedIncentives
   }

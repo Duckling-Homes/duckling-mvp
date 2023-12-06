@@ -23,10 +23,10 @@ const Incentives: React.FC<{
   onCheck: (incentiveId: string) => void
   plan: Plan
 }> = ({ rebates, taxCredits, onCheck, plan }) => {
-  const [selectedIncentives, setSelectedIncentives] = useState(ModelStore.getSelectedIncentives(plan.id as string))
+  const [selectedIncentives, setSelectedIncentives] = useState(ModelStore.getSelectedIncentives(plan?.id as string) || [])
 
   function reloadSelectedIncentives() {
-    setSelectedIncentives(ModelStore.getSelectedIncentives(plan.id as string))
+    setSelectedIncentives(ModelStore.getSelectedIncentives(plan?.id as string) || [])
   }
 
   function calculateIncentiveValue(incentive: Incentive) {
@@ -58,7 +58,7 @@ const Incentives: React.FC<{
       }}>
         Rebate
         {
-          rebates.length > 0 ? rebates.map((incentive: Incentive) => (
+          rebates?.length > 0 ? rebates.map((incentive: Incentive) => (
             <>
               <div style={{
                 display: "flex",
@@ -68,7 +68,7 @@ const Incentives: React.FC<{
                 <Checkbox onChange={() => {
                   onCheck(incentive.id as string)
                   reloadSelectedIncentives()
-                }} checked={selectedIncentives.includes(incentive.id as string)}/>
+                }} checked={selectedIncentives?.includes(incentive.id as string)}/>
                 <div style={{
                   display: "flex",
                   flexDirection: "column",
@@ -97,7 +97,7 @@ const Incentives: React.FC<{
       }}>
         Tax Credits
         {
-          taxCredits.length > 0 ? taxCredits.map((incentive: Incentive) => (
+          taxCredits?.length > 0 ? taxCredits.map((incentive: Incentive) => (
             <>
               <div style={{
                 display: "flex",
@@ -107,7 +107,7 @@ const Incentives: React.FC<{
                 <Checkbox onChange={() => {
                   onCheck(incentive.id as string)
                   reloadSelectedIncentives()
-                }} checked={selectedIncentives.includes(incentive.id as string)}/>
+                }} checked={selectedIncentives?.includes(incentive.id as string)}/>
                 <div style={{
                   display: "flex",
                   flexDirection: "column",
@@ -148,6 +148,8 @@ const IncentivesModal: React.FC<{
   const [activeStep, setActiveStep] = useState(0);
   const plan = ModelStore?.getPlan(currentPlanId)
 
+  console.log(plan)
+
   function getAllIncentivesByType(type: string) {
     const incentives = [] as Incentive[];
     const uniqueIds = new Set();
@@ -155,8 +157,8 @@ const IncentivesModal: React.FC<{
     if (!plan) {
       return incentives;
     }
-
-    if (typeof plan.planDetails === 'object') {
+  
+    if (plan.planDetails && typeof plan.planDetails === 'object') {
       Object.values(plan.planDetails).forEach((categoryArray: (string | CatalogueItem)[]) => {
         categoryArray.forEach((item) => {
           // Ensure item is a CatalogueItem
@@ -196,8 +198,8 @@ const IncentivesModal: React.FC<{
   }
 
   function handleSelectIncentive(incentiveId: string) {
-    const selectedIncentives = ModelStore.getSelectedIncentives(currentPlanId)
-    const isInSelected = selectedIncentives.includes(incentiveId);
+    const selectedIncentives = ModelStore.getSelectedIncentives(currentPlanId) || []
+    const isInSelected = selectedIncentives?.includes(incentiveId);
     let updatedSelection = []
 
     if (isInSelected) {
