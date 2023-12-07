@@ -32,7 +32,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     if (currentProject && currentProject?.plans) {
       setPlans(currentProject.plans)
       if (!currentPlan?.id) {
-        console.log('kiley plan', currentProject.plans[0])
         setCurrentPlan(currentProject.plans[0])
       }
     }

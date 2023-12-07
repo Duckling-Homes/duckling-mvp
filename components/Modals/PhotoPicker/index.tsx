@@ -65,22 +65,6 @@ const PhotoPickerModal: React.FC<{
     onClose()
   }
 
-  // const handleFinishSelect = () => {
-  //   if (currentProject) {
-  //     const updatePromises = Array.from(selectedPhotos).map(
-  //       (imageId: string) => {
-  //         return ModelStore.patchPhotoDetails(currentProject.id!, {
-  //           ...photoUpdates,
-  //           id: imageId,
-  //         })
-  //       }
-  //     )
-
-  //     Promise.all(updatePromises)
-  //   }
-  //   exitModal()
-  // }
-
   return (
     <Modal
       open={open}

@@ -44,13 +44,6 @@ export class PlansSyncOperations {
   })
 
   update = syncAPImutation(async (projectID: string, plan: Plan) => {
-    console.log(
-      'kiley wtf',
-      JSON.stringify({
-        ...plan,
-        projectId: projectID,
-      })
-    )
     await db.enqueueRequest(`/api/plans/${plan.id}`, {
       method: 'PATCH',
       body: JSON.stringify({

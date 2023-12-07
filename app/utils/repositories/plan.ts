@@ -26,7 +26,6 @@ export async function isPlanInOrganization(
 }
 
 export async function createPlan(planData: Prisma.PlanUncheckedCreateInput) {
-  console.log(`*********** `, planData.imageIds)
   const createdPlan = await prisma.plan.create({
     data: {
       id: planData.id,
@@ -40,7 +39,6 @@ export async function createPlan(planData: Prisma.PlanUncheckedCreateInput) {
       imageIds: planData.imageIds,
     },
   })
-  console.log(`*********** `, createdPlan)
 
   return createdPlan
 }
@@ -73,7 +71,6 @@ export async function updatePlan(
   id: string,
   planUpdates: Prisma.PlanUncheckedUpdateInput
 ) {
-  console.log('&&&&&&&&&&&&&', planUpdates)
   const plan = await prisma.plan.findUnique({
     where: { id },
   })
