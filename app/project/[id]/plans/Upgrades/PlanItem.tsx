@@ -30,14 +30,15 @@ const PlanItem: React.FC<PlanItemProps> = (
 
   useEffect(() => {
     setItems(removeDuplicates(catalogue.filter(item => item.category === property), 'subcategory')
-      
     )
   }, [catalogue])
 
   useEffect(() => {
-    if (plan.planDetails && typeof plan.planDetails === 'string') {
-      const itemsFromPlan = JSON.parse(plan.planDetails)[property] as CatalogueItem[];
+    if (plan.planDetails) {
+      const itemsFromPlan = typeof plan.planDetails === 'string' ? JSON.parse(plan.planDetails)[property] : plan.planDetails
       setWorkItems(itemsFromPlan);
+    } else {
+      setWorkItems([])
     }
   }, [plan, property]);
 
