@@ -319,28 +319,29 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addCatalogItem = (planId: string, item: CatalogueItem, propertyName: string) => {
-    const plans = toJS(this.plans);
-    const currentPlan = plans.find((plan) => plan.id === planId);
-
-    console.log(plans, 'plans')
-    console.log(currentPlan, 'currentPlan')
+  addCatalogItem = (
+    planId: string,
+    item: CatalogueItem,
+    propertyName: string
+  ) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((plan) => plan.id === planId)
 
     if (!currentPlan) {
-      console.error("There is no plan with this ID");
-      return;
+      console.error('There is no plan with this ID')
+      return
     }
 
     if (!currentPlan.planDetails) {
-      currentPlan.planDetails = {} as PlanDetails;
+      currentPlan.planDetails = {} as PlanDetails
     }
 
     if (typeof currentPlan.planDetails === 'string') {
       try {
-        currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+        currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
       } catch (error) {
-        console.error("Error parsing planDetails JSON:", error);
-        return;
+        console.error('Error parsing planDetails JSON:', error)
+        return
       }
     }
 
@@ -348,47 +349,55 @@ export class _ModelStore {
       typeof currentPlan.planDetails === 'object' &&
       currentPlan.planDetails !== null
     ) {
-
       if (!(propertyName in currentPlan.planDetails)) {
         currentPlan.planDetails[propertyName] = []
       }
 
-      const propertyArray = currentPlan.planDetails[propertyName] as CatalogueItem[];
-      
-      if (Array.isArray(propertyArray)) {
-        propertyArray.push(item);
-      } else {
-        console.error(`${propertyName} is not an array`);
-      }
+      const propertyArray = currentPlan.planDetails[
+        propertyName
+      ] as CatalogueItem[]
 
+      if (Array.isArray(propertyArray)) {
+        propertyArray.push(item)
+      } else {
+        console.error(`${propertyName} is not an array`)
+      }
     } else {
-      console.error("Invalid planDetails type or property:", typeof currentPlan.planDetails, propertyName);
+      console.error(
+        'Invalid planDetails type or property:',
+        typeof currentPlan.planDetails,
+        propertyName
+      )
     }
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan;
+        plans[index] = currentPlan
       }
-    });
+    })
 
-    this.plans = plans;
-  };
+    this.plans = plans
+  }
 
-  removeCatalogItem = (planId: string, itemCustomId: string, propertyName: string) => {
-    const plans = toJS(this.plans);
-    const currentPlan = plans.find((plan) => plan.id === planId);
+  removeCatalogItem = (
+    planId: string,
+    itemCustomId: string,
+    propertyName: string
+  ) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((plan) => plan.id === planId)
 
     if (!currentPlan) {
-      console.error("There is no plan with this ID");
-      return;
+      console.error('There is no plan with this ID')
+      return
     }
 
     if (typeof currentPlan.planDetails === 'string') {
       try {
-        currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+        currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
       } catch (error) {
-        console.error("Error parsing planDetails JSON:", error);
-        return;
+        console.error('Error parsing planDetails JSON:', error)
+        return
       }
     }
 
@@ -397,61 +406,73 @@ export class _ModelStore {
       typeof currentPlan.planDetails === 'object' &&
       propertyName in currentPlan.planDetails
     ) {
-      const propertyArray = currentPlan.planDetails[propertyName];
+      const propertyArray = currentPlan.planDetails[propertyName]
 
       if (Array.isArray(propertyArray)) {
         propertyArray.forEach((item, index) => {
           if (typeof item === 'object' && item !== null && 'customId' in item) {
             if (item.customId === itemCustomId) {
-              propertyArray.splice(index, 1);
+              propertyArray.splice(index, 1)
             }
           } else {
-            console.error(`Invalid item:`, item);
+            console.error(`Invalid item:`, item)
           }
-        });
+        })
       } else {
-        console.error(`${propertyName} is not an array`);
+        console.error(`${propertyName} is not an array`)
       }
     } else {
-      console.error(`Invalid planDetails or property:`, currentPlan.planDetails, propertyName);
+      console.error(
+        `Invalid planDetails or property:`,
+        currentPlan.planDetails,
+        propertyName
+      )
     }
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan;
+        plans[index] = currentPlan
       }
-    });
+    })
 
-    this.plans = plans;
-  };
-  
-  updateCatalogItemProperty = (planId: string, itemCustomId: string, category: string, newValue: string | number, propertyName: string) => {
-    const plans = toJS(this.plans);
-    const currentPlan = plans.find((plan) => plan.id === planId) as Plan;
+    this.plans = plans
+  }
+
+  updateCatalogItemProperty = (
+    planId: string,
+    itemCustomId: string,
+    category: string,
+    newValue: string | number,
+    propertyName: string
+  ) => {
+    const plans = toJS(this.plans)
+    const currentPlan = plans.find((plan) => plan.id === planId) as Plan
 
     if (typeof currentPlan?.planDetails === 'string') {
-      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
     }
 
     const planDetails = currentPlan?.planDetails as PlanDetails
     const planCategory = planDetails[category] as CatalogueItem[]
 
     const updatedItems = planCategory.map((item: CatalogueItem) =>
-      item.customId === itemCustomId ? { ...item, [propertyName]: newValue } : item
-    );
+      item.customId === itemCustomId
+        ? { ...item, [propertyName]: newValue }
+        : item
+    )
 
-    planDetails[category] = updatedItems;
+    planDetails[category] = updatedItems
 
     currentPlan.planDetails = { ...planDetails }
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan as Plan;
+        plans[index] = currentPlan as Plan
       }
-    });
+    })
 
-    this.plans = plans;
-  };
+    this.plans = plans
+  }
 
   getPlan = (planId: string) => {
     const plans = toJS(this.plans)
@@ -469,11 +490,11 @@ export class _ModelStore {
     const currentPlan = plans.find((p) => p.id === planId) as Plan
 
     if (typeof currentPlan?.planDetails === 'string') {
-      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
     }
 
     const planDetails = currentPlan?.planDetails as PlanDetails
-    const selectedIncentives = planDetails?.selectedIncentives;
+    const selectedIncentives = planDetails?.selectedIncentives
 
     return selectedIncentives
   }
@@ -483,7 +504,7 @@ export class _ModelStore {
     const currentPlan = plans.find((p) => p.id === planId) as Plan
 
     if (typeof currentPlan?.planDetails === 'string') {
-      currentPlan.planDetails = JSON.parse(currentPlan.planDetails);
+      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
     }
 
     const planDetails = currentPlan?.planDetails as PlanDetails
@@ -498,15 +519,14 @@ export class _ModelStore {
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan;
+        plans[index] = currentPlan
       }
-    });
+    })
 
-    this.plans = plans;
+    this.plans = plans
 
     console.log(toJS(this.plans))
   }
-
 }
 
 const ModelStore = new _ModelStore()

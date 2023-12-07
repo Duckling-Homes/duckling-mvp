@@ -1,5 +1,6 @@
 'use client'
 
+import { defaultPhotoFilter } from '@/app/helpers/defaultPhotoFilter'
 import ModelStore from '@/app/stores/modelStore'
 import AddPhotoButton from '@/components/AddPhotoButton'
 import ChipManager from '@/components/ChipManager'
@@ -83,7 +84,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
     if (!updatedRoom) {
       return
     }
-    
+
     // TODO: Support propName selective updates!
     // const roomToUpdate: ProjectRoom = { id: updatedRoom.id }
     // roomToUpdate[propName] = updatedRoom[propName]
@@ -292,11 +293,11 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
               />
               <PhotoDisplay
                 currentProject={currentProject}
-                filterCriteria={{ roomId: currentRoom.id! }}
+                filterPhotos={defaultPhotoFilter({
+                  roomId: currentRoom.id!,
+                })}
               ></PhotoDisplay>
-              <AddPhotoButton 
-                photoUpdates={{ roomId: currentRoom?.id }}
-              />
+              <AddPhotoButton photoUpdates={{ roomId: currentRoom?.id }} />
             </div>
           </form>
         ) : (

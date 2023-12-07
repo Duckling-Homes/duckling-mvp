@@ -1,23 +1,24 @@
 'use client'
 
-import ModelStore from "@/app/stores/modelStore"
-import DeletePlanModal from "@/components/Modals/DeletePlan"
-import IncentivesModal from "@/components/Modals/IncentivesModal"
-import PlanModal from "@/components/Modals/PlanModal"
-import { Plan, Project } from "@/types/types"
-import * as Icons from "@mui/icons-material"
-import { Button, Chip, Divider, IconButton, Slider, Stack } from "@mui/material"
-import React, { useEffect, useState } from "react"
-import Photos from "./Upgrades/Photos"
-import PlanItem from "./Upgrades/PlanItem"
+import ModelStore from '@/app/stores/modelStore'
+import DeletePlanModal from '@/components/Modals/DeletePlan'
+import IncentivesModal from '@/components/Modals/IncentivesModal'
+import PlanModal from '@/components/Modals/PlanModal'
+import { Plan, Project } from '@/types/types'
+import * as Icons from '@mui/icons-material'
+import { Button, Chip, Divider, IconButton, Slider, Stack } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import Photos from './Upgrades/Photos'
+import PlanItem from './Upgrades/PlanItem'
+import { observer } from 'mobx-react-lite'
 
-import "./style.scss"
+import './style.scss'
 
 interface PlansProps {
   currentProject: Project
 }
 
-const Plans: React.FC<PlansProps> = ({ currentProject }) => {
+const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [plans, setPlans] = useState<Plan[]>([])
   const [currentPlan, setCurrentPlan] = useState<Plan>({} as Plan)
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -31,6 +32,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
     if (currentProject && currentProject?.plans) {
       setPlans(currentProject.plans)
       if (!currentPlan?.id) {
+        console.log('kiley plan', currentProject.plans[0])
         setCurrentPlan(currentProject.plans[0])
       }
     }
@@ -38,22 +40,20 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
 
   useEffect(() => {
     if (catalogue.length === 0) {
-      ModelStore.fetchCatalogue().then((data) =>
-        setCatalogue(data)
-      )
+      ModelStore.fetchCatalogue().then((data) => setCatalogue(data))
     }
-  } , [])
+  }, [])
 
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
       return
     }
 
-    const plan : Plan = {
-      name: name
+    const plan: Plan = {
+      name: name,
+      projectId: currentProject.id,
     }
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
-    console.log(newPlan)
     setCurrentPlan(newPlan)
   }
 
@@ -61,11 +61,10 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
     if (!currentProject.id || !currentPlan?.id) {
       return
     }
-    
     await ModelStore.deletePlan(currentProject.id, currentPlan?.id)
 
     const newPlansList = plans.filter((plan) => plan.id !== currentPlan?.id)
-    
+
     setPlans(newPlansList)
     setCurrentPlan(newPlansList[0] || {})
   }
@@ -73,11 +72,11 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
   async function handlePlanEdition(name: string) {
     const updatedPlan: Plan = {
       id: currentPlan?.id,
-      name: name
+      name: name,
     }
 
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
-    
+
     setCurrentPlan(updatedPlan)
   }
 
@@ -109,23 +108,22 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
       <div className="planCreation">
         <div className="planCreation__buttons">
           {plans?.length > 0 ? (
-            <div style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "8px",
-            }}>
-              {plans?.map((plan) => 
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              {plans?.map((plan) => (
                 <Chip
                   key={plan.id}
                   label={plan.name}
-                  color={
-                    currentPlan?.id === plan.id
-                      ? 'primary'
-                      : 'default'
-                  }
-                  onClick={() => setCurrentPlan(plan)}/>
-              )}
+                  color={currentPlan?.id === plan.id ? 'primary' : 'default'}
+                  onClick={() => setCurrentPlan(plan)}
+                />
+              ))}
               <IconButton
                 sx={{
                   borderRadius: '4px',
@@ -139,15 +137,16 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                 <Icons.Add />
               </IconButton>
             </div>
-          ) :
-          (<Button
-            variant="contained"
-            size="small"
-            onClick={() => setCreateModalOpen(true)}
-            startIcon={<Icons.Add />}>
+          ) : (
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => setCreateModalOpen(true)}
+              startIcon={<Icons.Add />}
+            >
               Create new plan
-          </Button>)
-          }
+            </Button>
+          )}
         </div>
         {currentPlan?.id && (
           <div className="planCreation__wrapper">
@@ -178,7 +177,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                   }}
                   aria-label="add"
                 >
-                  <Icons.Delete onClick={() => setDeleteModal(true)}/>
+                  <Icons.Delete onClick={() => setDeleteModal(true)} />
                 </IconButton>
                 <Button
                   variant="contained"
@@ -186,7 +185,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                   onClick={() => setIncentivesModal(true)}
                   startIcon={<Icons.Check />}
                   sx={{
-                    backgroundColor: "#2E7D32"
+                    backgroundColor: '#2E7D32',
                   }}
                 >
                   Complete Plan
@@ -217,18 +216,20 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                 title={'Energy and Storage'}
                 property={'Electrical'}
               />
-              <Photos />
+              <Photos plan={currentPlan} project={currentProject} />
             </div>
             <div className="planCreation__rightContainer">
               <div className="planCreation__rightHeader">
-                <IconButton sx={{
+                <IconButton
+                  sx={{
                     borderRadius: '4px',
                     border: '1px solid #2196F3',
                     color: '#2196F3',
                     padding: '4px 11px',
                   }}
-                  onClick={() => setHideFinance(!hideFinance)}>
-                  <Icons.DoubleArrow/>
+                  onClick={() => setHideFinance(!hideFinance)}
+                >
+                  <Icons.DoubleArrow />
                 </IconButton>
                 <p>Finance & Impact</p>
               </div>
@@ -238,13 +239,15 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                     <Icons.AttachMoney fontSize="small" />
                     <p>Cost</p>
                   </div>
-                  <IconButton sx={{
-                    borderRadius: '4px',
-                    backgroundColor: '#2196F3',
-                    color: '#fff',
-                    padding: '4px 11px',
-                  }}>
-                    <Icons.Tune/>
+                  <IconButton
+                    sx={{
+                      borderRadius: '4px',
+                      backgroundColor: '#2196F3',
+                      color: '#fff',
+                      padding: '4px 11px',
+                    }}
+                  >
+                    <Icons.Tune />
                   </IconButton>
                 </div>
                 <div className="planCreation__sectionItem">
@@ -265,10 +268,10 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
                 <div className="planCreation__financing">
                   Financing Options
                   <div className="planCreation__financingItem">
-                    Loan Options:
-                    Loan Amount:
+                    Loan Options: Loan Amount:
                     <Stack>
-                      <span>-</span><Slider/>
+                      <span>-</span>
+                      <Slider />
                     </Stack>
                   </div>
                   <Divider />
@@ -322,8 +325,7 @@ const Plans: React.FC<PlansProps> = ({ currentProject }) => {
         )}
       </div>
     </>
-
   )
-}
+})
 
 export default Plans
