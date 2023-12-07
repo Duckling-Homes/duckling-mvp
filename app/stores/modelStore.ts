@@ -524,8 +524,6 @@ export class _ModelStore {
     })
 
     this.plans = plans
-
-    console.log(toJS(this.plans))
   }
 }
 

@@ -8,6 +8,7 @@ import { CatalogueItem, Plan } from "@/types/types"
 import ModelStore from "@/app/stores/modelStore"
 
 import './style.scss'
+import { toJS } from "mobx"
 
 interface PlanItemProps {
   catalogue: CatalogueItem[],
@@ -35,7 +36,7 @@ const PlanItem: React.FC<PlanItemProps> = (
 
   useEffect(() => {
     if (plan.planDetails) {
-      const itemsFromPlan = typeof plan.planDetails === 'string' ? JSON.parse(plan.planDetails)[property] : plan.planDetails
+      const itemsFromPlan = typeof plan.planDetails === 'string' ? JSON.parse(plan.planDetails)[property] : plan.planDetails[property] || []
       setWorkItems(itemsFromPlan);
     } else {
       setWorkItems([])
@@ -43,13 +44,11 @@ const PlanItem: React.FC<PlanItemProps> = (
   }, [plan, property]);
 
   function removeDuplicates<T>(arr: T[], prop: keyof T): T[] {
-    console.log(arr, 'items')
     const uniqueItems = new Map();
     arr.forEach(item => {
       uniqueItems.set(item[prop], item);
     });
 
-    console.log(Array.from(uniqueItems.values()), 'deduped items')
     return Array.from(uniqueItems.values());
   }
 
@@ -69,7 +68,7 @@ const PlanItem: React.FC<PlanItemProps> = (
       ...item
     }
 
-    const newWorkItemsList = [...workItems]
+    const newWorkItemsList = [...workItems] || []
     newWorkItemsList.push(newWorkItem)
     setWorkItems(newWorkItemsList)
     ModelStore.addCatalogItem(plan?.id as string, newWorkItem, property)
@@ -118,6 +117,7 @@ const PlanItem: React.FC<PlanItemProps> = (
   }
 
   function renderWorkItems() {
+    console.log(toJS(workItems))
     return workItems?.map((item) => (
       <React.Fragment key={item.customId}>
         <Divider />
