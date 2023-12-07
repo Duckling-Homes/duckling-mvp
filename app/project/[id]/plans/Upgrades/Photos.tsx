@@ -53,6 +53,7 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
       }
       const newPlan = { ...plan }
       newPlan.planDetails = JSON.stringify(newPlanDetails)
+      setPlanDetails(newPlanDetails);
       await ModelStore.patchPlan(plan.projectId, newPlan)
     }
   }
