@@ -38,6 +38,7 @@ export async function createPlan(planData: Prisma.PlanUncheckedCreateInput) {
       planDetails: planData.planDetails,
     },
   })
+
   return createdPlan
 }
 
@@ -67,7 +68,7 @@ export async function deletePlan(id: string) {
 
 export async function updatePlan(
   id: string,
-  planUpdates: Prisma.PlanUpdateInput
+  planUpdates: Prisma.PlanUncheckedUpdateInput
 ) {
   const plan = await prisma.plan.findUnique({
     where: { id },

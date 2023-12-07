@@ -12,6 +12,7 @@ import DefaultForm from './AppliancesForms/DefaultForm'
 import HVACForm from './AppliancesForms/HVACForm'
 import WaterHeaterForm from './AppliancesForms/WaterHeaterForm'
 import AddPhotoButton from '@/components/AddPhotoButton'
+import { defaultPhotoFilter } from '@/app/helpers/defaultPhotoFilter'
 
 const TYPES = [
   { name: 'HVAC', value: 'HVAC' },
@@ -96,7 +97,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
 
   const handleTypeChange = (name: string, value: string) => {
     console.log(name)
-    const updatedAppliance = { ...currentAppliance, [name]: value, }
+    const updatedAppliance = { ...currentAppliance, [name]: value }
     handlePostAppliance(updatedAppliance, value)
   }
 
@@ -120,9 +121,8 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
     updatedAppliance = currentAppliance
   ) {
     if (updatedAppliance?.id && updatedAppliance?.type) {
-
       // TODO: Make use of propName!
-      
+
       // const applianceToUpdate = {
       //   id: updatedAppliance.id,
       //   type: updatedAppliance.type,
@@ -232,9 +232,11 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
             {renderForm()}
             <PhotoDisplay
               currentProject={currentProject}
-              filterCriteria={{ applianceId: currentAppliance.id! }}
+              filterPhotos={defaultPhotoFilter({
+                applianceId: currentAppliance.id!,
+              })}
             ></PhotoDisplay>
-            <AddPhotoButton 
+            <AddPhotoButton
               photoUpdates={{ applianceId: currentAppliance?.id }}
             />
           </form>

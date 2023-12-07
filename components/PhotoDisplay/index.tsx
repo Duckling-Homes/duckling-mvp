@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from '@mui/material'
 import { PhotoDetails, Project } from '@/types/types'
 import ModelStore from '@/app/stores/modelStore'
 import PhotoCaptureModal from '../Modals/PhotoModal'
@@ -8,14 +14,15 @@ import { observer } from 'mobx-react-lite'
 
 const PhotoDisplay: React.FC<{
   currentProject: Project
-  filterCriteria: { [key: string]: string }
-}> = observer(({ currentProject, filterCriteria }) => {
+  filterPhotos: (images: PhotoDetails[]) => PhotoDetails[]
+  editable?: boolean
+}> = observer(({ currentProject, filterPhotos, editable = true }) => {
   const [editPhoto, setEditPhoto] = useState<PhotoDetails>({})
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
-  const [photoToDelete, setPhotoToDelete] = React.useState<PhotoDetails>({});
+  const [photoToDelete, setPhotoToDelete] = React.useState<PhotoDetails>({})
 
   useEffect(() => {
-    if (!currentProject) return;
+    if (!currentProject) return
     if (currentProject?.images && currentProject.images.length > 0) {
       const downloadPromises = currentProject.images.map(
         (image: PhotoDetails) => {
@@ -35,22 +42,24 @@ const PhotoDisplay: React.FC<{
     }
     // Images were deleted
     else if (currentProject.images?.length === 0) {
-      setPhotos([]);
+      setPhotos([])
     }
   }, [currentProject?.images?.length])
 
   const handleOpenDeleteModal = (image: PhotoDetails) => {
-    setPhotoToDelete(image);
-  };
+    setPhotoToDelete(image)
+  }
 
   const handlCloseDeleteModal = () => {
-    setPhotoToDelete({});
-  };
+    setPhotoToDelete({})
+  }
 
   const handleDeleteImage = async (imageId: string) => {
     await ModelStore.deletePhoto(currentProject.id!, imageId)
-    setPhotoToDelete({});
+    setPhotoToDelete({})
   }
+
+  const filteredPhotos = filterPhotos(photos)
 
   return (
     <>
@@ -70,41 +79,38 @@ const PhotoDisplay: React.FC<{
           columnGap: '10px',
         }}
       >
-        {photos
-          .filter((image: PhotoDetails) =>
-            Object.entries(filterCriteria).every(
-              ([key, value]) => image[key as keyof PhotoDetails] === value
-            )
-          )
-          .map((image, i) => (
-            <div
-              key={i}
-              style={{
-                position: 'relative',
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                overflow: 'hidden',
+        {filteredPhotos.map((image, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'relative',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              overflow: 'hidden',
+            }}
+          >
+            <Button
+              onClick={() => {
+                if (editable) {
+                  setEditPhoto(image)
+                }
               }}
             >
-              <Button
-                onClick={() => {
-                  setEditPhoto(image)
+              <img
+                src={image.photoUrl}
+                alt={`Image ${i + 1}`}
+                style={{
+                  width: '200px',
+                  height: '200px',
+                  objectFit: 'cover',
                 }}
-              >
-                <img
-                  src={image.photoUrl}
-                  alt={`Image ${i + 1}`}
-                  style={{
-                    width: '200px',
-                    height: '200px',
-                    objectFit: 'cover',
-                  }}
-                />
+              />
+              {editable && (
                 <Button
                   variant="contained"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    handleOpenDeleteModal(image);
+                    e.stopPropagation()
+                    handleOpenDeleteModal(image)
                   }}
                   style={{
                     position: 'absolute',
@@ -118,28 +124,27 @@ const PhotoDisplay: React.FC<{
                 >
                   <DeleteOutlineOutlinedIcon />
                 </Button>
-              </Button>
-            </div>
-          ))}
-          <Dialog
-            open={!!photoToDelete?.id}
-            onClose={handlCloseDeleteModal}
-          >
-            <DialogTitle>
-              Confirm Deletion
-            </DialogTitle>
-            <DialogContent>
-              Are you sure you want to delete this image?
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => handleDeleteImage(photoToDelete.id!)} color="primary">
-                Yes
-              </Button>
-              <Button onClick={handlCloseDeleteModal} color="primary">
-                No
-              </Button>
-            </DialogActions>
-          </Dialog>
+              )}
+            </Button>
+          </div>
+        ))}
+        <Dialog open={!!photoToDelete?.id} onClose={handlCloseDeleteModal}>
+          <DialogTitle>Confirm Deletion</DialogTitle>
+          <DialogContent>
+            Are you sure you want to delete this image?
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => handleDeleteImage(photoToDelete.id!)}
+              color="primary"
+            >
+              Yes
+            </Button>
+            <Button onClick={handlCloseDeleteModal} color="primary">
+              No
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </>
   )

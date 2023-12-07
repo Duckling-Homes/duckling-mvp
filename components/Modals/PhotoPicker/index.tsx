@@ -9,24 +9,27 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 const PhotoPickerModal: React.FC<{
   open: boolean
   onClose: () => void
-  photoUpdates: PhotoDetails
-}> = ({ open, onClose, photoUpdates }) => {
+  filterPhotos: (images: PhotoDetails[]) => PhotoDetails[]
+  handleFinishSelect: (selectedPhotos: Set<string>) => void
+  initialSelection?: Set<string>
+}> = ({
+  open,
+  onClose,
+  filterPhotos,
+  handleFinishSelect,
+  initialSelection,
+}) => {
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
-  const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(new Set())
+  const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(
+    initialSelection ?? new Set()
+  )
   const currentProject = ModelStore.currentProject
 
   useEffect(() => {
     if (!currentProject) return
 
     if (currentProject?.images && currentProject.images.length > 0) {
-      const filteredImages = currentProject.images.filter(
-        (image: PhotoDetails) => {
-          return !Object.entries(photoUpdates).every(([key, value]) => {
-            const property = key as keyof PhotoDetails
-            return image[property] === value
-          })
-        }
-      )
+      const filteredImages = filterPhotos(currentProject.images)
       const downloadPromises = filteredImages.map((image: PhotoDetails) => {
         return ModelStore.downloadPhoto(image.id!).then((response) => {
           return { ...image, photoUrl: response }
@@ -56,24 +59,10 @@ const PhotoPickerModal: React.FC<{
   }
 
   const exitModal = () => {
-    setSelectedPhotos(new Set())
-    onClose()
-  }
-
-  const handleFinishSelect = () => {
-    if (currentProject) {
-      const updatePromises = Array.from(selectedPhotos).map(
-        (imageId: string) => {
-          return ModelStore.patchPhotoDetails(currentProject.id!, {
-            ...photoUpdates,
-            id: imageId,
-          })
-        }
-      )
-
-      Promise.all(updatePromises)
+    if (!initialSelection) {
+      setSelectedPhotos(new Set())
     }
-    exitModal()
+    onClose()
   }
 
   return (
@@ -177,7 +166,10 @@ const PhotoPickerModal: React.FC<{
           <Button
             variant="contained"
             startIcon={<CheckIcon />}
-            onClick={handleFinishSelect}
+            onClick={() => {
+              handleFinishSelect(selectedPhotos)
+              exitModal()
+            }}
             size="small"
             sx={{
               marginLeft: 'auto',

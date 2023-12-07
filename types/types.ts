@@ -205,6 +205,7 @@ export interface Plan {
 export interface PlanDetails {
   selectedIncentives: string[]
   [key: string]: CatalogueItem[] | string[]
+  imageIds: string[]
 }
 
 export interface CatalogueItem {

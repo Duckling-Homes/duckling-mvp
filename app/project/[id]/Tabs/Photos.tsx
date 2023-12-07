@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { ProjectRoom, Project } from '@/types/types'
 import PhotoDisplay from '@/components/PhotoDisplay'
 import { observer } from 'mobx-react-lite'
 import AddPhotoButton from '@/components/AddPhotoButton'
+import { defaultPhotoFilter } from '@/app/helpers/defaultPhotoFilter'
 
 interface PhotosTabProps {
   currentProject: Project
@@ -58,18 +54,18 @@ const Photos: React.FC<PhotosTabProps> = observer(({ currentProject }) => {
       </div>
       <div
         style={{
-          padding: '32px'
+          padding: '32px',
         }}
       >
         <PhotoDisplay
           currentProject={currentProject}
-          filterCriteria={
+          filterPhotos={defaultPhotoFilter(
             roomFilter == 'UNSELECTED' ? {} : { roomId: roomFilter }
-          }
+          )}
         ></PhotoDisplay>
       </div>
     </>
-  );
+  )
 })
 
 export default Photos

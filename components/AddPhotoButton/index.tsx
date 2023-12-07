@@ -28,6 +28,30 @@ const AddPhotoButton: React.FC<{
     setAnchorOptions(null)
   }
 
+  const filterPhotos = (photos: PhotoDetails[]) => {
+    return photos.filter((image: PhotoDetails) => {
+      return !Object.entries(photoUpdates ?? {}).every(([key, value]) => {
+        const property = key as keyof PhotoDetails
+        return image[property] === value
+      })
+    })
+  }
+
+  const handleFinishSelect = async (selectedPhotos: Set<string>) => {
+    if (currentProject) {
+      const updatePromises = Array.from(selectedPhotos).map(
+        (imageId: string) => {
+          return ModelStore.patchPhotoDetails(currentProject.id!, {
+            ...photoUpdates,
+            id: imageId,
+          })
+        }
+      )
+
+      await Promise.all(updatePromises)
+    }
+  }
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -81,7 +105,8 @@ const AddPhotoButton: React.FC<{
             setOpenPhotoPicker(false)
             handleClose()
           }}
-          photoUpdates={photoUpdates}
+          filterPhotos={filterPhotos}
+          handleFinishSelect={handleFinishSelect}
         />
       )}
       <input

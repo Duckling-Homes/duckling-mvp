@@ -1,19 +1,20 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import ElectricalPanelForm from "./ElectricalForms/ElectricalPanelForm";
-import SolarPanelForm from "./ElectricalForms/SolarPanelForm";
-import BatteryForm from "./ElectricalForms/BatteryForm";
-import EVChargerForm from "./ElectricalForms/EVChargerForm";
-import GeneratorForm from "./ElectricalForms/GeneratorForm";
-import ChipManager from "@/components/ChipManager";
-import { Project, ProjectElectrical } from "@/types/types";
-import { v4 as uuidv4 } from 'uuid';
-import ModelStore from "@/app/stores/modelStore";
-import { observer } from "mobx-react-lite";
-import { SelectInput } from "@/components/Inputs";
-import PhotoDisplay from "@/components/PhotoDisplay";
-import AddPhotoButton from "@/components/AddPhotoButton";
+import { useEffect, useState } from 'react'
+import ElectricalPanelForm from './ElectricalForms/ElectricalPanelForm'
+import SolarPanelForm from './ElectricalForms/SolarPanelForm'
+import BatteryForm from './ElectricalForms/BatteryForm'
+import EVChargerForm from './ElectricalForms/EVChargerForm'
+import GeneratorForm from './ElectricalForms/GeneratorForm'
+import ChipManager from '@/components/ChipManager'
+import { Project, ProjectElectrical } from '@/types/types'
+import { v4 as uuidv4 } from 'uuid'
+import ModelStore from '@/app/stores/modelStore'
+import { observer } from 'mobx-react-lite'
+import { SelectInput } from '@/components/Inputs'
+import PhotoDisplay from '@/components/PhotoDisplay'
+import AddPhotoButton from '@/components/AddPhotoButton'
+import { defaultPhotoFilter } from '@/app/helpers/defaultPhotoFilter'
 
 const TYPES = [
   { name: 'Electrical Panel', value: 'ElectricalPanel' },
@@ -58,7 +59,6 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     updatedElectrical: ProjectElectrical,
     type: string
   ) {
-
     updatedElectrical.type = type
     const createdElectrical = await ModelStore.createElectrical(
       currentProject.id!,
@@ -97,9 +97,11 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
     setCurrentElectrical(newElectricalsList[0] || {})
   }
 
-  async function patchElectrical(propName: string, updatedElectrical = currentElectrical) {
+  async function patchElectrical(
+    propName: string,
+    updatedElectrical = currentElectrical
+  ) {
     if (updatedElectrical?.id) {
-      
       // TODO: make use of propName!
 
       // const electricalToUpdate = {
@@ -115,10 +117,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
         return electrical
       })
 
-      await ModelStore.updateElectrical(
-        currentProject.id!,
-        updatedElectrical
-      )
+      await ModelStore.updateElectrical(currentProject.id!, updatedElectrical)
 
       setElectricals(updatedElectricals)
     }
@@ -200,31 +199,39 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
         currentChip={currentElectrical?.id || ''}
         onChipClick={(i: number) => setCurrentElectrical(electricals[i])}
       />
-     {currentElectrical?.id && <div style={{
-        width: '100%',
-      }}>
-        <form style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-        }}>
-          <SelectInput
-            label="Type"
-            value={currentElectrical?.type ?? ''}
-            onChange={(value) => handleTypeChange('type', value)}
-            disabled={currentElectrical?.type ? true : false}
-            options={TYPES}
-          />
-          {renderForm()}
-          <PhotoDisplay
+      {currentElectrical?.id && (
+        <div
+          style={{
+            width: '100%',
+          }}
+        >
+          <form
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+          >
+            <SelectInput
+              label="Type"
+              value={currentElectrical?.type ?? ''}
+              onChange={(value) => handleTypeChange('type', value)}
+              disabled={currentElectrical?.type ? true : false}
+              options={TYPES}
+            />
+            {renderForm()}
+            <PhotoDisplay
               currentProject={currentProject}
-              filterCriteria={ { electricalId: currentElectrical.id! } }
-          ></PhotoDisplay>
-          <AddPhotoButton 
-            photoUpdates={{ electricalId: currentElectrical?.id }}
-          />
-        </form>
-      </div>}
+              filterPhotos={defaultPhotoFilter({
+                electricalId: currentElectrical.id!,
+              })}
+            ></PhotoDisplay>
+            <AddPhotoButton
+              photoUpdates={{ electricalId: currentElectrical?.id }}
+            />
+          </form>
+        </div>
+      )}
     </div>
   )
 })

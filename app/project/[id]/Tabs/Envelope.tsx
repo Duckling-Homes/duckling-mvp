@@ -12,6 +12,7 @@ import { v4 } from 'uuid'
 import AirSealingForm from './EnvelopesForms/AirSealingForm'
 import InsulationForm from './EnvelopesForms/InsulationForm'
 import AddPhotoButton from '@/components/AddPhotoButton'
+import { defaultPhotoFilter } from '@/app/helpers/defaultPhotoFilter'
 
 interface EnvelopeProps {
   currentProject: Project
@@ -90,7 +91,7 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
     }
 
     // TODO: make use of propName
-    
+
     // const envelopeToUpdate = {
     //   id: updatedEnvelope.id,
     //   type: updatedEnvelope.type,
@@ -166,9 +167,11 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
               {renderForm()}
               <PhotoDisplay
                 currentProject={currentProject}
-                filterCriteria={{ envelopeId: currentEnvelope.id! }}
+                filterPhotos={defaultPhotoFilter({
+                  envelopeId: currentEnvelope.id!,
+                })}
               ></PhotoDisplay>
-              <AddPhotoButton 
+              <AddPhotoButton
                 photoUpdates={{ envelopeId: currentEnvelope?.id }}
               />
             </form>

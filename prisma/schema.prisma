@@ -449,7 +449,6 @@ model Plan {
   projectId            String
   project              Project @relation(name: "ProjectToPlan", fields: [projectId], references: [id], onDelete: Cascade)
   
-  
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @default(now()) @updatedAt
 }
