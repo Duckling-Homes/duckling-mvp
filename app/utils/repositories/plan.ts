@@ -36,7 +36,6 @@ export async function createPlan(planData: Prisma.PlanUncheckedCreateInput) {
         },
       },
       planDetails: planData.planDetails,
-      imageIds: planData.imageIds,
     },
   })
 
