@@ -21,7 +21,7 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
     }
     const planDetails = plan?.planDetails as PlanDetails
 
-    if (planDetails && !planDetails.imageIds) {
+    if (planDetails && !planDetails?.imageIds) {
       planDetails.imageIds = [] as string[]
     }
     return planDetails
@@ -38,12 +38,12 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
 
   const filterForDisplay = (photos: PhotoDetails[]) => {
     return photos.filter((photo) =>
-      planDetails.imageIds.includes(photo.id ?? '')
+      planDetails?.imageIds.includes(photo.id ?? '')
     )
   }
 
   const getSelectedPhotos = () => {
-    return new Set(planDetails.imageIds)
+    return new Set(planDetails?.imageIds)
   }
   const handleFinishSelect = async (selectedPhotos: Set<string>) => {
     if (plan.projectId) {
@@ -98,7 +98,7 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
         handleFinishSelect={handleFinishSelect}
         initialSelection={getSelectedPhotos()}
       />
-      {planDetails.imageIds.length > 0 && (
+      {planDetails?.imageIds.length > 0 && (
         <PhotoDisplay
           currentProject={project}
           filterPhotos={filterForDisplay}
