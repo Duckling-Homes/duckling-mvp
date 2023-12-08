@@ -35,6 +35,7 @@
     "mobx": "^6.10.2",
     "mobx-react-lite": "^4.0.5",
     "next": "^13.5.4",
+    "openai": "^4.20.1",
     "papaparse": "^5.4.1",
     "postcss": "8.4.30",
     "react": "18.2.0",

@@ -1,7 +1,6 @@
 import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
 import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
 import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
-import { getPlansByProjectId } from '@/app/utils/repositories/plan'
 import { getProject } from '@/app/utils/repositories/project'
 import { getProjectData } from '@/app/utils/repositories/projectData'
 import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
@@ -17,7 +16,6 @@ export const GET = withErrorHandler(
     const envelopes = await getProjectEnvelopes(params.id)
     const appliances = await getProjectAppliances(params.id)
     const electrical = await getProjectElectrical(params.id)
-    const plans = await getPlansByProjectId(params.id)
 
     return NextResponse.json({
       ...project,
@@ -26,7 +24,6 @@ export const GET = withErrorHandler(
       envelopes,
       appliances,
       electrical,
-      plans,
     })
   }
 )
