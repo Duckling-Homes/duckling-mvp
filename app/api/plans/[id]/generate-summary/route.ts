@@ -43,13 +43,6 @@ export const GET = withErrorHandler(
         return NextResponse.json({ message: 'Plan not found' }, { status: 404 })
       }
 
-      if (plan.summary) {
-        return NextResponse.json({
-          plan,
-          summary: plan.summary,
-        })
-      }
-
       const projectId = plan.projectId
 
       const project = await getProject(projectId)
