@@ -48,7 +48,7 @@ export async function getPlansByProjectId(projectId: string) {
       projectId: projectId,
     },
     orderBy: {
-      createdAt: 'desc',
+      updatedAt: 'desc',
     },
   })
 }
