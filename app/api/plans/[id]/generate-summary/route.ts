@@ -4,6 +4,7 @@ import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelope
 import {
   getPlanById,
   isPlanInOrganization,
+  updatePlan,
 } from '@/app/utils/repositories/plan'
 import { getProject } from '@/app/utils/repositories/project'
 import { getProjectData } from '@/app/utils/repositories/projectData'
@@ -25,6 +26,21 @@ export async function getCompletion(plan: Plan) {
     await openai.chat.completions.create(params)
 
   return chatCompletion.choices[0].message
+}
+
+async function getCompletionStub(plan: Plan) {
+  console.log(plan)
+
+  return {
+    summary:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
+    recommended:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
+    comfort:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
+    health:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
+  }
 }
 
 export const GET = withErrorHandler(
@@ -66,15 +82,16 @@ export const GET = withErrorHandler(
 
       // const summary = await getCompletion(plan, fullProject)
 
-      const content = 'This is a stub'
+      const content = await getCompletionStub(plan)
+
+      await updatePlan(plan.id, {
+        copy: content,
+      })
+
+      // update project
 
       // Only return the database metadata
-      return NextResponse.json({
-        plan,
-        summary: {
-          content,
-        },
-      })
+      return NextResponse.json({ ...content })
     } catch (err) {
       return new NextResponse((err as Error).message, {
         status: 500,
