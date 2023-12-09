@@ -28,9 +28,7 @@ export async function getCompletion(plan: Plan) {
   return chatCompletion.choices[0].message
 }
 
-async function getCompletionStub(plan: Plan) {
-  console.log(plan)
-
+async function getCompletionStub() {
   return {
     summary:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
@@ -82,7 +80,7 @@ export const GET = withErrorHandler(
 
       // const summary = await getCompletion(plan, fullProject)
 
-      const content = await getCompletionStub(plan)
+      const content = await getCompletionStub()
 
       await updatePlan(plan.id, {
         copy: content,
