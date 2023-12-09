@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Close } from '@mui/icons-material'
 import {
   Button,
@@ -10,10 +9,11 @@ import {
   StepLabel,
   Stepper,
 } from '@mui/material'
+import { useState } from 'react'
 
-import './styles.scss'
 import ModelStore from '@/app/stores/modelStore'
 import { CatalogueItem, Incentive, Plan } from '@/types/types'
+import './styles.scss'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -131,10 +131,12 @@ const Incentives: React.FC<{
 }
 
 
-const CopyReview = () => {
+const CopyReview: React.FC<{
+  plan: Plan
+}> = ({ plan }) => {
   return (
     <div>
-      Copy Review
+      Copy Review {plan.id}
     </div>
   )
 }
@@ -222,7 +224,8 @@ const IncentivesModal: React.FC<{
         )
       case 1:
         return (
-          <CopyReview />
+          <CopyReview plan={plan as Plan}
+          />
         )
     }
   }
