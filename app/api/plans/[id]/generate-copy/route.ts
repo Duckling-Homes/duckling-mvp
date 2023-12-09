@@ -10,23 +10,21 @@ import { getProject } from '@/app/utils/repositories/project'
 import { getProjectData } from '@/app/utils/repositories/projectData'
 import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
 import withErrorHandler from '@/app/utils/withErrorHandler'
-import openai from '@/lib/ai'
-import { Plan } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
 
-export async function getCompletion(plan: Plan) {
-  console.log(plan)
-  const params: OpenAI.Chat.ChatCompletionCreateParams = {
-    messages: [{ role: 'user', content: 'Say this is a test' }],
-    model: 'gpt-3.5-turbo',
-  }
+// TODO: Will add this back when we have a working prompt
+// export async function getCompletion(plan: Plan) {
+//   console.log(plan)
+//   const params: OpenAI.Chat.ChatCompletionCreateParams = {
+//     messages: [{ role: 'user', content: 'Say this is a test' }],
+//     model: 'gpt-3.5-turbo',
+//   }
 
-  const chatCompletion: OpenAI.Chat.ChatCompletion =
-    await openai.chat.completions.create(params)
+//   const chatCompletion: OpenAI.Chat.ChatCompletion =
+//     await openai.chat.completions.create(params)
 
-  return chatCompletion.choices[0].message
-}
+//   return chatCompletion.choices[0].message
+// }
 
 async function getCompletionStub() {
   return {
