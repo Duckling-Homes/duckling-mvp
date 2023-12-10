@@ -108,11 +108,7 @@ const PlanItem: React.FC<PlanItemProps> = (
       quantValue = parseInt(item.quantity as string)
     }
 
-    if (item.pricingType === 'PerUnit') {
-      return `$${quantValue * item.basePricePer}`
-    } else if (item.pricingType === 'ScaledPricing') {
-      return `$${quantValue * parseInt(item.scaledPricingMetric)}`
-    }
+    return `$${quantValue * item.basePricePer}`
 
   }
 
@@ -136,10 +132,10 @@ const PlanItem: React.FC<PlanItemProps> = (
             />
             <TextField
               label={
-                item.pricingType === 'PerUnit' ? 'Quantity' : item.pricingType
+                item.pricingType === 'PerUnit' ? 'Quantity' : item.scaledPricingMetric
               }
               placeholder={
-                item.pricingType === 'PerUnit' ? 'Quantity' : item.pricingType
+                item.pricingType === 'PerUnit' ? 'Quantity' : item.scaledPricingMetric
               }
               value={item?.quantity || 0}
               type="tel"
