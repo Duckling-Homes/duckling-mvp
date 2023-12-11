@@ -36,8 +36,8 @@ async function processCSV(filePath: string): Promise<void> {
       for (const row of results.data as any[]) {
 
         const termLengthsMonths = row.length.split('\n').map((length: string) => {
-          const years = parseInt(length.replace('yr', '').replace('-', '').trim());
-          return years * 12; // Convert years to months
+          const months = parseInt(length.replace('month', '').replace('-', '').trim());
+          return months; // Already in months
         });
 
         const rowData = {
@@ -46,12 +46,12 @@ async function processCSV(filePath: string): Promise<void> {
           provider: row.provider,
           description: row.description,
           link: row.link,
-          minAPR: parseFloat(row.minAPR),
-          maxAPR: parseFloat(row.maxAPR),
-          minAmount: parseFloat(row.minAmount),
-          maxAmount: parseFloat(row.maxAmount),
+          minAPR: parseFloat(row.minAPR.replace('%', '')),
+          maxAPR: parseFloat(row.maxAPR.replace('%', '')),
+          minAmount: parseFloat(row.minAmount.replace('$', '').replace(',', '')),
+          maxAmount: parseFloat(row.maxAmount.replace('$', '').replace(',', '')),
           termLengths: termLengthsMonths,
-          organizationId: row.organizationId,
+          organizationId: row.organizationId.trim(),
         }
 
         try {

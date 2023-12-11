@@ -31,5 +31,4 @@ ts-node ./scripts/loadProductCatalogue.ts "$DATABASE_URL" "./scripts/sampleLocal
 echo "Loading financing options from CSV..."
 ts-node ./scripts/loadFinancingOptions.ts "$DATABASE_URL" "./scripts/sampleLocalData/financing.csv" "$ORG_ID" || log_and_exit "Failed to load financing options"
 
-
 echo "Seed Local Data Completed Successfully!"

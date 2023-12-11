@@ -1,6 +1,10 @@
 id,name,provider,description,link,minAPR,maxAPR,minAmount,maxAmount,length,eligibleWork,organizationId
-uuid-f-101,Atlantic City Electrical,NEIF (via Atlantic City Electrical),10 year only available for Home Improvement with Energy Star.,https://www.neifund.org/atlanticcityelectricresidential/,0%,0%,"$2,500","$15,000","-3 yr
--5 yr  
--7 yr
--10 yr",,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+uuid-f-101,Atlantic City Electrical,NEIF (via Atlantic City Electrical),10 year only available for Home Improvement with Energy Star.,https://www.neifund.org/atlanticcityelectricresidential/,0%,0%,"$2,500","$15,000","-36 month
+-60 months 
+-84 month
+-120 month",,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
+"
+uuid-f-102,EnergyPlus,NEIF,Whole-home improvement financing,https://www.neifund.org/energyplus-improvement-loan/,9.99%,15.99%,"$2,500","$35,000","-36 month
+-60 month
+-120 month",,"a4b5aa52-274d-4b1e-8f6b-3828f74c72d3
 "
