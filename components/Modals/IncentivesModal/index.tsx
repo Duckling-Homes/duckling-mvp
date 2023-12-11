@@ -74,7 +74,8 @@ const Incentives: React.FC<{
                   display: "flex",
                   flexDirection: "column",
                   gap: "4px",
-                  flex: 1
+                  flex: 1,
+                  minWidth: "65%"
                 }}>
                   <span>{incentive.name}</span>
                   <small>{incentive.descriptionText}</small>  
