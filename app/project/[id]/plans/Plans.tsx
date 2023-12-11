@@ -27,7 +27,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [hideFinance, setHideFinance] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [incentivesModal, setIncentivesModal] = useState(false)
-  const [catalogue, setCatalogue] = useState([])
+  const [catalogue, setCatalogue] = useState(ModelStore.productCatalogue)
 
   useEffect(() => {
     if (currentProject && currentProject?.plans) {

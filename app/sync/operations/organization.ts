@@ -20,7 +20,7 @@ export class OrganizationSyncOperations {
       })
     }
 
-    const resp = await db.objects.where('id').equals(organizationID).first()
+    const resp = await db.objects.where('id').equals(organizationID).first();
     return resp?.json as Organization
   }
 
@@ -36,4 +36,19 @@ export class OrganizationSyncOperations {
     return catalogue
 
   }
+
+  getFinancingOptions = async () => {
+    const response = await synchronizedFetch(
+      `/api/financingOptions/`,
+      {
+        method: 'GET',
+      }
+    )
+    const financingOptions = await response.json()
+
+    return financingOptions
+
+  }
+
+  
 }
