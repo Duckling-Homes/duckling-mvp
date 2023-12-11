@@ -54,6 +54,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       name: name,
       projectId: currentProject.id,
     }
+    
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
     setCurrentPlan(newPlan)
   }

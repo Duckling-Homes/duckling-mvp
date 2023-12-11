@@ -200,7 +200,7 @@ export interface Plan {
   name?: string
   planDetails?: PlanDetails | string
   projectId?: string
-  copy: {
+  copy?: {
     comfort: string,
     health: string,
     recommended: string,
@@ -215,24 +215,24 @@ export interface PlanDetails {
 }
 
 export interface CatalogueItem {
-  id: string
+  id?: string
   customId?: string
   customName?: string
   quantity?: number | string
-  category: string
-  subcategory: string
-  name: string
-  description: string
-  type: string
-  pricingType: string
-  scaledPricingMetric: string
-  basePricePer: number
-  brand: string
-  modelNumber: string
-  ahriNumber: string
-  incentives: Incentive[]
-  organizationId: string
-  organization: Organization
+  category?: string
+  subcategory?: string
+  name?: string
+  description?: string
+  type?: string
+  pricingType?: string
+  scaledPricingMetric?: string
+  basePricePer?: number
+  brand?: string
+  modelNumber?: string
+  ahriNumber?: string
+  incentives?: Incentive[]
+  organizationId?: string
+  organization?: Organization
 }
 
 export interface Incentive {

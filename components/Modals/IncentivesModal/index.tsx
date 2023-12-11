@@ -132,12 +132,12 @@ const Incentives: React.FC<{
 
 const CopyReview: React.FC<{
   plan: Plan
-  projectID: string
-}> = ({ plan, projectID }) => {
+  projectId: string
+}> = ({ plan, projectId }) => {
 
   useEffect(() => {
     if (!plan.copy) {
-      ModelStore.generateCopy(plan, projectID)
+      ModelStore.generateCopy(plan, projectId)
     }
   })
 
@@ -257,7 +257,7 @@ const IncentivesModal: React.FC<{
         return (
           <CopyReview
             plan={plan as Plan}
-            projectId={projectId}
+            projectId={projectId as string}
           />
         )
     }

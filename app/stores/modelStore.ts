@@ -524,7 +524,7 @@ export class _ModelStore {
     this.plans = plans
   }
 
-  generateCopy = async (plan, projectID) => {
+  generateCopy = async (plan: Plan, projectID: string) => {
     await SyncAPI.plans.generateCopy(plan)
     await this.reloadProject(projectID)
   }

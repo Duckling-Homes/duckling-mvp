@@ -65,7 +65,7 @@ export class PlansSyncOperations {
     return plan
   })
 
-  generateCopy = async (plan) => {
+  generateCopy = async (plan: Plan) => {
     await db.enqueueRequest(`/api/plans/${plan.id}/generate-copy`, {
       method: 'GET'
     })

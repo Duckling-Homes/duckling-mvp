@@ -1,8 +1,17 @@
 import { SelectInput } from "@/components/Inputs";
+import { CatalogueItem } from "@/types/types";
 import { Clear } from "@mui/icons-material";
 import { Divider, IconButton, TextField } from "@mui/material";
 
-const PlanSubItem = ({item, onQuantityChange, catalogue, removeItem, onItemSelect}) => {
+interface PlanSubItemProps {
+  item: CatalogueItem;
+  onQuantityChange: (customId: string, property: string, newQuantity: number) => void;
+  catalogue: CatalogueItem[];
+  removeItem: (customId: string) => void;
+  onItemSelect: (customId: string, selectedItem: CatalogueItem) => void;
+}
+
+const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalogue, removeItem, onItemSelect}) => {
 
   const filterOptions = () => {
     const filteredArray = catalogue.filter(catalogueItem => catalogueItem.subcategory === item.subcategory)
@@ -22,15 +31,15 @@ const PlanSubItem = ({item, onQuantityChange, catalogue, removeItem, onItemSelec
     }
 
     const quantValue = parseInt(item.quantity as string);
-    const roundedCost = (quantValue * item.basePricePer).toFixed(2);
+    const roundedCost = (quantValue * (item.basePricePer as number)).toFixed(2);
 
     return `$${roundedCost}`;
   };
 
 
-  function selectWorkItem(itemId) {
+  function selectWorkItem(itemId: string) {
     const selectedItem = catalogue.find(catalogueItem => catalogueItem.id === itemId)
-    onItemSelect(item.customId as string, selectedItem)
+    onItemSelect(item.customId as string, selectedItem as CatalogueItem)
   }
 
   return (
@@ -46,7 +55,7 @@ const PlanSubItem = ({item, onQuantityChange, catalogue, removeItem, onItemSelec
             label="Type"
             value={item.id || ''}
             onChange={(value) => selectWorkItem(value)}
-            options={filterOptions()}
+            options={(filterOptions() as []) || []}
           />
           <TextField
             label={
@@ -72,7 +81,7 @@ const PlanSubItem = ({item, onQuantityChange, catalogue, removeItem, onItemSelec
               padding: '4px 11px',
             }}
             aria-label="remove-work-item"
-            onClick={() => removeItem(item.customId)}
+            onClick={() => removeItem(item.customId as string)}
           >
             <Clear />
           </IconButton>
