@@ -30,13 +30,14 @@ const Incentives: React.FC<{
   }
 
   function calculateIncentiveValue(incentive: Incentive) {
+    console.log(incentive)
     switch(incentive.calculationType) {
       case 'FlatRate':
         return `up to $${incentive.calculationRateValue} per project`
       case 'PerUnit':
         return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
       case 'Percentage':
-        return `${incentive.calculationRateValue}%, up to $${incentive.maxLimit}`
+        return `${incentive.calculationRateValue * 100}%, up to $${incentive.maxLimit}`
     }
 
     return 'aa'
