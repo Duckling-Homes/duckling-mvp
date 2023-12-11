@@ -200,6 +200,12 @@ export interface Plan {
   name?: string
   planDetails?: PlanDetails | string
   projectId?: string
+  copy: {
+    comfort: string,
+    health: string,
+    recommended: string,
+    summary: string
+  }
 }
 
 export interface PlanDetails {

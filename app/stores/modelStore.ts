@@ -451,7 +451,6 @@ export class _ModelStore {
     }
 
     const planDetails = currentPlan?.planDetails as PlanDetails
-    console.log(planDetails)
     const planCategory = planDetails[category] as CatalogueItem[] || []
 
     const updatedItems = planCategory.map((item: CatalogueItem) =>
@@ -523,6 +522,11 @@ export class _ModelStore {
     })
 
     this.plans = plans
+  }
+
+  generateCopy = async (plan, projectID) => {
+    await SyncAPI.plans.generateCopy(plan)
+    await this.reloadProject(projectID)
   }
 }
 

@@ -8,8 +8,9 @@ import {
   Step,
   StepLabel,
   Stepper,
+  TextField,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
 import { CatalogueItem, Incentive, Plan } from '@/types/types'
@@ -129,13 +130,44 @@ const Incentives: React.FC<{
   )
 }
 
-
 const CopyReview: React.FC<{
   plan: Plan
-}> = ({ plan }) => {
+  projectID: string
+}> = ({ plan, projectID }) => {
+
+  useEffect(() => {
+    if (!plan.copy) {
+      ModelStore.generateCopy(plan, projectID)
+    }
+  })
+
   return (
     <div>
-      Copy Review {plan.id}
+      <div>
+        Home Summary
+        <TextField 
+          value={plan.copy?.summary || ''}
+        />
+      </div>
+      <div>
+        Plan Summary
+        <TextField
+          value={plan.copy?.recommended || ''}
+        />
+      </div>
+      <div>
+        Comfort Summary
+        <TextField
+          value={plan.copy?.comfort || ''}
+        />
+      </div>
+      <div>
+        Health Summary
+        <TextField
+          value={plan.copy?.health || ''}
+        />
+      </div>
+
     </div>
   )
 }
@@ -223,7 +255,9 @@ const IncentivesModal: React.FC<{
         )
       case 1:
         return (
-          <CopyReview plan={plan as Plan}
+          <CopyReview
+            plan={plan as Plan}
+            projectId={projectId}
           />
         )
     }

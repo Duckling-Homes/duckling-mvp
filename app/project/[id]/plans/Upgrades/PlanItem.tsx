@@ -33,6 +33,8 @@ const PlanItem: React.FC<PlanItemProps> = (
     if (plan.planDetails) {
       const itemsFromPlan = extractPlanDetails(plan, property);
       setItems(itemsFromPlan);
+    } else {
+      setItems([])
     }
   }, [plan, property]);
 

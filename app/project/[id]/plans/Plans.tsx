@@ -13,6 +13,7 @@ import PlanItem from './Upgrades/PlanItem'
 import { observer } from 'mobx-react-lite'
 
 import './style.scss'
+import { toJS } from 'mobx'
 
 interface PlansProps {
   currentProject: Project
@@ -30,6 +31,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
+      console.log(toJS(currentProject.plans))
       setPlans(currentProject.plans)
       if (!currentPlan?.id) {
         setCurrentPlan(currentProject.plans[0])
