@@ -1,88 +1,14 @@
 'use client'
 
 import React, { useEffect, useState } from "react"
-import { Add, Bolt, Clear, Construction, DeviceThermostat, Home } from "@mui/icons-material"
-import { Button, Divider, IconButton, Menu, MenuItem, TextField } from "@mui/material"
+import { Add, Bolt, Construction, DeviceThermostat, Home } from "@mui/icons-material"
+import { Button, Menu, MenuItem } from "@mui/material"
 import { v4 as uuidv4 } from 'uuid'
 import { CatalogueItem, Plan } from "@/types/types"
 import ModelStore from "@/app/stores/modelStore"
+import PlanSubItem from "./PlanSubItem"
 
 import './style.scss'
-import { SelectInput } from "@/components/Inputs"
-
-
-const WorkItem = ({item, onPropChange, catalogue, removeItem}) => {
-
-  const filterOptions = () => {
-    const filteredArray = catalogue.filter(catalogueItem => catalogueItem.subcategory === item.subcategory)
-
-    console.log(filteredArray)
-    console.log(item)
-
-    return filteredArray
-  }
-
-  const calculateCost = (item: CatalogueItem) => {
-    let quantValue = 0
-
-    if (!item || !item.pricingType) {
-      return 'error'
-    }
-
-    if (item.quantity) {
-      quantValue = parseInt(item.quantity as string)
-    }
-
-    return `$${quantValue * item.basePricePer}`
-  }
-
-  return (
-    <>
-      <Divider />
-      <div className="planItem__workItem" key={item.customId}>
-        <div className="planItem__workItemHeader">
-          <span>{item.subcategory}</span>
-          <span>Estimated Cost: {calculateCost(item)}</span>
-        </div>
-        <div className="planItem__workItemContent">
-          <SelectInput
-            label="Type"
-            value={''}
-            onChange={(value) => console.log('type', value)}
-            options={filterOptions()}
-          />
-          <TextField
-            label={
-              item.pricingType === 'PerUnit' ? 'Quantity' : item.scaledPricingMetric
-            }
-            placeholder={
-              item.pricingType === 'PerUnit' ? 'Quantity' : item.scaledPricingMetric
-            }
-            value={item?.quantity || 0}
-            type="tel"
-            size="small"
-            onChange={(e) => {
-              const newQuantity = parseInt(e.target.value, 10) || 0;
-              onPropChange(item.customId as string, 'quantity', newQuantity);
-            }}
-          />
-          <IconButton
-            sx={{
-              borderRadius: '4px',
-              border: '1px solid #2196F3',
-              color: '#2196F3',
-              padding: '4px 11px',
-            }}
-            aria-label="remove-work-item"
-            onClick={() => removeItem(item.customId)}
-          >
-            <Clear/>
-          </IconButton>
-        </div>
-      </div>  
-    </>
-  )
-}
 
 interface PlanItemProps {
   catalogue: CatalogueItem[],
@@ -98,88 +24,95 @@ const PlanItem: React.FC<PlanItemProps> = (
     title,
     property
   }) => {
-  const [items, setItems] = useState<CatalogueItem[]>([])
+  const subcategories = getSubcategories(property)
+  const [items, setItems] = useState([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
-  const [workItems, setWorkItems] = useState<CatalogueItem[]>([])
-
-  useEffect(() => {
-    setItems(getSubcat(property))
-  }, [catalogue])
 
   useEffect(() => {
     if (plan.planDetails) {
-      const itemsFromPlan = typeof plan.planDetails === 'string' ? JSON.parse(plan.planDetails)[property] : plan.planDetails[property] || []
-      setWorkItems(itemsFromPlan);
-    } else {
-      setWorkItems([])
+      const itemsFromPlan = extractPlanDetails(plan, property);
+      setItems(itemsFromPlan);
     }
-  }, [plan, property])
+  }, [plan, property]);
 
-  function getSubcat(category: string) {
-    console.log(catalogue)
-    const filteredArray = catalogue.filter(item => item.category === category)
+  function extractPlanDetails(plan: Plan, property: string) {
+    if (typeof plan.planDetails === 'string') {
+      return JSON.parse(plan.planDetails)[property] || [];
+    } else {
+      return plan.planDetails[property] || [];
+    }
+  }
 
+  function handleMenuClick(event: React.MouseEvent<HTMLButtonElement>) {
+    setAnchorEl(event.currentTarget)
+  }
+
+  function handleClose() {
+    setAnchorEl(null)
+  }
+
+  function getSubcategories(category: string) {
+    const filteredArray = catalogue.filter(item => item.category === category);
     const uniqueSubcategories = [...new Set(filteredArray.map(obj => obj.subcategory))];
+    return uniqueSubcategories;
+  }
 
-    return uniqueSubcategories
+  function addItem(item: CatalogueItem) {
+    const newItem = {
+      customId: uuidv4(),
+      subcategory: item,
+      quantity: 0,
+    };
+
+    setItems(
+      (prevWorkItems) => [...(prevWorkItems || []), newItem]
+    );
+
+    if (plan?.id) {
+      ModelStore.addPlanItem(plan.id, newItem, property);
+    }
+  }
+
+  function removeItem(itemCustomId: string) {
+    setItems((prevWorkItems) => {
+      const updatedWorkItems = prevWorkItems?.filter(item => item.customId !== itemCustomId) || [];
+      return updatedWorkItems;
+    });
+
+    ModelStore.removePlanItem(plan?.id as string, itemCustomId, property);
 
   }
 
-  const handlePropertyChange = (customId: string, propertyName: string, newValue: string | number) => {
-    const updatedWorkItemsList = workItems.map((item) =>
+  function selectItem(customId: string, itemDetails: any) {
+    const updatedWorkItemsList = items.map((item) =>
+      item.customId === customId ? { ...item, ...itemDetails } : item
+    );
+
+    const updatedItem = updatedWorkItemsList.find((item) => item.customId === customId);
+
+    setItems(updatedWorkItemsList);
+
+    if (plan?.id && updatedItem) {
+      ModelStore.updatePlanItem(plan.id, updatedItem, property);
+    }
+  }
+
+  const changeItemQuantity = (customId: string, propertyName: string, newValue: string | number) => {
+    const updatedWorkItemsList = items.map((item) =>
       item.customId === customId ? { ...item, [propertyName]: newValue } : item
     );
 
-    setWorkItems(updatedWorkItemsList);
+    const updatedItem = updatedWorkItemsList.find((item) => item.customId === customId);
 
-    if (propertyName === 'quantity') {
-      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'quantity');
-    } else if (propertyName === 'customName') {
-      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'customName');
+    setItems(updatedWorkItemsList);
+
+    if (plan?.id && updatedItem) {
+      ModelStore.updatePlanItem(plan.id, updatedItem, property);
     }
   };
 
 
-  function removeDuplicates<T>(arr: T[], prop: keyof T): T[] {
-    const uniqueItems = new Map();
-    arr.forEach(item => {
-      uniqueItems.set(item[prop], item);
-    });
-
-    return Array.from(uniqueItems.values());
-  }
-
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-
-  function addWorkItem(item: CatalogueItem) {
-
-    const newWorkItem = {
-      customId: uuidv4(),
-      subcategory: item,
-      quantity: 0,
-    }
-
-    const newWorkItemsList = [...workItems] || []
-    newWorkItemsList.push(newWorkItem)
-    setWorkItems(newWorkItemsList)
-    ModelStore.addCatalogItem(plan?.id as string, newWorkItem, property)
-  }
-
-  function removeWorkItem(itemCustomId: string) {
-    let newWorkItemsList = workItems
-
-    newWorkItemsList = newWorkItemsList.filter(item => item.customId !== itemCustomId)
-    setWorkItems(newWorkItemsList)
-    ModelStore.removeCatalogItem(plan?.id as string, itemCustomId, property)
-
-  }
 
   function renderIcon() {
     switch(title) {
@@ -219,22 +152,23 @@ const PlanItem: React.FC<PlanItemProps> = (
           }}
         >
           {
-            items.map(item => (
+            subcategories.map(subcategory => (
               <MenuItem
-              key={item.id}
+              key={subcategory.id}
               onClick={() => {
-                addWorkItem(item)
+                addItem(subcategory)
                 handleClose()
-              }}>{item}</MenuItem>
+              }}>{subcategory}</MenuItem>
             ))
           }
         </Menu>
       </div>
-      {workItems?.map(item => (
-        <WorkItem
-          onPropChange={(customId, propertyName,newValue) => handlePropertyChange(customId, propertyName,newValue)}
+      {items?.map(item => (
+        <PlanSubItem
+          onQuantityChange={(customId, propertyName,newValue) => changeItemQuantity(customId, propertyName,newValue)}
+          onItemSelect={(customId, item) => selectItem(customId, item)}
           item={item}
-          removeItem={(customId) => removeWorkItem(customId as string)}
+          removeItem={(customId) => removeItem(customId as string)}
           catalogue={catalogue}
         />
       ))}

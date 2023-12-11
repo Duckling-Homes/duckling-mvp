@@ -140,7 +140,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
           currentChip={currentEnvelope?.id || ''}
           chipType="Envelope"
           onChipClick={(i: number) => {
-            console.log(toJS(envelopes[i]))
             setCurrentEnvelope(envelopes[i])
           }}
         />
