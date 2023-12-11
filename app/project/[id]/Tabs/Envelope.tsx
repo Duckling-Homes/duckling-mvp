@@ -5,7 +5,6 @@ import ChipManager from '@/components/ChipManager'
 import { SelectInput } from '@/components/Inputs'
 import PhotoDisplay from '@/components/PhotoDisplay'
 import { Project, ProjectEnvelope } from '@/types/types'
-import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import { v4 } from 'uuid'
@@ -140,7 +139,6 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
           currentChip={currentEnvelope?.id || ''}
           chipType="Envelope"
           onChipClick={(i: number) => {
-            console.log(toJS(envelopes[i]))
             setCurrentEnvelope(envelopes[i])
           }}
         />

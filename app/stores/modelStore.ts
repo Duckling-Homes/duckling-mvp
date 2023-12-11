@@ -11,7 +11,7 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
+import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 
@@ -319,12 +319,12 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addCatalogItem = (
+  addPlanItem = (
     planId: string,
     item: CatalogueItem,
     propertyName: string
   ) => {
-    const plans = toJS(this.plans)
+    const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
 
     if (!currentPlan) {
@@ -379,12 +379,12 @@ export class _ModelStore {
     this.plans = plans
   }
 
-  removeCatalogItem = (
+  removePlanItem = (
     planId: string,
     itemCustomId: string,
     propertyName: string
   ) => {
-    const plans = toJS(this.plans)
+    const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
 
     if (!currentPlan) {
@@ -438,14 +438,12 @@ export class _ModelStore {
     this.plans = plans
   }
 
-  updateCatalogItemProperty = (
+  updatePlanItem = (
     planId: string,
-    itemCustomId: string,
-    category: string,
-    newValue: string | number,
-    propertyName: string
+    newItem: CatalogueItem,
+    category: string
   ) => {
-    const plans = toJS(this.plans)
+    const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
 
     if (typeof currentPlan?.planDetails === 'string') {
@@ -453,11 +451,11 @@ export class _ModelStore {
     }
 
     const planDetails = currentPlan?.planDetails as PlanDetails
-    const planCategory = planDetails[category] as CatalogueItem[]
+    const planCategory = planDetails[category] as CatalogueItem[] || []
 
     const updatedItems = planCategory.map((item: CatalogueItem) =>
-      item.customId === itemCustomId
-        ? { ...item, [propertyName]: newValue }
+      item.customId === newItem.customId
+        ? newItem
         : item
     )
 
@@ -475,7 +473,7 @@ export class _ModelStore {
   }
 
   getPlan = (planId: string) => {
-    const plans = toJS(this.plans)
+    const plans = this.plans
     const plan = plans.find((p) => p.id === planId)
 
     if (plan && typeof plan?.planDetails === 'string') {
@@ -486,7 +484,7 @@ export class _ModelStore {
   }
 
   getSelectedIncentives = (planId: string) => {
-    const plans = toJS(this.plans)
+    const plans = this.plans
     const currentPlan = plans.find((p) => p.id === planId) as Plan
 
     if (typeof currentPlan?.planDetails === 'string') {
@@ -500,7 +498,7 @@ export class _ModelStore {
   }
 
   updateSelectedIncentives = (selectedIncentives: string[], planId: string) => {
-    const plans = toJS(this.plans)
+    const plans = this.plans
     const currentPlan = plans.find((p) => p.id === planId) as Plan
 
     if (typeof currentPlan?.planDetails === 'string') {
@@ -524,6 +522,11 @@ export class _ModelStore {
     })
 
     this.plans = plans
+  }
+
+  generateCopy = async (plan: Plan, projectID: string) => {
+    await SyncAPI.plans.generateCopy(plan)
+    await this.reloadProject(projectID)
   }
 }
 
