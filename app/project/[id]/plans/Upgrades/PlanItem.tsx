@@ -8,7 +8,81 @@ import { CatalogueItem, Plan } from "@/types/types"
 import ModelStore from "@/app/stores/modelStore"
 
 import './style.scss'
-import { toJS } from "mobx"
+import { SelectInput } from "@/components/Inputs"
+
+
+const WorkItem = ({item, onPropChange, catalogue, removeItem}) => {
+
+  const filterOptions = () => {
+    const filteredArray = catalogue.filter(catalogueItem => catalogueItem.subcategory === item.subcategory)
+
+    console.log(filteredArray)
+    console.log(item)
+
+    return filteredArray
+  }
+
+  const calculateCost = (item: CatalogueItem) => {
+    let quantValue = 0
+
+    if (!item || !item.pricingType) {
+      return 'error'
+    }
+
+    if (item.quantity) {
+      quantValue = parseInt(item.quantity as string)
+    }
+
+    return `$${quantValue * item.basePricePer}`
+  }
+
+  return (
+    <>
+      <Divider />
+      <div className="planItem__workItem" key={item.customId}>
+        <div className="planItem__workItemHeader">
+          <span>{item.subcategory}</span>
+          <span>Estimated Cost: {calculateCost(item)}</span>
+        </div>
+        <div className="planItem__workItemContent">
+          <SelectInput
+            label="Type"
+            value={''}
+            onChange={(value) => console.log('type', value)}
+            options={filterOptions()}
+          />
+          <TextField
+            label={
+              item.pricingType === 'PerUnit' ? 'Quantity' : item.scaledPricingMetric
+            }
+            placeholder={
+              item.pricingType === 'PerUnit' ? 'Quantity' : item.scaledPricingMetric
+            }
+            value={item?.quantity || 0}
+            type="tel"
+            size="small"
+            onChange={(e) => {
+              const newQuantity = parseInt(e.target.value, 10) || 0;
+              onPropChange(item.customId as string, 'quantity', newQuantity);
+            }}
+          />
+          <IconButton
+            sx={{
+              borderRadius: '4px',
+              border: '1px solid #2196F3',
+              color: '#2196F3',
+              padding: '4px 11px',
+            }}
+            aria-label="remove-work-item"
+            onClick={() => removeItem(item.customId)}
+          >
+            <Clear/>
+          </IconButton>
+        </div>
+      </div>  
+    </>
+  )
+}
 
 interface PlanItemProps {
   catalogue: CatalogueItem[],
@@ -30,8 +104,7 @@ const PlanItem: React.FC<PlanItemProps> = (
   const [workItems, setWorkItems] = useState<CatalogueItem[]>([])
 
   useEffect(() => {
-    setItems(removeDuplicates(catalogue.filter(item => item.category === property), 'subcategory')
-    )
+    setItems(getSubcat(property))
   }, [catalogue])
 
   useEffect(() => {
@@ -41,7 +114,32 @@ const PlanItem: React.FC<PlanItemProps> = (
     } else {
       setWorkItems([])
     }
-  }, [plan, property]);
+  }, [plan, property])
+
+  function getSubcat(category: string) {
+    console.log(catalogue)
+    const filteredArray = catalogue.filter(item => item.category === category)
+
+    const uniqueSubcategories = [...new Set(filteredArray.map(obj => obj.subcategory))];
+
+    return uniqueSubcategories
+
+  }
+
+  const handlePropertyChange = (customId: string, propertyName: string, newValue: string | number) => {
+    const updatedWorkItemsList = workItems.map((item) =>
+      item.customId === customId ? { ...item, [propertyName]: newValue } : item
+    );
+
+    setWorkItems(updatedWorkItemsList);
+
+    if (propertyName === 'quantity') {
+      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'quantity');
+    } else if (propertyName === 'customName') {
+      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'customName');
+    }
+  };
+
 
   function removeDuplicates<T>(arr: T[], prop: keyof T): T[] {
     const uniqueItems = new Map();
@@ -61,11 +159,11 @@ const PlanItem: React.FC<PlanItemProps> = (
   }
 
   function addWorkItem(item: CatalogueItem) {
+
     const newWorkItem = {
       customId: uuidv4(),
-      customName: '',
+      subcategory: item,
       quantity: 0,
-      ...item
     }
 
     const newWorkItemsList = [...workItems] || []
@@ -81,86 +179,6 @@ const PlanItem: React.FC<PlanItemProps> = (
     setWorkItems(newWorkItemsList)
     ModelStore.removeCatalogItem(plan?.id as string, itemCustomId, property)
 
-  }
-
-  const handlePropertyChange = (customId: string, propertyName: string, newValue: string | number) => {
-    const updatedWorkItemsList = workItems.map((item) =>
-      item.customId === customId ? { ...item, [propertyName]: newValue } : item
-    );
-
-    setWorkItems(updatedWorkItemsList);
-
-    if (propertyName === 'quantity') {
-      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'quantity');
-    } else if (propertyName === 'customName') {
-      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'customName');
-    }
-  };
-
-  const calculateCost = (item: CatalogueItem) => {
-    let quantValue = 0
-
-    if (!item || !item.pricingType) {
-      return 'error'
-    }
-
-    if (item.quantity) {
-      quantValue = parseInt(item.quantity as string)
-    }
-
-    return `$${quantValue * item.basePricePer}`
-
-  }
-
-  function renderWorkItems() {
-    console.log(toJS(workItems))
-    return workItems?.map((item) => (
-      <React.Fragment key={item.customId}>
-        <Divider />
-        <div className="planItem__workItem" key={item.customId}>
-          <div className="planItem__workItemHeader">
-            <span>{item.subcategory}</span>
-            <span>Estimated Cost: {calculateCost(item)}</span>
-          </div>
-          <div className="planItem__workItemContent">
-            <TextField
-              label="Name"
-              placeholder="Name"
-              value={item?.customName || ''}
-              size="small"
-              onChange={(e) => handlePropertyChange(item.customId as string, 'customName', e.target.value)}
-            />
-            <TextField
-              label={
-                item.pricingType === 'PerUnit' ? 'Quantity' : item.scaledPricingMetric
-              }
-              placeholder={
-                item.pricingType === 'PerUnit' ? 'Quantity' : item.scaledPricingMetric
-              }
-              value={item?.quantity || 0}
-              type="tel"
-              size="small"
-              onChange={(e) => {
-                const newQuantity = parseInt(e.target.value, 10) || 0;
-                handlePropertyChange(item.customId as string, 'quantity', newQuantity);
-              }}
-            />
-            <IconButton
-              sx={{
-                borderRadius: '4px',
-                border: '1px solid #2196F3',
-                color: '#2196F3',
-                padding: '4px 11px',
-              }}
-              aria-label="remove-work-item"
-              onClick={() => removeWorkItem(item.customId as string)}
-            >
-              <Clear/>
-            </IconButton>
-          </div>
-        </div>  
-      </React.Fragment>
-    ))
   }
 
   function renderIcon() {
@@ -207,12 +225,19 @@ const PlanItem: React.FC<PlanItemProps> = (
               onClick={() => {
                 addWorkItem(item)
                 handleClose()
-              }}>{item?.subcategory}</MenuItem>
+              }}>{item}</MenuItem>
             ))
           }
         </Menu>
       </div>
-      {renderWorkItems()}
+      {workItems?.map(item => (
+        <WorkItem
+          onPropChange={(customId, propertyName,newValue) => handlePropertyChange(customId, propertyName,newValue)}
+          item={item}
+          removeItem={(customId) => removeWorkItem(customId as string)}
+          catalogue={catalogue}
+        />
+      ))}
     </div>
   )
 }
