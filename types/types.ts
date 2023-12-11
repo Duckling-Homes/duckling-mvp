@@ -234,7 +234,7 @@ export interface Incentive {
   name?: string
   descriptionText?: string
   calculationType?: string
-  calculationRateValue?: string
+  calculationRateValue?: number
   maxLimit?: string
   type?: string
 }
