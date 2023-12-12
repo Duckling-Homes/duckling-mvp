@@ -14,6 +14,7 @@ import { observer } from 'mobx-react-lite'
 
 import './style.scss'
 import { toJS } from 'mobx'
+import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 
 interface PlansProps {
   currentProject: Project
@@ -267,23 +268,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   <span>-</span>
                 </div>
                 <Divider />
-                <div className="planCreation__financing">
-                  Financing Options
-                  <div className="planCreation__financingItem">
-                    Loan Options: Loan Amount:
-                    <Stack>
-                      <span>-</span>
-                      <Slider />
-                    </Stack>
-                  </div>
-                  <Divider />
-                  <div className="planCreation__financingItem">
-                    Upfront Cost:
-                    <span>-</span>
-                    Monthly Payment:
-                    <span>-</span>
-                  </div>
-                </div>
+                <InlineFinancingCalculator 
+                  totalAmount={2600} 
+                  financingOptions={ModelStore.financingOptions}
+                  onUpdate={() => null}
+                />
               </div>
               <div className="planCreation__upgradeImpact">
                 <div className="planCreation__sectionHeader">

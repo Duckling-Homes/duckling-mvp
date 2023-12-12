@@ -1,5 +1,6 @@
 import {
   CatalogueItem,
+  FinancingOption,
   Organization,
   PhotoDetails,
   Plan,
@@ -15,7 +16,6 @@ import {
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
-import { FinancingOption } from '@prisma/client'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -168,7 +168,7 @@ export class _ModelStore {
 
 
   fetchFinancingOptions = async () => {
-    this.financingOptions = await SyncAPI.organizations.getFinancingOptions()
+    this.financingOptions = await SyncAPI.organizations.getFinancingOptions();
     return this.financingOptions
   }
 
