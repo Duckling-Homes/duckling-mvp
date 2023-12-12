@@ -1,6 +1,6 @@
 'use client';
 
-import { Divider, Input, MenuItem, Select, Slider, Stack } from '@mui/material'
+import { Box, Divider, Input, MenuItem, Select, Slider, Stack } from '@mui/material'
 import { FinancingCalculator, FinancingCalculatorProps, FinancingSelection } from './calculator'
 import { useEffect, useState } from 'react';
 import { FinancingOption } from '@/types/types';
@@ -61,13 +61,12 @@ export const InlineFinancingCalculator = (props: Props) => {
 
     return <>
 
-        <div className="planCreation__financing">
-            Financing Options
-            <div className="planCreation__financingItem">
-
-                <div> 
-                    <div> Loan Options: </div>
+        <div className="planCreation__financing" style={{color: "#00000099"}}>
+                <Box sx={{fontSize: 16, color: "#000000"}}> Financing</Box>
+                <Stack sx={{rowGap: 1, my: 1}}>
+                    <Box sx={{fontSize: 14}}> Financing Option </Box>
                     <Select
+                        fullWidth
                         size={'small'}
                         value={option?.id ?? ''}  
                         onChange={(event) => {
@@ -79,11 +78,9 @@ export const InlineFinancingCalculator = (props: Props) => {
                             return <MenuItem disabled={!opt.available} value={opt.option.id} key={opt.option.id}>{opt.option.name}</MenuItem>
                         })}
                     </Select>
-                </div>
-
-                <div> 
-                    <div> Length: </div>
+                    <Box sx={{fontSize: 14}}> Length </Box>
                     <Select
+                        fullWidth
                         disabled={option === undefined}
                         size={'small'}
                         value={term ?? ''} 
@@ -93,46 +90,44 @@ export const InlineFinancingCalculator = (props: Props) => {
                             return <MenuItem value={opt} key={opt}>{opt + ' months'}</MenuItem>
                         })}
                     </Select>
-                </div>
 
-                <Stack>
-                <span> Loan Amount: ${loanAmount.toLocaleString()} </span>
-                <span style={{paddingLeft: '16px', paddingRight: '16px'}}>
+                <Box sx={{fontSize: 14}}> Financing Amount </Box>
+                <Box sx={{paddingX: 1, display: "flex", gap: 2 }}>
+                    <Box sx={{fontSize: 14, pt: 1, width: '50px'}} >${loanAmount.toLocaleString()} </Box>
                     <Slider
                         value={loanAmount}
                         step={1}
                         //@ts-ignore
                         onChange={(event) => {setLoanAmount(event?.target?.value as number)}} 
-                        marks={[{value: loanAmtSliderMin, label: `$${loanAmtSliderMin}`}, {value: loanAmtSliderMax, label: `$${loanAmtSliderMax.toLocaleString()}`} ]} 
+                        // marks={[{value: loanAmtSliderMin, label: `$${loanAmtSliderMin}`}, {value: loanAmtSliderMax, label: `$${loanAmtSliderMax.toLocaleString()}`} ]} 
                         valueLabelFormat={(val) => '$' + val.toFixed(0).toLocaleString()} 
                         valueLabelDisplay="auto" 
                         min={loanAmtSliderMin} 
                         max={loanAmtSliderMax}
                     />
-                </span>
-                <span> APR: {apr}%</span>
-                <span style={{paddingLeft: '16px', paddingRight: '16px'}}>
+                </Box>
+                <Box sx={{fontSize: 14}}> APR </Box>
+                <Box sx={{paddingX: 1, display: "flex", gap: 2}}>
+                    <Box sx={{fontSize: 14, pt: 1, width: '50px'}} >{apr}%</Box>
                     <Slider
                         value={apr ?? 0}
                         step={0.01}
                         //@ts-ignore
                         onChange={(event) => {setAPR(event?.target?.value as number)}} 
-                        marks={[{value: option?.minAPR ?? 0, label: `${option?.minAPR ?? 0}%`}, {value: option?.maxAPR ?? 100, label: `${option?.maxAPR ?? 100}%`} ]}
+                        // marks={[{value: option?.minAPR ?? 0, label: `${option?.minAPR ?? 0}%`}, {value: option?.maxAPR ?? 100, label: `${option?.maxAPR ?? 100}%`} ]}
                         valueLabelFormat={(val) => val.toFixed(2) + '%'} 
                         valueLabelDisplay="auto" 
                         min={option?.minAPR} 
                         max={option?.maxAPR}
                     />
-                </span>
-                </Stack>
-            </div>
+                </Box>
             <Divider />
-            <div className="planCreation__financingItem">
-                Upfront Cost:
-                <span>{upfrontCostDisplayValue}</span>
-                Monthly Payment:
-                <span>{monthlyCostDisplayValue}</span>
-            </div>
+            <Box> Upfront Cost:</Box>
+            <Box>{upfrontCostDisplayValue}</Box>
+            <Box>Monthly Payment:</Box>
+            <Box>{monthlyCostDisplayValue}</Box>
+            </Stack>
+
         </div>
     </>
 }
