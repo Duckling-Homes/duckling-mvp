@@ -63,7 +63,7 @@ export const InlineFinancingCalculator = (props: Props) => {
                     <div> Loan Options: </div>
                     <Select
                         size={'small'}
-                        value={option?.id ?? '-'}  
+                        value={option?.id ?? ''}  
                         onChange={(event) => {
                             const opt = financingOptions.find(o => o.option.id === event.target.value);
                             setOption(opt?.option);
@@ -78,8 +78,9 @@ export const InlineFinancingCalculator = (props: Props) => {
                 <div> 
                     <div> Length: </div>
                     <Select
+                        disabled={option === undefined}
                         size={'small'}
-                        value={term ?? '-'} 
+                        value={term ?? ''} 
                         onChange={(event) => {setTerm(event.target.value as number);}}
                     >
                         {option?.termLengths?.map(opt => {
