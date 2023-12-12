@@ -1,6 +1,6 @@
 'use client';
 
-import { Divider, MenuItem, Select, Slider, Stack } from '@mui/material'
+import { Divider, Input, MenuItem, Select, Slider, Stack } from '@mui/material'
 import { FinancingCalculator, FinancingCalculatorProps, FinancingSelection } from './calculator'
 import { useEffect, useState } from 'react';
 import { FinancingOption } from '@/types/types';
@@ -20,8 +20,14 @@ export const InlineFinancingCalculator = (props: Props) => {
     const calculator = new FinancingCalculator(props);
     const financingOptions = calculator.listAvailableOptions();
 
-    useEffect(() => {
 
+    const loanAmtSliderMin = option?.minAmount ?? 0;
+    const loanAmtSliderMax = Math.min(option?.maxAmount ?? props.totalAmount, props.totalAmount);
+
+    const upfrontCostDisplayValue = calculated?.upfrontCost ? '$' + Math.round(calculated.upfrontCost).toLocaleString() : '-';
+    const monthlyCostDisplayValue = calculated?.monthlyPayment ? '$' + Math.round(calculated.monthlyPayment).toLocaleString() : '-';
+
+    useEffect(() => {
         if (option) {
             if (!term || (term && !option.termLengths?.includes(term))) {
                 console.log("SET TERM", term, option);
@@ -29,6 +35,14 @@ export const InlineFinancingCalculator = (props: Props) => {
             }
             if (apr === undefined || (option.minAPR! > apr) || (option?.maxAPR! < apr)) {
                 setAPR(option.minAPR)
+            }
+
+            if (loanAmount > loanAmtSliderMax) {
+                setLoanAmount(loanAmtSliderMax);
+            }
+
+            if (loanAmount < loanAmtSliderMin) {
+                setLoanAmount(loanAmtSliderMin);
             }
         }
 
@@ -44,14 +58,6 @@ export const InlineFinancingCalculator = (props: Props) => {
             setCalculated(result);
         }
     }, [term, option, apr, loanAmount])
-
-
-    const loanAmtSliderMin = 0;
-    const loanAmtSliderMax = Math.min(option?.maxAmount ?? props.totalAmount, props.totalAmount);
-
-    const upfrontCostDisplayValue = calculated?.upfrontCost ? '$' + Math.round(calculated.upfrontCost).toLocaleString() : '-';
-    const monthlyCostDisplayValue = calculated?.monthlyPayment ? '$' + Math.round(calculated.monthlyPayment).toLocaleString() : '-';
-
 
     return <>
 
@@ -97,7 +103,7 @@ export const InlineFinancingCalculator = (props: Props) => {
                         step={1}
                         //@ts-ignore
                         onChange={(event) => {setLoanAmount(event?.target?.value as number)}} 
-                        marks={[{value: loanAmtSliderMin, label: `$0`}, {value: loanAmtSliderMax, label: `$${loanAmtSliderMax.toLocaleString()}`} ]} 
+                        marks={[{value: loanAmtSliderMin, label: `$${loanAmtSliderMin}`}, {value: loanAmtSliderMax, label: `$${loanAmtSliderMax.toLocaleString()}`} ]} 
                         valueLabelFormat={(val) => '$' + val.toFixed(0).toLocaleString()} 
                         valueLabelDisplay="auto" 
                         min={loanAmtSliderMin} 

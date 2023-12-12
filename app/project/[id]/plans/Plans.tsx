@@ -269,7 +269,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </div>
                 <Divider />
                 <InlineFinancingCalculator 
-                  totalAmount={2600} 
+                  totalAmount={17000} 
                   financingOptions={ModelStore.financingOptions}
                   onUpdate={() => null}
                 />
