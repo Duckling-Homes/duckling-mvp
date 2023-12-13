@@ -81,7 +81,11 @@ export const InlineFinancingCalculator = (props: Props) => {
       if (!term || (term && !option.termLengths?.includes(term))) {
         setTerm(option.termLengths![0])
       }
-      if (apr === undefined || option.minAPR! > apr || option?.maxAPR! < apr) {
+      if (
+        apr === undefined ||
+        (option?.minAPR ?? Infinity) > apr ||
+        (option?.maxAPR ?? -1) < apr
+      ) {
         setAPR(option.minAPR)
       }
 
@@ -223,8 +227,7 @@ const InputSlider: React.FC<InputSliderProps> = ({
             ) : null
           }
           value={value}
-          // @ts-ignore
-          onChange={(event) => setValue(event.target.value as number)}
+          onChange={(event) => setValue(parseFloat(event.target.value))}
           onBlur={correctValuesOnBlur}
         />
       </Grid>
@@ -233,10 +236,7 @@ const InputSlider: React.FC<InputSliderProps> = ({
           disabled={disabled}
           value={value}
           step={step ?? 1}
-          onChange={(event) => {
-            //@ts-ignore
-            setValue(event?.target?.value as number)
-          }}
+          onChange={(_, value) => setValue(value as number)}
           // marks={[{value: loanAmtSliderMin, label: `$${loanAmtSliderMin}`}, {value: loanAmtSliderMax, label: `$${loanAmtSliderMax.toLocaleString()}`} ]}
           valueLabelFormat={(value) =>
             (prefixLabel ?? '') + value + (postfixLabel ?? '')

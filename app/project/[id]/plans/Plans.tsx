@@ -6,7 +6,7 @@ import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
 import { Plan, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
-import { Button, Chip, Divider, IconButton, Slider, Stack } from '@mui/material'
+import { Button, Chip, Divider, IconButton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
 import PlanItem from './Upgrades/PlanItem'
@@ -55,7 +55,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       name: name,
       projectId: currentProject.id,
     }
-    
+
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
     setCurrentPlan(newPlan)
   }
@@ -268,8 +268,8 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   <span>-</span>
                 </div>
                 <Divider />
-                <InlineFinancingCalculator 
-                  totalAmount={17000} 
+                <InlineFinancingCalculator
+                  totalAmount={17000}
                   financingOptions={ModelStore.financingOptions}
                   onUpdate={() => null}
                 />
