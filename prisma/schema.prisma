@@ -34,6 +34,7 @@ model Organization {
   healthAndSafetyTags HealthAndSafetyTag[]
   goalTags GoalTag[]
   productCatalogue ProductCatalogue[]
+  financingOptions FinancingOption[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -451,6 +452,28 @@ model Plan {
   projectId            String
   project              Project @relation(name: "ProjectToPlan", fields: [projectId], references: [id], onDelete: Cascade)
   
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @default(now()) @updatedAt
+}
+
+
+
+model FinancingOption {
+  id                   String          @id @default(uuid())
+  name                 String
+  provider             String         // Do we need to make this a relation & introduce FinancingProvider?
+  description          String?
+  link                 String?
+
+  minAPR               Float
+  maxAPR               Float
+  minAmount            Float
+  maxAmount            Float
+  termLengths          Int[]          // In months
+
+  organizationId       String
+  organization         Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @default(now()) @updatedAt
 }

@@ -244,3 +244,34 @@ export interface Incentive {
   maxLimit?: string
   type?: string
 }
+
+export interface FinancingOption {
+  id?: string
+  name?: string
+  provider?: string
+  description?: string
+  link?: string
+  minAPR?: number
+  maxAPR?: number
+  minAmount?: number
+  maxAmount?: number
+  termLengths?: number[]
+  organizationId?: string
+}
+
+export interface ProductCatalogue {
+  id?: string
+  category?: string
+  subcategory?: string
+  name?: string
+  description?: string
+  type?: string
+  pricingType?: string
+  scaledPricingMetric?: string
+  basePricePer?: number
+  brand?: string
+  modelNumber?: string
+  ahriNumber?: string
+  incentives?: Incentive[]
+  organizationId?: string
+}

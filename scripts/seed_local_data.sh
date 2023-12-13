@@ -28,4 +28,7 @@ ts-node ./scripts/loadIncentives.ts "$DATABASE_URL" "./scripts/sampleLocalData/i
 echo "Loading product catalogue from CSV..."
 ts-node ./scripts/loadProductCatalogue.ts "$DATABASE_URL" "./scripts/sampleLocalData/GreenEarthProductCatalogue.csv" "$ORG_ID" || log_and_exit "Failed to load product catalogue"
 
+echo "Loading financing options from CSV..."
+ts-node ./scripts/loadFinancingOptions.ts "$DATABASE_URL" "./scripts/sampleLocalData/financing.csv" "$ORG_ID" || log_and_exit "Failed to load financing options"
+
 echo "Seed Local Data Completed Successfully!"

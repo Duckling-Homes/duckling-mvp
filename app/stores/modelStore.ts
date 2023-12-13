@@ -1,9 +1,11 @@
 import {
   CatalogueItem,
+  FinancingOption,
   Organization,
   PhotoDetails,
   Plan,
   PlanDetails,
+  ProductCatalogue,
   Project,
   ProjectAppliance,
   ProjectData,
@@ -31,8 +33,9 @@ export class _ModelStore {
   organization: Organization | null = null
   hasPendingChanges = false
   onlineStatus: 'online' | 'offline' = 'online'
-  plans: Plan[] = []
-
+  plans: Plan[] = [];
+  productCatalogue: ProductCatalogue[] = [];
+  financingOptions: FinancingOption[] = [];
   constructor() {
     makeAutoObservable(this)
   }
@@ -152,13 +155,21 @@ export class _ModelStore {
   }
 
   fetchOrganization = async (organizationId: string) => {
-    this.organization = await SyncAPI.organizations.get(organizationId)
+    this.organization = await SyncAPI.organizations.get(organizationId);
+    this.fetchCatalogue();
+    this.fetchFinancingOptions();
     return this.organization
   }
 
   fetchCatalogue = async () => {
-    const catalogue = await SyncAPI.organizations.getCatalogue()
-    return catalogue
+    this.productCatalogue = await SyncAPI.organizations.getCatalogue()
+    return this.productCatalogue;
+  }
+
+
+  fetchFinancingOptions = async () => {
+    this.financingOptions = await SyncAPI.organizations.getFinancingOptions();
+    return this.financingOptions
   }
 
   createAppliance = async (
