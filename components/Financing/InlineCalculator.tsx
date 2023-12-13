@@ -10,12 +10,12 @@ import {
   Select,
   Slider,
   Stack,
-  TextField,
 } from '@mui/material'
 import {
   FinancingCalculator,
   FinancingCalculatorProps,
   FinancingSelection,
+  NO_LOAN,
 } from './calculator'
 import { useEffect, useState } from 'react'
 import { FinancingOption } from '@/types/types'
@@ -48,7 +48,20 @@ export const InlineFinancingCalculator = (props: Props) => {
     ? '$' + Math.round(calculated.monthlyPayment).toLocaleString()
     : '-'
 
+  const OPTION_IS_NO_LOAN = option === NO_LOAN
+
   useEffect(() => {
+    if (OPTION_IS_NO_LOAN) {
+      return setCalculated({
+        option,
+        termLength: 0,
+        apr: 0,
+        loanAmount,
+        upfrontCost: loanAmount,
+        monthlyPayment: NaN,
+      })
+    }
+
     // Recalculate after any changes
     if (term && option && apr !== undefined && loanAmount !== undefined) {
       const result = calculator.calculate({
@@ -78,6 +91,10 @@ export const InlineFinancingCalculator = (props: Props) => {
 
       if (loanAmount < loanAmtSliderMin) {
         setLoanAmount(loanAmtSliderMin)
+      }
+
+      if (OPTION_IS_NO_LOAN) {
+        setLoanAmount(props.totalAmount)
       }
     }
   }, [option])
@@ -114,7 +131,7 @@ export const InlineFinancingCalculator = (props: Props) => {
           <Box sx={{ fontSize: 14 }}> Length </Box>
           <Select
             fullWidth
-            disabled={option === undefined}
+            disabled={option === undefined || OPTION_IS_NO_LOAN}
             size={'small'}
             value={term ?? ''}
             onChange={(event) => {
@@ -137,6 +154,7 @@ export const InlineFinancingCalculator = (props: Props) => {
             min={loanAmtSliderMin}
             max={loanAmtSliderMax}
             prefixLabel="$"
+            disabled={OPTION_IS_NO_LOAN}
           />
           <Box sx={{ fontSize: 14 }}> APR </Box>
           <InputSlider
@@ -146,6 +164,7 @@ export const InlineFinancingCalculator = (props: Props) => {
             max={option?.maxAPR ?? 100}
             postfixLabel="%"
             step={0.01}
+            disabled={OPTION_IS_NO_LOAN}
           />
           <Divider />
           <Box> Upfront Cost:</Box>
@@ -166,6 +185,7 @@ type InputSliderProps = {
   prefixLabel?: string
   postfixLabel?: string
   step?: number
+  disabled?: boolean
 }
 const InputSlider: React.FC<InputSliderProps> = ({
   value,
@@ -175,6 +195,7 @@ const InputSlider: React.FC<InputSliderProps> = ({
   prefixLabel,
   postfixLabel,
   step,
+  disabled,
 }) => {
   const correctValuesOnBlur = () => {
     if (value < min) {
@@ -189,6 +210,7 @@ const InputSlider: React.FC<InputSliderProps> = ({
     <Grid container spacing={2} alignItems={'center'}>
       <Grid item xs={12} md={4} lg={2}>
         <Input
+          disabled={disabled}
           size={'small'}
           startAdornment={
             prefixLabel ? (
@@ -208,6 +230,7 @@ const InputSlider: React.FC<InputSliderProps> = ({
       </Grid>
       <Grid item xs>
         <Slider
+          disabled={disabled}
           value={value}
           step={step ?? 1}
           onChange={(event) => {

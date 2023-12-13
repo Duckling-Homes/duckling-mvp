@@ -1,70 +1,78 @@
-import { FinancingOption } from "@/types/types"
+import { FinancingOption } from '@/types/types'
 
 export type FinancingCalculatorProps = {
-    totalAmount: number
-    financingOptions: FinancingOption[];
+  totalAmount: number
+  financingOptions: FinancingOption[]
 }
 
 export type FinancingSelection = {
-    option: FinancingOption
-    termLength: number,
-    loanAmount: number,
-    apr: number,
-    monthlyPayment?: number,
-    upfrontCost?: number
+  option: FinancingOption
+  termLength: number
+  loanAmount: number
+  apr: number
+  monthlyPayment?: number
+  upfrontCost?: number
+}
+
+export const NO_LOAN: FinancingOption = {
+  id: 'no-loan',
+  name: '-- NO LOAN --',
+  maxAPR: 0,
+  minAPR: 0,
+  termLengths: [0],
+  minAmount: 0,
+  maxAmount: Infinity,
 }
 
 export class FinancingCalculator {
+  props: FinancingCalculatorProps
 
-    props: FinancingCalculatorProps;
+  constructor(props: FinancingCalculatorProps) {
+    this.props = props
+  }
 
-    constructor(props: FinancingCalculatorProps) {
-        this.props = props;
+  listAvailableOptions = () => {
+    return [NO_LOAN, ...this.props.financingOptions].map((opt) => {
+      return {
+        option: opt,
+        available: this.isOptionAvailable(opt),
+      }
+    })
+  }
+
+  isOptionAvailable = (option: FinancingOption) => {
+    if (this.props.totalAmount < option.minAmount!) {
+      return false
     }
 
-    listAvailableOptions = () => {
-        return this.props.financingOptions.map(opt => {
-            return {
-                option: opt,
-                available: this.isOptionAvailable(opt)
-            }
-        })
+    return true
+  }
+
+  calculate = (inputs: FinancingSelection): FinancingSelection => {
+    const { loanAmount, termLength, apr } = inputs
+
+    const calcMonthlyPayment = () => {
+      // Special case for apr === 0;
+      if (apr === 0) {
+        return loanAmount / termLength
+      }
+
+      // Amortized loan formula for monthly payment
+      // P = a ÷ { [ (1 + r) ** n ] - 1 } ÷ [ r (1 + r) ** n]
+      const r = apr / 100 / 12
+      const n = termLength
+      const a = loanAmount
+
+      return a / ((Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n)))
     }
 
-    isOptionAvailable = (option: FinancingOption) => {
-        if (this.props.totalAmount < option.minAmount!) {
-            return false;
-        }
+    const upfront = this.props.totalAmount - inputs.loanAmount
+    const monthly = calcMonthlyPayment()
 
-        return true;
+    return {
+      ...inputs,
+      upfrontCost: upfront,
+      monthlyPayment: monthly,
     }
-
-    calculate = (inputs: FinancingSelection) : FinancingSelection => {
-        const { loanAmount, termLength, apr } = inputs;
-
-        const calcMonthlyPayment = () => {
-            // Special case for apr === 0;
-            if (apr === 0) {
-                return loanAmount / termLength;
-            }
-
-            // Amortized loan formula for monthly payment
-            // P = a ÷ { [ (1 + r) ** n ] - 1 } ÷ [ r (1 + r) ** n]
-            const r = apr / 100 / 12;
-            const n = termLength;
-            const a = loanAmount;
-
-            return a / ((Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n)))
-        }
-
-        const upfront = this.props.totalAmount - inputs.loanAmount;
-        const monthly = calcMonthlyPayment();
-
-        return {
-            ...inputs,
-            upfrontCost: upfront,
-            monthlyPayment: monthly
-        }
-    }
-
+  }
 }
