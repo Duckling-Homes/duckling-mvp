@@ -22,7 +22,7 @@ interface PlansProps {
 
 const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [plans, setPlans] = useState<Plan[]>([])
-  const [currentPlan, setCurrentPlan] = useState<Plan>({} as Plan)
+  const [currentPlan, setCurrentPlan] = useState<Plan>()
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
@@ -95,7 +95,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         open={deleteModal}
         onConfirm={handlePlanDeletion}
         onClose={() => setDeleteModal(false)}
-        plan={currentPlan}
+        plan={currentPlan ?? {}}
       />
       <PlanModal
         open={createModalOpen}
