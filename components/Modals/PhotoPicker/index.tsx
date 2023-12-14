@@ -26,6 +26,10 @@ const PhotoPickerModal: React.FC<{
   const currentProject = ModelStore.currentProject
 
   useEffect(() => {
+    setSelectedPhotos(initialSelection ?? new Set())
+  }, [initialSelection])
+
+  useEffect(() => {
     if (!currentProject) return
 
     if (currentProject?.images && currentProject.images.length > 0) {
