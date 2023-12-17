@@ -17,6 +17,9 @@ interface SelectInputProps {
   disabled?: boolean;
   parent?: string;
   helperText?: string;
+  smallSize?: boolean;
+  width?: string;
+  maxWidth?: string;
 }
 
 const SelectInput: React.FC<SelectInputProps> = ({
@@ -27,7 +30,10 @@ const SelectInput: React.FC<SelectInputProps> = ({
   options,
   disabled = false,
   parent,
-  helperText
+  helperText,
+  smallSize,
+  width,
+  maxWidth
 }) => {
 
   const transformOptions = (options: (string | Option)[]): Option[] => {
@@ -57,7 +63,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
   const transformedOptions = transformOptions(options);
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth size={smallSize ? 'small' : undefined}>
       <InputLabel>{label}</InputLabel>
       <Select
         disabled={disabled}

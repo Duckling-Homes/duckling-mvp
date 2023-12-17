@@ -48,10 +48,13 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
       <div className="planItem__workItem" key={item.customId}>
         <div className="planItem__workItemHeader">
           <span>{item.subcategory}</span>
-          <span>Estimated Cost: {item.id ? calculateCost(item) : '-'}</span>
+          <span>Estimated Cost: {item.id ? calculateCost(item) : '$0.00'}</span>
         </div>
         <div className="planItem__workItemContent">
           <SelectInput
+            smallSize={true}
+            // width="50%"
+            // maxWidth="500px"
             label="Type"
             value={item.id || ''}
             onChange={(value) => selectWorkItem(value)}
@@ -72,6 +75,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
               const newQuantity = parseInt(e.target.value, 10) || 0;
               onQuantityChange(item.customId as string, 'quantity', newQuantity);
             }}
+            className="planItem__quantityInput"
           />
           <IconButton
             sx={{

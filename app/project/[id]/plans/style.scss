@@ -21,9 +21,12 @@
 
   #{$self}__leftContainer{
     display: flex;
-    flex: 2;
     flex-direction: column;
+    flex: 2;
     gap: 16px;
+    max-width: 69%;
+    transition: ease-in-out 0.5s;
+
     #{$self}__leftHeader {
       display: flex;
       align-items: center;
@@ -34,17 +37,26 @@
         font-weight: 500;
       }
     }
+    &.hidden {
+      max-width: 95%;
+    }
   }
 
   #{$self}__rightContainer {
     display: flex;
-    flex: 1;
+    flex-basis: 29%;
     flex-direction: column;
     gap: 16px;
+    transition: flex-basis 0.5s ease-in-out;
+    overflow: hidden;
+
     #{$self}__rightHeader {
       display: flex;
       align-items: center;
       gap: 16px;
+      span {
+        transition: opacity 0.3s ease-in-out;
+      }
     }
 
     #{$self}__cost, #{$self}__upgradeImpact {
@@ -54,6 +66,7 @@
       flex-direction: column;
       gap: 16px;
       border-radius: 8px;
+      transition: opacity 0.3s ease-in-out;
       #{$self}__sectionHeader {
         display: flex;
         align-items: center;
@@ -92,7 +105,35 @@
         }
       }
     }
+
+    &.hidden {
+      flex-basis: 50px;
+      #{$self}__rightHeader {
+        span {
+          opacity: 0;
+        }
+        svg {
+          transform: rotate(180deg);
+        }
+      }
+      #{$self}__cost, #{$self}__upgradeImpact {
+        opacity: 0;
+      }
+    }
   }
 
 
+}
+
+
+@media screen and (max-width: 769px ) {
+  .planCreation {
+    $self: &;
+    #{$self}__leftContainer {
+      max-width: 63%;
+    }
+    #{$self}__rightContainer {
+      flex-basis: 35%;
+    }
+  }
 }
