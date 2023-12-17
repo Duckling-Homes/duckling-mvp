@@ -55,7 +55,10 @@ const Incentives: React.FC<{
         flexDirection: "column",
         gap: "16px"
       }}>
-        Rebate
+        <span style={{
+          fontSize: '20px',
+          fontWeight: '500'
+        }}>Rebate</span>
         {
           rebates?.length > 0 ? rebates.map((incentive: Incentive) => (
             <>
@@ -95,7 +98,10 @@ const Incentives: React.FC<{
         flexDirection: "column",
         gap: "16px"
       }}>
-        Tax Credits
+        <span style={{
+          fontSize: '20px',
+          fontWeight: '500'
+        }}>Tax Credits</span>
         {
           taxCredits?.length > 0 ? taxCredits.map((incentive: Incentive) => (
             <>
@@ -142,28 +148,32 @@ const CopyReview: React.FC<{
   })
 
   return (
-    <div>
-      <div>
-        Home Summary
-        <TextField 
+    <div className='copyReview'>
+      <div className='copyReview__wrapper'>
+        <span className='copyReview__title'>Home Summary</span>
+        <TextField
+          multiline
           value={plan.copy?.summary || ''}
         />
       </div>
-      <div>
-        Plan Summary
+      <div className='copyReview__wrapper'>
+        <span className='copyReview__title'>Plan Summary</span>
         <TextField
+          multiline
           value={plan.copy?.recommended || ''}
         />
       </div>
-      <div>
-        Comfort Summary
+      <div className='copyReview__wrapper'>
+        <span className='copyReview__title'>Comfort Summary</span>
         <TextField
+          multiline
           value={plan.copy?.comfort || ''}
         />
       </div>
-      <div>
-        Health Summary
+      <div className='copyReview__wrapper'>
+        <span className='copyReview__title'>Health Summary</span>
         <TextField
+          multiline
           value={plan.copy?.health || ''}
         />
       </div>
