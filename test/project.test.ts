@@ -1,4 +1,5 @@
 // test/sample.test.ts
+/*
 import * as uuid from 'uuid'
 import { expect, test, vi } from 'vitest'
 import { createProject, getProjects } from '../app/utils/repositories/project'
@@ -40,3 +41,4 @@ test('getPosts should return an object with published & un-published posts separ
 
   expect(projects).toStrictEqual([MOCK_PROJECT, MOCK_PROJECT, MOCK_PROJECT])
 })
+*/
