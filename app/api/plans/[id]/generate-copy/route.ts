@@ -15,7 +15,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getCompletion(input: string) {
+async function getCompletion(input: string) {
   console.log('CALLED GET COMPLETION')
 
   const systemContent = `You are generating copy to include in home services proposals. The proposals are created by home services contractors recommending upgrades for a home.
