@@ -54,10 +54,10 @@ Each section should be less than 200 words. The output should be in the followin
   const json = content
     ? JSON.parse(content)
     : {
-        summary: 'dummy',
-        recommended: 'dummy',
-        comfort: 'dummy',
-        health: 'dummy',
+        summary: '',
+        recommended: '',
+        comfort: '',
+        health: '',
       }
 
   return json
