@@ -1,6 +1,7 @@
+import { ProjectNotFoundError } from '@/app/utils/errors'
 import withErrorHandler from '@/app/utils/withErrorHandler'
-import { getProject } from '../../../../utils/repositories/project'
 import { NextRequest, NextResponse } from 'next/server'
+import { getProject } from '../../../../utils/repositories/project'
 import { upsertProjectData } from '../../../../utils/repositories/projectData'
 
 /**
@@ -28,10 +29,7 @@ export const POST = withErrorHandler(
     const project = await getProject(params.id)
 
     if (!project || project.organizationId !== orgContext) {
-      return NextResponse.json(
-        { message: `Project not found` },
-        { status: 404 }
-      )
+      return NextResponse.json(new ProjectNotFoundError(params.id).toJSON())
     }
     return NextResponse.json(
       await upsertProjectData({

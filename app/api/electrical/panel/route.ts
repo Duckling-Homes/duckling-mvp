@@ -1,3 +1,4 @@
+import { ProjectNotFoundError } from '@/app/utils/errors'
 import { createProjectElectricalPanel } from '@/app/utils/repositories/electrical/panel'
 import { getProject } from '@/app/utils/repositories/project'
 import withErrorHandler from '@/app/utils/withErrorHandler'
@@ -27,7 +28,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   const project = await getProject(projectId)
 
   if (!project || project.organizationId !== orgContext) {
-    return NextResponse.json({ message: `Project not found` }, { status: 404 })
+    return NextResponse.json(new ProjectNotFoundError(projectId).toJSON())
   }
   return NextResponse.json(
     await createProjectElectricalPanel({

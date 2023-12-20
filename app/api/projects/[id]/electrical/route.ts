@@ -1,3 +1,4 @@
+import { ProjectNotFoundError } from '@/app/utils/errors'
 import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
 import { getProject } from '@/app/utils/repositories/project'
 import withErrorHandler from '@/app/utils/withErrorHandler'
@@ -12,10 +13,7 @@ export const GET = withErrorHandler(
     const project = await getProject(params.id)
 
     if (!project || project.organizationId !== orgContext) {
-      return NextResponse.json(
-        { message: `Project not found` },
-        { status: 404 }
-      )
+      return NextResponse.json(new ProjectNotFoundError(params.id).toJSON())
     }
 
     return NextResponse.json(await getProjectElectrical(params.id))

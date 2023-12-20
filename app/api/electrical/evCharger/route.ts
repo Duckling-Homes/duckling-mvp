@@ -23,7 +23,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   const project = await getProject(projectId)
 
   if (!project || project.organizationId !== orgContext) {
-    return NextResponse.json({ message: `Project not found` }, { status: 404 })
+    return NextResponse.json(new ProjectNotFoundError(projectId).toJSON())
   }
   return NextResponse.json(
     await createProjectEvCharger({
