@@ -1,3 +1,4 @@
+import { ProjectNotFoundError } from '@/app/utils/errors'
 import { createProjectEvCharger } from '@/app/utils/repositories/electrical/evCharger'
 import { getProject } from '@/app/utils/repositories/project'
 import withErrorHandler from '@/app/utils/withErrorHandler'
