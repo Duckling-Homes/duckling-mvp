@@ -11,7 +11,6 @@ import { getProjectData } from '@/app/utils/repositories/projectData'
 import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import openai from '@/lib/ai'
-import { writeFileSync } from 'fs'
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
@@ -51,8 +50,6 @@ Each section should be less than 200 words. The output should be in the followin
     await openai.chat.completions.create(params)
 
   const content = chatCompletion.choices[0].message.content
-
-  writeFileSync('content.json', JSON.stringify(content))
 
   const json = content
     ? JSON.parse(content)
