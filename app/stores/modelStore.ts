@@ -33,9 +33,9 @@ export class _ModelStore {
   organization: Organization | null = null
   hasPendingChanges = false
   onlineStatus: 'online' | 'offline' = 'online'
-  plans: Plan[] = [];
-  productCatalogue: ProductCatalogue[] = [];
-  financingOptions: FinancingOption[] = [];
+  plans: Plan[] = []
+  productCatalogue: ProductCatalogue[] = []
+  financingOptions: FinancingOption[] = []
   constructor() {
     makeAutoObservable(this)
   }
@@ -155,20 +155,19 @@ export class _ModelStore {
   }
 
   fetchOrganization = async (organizationId: string) => {
-    this.organization = await SyncAPI.organizations.get(organizationId);
-    this.fetchCatalogue();
-    this.fetchFinancingOptions();
+    this.organization = await SyncAPI.organizations.get(organizationId)
+    this.fetchCatalogue()
+    this.fetchFinancingOptions()
     return this.organization
   }
 
   fetchCatalogue = async () => {
     this.productCatalogue = await SyncAPI.organizations.getCatalogue()
-    return this.productCatalogue;
+    return this.productCatalogue
   }
 
-
   fetchFinancingOptions = async () => {
-    this.financingOptions = await SyncAPI.organizations.getFinancingOptions();
+    this.financingOptions = await SyncAPI.organizations.getFinancingOptions()
     return this.financingOptions
   }
 
@@ -330,11 +329,7 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addPlanItem = (
-    planId: string,
-    item: CatalogueItem,
-    propertyName: string
-  ) => {
+  addPlanItem = (planId: string, item: CatalogueItem, propertyName: string) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
 
@@ -462,12 +457,10 @@ export class _ModelStore {
     }
 
     const planDetails = currentPlan?.planDetails as PlanDetails
-    const planCategory = planDetails[category] as CatalogueItem[] || []
+    const planCategory = (planDetails[category] as CatalogueItem[]) || []
 
     const updatedItems = planCategory.map((item: CatalogueItem) =>
-      item.customId === newItem.customId
-        ? newItem
-        : item
+      item.customId === newItem.customId ? newItem : item
     )
 
     planDetails[category] = updatedItems
