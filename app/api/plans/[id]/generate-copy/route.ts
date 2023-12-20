@@ -10,33 +10,84 @@ import { getProject } from '@/app/utils/repositories/project'
 import { getProjectData } from '@/app/utils/repositories/projectData'
 import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
 import withErrorHandler from '@/app/utils/withErrorHandler'
+import openai from '@/lib/ai'
 import { NextRequest, NextResponse } from 'next/server'
+import OpenAI from 'openai'
 
-// TODO: Will add this back when we have a working prompt
-// export async function getCompletion(plan: Plan) {
-//   console.log(plan)
-//   const params: OpenAI.Chat.ChatCompletionCreateParams = {
-//     messages: [{ role: 'user', content: 'Say this is a test' }],
-//     model: 'gpt-3.5-turbo',
-//   }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function getCompletion(input: string) {
+  console.log('CALLED GET COMPLETION')
 
-//   const chatCompletion: OpenAI.Chat.ChatCompletion =
-//     await openai.chat.completions.create(params)
+  const systemContent = `You are generating copy to include in home services proposals. The proposals are created by home services contractors recommending upgrades for a home.
+You will receive attributes about the home, notes from the contractor about the home and proposal, the current equipment in the home, and up to 5 plans containing upgrades the contractor recommends.
+You will return four sections. The text should be simple and plain-spoken, like you are a regular person.
+Some rules for the output: Always use "we" instead of "I".
+The first section summary of the current state of the home. This section should be two paragraphs. The first paragraph is 5-7 concise sentences as if the contractor is talking to the homeowner. The second paragraph gives a one-sentence summary of the upgrade plan options.
+The next section  of the recommended work. Create a separate paragraph for each plan and title that paragraph with the plan number. This section should be 3-5 concise sentences as if the contractor is talking to the homeowner.
+The third section  of the comfort impacts of the recommended upgrades. Create a separate paragraph for each plan and title that paragraph with the plan number. The first sentence should say which project contributes to the comfort of the home, then return 3-5 bullets about the comfort improvements the homeowner should receive.
+The fourth section  of the health impacts of the recommended upgrades. Create a separate paragraph for each plan and title that paragraph with the plan number. The first sentence should say which project contributes to the health of the home, then return 3-5 bullets about the health-related improvements the homeowner should receive.
+Each section should be less than 200 words. The output should be in the following JSON format:
+{
+    "summary": "",
+    "recommended": "",
+    "comfort": "",
+    "health": ""
+}
+`
 
-//   return chatCompletion.choices[0].message
-// }
-
-async function getCompletionStub() {
-  return {
-    summary:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
-    recommended:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
-    comfort:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
-    health:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident',
+  const params: OpenAI.Chat.ChatCompletionCreateParams = {
+    messages: [
+      {
+        role: 'system',
+        content: systemContent,
+      },
+      { role: 'user', content: input },
+    ],
+    model: 'gpt-3.5-turbo',
   }
+
+  const chatCompletion: OpenAI.Chat.ChatCompletion =
+    await openai.chat.completions.create(params)
+
+  const content = chatCompletion.choices[0].message.content
+
+  const json = content
+    ? JSON.parse(content)
+    : {
+        summary: '',
+        recommended: '',
+        comfort: '',
+        health: '',
+      }
+
+  return json
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function filterJson(inputJson: any): any {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+  const step1 = JSON.parse(
+    JSON.stringify(inputJson, (k, v) => (k === 'updatedAt' ? undefined : v))
+  )
+
+  const step2 = JSON.parse(
+    JSON.stringify(step1, (k, v) => (k === 'createdAt' ? undefined : v))
+  )
+
+  const step3 = JSON.parse(
+    JSON.stringify(step2, (k, v) =>
+      k.toLowerCase().includes('id') ? undefined : v
+    )
+  )
+
+  // removing nulls
+
+  const step4 = JSON.parse(
+    JSON.stringify(step3, (k, v) => (v === null ? undefined : v))
+  )
+
+  return step4
 }
 
 export const GET = withErrorHandler(
@@ -72,21 +123,33 @@ export const GET = withErrorHandler(
         envelopes,
         appliances,
         electrical,
+        planName: plan.name,
+        planDetails: JSON.parse(plan.planDetails?.toString() || '{}'),
       }
 
-      console.log(fullProject)
+      const result = filterJson(fullProject)
 
-      // const summary = await getCompletion(plan, fullProject)
+      let content = {
+        summary: '',
+        recommended: '',
+        comfort: '',
+        health: '',
+      }
 
-      const content = await getCompletionStub()
+      try {
+        content = await getCompletion(JSON.stringify(result))
 
-      await updatePlan(plan.id, {
-        copy: content,
-      })
+        await updatePlan(plan.id, {
+          copy: content,
+        })
+      } catch (err) {
+        console.log('ERROR', err)
 
-      // update project
+        await updatePlan(plan.id, {
+          copy: content,
+        })
+      }
 
-      // Only return the database metadata
       return NextResponse.json({ ...content })
     } catch (err) {
       return new NextResponse((err as Error).message, {

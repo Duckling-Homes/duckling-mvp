@@ -436,7 +436,9 @@ model Incentive {
   criteria             String?
   notes                String?   
 
-  productCatalogues    ProductCatalogue[] @relation("ProductCatalogueToIncentive") // Updated relation      
+  productCatalogues    ProductCatalogue[] @relation("ProductCatalogueToIncentive") // Updated relation 
+
+  impactedByAggregationLimits AggregationLimit[] @relation("AggregationLimitToIncentive")     
 
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @default(now()) @updatedAt
@@ -476,4 +478,16 @@ model FinancingOption {
 
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @default(now()) @updatedAt
+}
+
+model AggregationLimit {
+  id                  String            @id @default(uuid())
+  limitName           String
+  limitDescription    String?
+  limitWarning        String
+  limitAmount         Float
+  impactedIncentives  Incentive[]       @relation("AggregationLimitToIncentive")
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @default(now()) @updatedAt
 }

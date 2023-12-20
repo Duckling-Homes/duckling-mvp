@@ -37,14 +37,11 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
   }, [plan])
 
   const filterForDisplay = (photos: PhotoDetails[]) => {
-    return photos.filter((photo) =>
-      planDetails?.imageIds.includes(photo.id ?? '')
+    return photos.filter(
+      (photo) => planDetails?.imageIds.includes(photo.id ?? '')
     )
   }
 
-  const getSelectedPhotos = () => {
-    return new Set(planDetails?.imageIds)
-  }
   const handleFinishSelect = async (selectedPhotos: Set<string>) => {
     if (plan.projectId) {
       const newPlanDetails = {
@@ -53,7 +50,7 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
       }
       const newPlan = { ...plan }
       newPlan.planDetails = JSON.stringify(newPlanDetails)
-      setPlanDetails(newPlanDetails);
+      setPlanDetails(newPlanDetails)
       await ModelStore.patchPlan(plan.projectId, newPlan)
     }
   }
@@ -97,7 +94,7 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
           return photos
         }}
         handleFinishSelect={handleFinishSelect}
-        initialSelection={getSelectedPhotos()}
+        initialSelection={new Set(planDetails?.imageIds)}
       />
       {planDetails?.imageIds.length > 0 && (
         <PhotoDisplay

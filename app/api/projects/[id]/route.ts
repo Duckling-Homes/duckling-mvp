@@ -1,17 +1,18 @@
+import { ProjectNotFoundError } from '@/app/utils/errors'
+import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
+import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
+import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
+import { getImagesByProjectId } from '@/app/utils/repositories/image'
+import { getPlansByProjectId } from '@/app/utils/repositories/plan'
+import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
 import withErrorHandler from '@/app/utils/withErrorHandler'
+import { NextRequest, NextResponse } from 'next/server'
 import {
   deleteProject,
   getProject,
   updateProject,
 } from '../../../utils/repositories/project'
-import { NextRequest, NextResponse } from 'next/server'
 import { getProjectData } from '../../../utils/repositories/projectData'
-import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
-import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
-import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
-import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
-import { getImagesByProjectId } from '@/app/utils/repositories/image'
-import { getPlansByProjectId } from '@/app/utils/repositories/plan'
 
 /**
  * Get project by id
@@ -23,10 +24,7 @@ export const GET = withErrorHandler(
     const project = await getProject(params.id)
 
     if (!project || project.organizationId !== orgContext) {
-      return NextResponse.json(
-        { message: `Project not found` },
-        { status: 404 }
-      )
+      return NextResponse.json(new ProjectNotFoundError(params.id).toJSON())
     }
 
     const projectData = await getProjectData(params.id)
@@ -60,10 +58,7 @@ export const DELETE = withErrorHandler(
     const project = await getProject(params.id)
 
     if (!project || project.organizationId !== orgContext) {
-      return NextResponse.json(
-        { message: `Project not found` },
-        { status: 404 }
-      )
+      return NextResponse.json(new ProjectNotFoundError(params.id).toJSON())
     }
 
     return NextResponse.json(await deleteProject(params.id))
@@ -88,10 +83,7 @@ export const PATCH = withErrorHandler(
     const project = await getProject(params.id)
 
     if (!project || project.organizationId !== orgContext) {
-      return NextResponse.json(
-        { message: `Project not found` },
-        { status: 404 }
-      )
+      return NextResponse.json(new ProjectNotFoundError(params.id).toJSON())
     }
 
     return NextResponse.json(
