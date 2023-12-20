@@ -6,13 +6,15 @@ import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
 import { Plan, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
-import { Button, Chip, Divider, IconButton, Slider, Stack } from '@mui/material'
+import { Button, Chip, Divider, IconButton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
 import PlanItem from './Upgrades/PlanItem'
 import { observer } from 'mobx-react-lite'
 
 import './style.scss'
+import { toJS } from 'mobx'
+import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 
 interface PlansProps {
   currentProject: Project
@@ -20,16 +22,17 @@ interface PlansProps {
 
 const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [plans, setPlans] = useState<Plan[]>([])
-  const [currentPlan, setCurrentPlan] = useState<Plan>({} as Plan)
+  const [currentPlan, setCurrentPlan] = useState<Plan>()
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [incentivesModal, setIncentivesModal] = useState(false)
-  const [catalogue, setCatalogue] = useState([])
+  const [catalogue, setCatalogue] = useState(ModelStore.productCatalogue)
 
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
+      console.log(toJS(currentProject.plans))
       setPlans(currentProject.plans)
       if (!currentPlan?.id) {
         setCurrentPlan(currentProject.plans[0])
@@ -52,6 +55,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       name: name,
       projectId: currentProject.id,
     }
+
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
     setCurrentPlan(newPlan)
   }
@@ -91,7 +95,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         open={deleteModal}
         onConfirm={handlePlanDeletion}
         onClose={() => setDeleteModal(false)}
-        plan={currentPlan}
+        plan={currentPlan ?? {}}
       />
       <PlanModal
         open={createModalOpen}
@@ -264,23 +268,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   <span>-</span>
                 </div>
                 <Divider />
-                <div className="planCreation__financing">
-                  Financing Options
-                  <div className="planCreation__financingItem">
-                    Loan Options: Loan Amount:
-                    <Stack>
-                      <span>-</span>
-                      <Slider />
-                    </Stack>
-                  </div>
-                  <Divider />
-                  <div className="planCreation__financingItem">
-                    Upfront Cost:
-                    <span>-</span>
-                    Monthly Payment:
-                    <span>-</span>
-                  </div>
-                </div>
+                <InlineFinancingCalculator
+                  totalAmount={17000}
+                  financingOptions={ModelStore.financingOptions}
+                  onUpdate={() => null}
+                />
               </div>
               <div className="planCreation__upgradeImpact">
                 <div className="planCreation__sectionHeader">

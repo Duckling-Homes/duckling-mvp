@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useEffect, useState } from "react"
-import { Add, Bolt, Clear, Construction, DeviceThermostat, Home } from "@mui/icons-material"
-import { Button, Divider, IconButton, Menu, MenuItem, TextField } from "@mui/material"
+import { Add, Bolt, Construction, DeviceThermostat, Home } from "@mui/icons-material"
+import { Button, Menu, MenuItem } from "@mui/material"
 import { v4 as uuidv4 } from 'uuid'
 import { CatalogueItem, Plan } from "@/types/types"
 import ModelStore from "@/app/stores/modelStore"
+import PlanSubItem from "./PlanSubItem"
 
 import './style.scss'
-import { toJS } from "mobx"
 
 interface PlanItemProps {
   catalogue: CatalogueItem[],
@@ -24,148 +24,105 @@ const PlanItem: React.FC<PlanItemProps> = (
     title,
     property
   }) => {
+  const subcategories = getSubcategories(property)
   const [items, setItems] = useState<CatalogueItem[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
-  const [workItems, setWorkItems] = useState<CatalogueItem[]>([])
-
-  useEffect(() => {
-    setItems(removeDuplicates(catalogue.filter(item => item.category === property), 'subcategory')
-    )
-  }, [catalogue])
 
   useEffect(() => {
     if (plan.planDetails) {
-      const itemsFromPlan = typeof plan.planDetails === 'string' ? JSON.parse(plan.planDetails)[property] : plan.planDetails[property] || []
-      setWorkItems(itemsFromPlan);
+      const itemsFromPlan = extractPlanDetails(plan, property);
+      setItems(itemsFromPlan);
     } else {
-      setWorkItems([])
+      setItems([])
     }
   }, [plan, property]);
 
-  function removeDuplicates<T>(arr: T[], prop: keyof T): T[] {
-    const uniqueItems = new Map();
-    arr.forEach(item => {
-      uniqueItems.set(item[prop], item);
-    });
-
-    return Array.from(uniqueItems.values());
+  function extractPlanDetails(plan: Plan, property: string) {
+    if (plan.planDetails) {
+      if (typeof plan.planDetails === 'string') {
+        return JSON.parse(plan.planDetails)[property] || [];
+      } else {
+        return plan.planDetails[property] || [];
+      }
+    }
   }
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  function handleMenuClick(event: React.MouseEvent<HTMLButtonElement>) {
     setAnchorEl(event.currentTarget)
   }
 
-  const handleClose = () => {
+  function handleClose() {
     setAnchorEl(null)
   }
 
-  function addWorkItem(item: CatalogueItem) {
-    const newWorkItem = {
+  function getSubcategories(category: string) {
+    const filteredArray = catalogue.filter(item => item.category === category);
+    const uniqueSubcategories: string[] = [];
+
+    filteredArray.forEach(obj => {
+      if (!uniqueSubcategories.includes(obj.subcategory as string)) {
+        uniqueSubcategories.push(obj.subcategory as string);
+      }
+    });
+
+    return uniqueSubcategories;
+  }
+
+
+  function addItem(item: string) {
+    const newItem: CatalogueItem = {
       customId: uuidv4(),
-      customName: '',
+      subcategory: item,
       quantity: 0,
-      ...item
+    };
+
+    setItems([...(items || []), newItem]);
+
+    if (plan?.id) {
+      ModelStore.addPlanItem(plan.id, newItem, property);
     }
-
-    const newWorkItemsList = [...workItems] || []
-    newWorkItemsList.push(newWorkItem)
-    setWorkItems(newWorkItemsList)
-    ModelStore.addCatalogItem(plan?.id as string, newWorkItem, property)
   }
 
-  function removeWorkItem(itemCustomId: string) {
-    let newWorkItemsList = workItems
+  function removeItem(itemCustomId: string) {
+    setItems((prevWorkItems) => {
+      const updatedWorkItems = prevWorkItems?.filter(item => item.customId !== itemCustomId) || [];
+      return updatedWorkItems;
+    });
 
-    newWorkItemsList = newWorkItemsList.filter(item => item.customId !== itemCustomId)
-    setWorkItems(newWorkItemsList)
-    ModelStore.removeCatalogItem(plan?.id as string, itemCustomId, property)
+    ModelStore.removePlanItem(plan?.id as string, itemCustomId, property);
 
   }
 
-  const handlePropertyChange = (customId: string, propertyName: string, newValue: string | number) => {
-    const updatedWorkItemsList = workItems.map((item) =>
+  function selectItem(customId: string, itemDetails: CatalogueItem) {
+    const updatedWorkItemsList = items.map((item: CatalogueItem) =>
+      item.customId === customId ? { ...item, ...itemDetails } : item
+    );
+
+    const updatedItem = updatedWorkItemsList.find((item) => item.customId === customId);
+
+    setItems(updatedWorkItemsList);
+
+    if (plan?.id && updatedItem) {
+      ModelStore.updatePlanItem(plan.id, updatedItem, property);
+    }
+  }
+
+  const changeItemQuantity = (customId: string, propertyName: string, newValue: string | number) => {
+    const updatedWorkItemsList = items.map((item) =>
       item.customId === customId ? { ...item, [propertyName]: newValue } : item
     );
 
-    setWorkItems(updatedWorkItemsList);
+    const updatedItem = updatedWorkItemsList.find((item) => item.customId === customId);
 
-    if (propertyName === 'quantity') {
-      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'quantity');
-    } else if (propertyName === 'customName') {
-      ModelStore.updateCatalogItemProperty(plan?.id as string, customId, property, newValue, 'customName');
+    setItems(updatedWorkItemsList);
+
+    if (plan?.id && updatedItem) {
+      ModelStore.updatePlanItem(plan.id, updatedItem, property);
     }
   };
 
-  const calculateCost = (item: CatalogueItem) => {
-    let quantValue = 0
 
-    if (!item || !item.pricingType) {
-      return 'error'
-    }
-
-    if (item.quantity) {
-      quantValue = parseInt(item.quantity as string)
-    }
-
-    if (item.pricingType === 'PerUnit') {
-      return `$${quantValue * item.basePricePer}`
-    } else if (item.pricingType === 'ScaledPricing') {
-      return `$${quantValue * parseInt(item.scaledPricingMetric)}`
-    }
-
-  }
-
-  function renderWorkItems() {
-    console.log(toJS(workItems))
-    return workItems?.map((item) => (
-      <React.Fragment key={item.customId}>
-        <Divider />
-        <div className="planItem__workItem" key={item.customId}>
-          <div className="planItem__workItemHeader">
-            <span>{item.subcategory}</span>
-            <span>Estimated Cost: {calculateCost(item)}</span>
-          </div>
-          <div className="planItem__workItemContent">
-            <TextField
-              label="Name"
-              placeholder="Name"
-              value={item?.customName || ''}
-              size="small"
-              onChange={(e) => handlePropertyChange(item.customId as string, 'customName', e.target.value)}
-            />
-            <TextField
-              label={
-                item.pricingType === 'PerUnit' ? 'Quantity' : item.pricingType
-              }
-              placeholder={
-                item.pricingType === 'PerUnit' ? 'Quantity' : item.pricingType
-              }
-              value={item?.quantity || 0}
-              type="tel"
-              size="small"
-              onChange={(e) => {
-                const newQuantity = parseInt(e.target.value, 10) || 0;
-                handlePropertyChange(item.customId as string, 'quantity', newQuantity);
-              }}
-            />
-            <IconButton
-              sx={{
-                borderRadius: '4px',
-                border: '1px solid #2196F3',
-                color: '#2196F3',
-                padding: '4px 11px',
-              }}
-              aria-label="remove-work-item"
-              onClick={() => removeWorkItem(item.customId as string)}
-            >
-              <Clear/>
-            </IconButton>
-          </div>
-        </div>  
-      </React.Fragment>
-    ))
-  }
 
   function renderIcon() {
     switch(title) {
@@ -205,18 +162,27 @@ const PlanItem: React.FC<PlanItemProps> = (
           }}
         >
           {
-            items.map(item => (
+            subcategories.map(subcategory => (
               <MenuItem
-              key={item.id}
+              key={subcategory}
               onClick={() => {
-                addWorkItem(item)
+                addItem(subcategory)
                 handleClose()
-              }}>{item?.subcategory}</MenuItem>
+              }}>{subcategory}</MenuItem>
             ))
           }
         </Menu>
       </div>
-      {renderWorkItems()}
+      {items?.map(item => (
+        <PlanSubItem
+          key={item.id}
+          onQuantityChange={(customId: string, propertyName: string, newValue: string | number) => changeItemQuantity(customId, propertyName,newValue)}
+          onItemSelect={(customId: string, item: CatalogueItem) => selectItem(customId, item)}
+          item={item}
+          removeItem={(customId: string) => removeItem(customId)}
+          catalogue={catalogue}
+        />
+      ))}
     </div>
   )
 }
