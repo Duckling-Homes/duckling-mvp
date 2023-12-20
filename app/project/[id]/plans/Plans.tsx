@@ -41,7 +41,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   })
 
   useEffect(() => {
-    if (catalogue.length === 0) {
+    if (catalogue?.length === 0) {
       ModelStore.fetchCatalogue().then((data) => setCatalogue(data))
     }
   }, [])
