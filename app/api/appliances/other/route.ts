@@ -1,3 +1,4 @@
+import { ProjectNotFoundError } from '@/app/utils/errors'
 import { createOtherAppliance } from '@/app/utils/repositories/appliances/other'
 import { getProject } from '@/app/utils/repositories/project'
 import withErrorHandler from '@/app/utils/withErrorHandler'
