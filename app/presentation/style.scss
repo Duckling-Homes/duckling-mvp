@@ -1,0 +1,27 @@
+.header {
+  p {
+    color: #fff;
+    font-family: 'Roboto', 'Helvetica Neue';
+    margin: 0px;
+    display: flex;
+    align-items: center;
+  }
+
+  background-color: #303f9f;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  &__title {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    p {
+      font-size: 24px;
+    }
+  }
+}

@@ -52,43 +52,43 @@ const Header = () => {
 
   return (
     <>
-    <div className="header">
-      {device !== 'phone' && (
-        <Link href="/" passHref>
-          <IconButton
-            sx={{
-              borderRadius: '4px',
-              backgroundColor: '#2196F3',
-              color: '#fff',
-              padding: '8px 22px',
-            }}
-            aria-label="delete"
-          >
-            <HomeOutlined />
-          </IconButton>
-        </Link>
-      )}
-      <p className='header__title'>{organization?.name}</p>
-      <IconButton
-        sx={{
-          borderRadius: '4px',
-          backgroundColor: '#2196F3',
-          color: '#fff',
-          padding: device === 'phone' ? '8px 12px' : '8px 22px',
-        }}
-        onClick={handleClick}
-        aria-label="delete"
-      >
-        <MenuOutlined fontSize='small' />
-      </IconButton>
-      <CustomMenu
-        handleSignout={doSignOut}
-        open={open}
-        anchorEl={anchorEl}
-        handleClose={handleClose}
-      />
-    </div>
-    <PendingStatus/>
+      <div className="header">
+        {device !== 'phone' && (
+          <Link href="/" passHref>
+            <IconButton
+              sx={{
+                borderRadius: '4px',
+                backgroundColor: '#2196F3',
+                color: '#fff',
+                padding: '8px 22px',
+              }}
+              aria-label="delete"
+            >
+              <HomeOutlined />
+            </IconButton>
+          </Link>
+        )}
+        <p className="header__title">{organization?.name}</p>
+        <IconButton
+          sx={{
+            borderRadius: '4px',
+            backgroundColor: '#2196F3',
+            color: '#fff',
+            padding: device === 'phone' ? '8px 12px' : '8px 22px',
+          }}
+          onClick={handleClick}
+          aria-label="delete"
+        >
+          <MenuOutlined fontSize="small" />
+        </IconButton>
+        <CustomMenu
+          handleSignout={doSignOut}
+          open={open}
+          anchorEl={anchorEl}
+          handleClose={handleClose}
+        />
+      </div>
+      <PendingStatus />
     </>
   )
 }
