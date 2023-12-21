@@ -14,6 +14,7 @@ COPY ./app /app/
 COPY ./package.json /package.json
 COPY ./tsconfig.json /tsconfig.json
 
+RUN npm uninstall canvas
 
 RUN npm i
 

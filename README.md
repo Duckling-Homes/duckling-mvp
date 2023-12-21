@@ -1,5 +1,10 @@
 # Ducking MVP
 
+## Seeding the DB
+
+1. docker-compose build
+2. docker-compose up
+
 ## Steps to run the app:
 
 1. Clone the repo

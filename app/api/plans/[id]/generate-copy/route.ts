@@ -106,6 +106,13 @@ export const GET = withErrorHandler(
         return NextResponse.json({ message: 'Plan not found' }, { status: 404 })
       }
 
+      if (plan.copy && plan.copy.toString().length > 50) {
+        await updatePlan(plan.id, {
+          copy: plan.copy,
+        })
+        return NextResponse.json({ content: plan.copy })
+      }
+
       const projectId = plan.projectId
 
       const project = await getProject(projectId)
