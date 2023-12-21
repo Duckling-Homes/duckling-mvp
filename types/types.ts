@@ -283,3 +283,8 @@ export interface ProductCatalogue {
   incentives?: Incentive[]
   organizationId?: string
 }
+
+export interface PresentationDetails {
+  organizationName: string
+  projectDetails: Project
+}

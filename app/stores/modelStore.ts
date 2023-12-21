@@ -5,6 +5,7 @@ import {
   PhotoDetails,
   Plan,
   PlanDetails,
+  PresentationDetails,
   ProductCatalogue,
   Project,
   ProjectAppliance,
@@ -30,6 +31,7 @@ export class _ModelStore {
 
   projectsByID: Map<string, Project> = observable.map(new Map())
   currentProject: Project | null = null
+  currentPresentation: PresentationDetails | null = null
   organization: Organization | null = null
   hasPendingChanges = false
   onlineStatus: 'online' | 'offline' = 'online'
@@ -103,6 +105,18 @@ export class _ModelStore {
 
   clearCurrentProject() {
     this.currentProject = null
+  }
+
+  setCurrentPresentation = async (projectId: string) => {
+    // TODO kiley: determine what needs to happen for offline mode
+    // for the present tab
+    const presentationData = await ModelStore.getPresentationData(projectId)
+    this.currentPresentation = presentationData
+    return presentationData
+  }
+
+  clearCurrentPresentation() {
+    this.currentPresentation = null
   }
 
   /**
@@ -531,6 +545,10 @@ export class _ModelStore {
   generateCopy = async (plan: Plan, projectID: string) => {
     await SyncAPI.plans.generateCopy(plan)
     await this.reloadProject(projectID)
+  }
+
+  getPresentationData = async (projectID: string) => {
+    return await SyncAPI.presentation.get(projectID)
   }
 }
 

@@ -29,6 +29,22 @@ export async function isImageInOrganization(
   }
 }
 
+export async function isImageInProject(
+  imageId: string,
+  projectId: string
+): Promise<boolean> {
+  const image = await prisma.image.findUnique({
+    where: { id: imageId },
+    include: { project: true },
+  })
+
+  if (image?.project.id === projectId) {
+    return true
+  } else {
+    throw new HandlerError('Image Not Found', 404)
+  }
+}
+
 export async function createImage(
   imageData: ExtendedImageCreateInput,
   organizationContext: string
