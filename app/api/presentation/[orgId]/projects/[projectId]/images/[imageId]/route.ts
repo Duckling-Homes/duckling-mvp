@@ -15,7 +15,8 @@ type ContextType = {
     imageId: string
   }
 }
-export const validImageTypes = ['ORIGINAL', 'CROPPED']
+
+const validImageTypes = ['ORIGINAL', 'CROPPED']
 
 export async function GET(
   request: NextRequest,
