@@ -9,7 +9,7 @@ const Presentation = () => {
     <>
       <div>presentation</div>
       <LargeFinancingCalculator
-        totalAmount={2600}
+        totalAmount={260000}
         financingOptions={financingOptions}
       />
     </>
