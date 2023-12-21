@@ -9,6 +9,7 @@ type InputSliderProps = {
   postfixLabel?: string
   step?: number
   disabled?: boolean
+  inputSX?: object
 }
 export const InputSlider: React.FC<InputSliderProps> = ({
   value,
@@ -19,6 +20,7 @@ export const InputSlider: React.FC<InputSliderProps> = ({
   postfixLabel,
   step,
   disabled,
+  inputSX,
 }) => {
   const correctValuesOnBlur = () => {
     if (value < min) {
@@ -33,6 +35,7 @@ export const InputSlider: React.FC<InputSliderProps> = ({
     <Grid container spacing={2} alignItems={'center'}>
       <Grid item xs={12} sm={6} md={4}>
         <Input
+          sx={inputSX}
           disabled={disabled}
           size={'small'}
           startAdornment={
@@ -48,6 +51,7 @@ export const InputSlider: React.FC<InputSliderProps> = ({
           value={value}
           onChange={(event) => setValue(parseFloat(event.target.value))}
           onBlur={correctValuesOnBlur}
+          type="number"
         />
       </Grid>
       <Grid item xs>
