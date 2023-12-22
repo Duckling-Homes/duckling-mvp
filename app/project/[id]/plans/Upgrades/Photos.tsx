@@ -16,10 +16,7 @@ interface PlanPhotoProps {
 
 const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
   const parsePlanDetails = () => {
-    if (typeof plan?.planDetails === 'string') {
-      plan.planDetails = JSON.parse(plan.planDetails)
-    }
-    const planDetails = plan?.planDetails as PlanDetails
+    const planDetails = JSON.parse(plan.planDetails as string)
 
     if (planDetails && !planDetails?.imageIds) {
       planDetails.imageIds = [] as string[]

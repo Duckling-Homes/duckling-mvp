@@ -21,7 +21,6 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
       value: item.id,
     }));
 
-    console.log(resultArray)
     return resultArray;
   }
 
@@ -48,11 +47,12 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
       <div className="planItem__workItem" key={item.customId}>
         <div className="planItem__workItemHeader">
           <span>{item.subcategory}</span>
-          <span>Estimated Cost: {item.id ? calculateCost(item) : '-'}</span>
+          <span>Estimated Cost: {item.id ? calculateCost(item) : '$0.00'}</span>
         </div>
         <div className="planItem__workItemContent">
           <SelectInput
-            label="Type"
+            label="name"
+            smallSize={true}
             value={item.id || ''}
             onChange={(value) => selectWorkItem(value)}
             options={(filterOptions() as []) || []}
@@ -72,6 +72,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
               const newQuantity = parseInt(e.target.value, 10) || 0;
               onQuantityChange(item.customId as string, 'quantity', newQuantity);
             }}
+            className="planItem__quantityInput"
           />
           <IconButton
             sx={{

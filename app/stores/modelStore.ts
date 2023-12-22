@@ -343,56 +343,36 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addPlanItem = (planId: string, item: CatalogueItem, propertyName: string) => {
+  addPlanItem = (
+    planId: string,
+    item: CatalogueItem,
+    propertyName: string
+  ) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
+    let planDetails = {} as PlanDetails
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
       return
     }
 
-    if (!currentPlan.planDetails) {
-      currentPlan.planDetails = {} as PlanDetails
+    if (currentPlan.planDetails) {
+      planDetails = JSON.parse(currentPlan.planDetails)
     }
 
-    if (typeof currentPlan.planDetails === 'string') {
-      try {
-        currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
-      } catch (error) {
-        console.error('Error parsing planDetails JSON:', error)
-        return
-      }
-    }
+    const propertyArray = planDetails[propertyName] as CatalogueItem[] || []
+    propertyArray.push(item)
 
-    if (
-      typeof currentPlan.planDetails === 'object' &&
-      currentPlan.planDetails !== null
-    ) {
-      if (!(propertyName in currentPlan.planDetails)) {
-        currentPlan.planDetails[propertyName] = []
-      }
-
-      const propertyArray = currentPlan.planDetails[
-        propertyName
-      ] as CatalogueItem[]
-
-      if (Array.isArray(propertyArray)) {
-        propertyArray.push(item)
-      } else {
-        console.error(`${propertyName} is not an array`)
-      }
-    } else {
-      console.error(
-        'Invalid planDetails type or property:',
-        typeof currentPlan.planDetails,
-        propertyName
-      )
-    }
+    planDetails[propertyName] = propertyArray
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan
+        plans[index] = 
+        {
+          ...currentPlan,
+          planDetails: JSON.stringify(planDetails)
+        }
       }
     })
 
@@ -406,52 +386,34 @@ export class _ModelStore {
   ) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
+    let planDetails = {} as PlanDetails
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
       return
     }
 
-    if (typeof currentPlan.planDetails === 'string') {
-      try {
-        currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
-      } catch (error) {
-        console.error('Error parsing planDetails JSON:', error)
-        return
-      }
+
+    if (currentPlan.planDetails) {
+      planDetails = JSON.parse(currentPlan.planDetails)
     }
 
-    if (
-      currentPlan.planDetails &&
-      typeof currentPlan.planDetails === 'object' &&
-      propertyName in currentPlan.planDetails
-    ) {
-      const propertyArray = currentPlan.planDetails[propertyName]
+    const propertyArray = planDetails[propertyName] || []
 
-      if (Array.isArray(propertyArray)) {
-        propertyArray.forEach((item, index) => {
-          if (typeof item === 'object' && item !== null && 'customId' in item) {
-            if (item.customId === itemCustomId) {
-              propertyArray.splice(index, 1)
-            }
-          } else {
-            console.error(`Invalid item:`, item)
-          }
-        })
-      } else {
-        console.error(`${propertyName} is not an array`)
+
+    propertyArray.forEach((item: CatalogueItem, index) => {
+      if (item.customId === itemCustomId) {
+        propertyArray.splice(index, 1)
       }
-    } else {
-      console.error(
-        `Invalid planDetails or property:`,
-        currentPlan.planDetails,
-        propertyName
-      )
-    }
+    })
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan
+        plans[index] = 
+        {
+          ...currentPlan,
+          planDetails: JSON.stringify(planDetails)
+        }
       }
     })
 
@@ -465,13 +427,13 @@ export class _ModelStore {
   ) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
+    let planDetails = {} as PlanDetails
 
-    if (typeof currentPlan?.planDetails === 'string') {
-      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
+    if (currentPlan.planDetails) {
+      planDetails = JSON.parse(currentPlan.planDetails)
     }
 
-    const planDetails = currentPlan?.planDetails as PlanDetails
-    const planCategory = (planDetails[category] as CatalogueItem[]) || []
+    const planCategory = planDetails[category] as CatalogueItem[] || []
 
     const updatedItems = planCategory.map((item: CatalogueItem) =>
       item.customId === newItem.customId ? newItem : item
@@ -479,11 +441,12 @@ export class _ModelStore {
 
     planDetails[category] = updatedItems
 
-    currentPlan.planDetails = { ...planDetails }
-
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan as Plan
+        plans[index] = {
+          ...currentPlan,
+          planDetails: JSON.stringify(planDetails)
+        }
       }
     })
 
@@ -492,24 +455,25 @@ export class _ModelStore {
 
   getPlan = (planId: string) => {
     const plans = this.plans
-    const plan = plans.find((p) => p.id === planId)
+    const plan = plans.find((p) => p.id === planId) as Plan
+    let planDetails = {}
 
-    if (plan && typeof plan?.planDetails === 'string') {
-      plan.planDetails = JSON.parse(plan.planDetails || '{}')
+    if (plan?.planDetails) {
+      planDetails = JSON.parse(plan?.planDetails as string)
     }
 
-    return plan
+    return [plan, planDetails]
   }
 
   getSelectedIncentives = (planId: string) => {
     const plans = this.plans
     const currentPlan = plans.find((p) => p.id === planId) as Plan
+    let planDetails = {} as PlanDetails
 
-    if (typeof currentPlan?.planDetails === 'string') {
-      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
+    if (currentPlan.planDetails) {
+      planDetails = JSON.parse(currentPlan.planDetails)
     }
 
-    const planDetails = currentPlan?.planDetails as PlanDetails
     const selectedIncentives = planDetails?.selectedIncentives
 
     return selectedIncentives
@@ -518,24 +482,20 @@ export class _ModelStore {
   updateSelectedIncentives = (selectedIncentives: string[], planId: string) => {
     const plans = this.plans
     const currentPlan = plans.find((p) => p.id === planId) as Plan
+    let planDetails = {} as PlanDetails
 
-    if (typeof currentPlan?.planDetails === 'string') {
-      currentPlan.planDetails = JSON.parse(currentPlan.planDetails)
-    }
-
-    const planDetails = currentPlan?.planDetails as PlanDetails
-
-    if (!planDetails.selectedIncentives) {
-      planDetails.selectedIncentives = [] as string[]
+    if (currentPlan?.planDetails) {
+      planDetails = JSON.parse(currentPlan.planDetails)
     }
 
     planDetails.selectedIncentives = selectedIncentives
 
-    currentPlan.planDetails = planDetails
-
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = currentPlan
+        plans[index] = {
+          ...currentPlan,
+          planDetails: JSON.stringify(planDetails)
+        }
       }
     })
 

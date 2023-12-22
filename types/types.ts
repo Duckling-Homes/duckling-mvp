@@ -198,7 +198,7 @@ export interface UpdateApplianceSticker {
 export interface Plan {
   id?: string
   name?: string
-  planDetails?: PlanDetails | string
+  planDetails?: string
   projectId?: string
   copy?: {
     comfort: string
