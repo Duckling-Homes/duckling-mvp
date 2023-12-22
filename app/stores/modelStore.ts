@@ -455,7 +455,7 @@ export class _ModelStore {
 
   getPlan = (planId: string) => {
     const plans = this.plans
-    const plan = plans.find((p) => p.id === planId)
+    const plan = plans.find((p) => p.id === planId) as Plan
     let planDetails = {}
 
     if (plan?.planDetails) {

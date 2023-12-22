@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
-import { CatalogueItem, Incentive, Plan } from '@/types/types'
+import { Incentive, Plan, PlanDetails } from '@/types/types'
 import './styles.scss'
 
 const STEPS = ['Select Incentives', 'Review Copy']
@@ -196,38 +196,44 @@ const IncentivesModal: React.FC<{
   projectId: string
 }> = ({ open, onClose, currentPlanId, projectId }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [plan, planDetails] = ModelStore?.getPlan(currentPlanId)
+  const [plan, planDetails]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
 
+  console.log(planDetails)
   function getAllIncentivesByType(type: string) {
     const incentives = [] as Incentive[];
-    const uniqueIds = new Set();
+    // const uniqueIds = new Set();
+
+    console.log(type)
 
     if (!plan) {
       return incentives;
     }
   
-    if (planDetails) {
-      Object.values(planDetails).forEach((categoryArray: (string | CatalogueItem)[]) => {
-        categoryArray.forEach((item) => {
-          // Ensure item is a CatalogueItem
-          if (typeof item === 'object' && item !== null) {
-            if (item.incentives && item.incentives.length > 0) {
-              const filteredIncentives = item.incentives.filter((incentive) => {
-                if (incentive.type === type && !uniqueIds.has(incentive.id)) {
-                  uniqueIds.add(incentive.id);
-                  return true;
-                }
-                return false;
-              });
+    // if (planDetails) {
+    //   const test = Object.values(planDetails)
+    //   console.log(test)
+    //   test.forEach(categoryArray => {
+    //     categoryArray.forEach((item) => {
+    //       if (typeof item === 'object' && item !== null) {
+    //         if (item.incentives && item.incentives.length > 0) {
+    //           const filteredIncentives = item.incentives.filter((incentive) => {
+    //             if (incentive.type === type && !uniqueIds.has(incentive.id)) {
+    //               uniqueIds.add(incentive.id);
+    //               return true;
+    //             }
+    //             return false;
+    //           });
 
-              incentives.push(...filteredIncentives);
-            }
-          }
-        });
-      });
+    //           incentives.push(...filteredIncentives);
+    //         }
+    //       }
+    //     });
+    //   });
 
-      return incentives;
-    }
+    //   return incentives;
+    // }
+
+    return incentives
   }
 
 

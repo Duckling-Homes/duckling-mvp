@@ -13,7 +13,6 @@ import PlanItem from './Upgrades/PlanItem'
 import { observer } from 'mobx-react-lite'
 
 import './style.scss'
-import { toJS } from 'mobx'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 
 interface PlansProps {

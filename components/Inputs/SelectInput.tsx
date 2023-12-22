@@ -18,8 +18,6 @@ interface SelectInputProps {
   parent?: string;
   helperText?: string;
   smallSize?: boolean;
-  width?: string;
-  maxWidth?: string;
 }
 
 const SelectInput: React.FC<SelectInputProps> = ({
@@ -32,8 +30,6 @@ const SelectInput: React.FC<SelectInputProps> = ({
   parent,
   helperText,
   smallSize,
-  width,
-  maxWidth
 }) => {
 
   const transformOptions = (options: (string | Option)[]): Option[] => {

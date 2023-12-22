@@ -6,7 +6,6 @@ import {
   Modal,
   TextField,
 } from '@mui/material'
-import { Project } from '@/types/types'
 import { useState } from 'react'
 
 const ExitConfirmationModal: React.FC<{

@@ -51,6 +51,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
         </div>
         <div className="planItem__workItemContent">
           <SelectInput
+            label="name"
             smallSize={true}
             value={item.id || ''}
             onChange={(value) => selectWorkItem(value)}
