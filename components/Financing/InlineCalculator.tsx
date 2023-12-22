@@ -1,45 +1,35 @@
 'use client'
 
+import { Box, Divider, MenuItem, Select, Stack } from '@mui/material'
+
 import {
-  Box,
-  Divider,
-  Grid,
-  Input,
-  InputAdornment,
-  MenuItem,
-  Select,
-  Slider,
-  Stack,
-} from '@mui/material'
-import {
-  FinancingCalculator,
   FinancingCalculatorProps,
   FinancingSelection,
-  NO_LOAN,
-} from './calculator'
-import { useEffect, useState } from 'react'
-import { FinancingOption } from '@/types/types'
+} from '../../lib/financing'
+
+import { useFinancingCalculator } from '@/hooks/useFinancingCalculator'
+import { InputSlider } from '../Sliders/InputSlider'
 
 type Props = FinancingCalculatorProps & {
-  onUpdate: (selection: FinancingSelection) => void
+  onUpdate?: (selection: FinancingSelection) => void
 }
 
 export const InlineFinancingCalculator = (props: Props) => {
-  const [option, setOption] = useState<FinancingOption>()
-  const [term, setTerm] = useState<number>()
-  const [apr, setAPR] = useState<number>()
-  const [loanAmount, setLoanAmount] = useState<number>(props.totalAmount)
-
-  const [calculated, setCalculated] = useState<FinancingSelection>()
-
-  const calculator = new FinancingCalculator(props)
-  const financingOptions = calculator.listAvailableOptions()
-
-  const loanAmtSliderMin = option?.minAmount ?? 0
-  const loanAmtSliderMax = Math.min(
-    option?.maxAmount ?? props.totalAmount,
-    props.totalAmount
-  )
+  const {
+    option,
+    setOption,
+    term,
+    setTerm,
+    apr,
+    setAPR,
+    loanAmount,
+    setLoanAmount,
+    calculated,
+    financingOptions,
+    loanAmtSliderMin,
+    loanAmtSliderMax,
+    OPTION_IS_NO_LOAN,
+  } = useFinancingCalculator(props)
 
   const upfrontCostDisplayValue = calculated?.upfrontCost
     ? '$' + Math.round(calculated.upfrontCost).toLocaleString()
@@ -47,61 +37,6 @@ export const InlineFinancingCalculator = (props: Props) => {
   const monthlyCostDisplayValue = calculated?.monthlyPayment
     ? '$' + Math.round(calculated.monthlyPayment).toLocaleString()
     : '-'
-
-  const OPTION_IS_NO_LOAN = option === NO_LOAN
-
-  useEffect(() => {
-    if (OPTION_IS_NO_LOAN) {
-      return setCalculated({
-        option,
-        termLength: 0,
-        apr: 0,
-        loanAmount,
-        upfrontCost: loanAmount,
-        monthlyPayment: NaN,
-      })
-    }
-
-    // Recalculate after any changes
-    if (term && option && apr !== undefined && loanAmount !== undefined) {
-      const result = calculator.calculate({
-        option,
-        termLength: term,
-        apr,
-        loanAmount,
-      })
-
-      setCalculated(result)
-    }
-  }, [term, option, apr, loanAmount])
-
-  useEffect(() => {
-    // On option change - need to set things to correct bounds
-    if (option) {
-      if (!term || (term && !option.termLengths?.includes(term))) {
-        setTerm(option.termLengths![0])
-      }
-      if (
-        apr === undefined ||
-        (option?.minAPR ?? Infinity) > apr ||
-        (option?.maxAPR ?? -1) < apr
-      ) {
-        setAPR(option.minAPR)
-      }
-
-      if (loanAmount > loanAmtSliderMax) {
-        setLoanAmount(loanAmtSliderMax)
-      }
-
-      if (loanAmount < loanAmtSliderMin) {
-        setLoanAmount(loanAmtSliderMin)
-      }
-
-      if (OPTION_IS_NO_LOAN) {
-        setLoanAmount(props.totalAmount)
-      }
-    }
-  }, [option])
 
   return (
     <>
@@ -178,75 +113,5 @@ export const InlineFinancingCalculator = (props: Props) => {
         </Stack>
       </div>
     </>
-  )
-}
-
-type InputSliderProps = {
-  value: number
-  setValue: (val: number) => void
-  min: number
-  max: number
-  prefixLabel?: string
-  postfixLabel?: string
-  step?: number
-  disabled?: boolean
-}
-const InputSlider: React.FC<InputSliderProps> = ({
-  value,
-  setValue,
-  min,
-  max,
-  prefixLabel,
-  postfixLabel,
-  step,
-  disabled,
-}) => {
-  const correctValuesOnBlur = () => {
-    if (value < min) {
-      setValue(min)
-    }
-    if (value > max) {
-      setValue(max)
-    }
-  }
-
-  return (
-    <Grid container spacing={2} alignItems={'center'}>
-      <Grid item xs={12} sm={6} md={4}>
-        <Input
-          disabled={disabled}
-          size={'small'}
-          startAdornment={
-            prefixLabel ? (
-              <InputAdornment position={'start'}>{prefixLabel}</InputAdornment>
-            ) : null
-          }
-          endAdornment={
-            postfixLabel ? (
-              <InputAdornment position={'end'}>{postfixLabel}</InputAdornment>
-            ) : null
-          }
-          value={value}
-          onChange={(event) => setValue(parseFloat(event.target.value))}
-          onBlur={correctValuesOnBlur}
-        />
-      </Grid>
-      <Grid item xs>
-        <Slider
-          disabled={disabled}
-          value={value}
-          step={step ?? 1}
-          onChange={(_, value) => setValue(value as number)}
-          // marks={[{value: loanAmtSliderMin, label: `$${loanAmtSliderMin}`}, {value: loanAmtSliderMax, label: `$${loanAmtSliderMax.toLocaleString()}`} ]}
-          valueLabelFormat={(value) =>
-            (prefixLabel ?? '') + value + (postfixLabel ?? '')
-          }
-          valueLabelDisplay="auto"
-          min={min}
-          max={max}
-          onBlur={correctValuesOnBlur}
-        />
-      </Grid>
-    </Grid>
   )
 }

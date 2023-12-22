@@ -9,6 +9,7 @@ import { ImageSyncOperations } from './operations/images'
 import { PlansSyncOperations } from './operations/plans'
 import { _Request, db } from './db'
 import { SyncAPIEvents } from './events'
+import { PresentationSyncOperations } from './operations/presentation'
 /**
  * This class is the main access point to the "Sync Layer"
  * which serves to synchronize the changes between local db & remote.
@@ -39,7 +40,7 @@ import { SyncAPIEvents } from './events'
  *
  */
 class _SyncAPI {
-  events = SyncAPIEvents;
+  events = SyncAPIEvents
   bgSyncInterval: NodeJS.Timeout | null = null
   loopingInterval: NodeJS.Timeout | null = null
 
@@ -52,42 +53,45 @@ class _SyncAPI {
   rooms = new RoomSyncOperations()
   images = new ImageSyncOperations()
   plans = new PlansSyncOperations()
+  presentation = new PresentationSyncOperations()
 
   // Metadata
-  lastOnlineStatus: 'online'| 'offline' = 'online';
+  lastOnlineStatus: 'online' | 'offline' = 'online'
 
-  init () {
-    clearInterval(this.loopingInterval!);
-    this.loopingInterval = setInterval(this._loop, 200);
+  init() {
+    clearInterval(this.loopingInterval!)
+    this.loopingInterval = setInterval(this._loop, 200)
 
     // This hook inspects all requests and force pulls updates the API once the request queue is empty
     // NOTE: Still not 100% fool proof, fix only if buggy
     this.events.on('did-push-requests', (requests: _Request[]) => {
       requests.map(async (request) => {
         // NOTE: This is kind of brute force.
-        const body = (request.options?.body ?? {}) as {projectId?: string, id?: string} ;
-        const projectID = body?.projectId ?? body?.id;
+        const body = (request.options?.body ?? {}) as {
+          projectId?: string
+          id?: string
+        }
+        const projectID = body?.projectId ?? body?.id
         if (projectID) {
           // NOTE: We only want to update IndexeDB with API view if request queue is empty!
           this.projects._pullProjectFromAPI(projectID)
         }
-      });
+      })
     })
 
     this.events.on('did-go-online', (_) => {
-      this.pushChanges();
+      this.pushChanges()
     })
   }
 
-
   sync = async () => {
-    if (!this.loopingInterval) this.init();
+    if (!this.loopingInterval) this.init()
     if (!isOnline()) {
       console.warn('Ignore sync, is offline...')
       return
     }
-    await this.pushChanges();
-    await this.pullLatest();
+    await this.pushChanges()
+    await this.pullLatest()
   }
 
   pushChanges = async () => {
@@ -109,21 +113,21 @@ class _SyncAPI {
   }
 
   _loop = () => {
-    this._loopTaskCheckPending();
-    this._loopTaskCheckOnline();
+    this._loopTaskCheckPending()
+    this._loopTaskCheckOnline()
   }
 
   _loopTaskCheckPending = async () => {
-    const status = await db.hasPendingChanges();
-    this.events.emit('has-pending-changes', status);
+    const status = await db.hasPendingChanges()
+    this.events.emit('has-pending-changes', status)
   }
 
   _loopTaskCheckOnline = async () => {
-    const currentStatus = isOnline() ? 'online' : 'offline';
+    const currentStatus = isOnline() ? 'online' : 'offline'
     if (currentStatus !== this.lastOnlineStatus) {
-      this.events.emit(`did-go-${currentStatus}`, Date.now());
+      this.events.emit(`did-go-${currentStatus}`, Date.now())
     }
-    this.lastOnlineStatus = currentStatus;
+    this.lastOnlineStatus = currentStatus
   }
 }
 

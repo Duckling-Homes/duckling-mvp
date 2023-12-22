@@ -5,6 +5,7 @@ import {
   PhotoDetails,
   Plan,
   PlanDetails,
+  PresentationDetails,
   ProductCatalogue,
   Project,
   ProjectAppliance,
@@ -30,12 +31,13 @@ export class _ModelStore {
 
   projectsByID: Map<string, Project> = observable.map(new Map())
   currentProject: Project | null = null
+  currentPresentation: PresentationDetails | null = null
   organization: Organization | null = null
   hasPendingChanges = false
   onlineStatus: 'online' | 'offline' = 'online'
-  plans: Plan[] = [];
-  productCatalogue: ProductCatalogue[] = [];
-  financingOptions: FinancingOption[] = [];
+  plans: Plan[] = []
+  productCatalogue: ProductCatalogue[] = []
+  financingOptions: FinancingOption[] = []
   constructor() {
     makeAutoObservable(this)
   }
@@ -105,6 +107,18 @@ export class _ModelStore {
     this.currentProject = null
   }
 
+  setCurrentPresentation = async (projectId: string) => {
+    // TODO kiley: determine what needs to happen for offline mode
+    // for the present tab
+    const presentationData = await ModelStore.getPresentationData(projectId)
+    this.currentPresentation = presentationData
+    return presentationData
+  }
+
+  clearCurrentPresentation() {
+    this.currentPresentation = null
+  }
+
   /**
    * This function retrieves the latest view of the project from the SyncAPI for the specified projectID and should be
    * called on every model store mutation to make keep the ModelStore and SyncAPI views in lockstep.
@@ -155,20 +169,19 @@ export class _ModelStore {
   }
 
   fetchOrganization = async (organizationId: string) => {
-    this.organization = await SyncAPI.organizations.get(organizationId);
-    this.fetchCatalogue();
-    this.fetchFinancingOptions();
+    this.organization = await SyncAPI.organizations.get(organizationId)
+    this.fetchCatalogue()
+    this.fetchFinancingOptions()
     return this.organization
   }
 
   fetchCatalogue = async () => {
     this.productCatalogue = await SyncAPI.organizations.getCatalogue()
-    return this.productCatalogue;
+    return this.productCatalogue
   }
 
-
   fetchFinancingOptions = async () => {
-    this.financingOptions = await SyncAPI.organizations.getFinancingOptions();
+    this.financingOptions = await SyncAPI.organizations.getFinancingOptions()
     return this.financingOptions
   }
 
@@ -335,7 +348,6 @@ export class _ModelStore {
     item: CatalogueItem,
     propertyName: string
   ) => {
-
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
     let planDetails = {} as PlanDetails
@@ -424,9 +436,7 @@ export class _ModelStore {
     const planCategory = planDetails[category] as CatalogueItem[] || []
 
     const updatedItems = planCategory.map((item: CatalogueItem) =>
-      item.customId === newItem.customId
-        ? newItem
-        : item
+      item.customId === newItem.customId ? newItem : item
     )
 
     planDetails[category] = updatedItems
@@ -495,6 +505,10 @@ export class _ModelStore {
   generateCopy = async (plan: Plan, projectID: string) => {
     await SyncAPI.plans.generateCopy(plan)
     await this.reloadProject(projectID)
+  }
+
+  getPresentationData = async (projectID: string) => {
+    return await SyncAPI.presentation.get(projectID)
   }
 }
 

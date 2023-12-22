@@ -142,7 +142,14 @@ const CopyReview: React.FC<{
 }> = ({ plan, projectId }) => {
 
   useEffect(() => {
-    if (!plan.copy) {
+    const shouldGenerateCopy = !plan.copy || (
+      plan.copy?.summary === '' &&
+      plan.copy?.recommended === '' &&
+      plan.copy?.comfort === '' &&
+      plan.copy?.health === ''
+    )
+    
+    if (shouldGenerateCopy) {
       ModelStore.generateCopy(plan, projectId)
     }
   })

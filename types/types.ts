@@ -201,11 +201,12 @@ export interface Plan {
   planDetails?: string
   projectId?: string
   copy?: {
-    comfort: string,
-    health: string,
-    recommended: string,
+    comfort: string
+    health: string
+    recommended: string
     summary: string
   }
+  catalogueItems?: CatalogueItem[]
 }
 
 export interface PlanDetails {
@@ -233,6 +234,7 @@ export interface CatalogueItem {
   incentives?: Incentive[]
   organizationId?: string
   organization?: Organization
+  calculatedPrice?: number
 }
 
 export interface Incentive {
@@ -243,6 +245,12 @@ export interface Incentive {
   calculationRateValue?: number
   maxLimit?: string
   type?: string
+  selected?: boolean
+  calculatedAmount?: number
+  finalCalculations?: {
+    usedAmount: number
+    warningText?: string
+  }
 }
 
 export interface FinancingOption {
@@ -274,4 +282,9 @@ export interface ProductCatalogue {
   ahriNumber?: string
   incentives?: Incentive[]
   organizationId?: string
+}
+
+export interface PresentationDetails {
+  organizationName: string
+  projectDetails: Project
 }

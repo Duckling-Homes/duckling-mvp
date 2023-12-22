@@ -1,7 +1,8 @@
+import { ProjectNotFoundError } from '@/app/utils/errors'
+import { createProjectRoom } from '@/app/utils/repositories/projectRoom'
 import withErrorHandler from '@/app/utils/withErrorHandler'
 import { NextRequest, NextResponse } from 'next/server'
 import { getProject } from '../../utils/repositories/project'
-import { createProjectRoom } from '@/app/utils/repositories/projectRoom'
 
 /**
  * Create a project room
@@ -26,7 +27,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   const project = await getProject(projectId)
 
   if (!project || project.organizationId !== orgContext) {
-    return NextResponse.json({ message: `Project not found` }, { status: 404 })
+    return NextResponse.json(new ProjectNotFoundError(projectId).toJSON())
   }
 
   return NextResponse.json(

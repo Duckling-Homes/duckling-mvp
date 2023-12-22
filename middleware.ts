@@ -4,6 +4,10 @@ import { NextRequest, NextResponse } from 'next/server'
 // See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
 
 export default authMiddleware({
+  publicRoutes: [
+    '/api/presentation/:orgId/projects/:projectId',
+    '/api/presentation/:orgId/projects/:projectId/images/:iamgeId',
+  ],
   afterAuth(auth, req: NextRequest, evt) {
     if (req.nextUrl.pathname.startsWith('/api/export')) {
       return // don't do anything for the export route
@@ -17,7 +21,10 @@ export default authMiddleware({
       return // don't do anything for the assign route
     }
 
-    if (req.nextUrl.pathname.startsWith('/api')) {
+    if (
+      req.nextUrl.pathname.startsWith('/api') &&
+      !req.nextUrl.pathname.startsWith('/api/presentation')
+    ) {
       // if this is an api route, add this header so our back end can tenantize its apis
       if ((auth.sessionClaims?.metadata as any)?.organization_id) {
         req.headers.set(
