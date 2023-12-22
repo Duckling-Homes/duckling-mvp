@@ -345,8 +345,6 @@ export class _ModelStore {
       return
     }
 
-    console.log(currentPlan.planDetails)
-
     if (currentPlan.planDetails) {
       planDetails = JSON.parse(currentPlan.planDetails)
     }
@@ -448,12 +446,13 @@ export class _ModelStore {
   getPlan = (planId: string) => {
     const plans = this.plans
     const plan = plans.find((p) => p.id === planId)
+    let planDetails = {}
 
-    if (plan && typeof plan?.planDetails === 'string') {
-      plan.planDetails = JSON.parse(plan.planDetails || '{}')
+    if (plan?.planDetails) {
+      planDetails = JSON.parse(plan?.planDetails as string)
     }
 
-    return plan
+    return [plan, planDetails]
   }
 
   getSelectedIncentives = (planId: string) => {

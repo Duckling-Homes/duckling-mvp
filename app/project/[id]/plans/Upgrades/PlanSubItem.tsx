@@ -21,7 +21,6 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
       value: item.id,
     }));
 
-    console.log(resultArray)
     return resultArray;
   }
 
