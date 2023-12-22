@@ -189,7 +189,7 @@ const IncentivesModal: React.FC<{
   projectId: string
 }> = ({ open, onClose, currentPlanId, projectId }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const plan = ModelStore?.getPlan(currentPlanId)
+  const [plan, planDetails] = ModelStore?.getPlan(currentPlanId)
 
   function getAllIncentivesByType(type: string) {
     const incentives = [] as Incentive[];
@@ -199,8 +199,8 @@ const IncentivesModal: React.FC<{
       return incentives;
     }
   
-    if (plan.planDetails && typeof plan.planDetails === 'object') {
-      Object.values(plan.planDetails).forEach((categoryArray: (string | CatalogueItem)[]) => {
+    if (planDetails) {
+      Object.values(planDetails).forEach((categoryArray: (string | CatalogueItem)[]) => {
         categoryArray.forEach((item) => {
           // Ensure item is a CatalogueItem
           if (typeof item === 'object' && item !== null) {
@@ -274,10 +274,9 @@ const IncentivesModal: React.FC<{
   }
 
   function savePlan() {
-    const newPlan = { ...plan };
+    const newPlan = { ...plan }
 
-    newPlan.planDetails = JSON.stringify(newPlan.planDetails);
-    ModelStore.patchPlan(projectId, newPlan);
+    ModelStore.patchPlan(projectId, newPlan)
   }
 
   return (
