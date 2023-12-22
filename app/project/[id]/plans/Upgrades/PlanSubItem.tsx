@@ -53,9 +53,6 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
         <div className="planItem__workItemContent">
           <SelectInput
             smallSize={true}
-            // width="50%"
-            // maxWidth="500px"
-            label="Type"
             value={item.id || ''}
             onChange={(value) => selectWorkItem(value)}
             options={(filterOptions() as []) || []}
