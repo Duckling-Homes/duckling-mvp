@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export default authMiddleware({
   publicRoutes: [
+    '/presentation/:orgId/projects/:id',
     '/api/presentation/:orgId/projects/:projectId',
     '/api/presentation/:orgId/projects/:projectId/images/:iamgeId',
   ],
