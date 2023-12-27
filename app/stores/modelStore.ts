@@ -429,6 +429,8 @@ export class _ModelStore {
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
     let planDetails = {} as PlanDetails
 
+    console.log(newItem)
+
     if (currentPlan.planDetails) {
       planDetails = JSON.parse(currentPlan.planDetails)
     }
@@ -465,35 +467,21 @@ export class _ModelStore {
     return [plan, planDetails]
   }
 
-  getSelectedIncentives = (planId: string) => {
+updatePlanCategory = (planId: string, planCategory: CatalogueItem[], category: string) => {
     const plans = this.plans
-    const currentPlan = plans.find((p) => p.id === planId) as Plan
+    const plan = plans.find((p) => p.id === planId) as Plan
     let planDetails = {} as PlanDetails
 
-    if (currentPlan.planDetails) {
-      planDetails = JSON.parse(currentPlan.planDetails)
+    if (plan?.planDetails) {
+      planDetails = JSON.parse(plan?.planDetails as string)
     }
 
-    const selectedIncentives = planDetails?.selectedIncentives
-
-    return selectedIncentives
-  }
-
-  updateSelectedIncentives = (selectedIncentives: string[], planId: string) => {
-    const plans = this.plans
-    const currentPlan = plans.find((p) => p.id === planId) as Plan
-    let planDetails = {} as PlanDetails
-
-    if (currentPlan?.planDetails) {
-      planDetails = JSON.parse(currentPlan.planDetails)
-    }
-
-    planDetails.selectedIncentives = selectedIncentives
+    planDetails[category] = planCategory
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
         plans[index] = {
-          ...currentPlan,
+          ...plan,
           planDetails: JSON.stringify(planDetails)
         }
       }

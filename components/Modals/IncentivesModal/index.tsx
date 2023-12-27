@@ -13,22 +13,18 @@ import {
 import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
-import { Incentive, Plan, PlanDetails } from '@/types/types'
+import { CatalogueItem, Incentive, Plan, PlanDetails } from '@/types/types'
 import './styles.scss'
+import { observer } from 'mobx-react-lite'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
 const Incentives: React.FC<{
   rebates: Incentive[]
   taxCredits: Incentive[]
-  onCheck: (incentiveId: string) => void
+  onCheck: (incentiveId: string, parentId: string, parentCat: string) => void
   plan: Plan
 }> = ({ rebates, taxCredits, onCheck, plan }) => {
-  const [selectedIncentives, setSelectedIncentives] = useState(ModelStore.getSelectedIncentives(plan?.id as string) || [])
-
-  function reloadSelectedIncentives() {
-    setSelectedIncentives(ModelStore.getSelectedIncentives(plan?.id as string) || [])
-  }
 
   function calculateIncentiveValue(incentive: Incentive) {
     switch(incentive.calculationType) {
@@ -67,10 +63,9 @@ const Incentives: React.FC<{
                 alignItems: "center",
                 gap: "8px"
               }}>
-                <Checkbox onChange={() => {
-                  onCheck(incentive.id as string)
-                  reloadSelectedIncentives()
-                }} checked={selectedIncentives?.includes(incentive.id as string)}/>
+                <Checkbox
+                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string, incentive.parentCat as string)}
+                  checked={incentive.selected}/>
                 <div style={{
                   display: "flex",
                   flexDirection: "column",
@@ -110,10 +105,9 @@ const Incentives: React.FC<{
                 alignItems: "center",
                 gap: "8px"
               }}>
-                <Checkbox onChange={() => {
-                  onCheck(incentive.id as string)
-                  reloadSelectedIncentives()
-                }} checked={selectedIncentives?.includes(incentive.id as string)}/>
+                <Checkbox
+                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string, incentive.parentCat as string)}
+                  checked={incentive.selected}/>
                 <div style={{
                   display: "flex",
                   flexDirection: "column",
@@ -141,18 +135,18 @@ const CopyReview: React.FC<{
   projectId: string
 }> = ({ plan, projectId }) => {
 
-  useEffect(() => {
-    const shouldGenerateCopy = !plan.copy || (
-      plan.copy?.summary === '' &&
-      plan.copy?.recommended === '' &&
-      plan.copy?.comfort === '' &&
-      plan.copy?.health === ''
-    )
+  // useEffect(() => {
+  //   const shouldGenerateCopy = !plan.copy || (
+  //     plan.copy?.summary === '' &&
+  //     plan.copy?.recommended === '' &&
+  //     plan.copy?.comfort === '' &&
+  //     plan.copy?.health === ''
+  //   )
     
-    if (shouldGenerateCopy) {
-      ModelStore.generateCopy(plan, projectId)
-    }
-  })
+  //   if (shouldGenerateCopy) {
+  //     ModelStore.generateCopy(plan, projectId)
+  //   }
+  // })
 
   return (
     <div className='copyReview'>
@@ -194,44 +188,38 @@ const IncentivesModal: React.FC<{
   onClose: () => void
   currentPlanId: string
   projectId: string
-}> = ({ open, onClose, currentPlanId, projectId }) => {
+}> = observer(
+  ({ open, onClose, currentPlanId, projectId }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [plan, planDetails]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
 
-  console.log(planDetails)
   function getAllIncentivesByType(type: string) {
     const incentives = [] as Incentive[];
-    // const uniqueIds = new Set();
-
-    console.log(type)
+    const uniqueIds = new Set();
 
     if (!plan) {
       return incentives;
     }
   
-    // if (planDetails) {
-    //   const test = Object.values(planDetails)
-    //   console.log(test)
-    //   test.forEach(categoryArray => {
-    //     categoryArray.forEach((item) => {
-    //       if (typeof item === 'object' && item !== null) {
-    //         if (item.incentives && item.incentives.length > 0) {
-    //           const filteredIncentives = item.incentives.filter((incentive) => {
-    //             if (incentive.type === type && !uniqueIds.has(incentive.id)) {
-    //               uniqueIds.add(incentive.id);
-    //               return true;
-    //             }
-    //             return false;
-    //           });
+    const incentivesByCat = Object.values(planDetails)
 
-    //           incentives.push(...filteredIncentives);
-    //         }
-    //       }
-    //     });
-    //   });
+    incentivesByCat.forEach(categoryArray => {
+      categoryArray.forEach((item: CatalogueItem) => {
+        if (item.incentives && item.incentives.length > 0) {
+          const filteredIncentives = item.incentives.filter((incentive) => {
+            incentive.parentId = item.id as string
+            incentive.parentCat = item.category as string
+            if (incentive.type === type && !uniqueIds.has(incentive.id)) {
+              uniqueIds.add(incentive.id);
+              return true;
+            }
+            return false;
+          });
 
-    //   return incentives;
-    // }
+          incentives.push(...filteredIncentives);
+        }
+      });
+    });
 
     return incentives
   }
@@ -251,18 +239,29 @@ const IncentivesModal: React.FC<{
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   }
 
-  function handleSelectIncentive(incentiveId: string) {
-    const selectedIncentives = ModelStore.getSelectedIncentives(currentPlanId) || []
-    const isInSelected = selectedIncentives?.includes(incentiveId);
-    let updatedSelection = []
+  function handleSelectIncentive(incentiveId: string, parentId: string, parentCat: string) {
+    const details = {...planDetails}
 
-    if (isInSelected) {
-      updatedSelection = selectedIncentives.filter((id: string) => id !== incentiveId);
-    } else {
-      updatedSelection = [...selectedIncentives, incentiveId];
-    }
+    console.log(incentiveId, 'caiu')
 
-    ModelStore.updateSelectedIncentives(updatedSelection, plan?.id as string)
+    details[parentCat].forEach(workItem => {
+      if (workItem.id === parentId) {
+        workItem.incentives.forEach(incentive => {
+          if (incentive.id === incentiveId) {
+            if (incentive.selected) {
+              incentive.selected = false
+            } else {
+              incentive.selected = true
+            }
+          }
+        })
+      }
+    })
+
+    console.log(details[parentCat])
+
+    ModelStore.updatePlanCategory(plan.id as string, details[parentCat] as CatalogueItem[], parentCat)
+
   }
 
   function renderStep() {
@@ -270,7 +269,9 @@ const IncentivesModal: React.FC<{
       case 0:
         return (
           <Incentives
-            onCheck={(incentiveId: string) => handleSelectIncentive(incentiveId)}
+            onCheck={
+              (incentiveId: string, parentId: string, parentCat: string) => handleSelectIncentive(incentiveId, parentId, parentCat)
+            }
             plan={plan as Plan}
             rebates={getAllIncentivesByType('Rebate') as Incentive[]}
             taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
@@ -287,7 +288,10 @@ const IncentivesModal: React.FC<{
   }
 
   function savePlan() {
-    const newPlan = { ...plan }
+    const newPlan = {
+      ...plan,
+      planDetails: JSON.stringify(planDetails)
+    }
 
     ModelStore.patchPlan(projectId, newPlan)
   }
@@ -343,6 +347,6 @@ const IncentivesModal: React.FC<{
       </div>
     </Modal>
   )
-}
+})
 
 export default IncentivesModal

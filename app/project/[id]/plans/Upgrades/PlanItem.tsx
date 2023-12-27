@@ -91,7 +91,6 @@ const PlanItem: React.FC<PlanItemProps> = (
     });
 
     ModelStore.removePlanItem(plan?.id as string, itemCustomId, property);
-
   }
 
   function selectItem(customId: string, itemDetails: CatalogueItem) {
