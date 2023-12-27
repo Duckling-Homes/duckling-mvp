@@ -39,6 +39,7 @@ const HomeSummary: React.FC<{
         />
         {project.rooms?.map((room) => (
           <IssuesView
+            key={room.id}
             title={room.name ?? ''}
             healthSafetyTags={room.safetyIssueTags ?? []}
             comfortTags={room.comfortIssueTags ?? []}
