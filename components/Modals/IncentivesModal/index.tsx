@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
-import { CatalogueItem, Incentive, Plan } from '@/types/types'
+import { Incentive, Plan, PlanDetails } from '@/types/types'
 import './styles.scss'
 
 const STEPS = ['Select Incentives', 'Review Copy']
@@ -55,7 +55,10 @@ const Incentives: React.FC<{
         flexDirection: "column",
         gap: "16px"
       }}>
-        Rebate
+        <span style={{
+          fontSize: '20px',
+          fontWeight: '500'
+        }}>Rebate</span>
         {
           rebates?.length > 0 ? rebates.map((incentive: Incentive) => (
             <>
@@ -95,7 +98,10 @@ const Incentives: React.FC<{
         flexDirection: "column",
         gap: "16px"
       }}>
-        Tax Credits
+        <span style={{
+          fontSize: '20px',
+          fontWeight: '500'
+        }}>Tax Credits</span>
         {
           taxCredits?.length > 0 ? taxCredits.map((incentive: Incentive) => (
             <>
@@ -149,28 +155,32 @@ const CopyReview: React.FC<{
   })
 
   return (
-    <div>
-      <div>
-        Home Summary
-        <TextField 
+    <div className='copyReview'>
+      <div className='copyReview__wrapper'>
+        <span className='copyReview__title'>Home Summary</span>
+        <TextField
+          multiline
           value={plan.copy?.summary || ''}
         />
       </div>
-      <div>
-        Plan Summary
+      <div className='copyReview__wrapper'>
+        <span className='copyReview__title'>Plan Summary</span>
         <TextField
+          multiline
           value={plan.copy?.recommended || ''}
         />
       </div>
-      <div>
-        Comfort Summary
+      <div className='copyReview__wrapper'>
+        <span className='copyReview__title'>Comfort Summary</span>
         <TextField
+          multiline
           value={plan.copy?.comfort || ''}
         />
       </div>
-      <div>
-        Health Summary
+      <div className='copyReview__wrapper'>
+        <span className='copyReview__title'>Health Summary</span>
         <TextField
+          multiline
           value={plan.copy?.health || ''}
         />
       </div>
@@ -186,38 +196,44 @@ const IncentivesModal: React.FC<{
   projectId: string
 }> = ({ open, onClose, currentPlanId, projectId }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const plan = ModelStore?.getPlan(currentPlanId)
+  const [plan, planDetails]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
 
+  console.log(planDetails)
   function getAllIncentivesByType(type: string) {
     const incentives = [] as Incentive[];
-    const uniqueIds = new Set();
+    // const uniqueIds = new Set();
+
+    console.log(type)
 
     if (!plan) {
       return incentives;
     }
   
-    if (plan.planDetails && typeof plan.planDetails === 'object') {
-      Object.values(plan.planDetails).forEach((categoryArray: (string | CatalogueItem)[]) => {
-        categoryArray.forEach((item) => {
-          // Ensure item is a CatalogueItem
-          if (typeof item === 'object' && item !== null) {
-            if (item.incentives && item.incentives.length > 0) {
-              const filteredIncentives = item.incentives.filter((incentive) => {
-                if (incentive.type === type && !uniqueIds.has(incentive.id)) {
-                  uniqueIds.add(incentive.id);
-                  return true;
-                }
-                return false;
-              });
+    // if (planDetails) {
+    //   const test = Object.values(planDetails)
+    //   console.log(test)
+    //   test.forEach(categoryArray => {
+    //     categoryArray.forEach((item) => {
+    //       if (typeof item === 'object' && item !== null) {
+    //         if (item.incentives && item.incentives.length > 0) {
+    //           const filteredIncentives = item.incentives.filter((incentive) => {
+    //             if (incentive.type === type && !uniqueIds.has(incentive.id)) {
+    //               uniqueIds.add(incentive.id);
+    //               return true;
+    //             }
+    //             return false;
+    //           });
 
-              incentives.push(...filteredIncentives);
-            }
-          }
-        });
-      });
+    //           incentives.push(...filteredIncentives);
+    //         }
+    //       }
+    //     });
+    //   });
 
-      return incentives;
-    }
+    //   return incentives;
+    // }
+
+    return incentives
   }
 
 
@@ -271,10 +287,9 @@ const IncentivesModal: React.FC<{
   }
 
   function savePlan() {
-    const newPlan = { ...plan };
+    const newPlan = { ...plan }
 
-    newPlan.planDetails = JSON.stringify(newPlan.planDetails);
-    ModelStore.patchPlan(projectId, newPlan);
+    ModelStore.patchPlan(projectId, newPlan)
   }
 
   return (

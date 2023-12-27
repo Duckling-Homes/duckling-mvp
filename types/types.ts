@@ -198,7 +198,7 @@ export interface UpdateApplianceSticker {
 export interface Plan {
   id?: string
   name?: string
-
+  planDetails?: string
   projectId?: string
   copy?: {
     comfort: string
@@ -207,9 +207,6 @@ export interface Plan {
     summary: string
   }
   catalogueItems?: CatalogueItem[]
-
-  // ONLY EVER INTERACT WITH THIS ON SYNC
-  planDetails?: PlanDetails | string
 }
 
 export interface PlanDetails {
@@ -286,4 +283,9 @@ export interface ProductCatalogue {
   ahriNumber?: string
   incentives?: Incentive[]
   organizationId?: string
+}
+
+export interface PresentationDetails {
+  organizationName: string
+  projectDetails: Project
 }

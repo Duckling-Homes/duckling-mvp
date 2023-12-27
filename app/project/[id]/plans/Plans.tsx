@@ -13,7 +13,6 @@ import PlanItem from './Upgrades/PlanItem'
 import { observer } from 'mobx-react-lite'
 
 import './style.scss'
-import { toJS } from 'mobx'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 
 interface PlansProps {
@@ -32,7 +31,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
-      console.log(toJS(currentProject.plans))
       setPlans(currentProject.plans)
       if (!currentPlan?.id) {
         setCurrentPlan(currentProject.plans[0])
@@ -153,7 +151,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         </div>
         {currentPlan?.id && (
           <div className="planCreation__wrapper">
-            <div className="planCreation__leftContainer">
+            <div className={`planCreation__leftContainer ${hideFinance ? 'hidden' : ''}`}>
               <div className="planCreation__leftHeader">
                 <p className="planCreation__title">{currentPlan.name}</p>
                 <IconButton
@@ -221,7 +219,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
               />
               <Photos plan={currentPlan} project={currentProject} />
             </div>
-            <div className="planCreation__rightContainer">
+            <div className={`planCreation__rightContainer ${hideFinance ? 'hidden' : ''}`}>
               <div className="planCreation__rightHeader">
                 <IconButton
                   sx={{
@@ -234,9 +232,9 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 >
                   <Icons.DoubleArrow />
                 </IconButton>
-                <p>Finance & Impact</p>
+                <span>Finance & Impact</span>
               </div>
-              <div className="planCreation__cost">
+              <div className='planCreation__cost'>
                 <div className="planCreation__sectionHeader">
                   <div>
                     <Icons.AttachMoney fontSize="small" />
