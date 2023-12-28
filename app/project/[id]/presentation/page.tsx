@@ -34,7 +34,7 @@ const Presentation = observer(() => {
         <Tab label="Plans" />
       </Tabs>
       {renderTabContent(0, <HomeSummary project={project} />)}
-      {renderTabContent(1, <PlansPresentation />)}
+      {renderTabContent(1, <PlansPresentation project={project} />)}
     </div>
   )
 })

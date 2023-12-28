@@ -1,6 +1,10 @@
 .summary,
 .issuesOverview,
-.issues {
+.issues,
+.benefitsOverview,
+.benefit,
+.financing,
+.scope {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -20,6 +24,16 @@
       font-weight: 500;
     }
   }
+  &__headerLeft {
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    gap: 8px;
+    p {
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
   &__text {
     display: flex;
     align-items: flex-start;
@@ -27,5 +41,22 @@
     gap: 8px;
     font-size: 16px;
     font-weight: 400;
+  }
+}
+
+.planSelection {
+  $self: &;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  &__buttons {
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
   }
 }
