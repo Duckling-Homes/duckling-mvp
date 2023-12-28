@@ -247,6 +247,7 @@ export interface Incentive {
   type?: string
   selected?: boolean
   calculatedAmount?: number
+  preliminaryWarningText?: string
   finalCalculations?: {
     usedAmount: number
     warningText?: string
