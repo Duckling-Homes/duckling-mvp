@@ -15,7 +15,6 @@ interface PlanPhotoProps {
 }
 
 const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
-  
   const parsePlanDetails = () => {
     const planDetails = {} as PlanDetails
 
@@ -46,7 +45,7 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
         ...planDetails,
         imageIds: Array.from(selectedPhotos),
       }
-      const newPlan = { ...plan, imageIds: Array.from(selectedPhotos) }
+      const newPlan = { ...plan }
       newPlan.planDetails = JSON.stringify(newPlanDetails)
       setPlanDetails(newPlanDetails)
       await ModelStore.patchPlan(plan.projectId, newPlan)
