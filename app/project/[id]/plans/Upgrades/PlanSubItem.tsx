@@ -44,7 +44,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
   return (
     <>
       <Divider />
-      <div className="planItem__workItem" key={Math.random()}>
+      <div className="planItem__workItem" key={item.customId}>
         <div className="planItem__workItemHeader">
           <span>{item.subcategory}</span>
           <span>Estimated Cost: {item.id ? calculateCost(item) : '$0.00'}</span>

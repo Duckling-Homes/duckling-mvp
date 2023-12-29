@@ -135,4 +135,5 @@ export function processPlanWithAggregationLimits(
   aggregationLimits.forEach((limit) =>
     limit.processCatalogueItems(processedCatalogItems)
   )
+
 }

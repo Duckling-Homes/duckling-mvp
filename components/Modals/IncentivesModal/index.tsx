@@ -134,19 +134,28 @@ const CopyReview: React.FC<{
   plan: Plan
   projectId: string
 }> = ({ plan, projectId }) => {
+  const [copyFields, setCopyFields] = useState({
+    summary: '',
+    recommended: '',
+    comfort: '',
+    health: ''
+  })
 
-  // useEffect(() => {
-  //   const shouldGenerateCopy = !plan.copy || (
-  //     plan.copy?.summary === '' &&
-  //     plan.copy?.recommended === '' &&
-  //     plan.copy?.comfort === '' &&
-  //     plan.copy?.health === ''
-  //   )
-    
-  //   if (shouldGenerateCopy) {
-  //     ModelStore.generateCopy(plan, projectId)
-  //   }
-  // })
+  useEffect(() => {
+    if (!plan.copy) {
+      ModelStore.generateCopy(plan, projectId)
+    }
+    setCopyFields(plan.copy)
+  }, [])
+
+  function updateCopyFields(newValue, field) {
+    const oldFields = {...copyFields}
+
+    oldFields[field] = newValue
+
+    setCopyFields(oldFields)
+    ModelStore.updatePlanCopy(plan.id as string, oldFields)
+  }
 
   return (
     <div className='copyReview'>
@@ -154,28 +163,33 @@ const CopyReview: React.FC<{
         <span className='copyReview__title'>Home Summary</span>
         <TextField
           multiline
-          value={plan.copy?.summary || ''}
+          value={plan.copy?.summary || copyFields.summary}
+          onChange={({target}) => updateCopyFields(target.value, 'summary')}
         />
       </div>
       <div className='copyReview__wrapper'>
         <span className='copyReview__title'>Plan Summary</span>
         <TextField
           multiline
-          value={plan.copy?.recommended || ''}
+          value={plan.copy?.recommended || copyFields.recommended}
+          onChange={({target}) => updateCopyFields(target.value, 'recommended')}
         />
       </div>
       <div className='copyReview__wrapper'>
         <span className='copyReview__title'>Comfort Summary</span>
         <TextField
           multiline
-          value={plan.copy?.comfort || ''}
+          value={plan.copy?.comfort || copyFields.comfort}
+          onChange={({target}) => updateCopyFields(target.value, 'comfort')}
+
         />
       </div>
       <div className='copyReview__wrapper'>
         <span className='copyReview__title'>Health Summary</span>
         <TextField
           multiline
-          value={plan.copy?.health || ''}
+          value={plan.copy?.health || copyFields.health}
+          onChange={({target}) => updateCopyFields(target.value, 'health')}
         />
       </div>
 
@@ -287,11 +301,14 @@ const IncentivesModal: React.FC<{
     }
   }
 
-  function savePlan() {
+  async function savePlan() {
+
     const newPlan = {
       ...plan,
       planDetails: JSON.stringify(planDetails)
     }
+
+    // processPlanWithAggregationLimits(newPlan, aggregationLimits)
 
     ModelStore.patchPlan(projectId, newPlan)
   }
