@@ -1,5 +1,6 @@
 import {
   CatalogueItem,
+  Copy,
   FinancingOption,
   Organization,
   PhotoDetails,
@@ -17,9 +18,6 @@ import {
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
-import { getAggregationLimits } from '../utils/repositories/aggregationLimits'
-import { processPlanWithAggregationLimits } from '../utils/planCalculation'
-import { aggregationLimits } from '../utils/hardcodedAggregationLimits'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -493,7 +491,7 @@ export class _ModelStore {
     this.plans = plans
   }
 
-  updatePlanCopy = (planId: string, newCopy) => {
+  updatePlanCopy = (planId: string, newCopy: Copy) => {
     const plans = this.plans
 
     plans.forEach((plan, index) => {

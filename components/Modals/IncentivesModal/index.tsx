@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
-import { CatalogueItem, Incentive, Plan, PlanDetails } from '@/types/types'
+import { CatalogueItem, Copy, Incentive, Plan, PlanDetails } from '@/types/types'
 import './styles.scss'
 import { observer } from 'mobx-react-lite'
 
@@ -23,8 +23,7 @@ const Incentives: React.FC<{
   rebates: Incentive[]
   taxCredits: Incentive[]
   onCheck: (incentiveId: string, parentId: string, parentCat: string) => void
-  plan: Plan
-}> = ({ rebates, taxCredits, onCheck, plan }) => {
+}> = ({ rebates, taxCredits, onCheck }) => {
 
   function calculateIncentiveValue(incentive: Incentive) {
     switch(incentive.calculationType) {
@@ -145,11 +144,11 @@ const CopyReview: React.FC<{
     if (!plan.copy) {
       ModelStore.generateCopy(plan, projectId)
     }
-    setCopyFields(plan.copy)
+    setCopyFields(plan?.copy as Copy)
   }, [])
 
-  function updateCopyFields(newValue, field) {
-    const oldFields = {...copyFields}
+  function updateCopyFields(newValue: string, field: string) {
+    const oldFields = {...copyFields} as Copy
 
     oldFields[field] = newValue
 
@@ -258,9 +257,9 @@ const IncentivesModal: React.FC<{
 
     console.log(incentiveId, 'caiu')
 
-    details[parentCat].forEach(workItem => {
-      if (workItem.id === parentId) {
-        workItem.incentives.forEach(incentive => {
+    details[parentCat].forEach((workItem: CatalogueItem) => {
+      if (workItem?.id === parentId) {
+        workItem?.incentives?.forEach((incentive: Incentive) => {
           if (incentive.id === incentiveId) {
             if (incentive.selected) {
               incentive.selected = false
@@ -286,7 +285,6 @@ const IncentivesModal: React.FC<{
             onCheck={
               (incentiveId: string, parentId: string, parentCat: string) => handleSelectIncentive(incentiveId, parentId, parentCat)
             }
-            plan={plan as Plan}
             rebates={getAllIncentivesByType('Rebate') as Incentive[]}
             taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
           />

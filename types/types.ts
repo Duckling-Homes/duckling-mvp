@@ -200,12 +200,7 @@ export interface Plan {
   name?: string
   planDetails?: string
   projectId?: string
-  copy?: {
-    comfort: string
-    health: string
-    recommended: string
-    summary: string
-  }
+  copy?: Copy
   catalogueItems?: CatalogueItem[]
 }
 
@@ -288,4 +283,12 @@ export interface ProductCatalogue {
 export interface PresentationDetails {
   organizationName: string
   projectDetails: Project
+}
+
+export interface Copy {
+  comfort: string
+  health: string
+  recommended: string
+  summary: string
+  [key: string]: string
 }

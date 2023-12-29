@@ -17,7 +17,7 @@ interface PlanPhotoProps {
 const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
   
   const parsePlanDetails = () => {
-    const planDetails = {}
+    const planDetails = {} as PlanDetails
 
     if (planDetails && !planDetails?.imageIds) {
       planDetails.imageIds = [] as string[]
