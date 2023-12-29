@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Add, Close, Delete } from '@mui/icons-material'
 import {
   Button,
+  Divider,
   FormControl,
   IconButton,
   Modal,
@@ -9,13 +10,65 @@ import {
 } from '@mui/material'
 import { CatalogueItem } from '@/types/types'
 
+
+const AdditionalCost: React.FC<{
+
+}> = ({}) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      gap: '16px'
+    }}>
+      <FormControl>
+        <TextField
+          fullWidth
+          id="outlined-basic"
+          label="Additional Cost Name"
+          variant="outlined"
+          value={''}
+          size='small'
+          required
+          placeholder="Additional Cost Name"
+        />
+      </FormControl>
+      <FormControl>
+        <TextField
+          fullWidth
+          id="outlined-basic"
+          label="Price"
+          variant="outlined"
+          value={''}
+          type='tel'
+          size='small'
+          required
+          placeholder="Price"
+        />
+      </FormControl>
+      <IconButton
+        sx={{
+          borderRadius: '4px',
+          border: '1px solid #2196F3',
+          color: '#2196F3',
+          padding: '4px 11px',
+        }}
+        aria-label="add"
+        onClick={() => console.log(true)}
+      >
+        <Delete />
+      </IconButton>
+    </div>
+  )
+}
+
 const CostsModal: React.FC<{
   open: boolean
   onClose: () => void
   onConfirm: () => void
   item: CatalogueItem
 }> = ({ open, onConfirm, onClose, item }) => {
-  console.log(item)
+  const [additionalCosts, setAdditionalCosts] = useState([1, 2])
   return (
     <Modal
       open={open}
@@ -47,6 +100,7 @@ const CostsModal: React.FC<{
           <FormControl>
             <TextField
               fullWidth
+              size='small'
               id="outlined-basic"
               label="Base Cost"
               variant="outlined"
@@ -71,6 +125,17 @@ const CostsModal: React.FC<{
             Add a cost
           </Button>
         </form>
+        {additionalCosts.length > 0 && (
+          <>
+            <Divider/>
+            {additionalCosts.map(cost => (
+              <>
+                <AdditionalCost />
+                <Divider/>
+              </>
+            ))}
+          </>
+        )}
         <div className="createModal__footer">
           <Button
             variant="contained"
