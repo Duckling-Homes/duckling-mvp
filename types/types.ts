@@ -243,6 +243,7 @@ export interface Incentive {
   calculatedAmount?: number
   parentId?: string
   parentCat?: string
+  preliminaryWarningText?: string
   finalCalculations?: {
     usedAmount: number
     warningText?: string
