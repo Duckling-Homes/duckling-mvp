@@ -15,7 +15,7 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
+import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 
@@ -352,7 +352,7 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
     let planDetails = {} as PlanDetails
-    let catalogueItems = currentPlan?.catalogueItems || []
+    const catalogueItems = currentPlan?.catalogueItems || []
     catalogueItems.push(item)
 
     if (!currentPlan) {
@@ -391,7 +391,7 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
     let planDetails = {} as PlanDetails
-    let catalogueItems = currentPlan?.catalogueItems as CatalogueItem[]
+    const catalogueItems = currentPlan?.catalogueItems as CatalogueItem[]
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
@@ -439,7 +439,7 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
     let planDetails = {} as PlanDetails
-    let catalogueItems = currentPlan?.catalogueItems as CatalogueItem[]
+    const catalogueItems = currentPlan?.catalogueItems as CatalogueItem[]
 
     if (currentPlan.planDetails) {
       planDetails = JSON.parse(currentPlan.planDetails)

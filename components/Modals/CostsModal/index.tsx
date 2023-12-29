@@ -11,9 +11,7 @@ import {
 import { CatalogueItem } from '@/types/types'
 
 
-const AdditionalCost: React.FC<{
-
-}> = ({}) => {
+const AdditionalCost: React.FC = () => {
 
   return (
     <div style={{
@@ -68,7 +66,7 @@ const CostsModal: React.FC<{
   onConfirm: () => void
   item: CatalogueItem
 }> = ({ open, onConfirm, onClose, item }) => {
-  const [additionalCosts, setAdditionalCosts] = useState([1, 2])
+  const [additionalCosts] = useState([1, 2])
   return (
     <Modal
       open={open}
@@ -130,6 +128,7 @@ const CostsModal: React.FC<{
             <Divider/>
             {additionalCosts.map(cost => (
               <>
+                {cost}
                 <AdditionalCost />
                 <Divider/>
               </>

@@ -21,12 +21,6 @@ import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
-interface InputObject {
-  HomePerformance: CatalogueItem[];
-  HVAC: CatalogueItem[];
-  Appliances: CatalogueItem[];
-}
-
 const Incentives: React.FC<{
   rebates: Incentive[]
   taxCredits: Incentive[]
