@@ -15,7 +15,7 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction } from 'mobx'
+import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 
@@ -352,6 +352,8 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
     let planDetails = {} as PlanDetails
+    let catalogueItems = currentPlan?.catalogueItems || []
+    catalogueItems.push(item)
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
@@ -372,6 +374,7 @@ export class _ModelStore {
         plans[index] = 
         {
           ...currentPlan,
+          catalogueItems: catalogueItems,
           planDetails: JSON.stringify(planDetails)
         }
       }
@@ -388,12 +391,12 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
     let planDetails = {} as PlanDetails
+    let catalogueItems = currentPlan?.catalogueItems as CatalogueItem[]
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
       return
     }
-
 
     if (currentPlan.planDetails) {
       planDetails = JSON.parse(currentPlan.planDetails)
@@ -408,12 +411,19 @@ export class _ModelStore {
       }
     })
 
+    catalogueItems.forEach((item: CatalogueItem, index) => {
+      if (item.customId === itemCustomId) {
+        catalogueItems.splice(index, 1)
+      }
+    })
+
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
         plans[index] = 
         {
           ...currentPlan,
-          planDetails: JSON.stringify(planDetails)
+          planDetails: JSON.stringify(planDetails),
+          catalogueItems: catalogueItems
         }
       }
     })
@@ -429,8 +439,7 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
     let planDetails = {} as PlanDetails
-
-    console.log(newItem)
+    let catalogueItems = currentPlan?.catalogueItems as CatalogueItem[]
 
     if (currentPlan.planDetails) {
       planDetails = JSON.parse(currentPlan.planDetails)
@@ -442,13 +451,18 @@ export class _ModelStore {
       item.customId === newItem.customId ? newItem : item
     )
 
+    const updatedCatalogueItems = catalogueItems.map((item: CatalogueItem) =>
+      item.customId === newItem.customId ? newItem : item
+    )
+
     planDetails[category] = updatedItems
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
         plans[index] = {
           ...currentPlan,
-          planDetails: JSON.stringify(planDetails)
+          planDetails: JSON.stringify(planDetails),
+          catalogueItems: updatedCatalogueItems
         }
       }
     })

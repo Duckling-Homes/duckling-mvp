@@ -16,6 +16,8 @@ import ModelStore from '@/app/stores/modelStore'
 import { CatalogueItem, Copy, Incentive, Plan, PlanDetails } from '@/types/types'
 import './styles.scss'
 import { observer } from 'mobx-react-lite'
+import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
+import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -300,13 +302,18 @@ const IncentivesModal: React.FC<{
   }
 
   async function savePlan() {
+    console.log(planDetails)
+    const catalogueItems = [].concat(...Object.values(planDetails))
+
+    console.log(catalogueItems)
 
     const newPlan = {
       ...plan,
-      planDetails: JSON.stringify(planDetails)
+      planDetails: JSON.stringify(planDetails),
+      catalogueItems: catalogueItems
     }
 
-    // processPlanWithAggregationLimits(newPlan, aggregationLimits)
+    processPlanWithAggregationLimits(newPlan, aggregationLimits)
 
     ModelStore.patchPlan(projectId, newPlan)
   }
