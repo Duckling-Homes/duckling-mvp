@@ -21,6 +21,12 @@ import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
+interface InputObject {
+  HomePerformance: CatalogueItem[];
+  HVAC: CatalogueItem[];
+  Appliances: CatalogueItem[];
+}
+
 const Incentives: React.FC<{
   rebates: Incentive[]
   taxCredits: Incentive[]
@@ -302,8 +308,7 @@ const IncentivesModal: React.FC<{
   }
 
   async function savePlan() {
-    console.log(planDetails)
-    const catalogueItems = [].concat(...Object.values(planDetails))
+    const catalogueItems: CatalogueItem[] = ([] as CatalogueItem[]).concat(...Object.values(planDetails) as CatalogueItem[][]);
 
     console.log(catalogueItems)
 
