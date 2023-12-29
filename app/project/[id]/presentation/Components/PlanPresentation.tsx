@@ -65,7 +65,7 @@ const PlanPresentation: React.FC<{
   ]
 
   const sortCatalogItems = () => {
-    let catalogMapping: Record<string, CatalogueItem[]> = {}
+    const catalogMapping: Record<string, CatalogueItem[]> = {}
     for (const item of catalogItems) {
       if (!catalogMapping[item.category]) {
         catalogMapping[item.category] = []
