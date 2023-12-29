@@ -200,19 +200,13 @@ export interface Plan {
   name?: string
   planDetails?: string
   projectId?: string
-  copy?: {
-    comfort: string
-    health: string
-    recommended: string
-    summary: string
-  }
+  copy?: Copy
   catalogueItems?: CatalogueItem[]
 }
 
 export interface PlanDetails {
-  selectedIncentives: string[]
-  [key: string]: CatalogueItem[] | string[]
   imageIds: string[]
+  [key: string]: CatalogueItem[] | string[]
 }
 
 export interface CatalogueItem {
@@ -247,6 +241,8 @@ export interface Incentive {
   type?: string
   selected?: boolean
   calculatedAmount?: number
+  parentId?: string
+  parentCat?: string
   preliminaryWarningText?: string
   finalCalculations?: {
     usedAmount: number
@@ -288,4 +284,12 @@ export interface ProductCatalogue {
 export interface PresentationDetails {
   organizationName: string
   projectDetails: Project
+}
+
+export interface Copy {
+  comfort: string
+  health: string
+  recommended: string
+  summary: string
+  [key: string]: string
 }

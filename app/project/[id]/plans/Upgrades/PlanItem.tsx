@@ -91,7 +91,6 @@ const PlanItem: React.FC<PlanItemProps> = (
     });
 
     ModelStore.removePlanItem(plan?.id as string, itemCustomId, property);
-
   }
 
   function selectItem(customId: string, itemDetails: CatalogueItem) {
@@ -175,7 +174,7 @@ const PlanItem: React.FC<PlanItemProps> = (
       </div>
       {items?.map(item => (
         <PlanSubItem
-          key={item.id}
+          key={item.customId}
           onQuantityChange={(customId: string, propertyName: string, newValue: string | number) => changeItemQuantity(customId, propertyName,newValue)}
           onItemSelect={(customId: string, item: CatalogueItem) => selectItem(customId, item)}
           item={item}
