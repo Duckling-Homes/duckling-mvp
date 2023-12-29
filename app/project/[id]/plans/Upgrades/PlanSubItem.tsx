@@ -1,7 +1,9 @@
 import { SelectInput } from "@/components/Inputs";
+import CostsModal from "@/components/Modals/CostsModal";
 import { CatalogueItem } from "@/types/types";
-import { Clear } from "@mui/icons-material";
+import { Clear, Edit } from "@mui/icons-material";
 import { Divider, IconButton, TextField } from "@mui/material";
+import { useState } from "react";
 
 interface PlanSubItemProps {
   item: CatalogueItem;
@@ -12,6 +14,7 @@ interface PlanSubItemProps {
 }
 
 const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalogue, removeItem, onItemSelect}) => {
+  const [costModal, setCostModal] = useState(false)
 
   const filterOptions = () => {
     const filteredArray = catalogue.filter(catalogueItem => catalogueItem.subcategory === item.subcategory)
@@ -43,11 +46,28 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
 
   return (
     <>
+      <CostsModal
+        open={costModal}
+        onClose={() => setCostModal(false)}
+        onConfirm={() => console.log('olar')}
+        item={item}
+      />
       <Divider />
       <div className="planItem__workItem" key={item.customId}>
         <div className="planItem__workItemHeader">
           <span>{item.subcategory}</span>
-          <span>Estimated Cost: {item.id ? calculateCost(item) : '$0.00'}</span>
+          <span style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: '4px'
+          }}>
+            Estimated Cost: {item.id ? calculateCost(item) : '$0.00'}
+            {item.id && <Edit
+              fontSize="small" style={{color: '#2196F3'}}
+              onClick={() => setCostModal(true)}
+            />}
+          </span>
         </div>
         <div className="planItem__workItemContent">
           <SelectInput
