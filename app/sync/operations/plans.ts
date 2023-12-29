@@ -3,6 +3,7 @@ import { db } from '../db'
 import { SyncAPI } from '..'
 import { Plan } from '@/types/types'
 import { syncAPImutation } from '.'
+import { synchronizedFetch } from '../utils'
 
 export class PlansSyncOperations {
   create = syncAPImutation(async (projectID: string, plan: Plan) => {
@@ -66,9 +67,13 @@ export class PlansSyncOperations {
   })
 
   generateCopy = async (plan: Plan) => {
-    await db.enqueueRequest(`/api/plans/${plan.id}/generate-copy`, {
+    const a = await synchronizedFetch(`/api/plans/${plan.id}/generate-copy`, {
       method: 'GET'
     })
+
+    const b = await a.json()
+
+    console.log(b, 'aaaa')
 
     SyncAPI.pushChanges()
   }

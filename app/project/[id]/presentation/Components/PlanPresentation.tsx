@@ -15,9 +15,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CatalogItemView from './CatalogItemView'
 import { useEffect, useState } from 'react'
 import { Button } from '@mui/material'
-
 import '../style.scss'
-import { integer } from 'aws-sdk/clients/cloudfront'
 
 const PlanPresentation: React.FC<{
   plan: Plan
@@ -25,8 +23,9 @@ const PlanPresentation: React.FC<{
 }> = observer(({ plan, photos }) => {
   const financingOptions = ModelStore.financingOptions
   const [displayedPhoto, setDisplayedPhoto] = useState<PhotoDetails>()
-  const [photoIndex, setPhotoIndex] = useState<integer>(0)
+  const [photoIndex, setPhotoIndex] = useState<number>(0)
   useEffect(() => {
+    setPhotoIndex(0)
     if (photos && photos.length > 0) {
       setDisplayedPhoto(photos[0])
     } else {
@@ -37,33 +36,36 @@ const PlanPresentation: React.FC<{
   const catalogItems = [
     {
       category: 'Home Performance',
-      subcategory: 'MINE',
-      name: 'hello',
-      description: 'this is a description',
+      subcategory: 'Temp',
+      name: 'Placeholder',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabituriaculis ornare maximus.',
     },
     {
       category: 'HVAC',
-      subcategory: 'MINE',
-      name: 'hello',
-      description: 'this is a description',
+      subcategory: 'Temp 2',
+      name: 'Placeholder',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabituriaculis ornare maximus.',
     },
     {
       category: 'Appliance Upgrades',
-      subcategory: 'MINE',
+      subcategory: 'Temp 3',
       name: 'hello',
-      description: 'this is a description',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabituriaculis ornare maximus.',
     },
     {
       category: 'Energy and Storage',
-      subcategory: 'MINE',
-      name: 'hello',
-      description: 'this is a description',
+      subcategory: 'Temp 4',
+      name: 'Placeholder',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabituriaculis ornare maximus.',
     },
   ]
 
   const sortCatalogItems = () => {
     let catalogMapping: Record<string, CatalogueItem[]> = {}
-
     for (const item of catalogItems) {
       if (!catalogMapping[item.category]) {
         catalogMapping[item.category] = []
