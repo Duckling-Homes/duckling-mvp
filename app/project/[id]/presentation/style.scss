@@ -15,6 +15,28 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   box-sizing: border-box;
   margin: 16px;
+  &__photoDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 800px;
+    text-align: left; /* Align text to the left */
+    margin: 16px;
+  }
+  &__photoHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 16px;
+    text-align: left; /* Align text to the left */
+    p {
+      align-items: left;
+      justify-content: left;
+    }
+  }
   &__header {
     display: flex;
     align-items: center;
@@ -59,5 +81,25 @@
     width: 100%;
     padding: 16px;
     box-sizing: border-box;
+  }
+}
+
+.photoDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  margin: 16px;
+  &__photoDisplay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 500px;
   }
 }

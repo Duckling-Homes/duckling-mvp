@@ -1,7 +1,7 @@
 'use client'
 import { observer } from 'mobx-react-lite'
 import '../style.scss'
-import { Chip, FormLabel } from '@mui/material'
+import { Divider, FormLabel } from '@mui/material'
 import { CatalogueItem } from '@/types/types'
 import { Bolt, Construction, DeviceThermostat, Home } from '@mui/icons-material'
 
@@ -28,6 +28,27 @@ const CatalogItemView: React.FC<{
         {renderIcon()}
         <p>{category}</p>
       </div>
+      {catalogItems.map((item) => (
+        <>
+          <Divider />
+          <FormLabel>{item.subcategory}</FormLabel>
+          <p
+            style={{
+              fontSize: '18px',
+              fontWeight: '500',
+            }}
+          >
+            {item.name}
+          </p>
+          <p
+            style={{
+              fontSize: '15px',
+            }}
+          >
+            {item.description}
+          </p>
+        </>
+      ))}
     </div>
   )
 })

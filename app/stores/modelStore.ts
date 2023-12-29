@@ -343,11 +343,7 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addPlanItem = (
-    planId: string,
-    item: CatalogueItem,
-    propertyName: string
-  ) => {
+  addPlanItem = (planId: string, item: CatalogueItem, propertyName: string) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
     let planDetails = {} as PlanDetails
@@ -361,17 +357,16 @@ export class _ModelStore {
       planDetails = JSON.parse(currentPlan.planDetails)
     }
 
-    const propertyArray = planDetails[propertyName] as CatalogueItem[] || []
+    const propertyArray = (planDetails[propertyName] as CatalogueItem[]) || []
     propertyArray.push(item)
 
     planDetails[propertyName] = propertyArray
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = 
-        {
+        plans[index] = {
           ...currentPlan,
-          planDetails: JSON.stringify(planDetails)
+          planDetails: JSON.stringify(planDetails),
         }
       }
     })
@@ -393,13 +388,11 @@ export class _ModelStore {
       return
     }
 
-
     if (currentPlan.planDetails) {
       planDetails = JSON.parse(currentPlan.planDetails)
     }
 
     const propertyArray = planDetails[propertyName] || []
-
 
     propertyArray.forEach((item: CatalogueItem, index) => {
       if (item.customId === itemCustomId) {
@@ -409,10 +402,9 @@ export class _ModelStore {
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = 
-        {
+        plans[index] = {
           ...currentPlan,
-          planDetails: JSON.stringify(planDetails)
+          planDetails: JSON.stringify(planDetails),
         }
       }
     })
@@ -433,7 +425,7 @@ export class _ModelStore {
       planDetails = JSON.parse(currentPlan.planDetails)
     }
 
-    const planCategory = planDetails[category] as CatalogueItem[] || []
+    const planCategory = (planDetails[category] as CatalogueItem[]) || []
 
     const updatedItems = planCategory.map((item: CatalogueItem) =>
       item.customId === newItem.customId ? newItem : item
@@ -445,7 +437,7 @@ export class _ModelStore {
       if (plan.id === planId) {
         plans[index] = {
           ...currentPlan,
-          planDetails: JSON.stringify(planDetails)
+          planDetails: JSON.stringify(planDetails),
         }
       }
     })
@@ -494,7 +486,7 @@ export class _ModelStore {
       if (plan.id === planId) {
         plans[index] = {
           ...currentPlan,
-          planDetails: JSON.stringify(planDetails)
+          planDetails: JSON.stringify(planDetails),
         }
       }
     })

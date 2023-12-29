@@ -1,5 +1,5 @@
 'use client'
-import { CatalogueItem, Plan } from '@/types/types'
+import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { Home } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
@@ -10,22 +10,55 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined'
 import ModelStore from '@/app/stores/modelStore'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import CatalogItemView from './CatalogItemView'
+import { useEffect, useState } from 'react'
+import { Button } from '@mui/material'
 
 import '../style.scss'
-import CatalogItemView from './CatalogItemView'
+import { integer } from 'aws-sdk/clients/cloudfront'
 
 const PlanPresentation: React.FC<{
   plan: Plan
-}> = observer(({ plan }) => {
+  photos: PhotoDetails[]
+}> = observer(({ plan, photos }) => {
   const financingOptions = ModelStore.financingOptions
-  console.log('kiley', plan.catalogueItems)
-  console.log('kiley', plan.planDetails)
+  const [displayedPhoto, setDisplayedPhoto] = useState<PhotoDetails>()
+  const [photoIndex, setPhotoIndex] = useState<integer>(0)
+  useEffect(() => {
+    if (photos && photos.length > 0) {
+      setDisplayedPhoto(photos[0])
+    } else {
+      setDisplayedPhoto(undefined)
+    }
+  }, [photos])
 
   const catalogItems = [
-    { category: 'Home Performance', subcategory: 'MINE' },
-    { category: 'HVAC', subcategory: 'MINE' },
-    { category: 'Appliance Upgrades', subcategory: 'MINE' },
-    { category: 'Energy and Storage', subcategory: 'MINE' },
+    {
+      category: 'Home Performance',
+      subcategory: 'MINE',
+      name: 'hello',
+      description: 'this is a description',
+    },
+    {
+      category: 'HVAC',
+      subcategory: 'MINE',
+      name: 'hello',
+      description: 'this is a description',
+    },
+    {
+      category: 'Appliance Upgrades',
+      subcategory: 'MINE',
+      name: 'hello',
+      description: 'this is a description',
+    },
+    {
+      category: 'Energy and Storage',
+      subcategory: 'MINE',
+      name: 'hello',
+      description: 'this is a description',
+    },
   ]
 
   const sortCatalogItems = () => {
@@ -41,7 +74,18 @@ const PlanPresentation: React.FC<{
 
     return catalogMapping
   }
-  // Going to need to build the categoryItems into a dict
+
+  const incrementPhoto = () => {
+    const newIndex = photoIndex + 1
+    setPhotoIndex(newIndex)
+    setDisplayedPhoto(photos[newIndex])
+  }
+
+  const decrementPhoto = () => {
+    const newIndex = photoIndex - 1
+    setPhotoIndex(newIndex)
+    setDisplayedPhoto(photos[newIndex])
+  }
   return (
     <>
       {/* Plan Summary */}
@@ -61,6 +105,54 @@ const PlanPresentation: React.FC<{
           <WbSunnyOutlinedIcon />
           <p>Scope</p>
         </div>
+        {/* Plan Photos */}
+        <div className="scope__photoHeader">
+          {displayedPhoto && (
+            <div style={{ flexDirection: 'row' }}>
+              <Button
+                disabled={photoIndex == 0}
+                style={{ marginRight: '16px' }}
+                variant="outlined"
+                size="small"
+                onClick={decrementPhoto}
+              >
+                <ArrowBackIosIcon />
+              </Button>
+              <Button
+                disabled={photoIndex == photos.length - 1}
+                style={{ marginRight: '16px' }}
+                variant="outlined"
+                size="small"
+                onClick={incrementPhoto}
+              >
+                <ArrowForwardIosIcon />
+              </Button>
+            </div>
+          )}
+          <div className="scope__photoDisplay">
+            {displayedPhoto && (
+              <>
+                <img
+                  src={displayedPhoto.photoUrl}
+                  alt={`Image ${displayedPhoto.id}`}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'cover',
+                    margin: '16px',
+                  }}
+                />
+                <div style={{ flexDirection: 'row' }}>
+                  <span style={{ fontWeight: 'bold' }}>
+                    {displayedPhoto.name}
+                  </span>
+                  {`. ${displayedPhoto.homeownerNotes}`}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        {/* Catalog Items */}
         {Object.entries(sortCatalogItems()).map(([category, items]) => (
           <CatalogItemView
             key={category}
@@ -120,3 +212,6 @@ const PlanPresentation: React.FC<{
 })
 
 export default PlanPresentation
+function setState() {
+  throw new Error('Function not implemented.')
+}

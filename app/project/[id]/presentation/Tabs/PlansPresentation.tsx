@@ -1,30 +1,54 @@
 'use client'
 
-import { Plan, Project } from '@/types/types'
+import { PhotoDetails, Plan, Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
+import { useEffect, useState } from 'react'
+import { Chip } from '@mui/material'
+import PlanPresentation from '../Components/PlanPresentation'
 
 import '../style.scss'
-import ModelStore from '@/app/stores/modelStore'
-import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
-import { useEffect, useState } from 'react'
-import { Button, Chip, Divider, IconButton } from '@mui/material'
-import PlanPresentation from '../Components/PlanPresentation'
 
 const PlansPresentation: React.FC<{
   project: Project
-}> = observer(({ project }) => {
+  photos: PhotoDetails[]
+}> = observer(({ project, photos }) => {
   const [plans, setPlans] = useState<Plan[]>([])
   const [currentPlan, setCurrentPlan] = useState<Plan>()
+  const [planPhotos, setPlanPhotos] = useState<PhotoDetails[]>([])
+
+  const parsePlanDetails = (plan: Plan) => {
+    const planDetails = JSON.parse(plan.planDetails as string)
+
+    if (planDetails && !planDetails?.imageIds) {
+      planDetails.imageIds = [] as string[]
+    }
+    return planDetails
+  }
 
   useEffect(() => {
     if (project && project?.plans) {
       setPlans(project.plans)
       if (!currentPlan?.id) {
         setCurrentPlan(project.plans[0])
+        const planDetails = parsePlanDetails(project.plans[0])
+        const newPlanPhotos = photos.filter(
+          (photo) => planDetails.imageIds?.includes(photo.id ?? '')
+        )
+
+        setPlanPhotos(newPlanPhotos)
       }
     }
-  })
-  const financingOptions = ModelStore.financingOptions
+  }, [project])
+
+  useEffect(() => {
+    if (currentPlan) {
+      const planDetails = parsePlanDetails(currentPlan)
+      const newPlanPhotos = photos.filter(
+        (photo) => planDetails.imageIds?.includes(photo.id ?? '')
+      )
+      setPlanPhotos(newPlanPhotos)
+    }
+  }, [currentPlan, photos])
 
   return (
     <>
@@ -49,13 +73,11 @@ const PlansPresentation: React.FC<{
               ))}
             </div>
           )}
-          {/* <LargeFinancingCalculator
-        totalAmount={260000}
-        financingOptions={financingOptions}
-      /> */}
         </div>
       </div>
-      {currentPlan && <PlanPresentation plan={currentPlan} />}
+      {currentPlan && (
+        <PlanPresentation plan={currentPlan} photos={planPhotos} />
+      )}
     </>
   )
 })
