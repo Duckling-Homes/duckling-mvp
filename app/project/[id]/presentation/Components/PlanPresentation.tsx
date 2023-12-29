@@ -1,5 +1,5 @@
 'use client'
-import { Plan } from '@/types/types'
+import { CatalogueItem, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { Home } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
@@ -12,12 +12,36 @@ import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined'
 import ModelStore from '@/app/stores/modelStore'
 
 import '../style.scss'
+import CatalogItemView from './CatalogItemView'
 
 const PlanPresentation: React.FC<{
   plan: Plan
 }> = observer(({ plan }) => {
   const financingOptions = ModelStore.financingOptions
+  console.log('kiley', plan.catalogueItems)
+  console.log('kiley', plan.planDetails)
 
+  const catalogItems = [
+    { category: 'Home Performance', subcategory: 'MINE' },
+    { category: 'HVAC', subcategory: 'MINE' },
+    { category: 'Appliance Upgrades', subcategory: 'MINE' },
+    { category: 'Energy and Storage', subcategory: 'MINE' },
+  ]
+
+  const sortCatalogItems = () => {
+    let catalogMapping: Record<string, CatalogueItem[]> = {}
+
+    for (const item of catalogItems) {
+      if (!catalogMapping[item.category]) {
+        catalogMapping[item.category] = []
+      }
+
+      catalogMapping[item.category].push(item)
+    }
+
+    return catalogMapping
+  }
+  // Going to need to build the categoryItems into a dict
   return (
     <>
       {/* Plan Summary */}
@@ -37,6 +61,13 @@ const PlanPresentation: React.FC<{
           <WbSunnyOutlinedIcon />
           <p>Scope</p>
         </div>
+        {Object.entries(sortCatalogItems()).map(([category, items]) => (
+          <CatalogItemView
+            key={category}
+            category={category}
+            catalogItems={items}
+          />
+        ))}
       </div>
 
       {/* Home Benefits Copy */}
