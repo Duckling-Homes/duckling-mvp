@@ -1,9 +1,9 @@
-import { SelectInput } from "@/components/Inputs";
-import CostsModal from "@/components/Modals/CostsModal";
-import { CatalogueItem } from "@/types/types";
-import { Clear, Edit } from "@mui/icons-material";
-import { Divider, IconButton, TextField } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react"
+import { SelectInput } from "@/components/Inputs"
+import CostsModal from "@/components/Modals/CostsModal"
+import { CatalogueItem } from "@/types/types"
+import { Clear, Edit } from "@mui/icons-material"
+import { Divider, IconButton, TextField } from "@mui/material"
 
 interface PlanSubItemProps {
   item: CatalogueItem;
@@ -45,7 +45,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
   }
 
   return (
-    <>
+    <React.Fragment key={item.customId}>
       <CostsModal
         open={costModal}
         onClose={() => setCostModal(false)}
@@ -53,7 +53,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
         item={item}
       />
       <Divider />
-      <div className="planItem__workItem" key={item.customId}>
+      <div className="planItem__workItem">
         <div className="planItem__workItemHeader">
           <span>{item.subcategory}</span>
           <span style={{
@@ -108,7 +108,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
           </IconButton>
         </div>
       </div>  
-    </>
+    </React.Fragment>
   )
 }
 
