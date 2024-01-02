@@ -33,45 +33,14 @@ const PlanPresentation: React.FC<{
     }
   }, [photos])
 
-  const catalogItems = [
-    {
-      category: 'Home Performance',
-      subcategory: 'Temp',
-      name: 'Placeholder',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabituriaculis ornare maximus.',
-    },
-    {
-      category: 'HVAC',
-      subcategory: 'Temp 2',
-      name: 'Placeholder',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabituriaculis ornare maximus.',
-    },
-    {
-      category: 'Appliance Upgrades',
-      subcategory: 'Temp 3',
-      name: 'hello',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabituriaculis ornare maximus.',
-    },
-    {
-      category: 'Energy and Storage',
-      subcategory: 'Temp 4',
-      name: 'Placeholder',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabituriaculis ornare maximus.',
-    },
-  ]
-
   const sortCatalogItems = () => {
     const catalogMapping: Record<string, CatalogueItem[]> = {}
-    for (const item of catalogItems) {
-      if (!catalogMapping[item.category]) {
-        catalogMapping[item.category] = []
+    for (const item of plan.catalogueItems ?? []) {
+      if (!catalogMapping[item.category ?? '']) {
+        catalogMapping[item.category ?? ''] = []
       }
 
-      catalogMapping[item.category].push(item)
+      catalogMapping[item.category ?? ''].push(item)
     }
 
     return catalogMapping
