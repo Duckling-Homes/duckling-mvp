@@ -109,8 +109,6 @@ export class _ModelStore {
   }
 
   setCurrentPresentation = async (orgID: string, projectId: string) => {
-    // TODO kiley: determine what needs to happen for offline mode
-    // for the present tab
     const presentationData = await ModelStore.unauthedGetPresentationData(
       orgID,
       projectId
