@@ -183,6 +183,3 @@ const PlanPresentation: React.FC<{
 })
 
 export default PlanPresentation
-function setState() {
-  throw new Error('Function not implemented.')
-}
