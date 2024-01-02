@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { CatalogueItem, Plan } from "@/types/types"
 import ModelStore from "@/app/stores/modelStore"
 import PlanSubItem from "./PlanSubItem"
+import { observer } from "mobx-react-lite"
 
 import './style.scss'
 
@@ -17,7 +18,7 @@ interface PlanItemProps {
   property: string,
 }
 
-const PlanItem: React.FC<PlanItemProps> = (
+const PlanItem: React.FC<PlanItemProps> = observer((
   {
     catalogue,
     plan,
@@ -174,6 +175,7 @@ const PlanItem: React.FC<PlanItemProps> = (
       </div>
       {items?.map(item => (
         <PlanSubItem
+          planId={plan.id}
           key={item.customId}
           onQuantityChange={(customId: string, propertyName: string, newValue: string | number) => changeItemQuantity(customId, propertyName,newValue)}
           onItemSelect={(customId: string, item: CatalogueItem) => selectItem(customId, item)}
@@ -184,6 +186,6 @@ const PlanItem: React.FC<PlanItemProps> = (
       ))}
     </div>
   )
-}
+})
 
 export default PlanItem

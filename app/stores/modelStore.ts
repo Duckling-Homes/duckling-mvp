@@ -439,7 +439,7 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
     let planDetails = {} as PlanDetails
-    const catalogueItems = currentPlan?.catalogueItems as CatalogueItem[]
+    const catalogueItems = currentPlan?.catalogueItems as CatalogueItem[] || [] as CatalogueItem[]
 
     if (currentPlan.planDetails) {
       planDetails = JSON.parse(currentPlan.planDetails)

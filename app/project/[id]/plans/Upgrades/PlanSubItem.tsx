@@ -2,8 +2,9 @@ import React, { useState } from "react"
 import { SelectInput } from "@/components/Inputs"
 import CostsModal from "@/components/Modals/CostsModal"
 import { CatalogueItem } from "@/types/types"
-import { Clear, Edit } from "@mui/icons-material"
+import { Clear, Edit, ExpandLess, ExpandMore } from "@mui/icons-material"
 import { Divider, IconButton, TextField } from "@mui/material"
+import { observer } from "mobx-react-lite"
 
 interface PlanSubItemProps {
   item: CatalogueItem;
@@ -11,10 +12,12 @@ interface PlanSubItemProps {
   catalogue: CatalogueItem[];
   removeItem: (customId: string) => void;
   onItemSelect: (customId: string, selectedItem: CatalogueItem) => void;
+  planId: string;
 }
 
-const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalogue, removeItem, onItemSelect}) => {
+const PlanSubItem: React.FC<PlanSubItemProps> = observer(({item, onQuantityChange, catalogue, removeItem, onItemSelect, planId}) => {
   const [costModal, setCostModal] = useState(false)
+  const [showCosts, setShowCosts] = useState(false)
 
   const filterOptions = () => {
     const filteredArray = catalogue.filter(catalogueItem => catalogueItem.subcategory === item.subcategory)
@@ -49,8 +52,8 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
       <CostsModal
         open={costModal}
         onClose={() => setCostModal(false)}
-        onConfirm={() => console.log('olar')}
         item={item}
+        planId={planId}
       />
       <Divider />
       <div className="planItem__workItem">
@@ -107,9 +110,36 @@ const PlanSubItem: React.FC<PlanSubItemProps> = ({item, onQuantityChange, catalo
             <Clear />
           </IconButton>
         </div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <small>
+            {
+              `${item?.additionalCosts?.length} additional ${item.additionalCosts.length > 1 ? 'costs' : 'cost'}`
+            }
+          </small>
+          {showCosts ? (
+            <ExpandLess style={{color: '#2196F3'}} onClick={() => setShowCosts(!showCosts)}/>
+          ) : (<ExpandMore style={{color: '#2196F3'}} onClick={() => setShowCosts(!showCosts)}/>)}
+
+        </div>
+        {(item.additionalCosts && showCosts) && (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
+          }}>
+            {
+              item.additionalCosts.map(cost => (
+                <span key={cost.id}>{cost.name}</span>
+              ))
+            }
+          </div>
+        )}
       </div>  
     </React.Fragment>
   )
-}
+})
 
 export default PlanSubItem

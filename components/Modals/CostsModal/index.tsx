@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Add, Close, Delete } from '@mui/icons-material'
 import {
   Button,
@@ -9,10 +9,10 @@ import {
   TextField,
 } from '@mui/material'
 import { CatalogueItem } from '@/types/types'
+import { v4 as uuidv4 } from 'uuid'
+import ModelStore from '@/app/stores/modelStore'
 
-
-const AdditionalCost: React.FC = () => {
-
+const AdditionalCost: React.FC = ({cost, onDelete, onChange}) => {
   return (
     <div style={{
       display: 'flex',
@@ -25,7 +25,8 @@ const AdditionalCost: React.FC = () => {
           id="outlined-basic"
           label="Additional Cost Name"
           variant="outlined"
-          value={''}
+          value={cost.name}
+          onChange={({ target }) => onChange(target.value, 'name', cost.id)}
           size='small'
           required
           placeholder="Additional Cost Name"
@@ -37,7 +38,8 @@ const AdditionalCost: React.FC = () => {
           id="outlined-basic"
           label="Price"
           variant="outlined"
-          value={''}
+          value={cost.price}
+          onChange={({ target }) => onChange(target.value, 'price', cost.id)}
           type='tel'
           size='small'
           required
@@ -52,7 +54,7 @@ const AdditionalCost: React.FC = () => {
           padding: '4px 11px',
         }}
         aria-label="add"
-        onClick={() => console.log(true)}
+        onClick={() => onDelete(cost.id)}
       >
         <Delete />
       </IconButton>
@@ -65,8 +67,63 @@ const CostsModal: React.FC<{
   onClose: () => void
   onConfirm: () => void
   item: CatalogueItem
-}> = ({ open, onConfirm, onClose, item }) => {
-  const [additionalCosts] = useState([1, 2])
+  planId: string
+}> = ({ open, onClose, item, planId }) => {
+  const [additionalCosts, setAdditionalCosts] = useState([])
+
+  useEffect(() => {
+    if (item?.additionalCosts) {
+      setAdditionalCosts(item.additionalCosts)
+    }
+  }, [])
+
+  function addCost() {
+    const newCost = {
+      id: uuidv4(),
+      name: '',
+      price: 0,
+    }
+
+    const costsList = [...additionalCosts]
+    costsList.push(newCost)
+    setAdditionalCosts(costsList)
+  }
+
+  function deleteCost(costId) {
+    const costsList = [...additionalCosts]
+
+    const updatedCosts = costsList.filter(cost => cost.id !== costId)
+    setAdditionalCosts(updatedCosts)
+  }
+
+  function changeCost(value, property, costId) {
+    const costsList = [...additionalCosts]
+
+    const updatedCosts = costsList.map(cost => {
+      if (cost.id === costId) {
+        return {
+          ...cost,
+          [property]: value
+        };
+      }
+      return cost;
+    });
+
+    console.log(updatedCosts)
+
+    setAdditionalCosts(updatedCosts)
+  }
+
+  function saveAdditionalCosts() {
+    const updatedItem = {
+      ...item,
+      additionalCosts: additionalCosts
+    }
+
+    ModelStore.updatePlanItem(planId, updatedItem, item.category)
+    onClose()
+  }
+  
   return (
     <Modal
       open={open}
@@ -77,7 +134,7 @@ const CostsModal: React.FC<{
     >
       <div className="createModal__content">
         <div className="createModal__header">
-          <p>Edit Cost for {item.subcategory}</p>
+          <p>Edit Cost for {item.name}</p>
           <IconButton
             sx={{
               borderRadius: '4px',
@@ -111,10 +168,7 @@ const CostsModal: React.FC<{
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => {
-              onConfirm()
-              onClose()
-            }}
+            onClick={() => addCost()}
             size="small"
             sx={{
               marginLeft: 'auto',
@@ -124,24 +178,28 @@ const CostsModal: React.FC<{
           </Button>
         </form>
         {additionalCosts.length > 0 && (
-          <>
-            <Divider/>
-            {additionalCosts.map(cost => (
-              <>
-                {cost}
-                <AdditionalCost />
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px'
+          }}>
+            <Divider style={{marginBottom: '8px'}}/>
+            {additionalCosts.map((cost, index) => (
+              <React.Fragment key={index}>
+                <AdditionalCost
+                  cost={cost}
+                  onDelete={(costId) => deleteCost(costId)}
+                  onChange={(value, property, costId) => changeCost(value, property, costId)}
+                />
                 <Divider/>
-              </>
+              </React.Fragment>
             ))}
-          </>
+          </div>
         )}
         <div className="createModal__footer">
           <Button
             variant="contained"
-            onClick={() => {
-              onConfirm()
-              onClose()
-            }}
+            onClick={() => saveAdditionalCosts()}
             size="small"
             sx={{
               marginLeft: 'auto',
