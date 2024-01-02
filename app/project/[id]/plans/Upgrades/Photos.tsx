@@ -15,7 +15,6 @@ interface PlanPhotoProps {
 }
 
 const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
-  
   const parsePlanDetails = () => {
     const planDetails = {} as PlanDetails
 
