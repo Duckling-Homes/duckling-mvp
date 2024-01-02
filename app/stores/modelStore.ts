@@ -108,10 +108,11 @@ export class _ModelStore {
     this.currentProject = null
   }
 
-  setCurrentPresentation = async (projectId: string) => {
-    // TODO kiley: determine what needs to happen for offline mode
-    // for the present tab
-    const presentationData = await ModelStore.getPresentationData(projectId)
+  setCurrentPresentation = async (orgID: string, projectId: string) => {
+    const presentationData = await ModelStore.unauthedGetPresentationData(
+      orgID,
+      projectId
+    )
     this.currentPresentation = presentationData
     return presentationData
   }
@@ -522,8 +523,16 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  getPresentationData = async (projectID: string) => {
-    return await SyncAPI.presentation.get(projectID)
+  unauthedGetPresentationData = async (orgID: string, projectID: string) => {
+    return await SyncAPI.presentation.get(orgID, projectID)
+  }
+
+  unauthedDownloadPhotoForProject = async (
+    orgID: string,
+    projectID: string,
+    imageID: string
+  ) => {
+    return await SyncAPI.presentation.downloadImage(orgID, projectID, imageID)
   }
 }
 
