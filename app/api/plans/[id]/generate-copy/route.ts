@@ -16,23 +16,26 @@ import OpenAI from 'openai'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getCompletion(input: string) {
-  console.log('CALLED GET COMPLETION')
+  const systemContent = `
+Task: Generate copy to include in home services proposals. The proposals are created by home services contractors recommending upgrades for a home. You will receive attributes about the home, notes from the contractor about the home and proposal, the current equipment in the home, and up to 5 plans containing upgrades the contractor recommends.
 
-  const systemContent = `You are generating copy to include in home services proposals. The proposals are created by home services contractors recommending upgrades for a home.
-You will receive attributes about the home, notes from the contractor about the home and proposal, the current equipment in the home, and up to 5 plans containing upgrades the contractor recommends.
-You will return four sections. The text should be simple and plain-spoken, like you are a regular person.
-Some rules for the output: Always use "we" instead of "I".
-The first section summary of the current state of the home. This section should be two paragraphs. The first paragraph is 5-7 concise sentences as if the contractor is talking to the homeowner. The second paragraph gives a one-sentence summary of the upgrade plan options.
-The next section  of the recommended work. Create a separate paragraph for each plan and title that paragraph with the plan number. This section should be 3-5 concise sentences as if the contractor is talking to the homeowner.
-The third section  of the comfort impacts of the recommended upgrades. Create a separate paragraph for each plan and title that paragraph with the plan number. The first sentence should say which project contributes to the comfort of the home, then return 3-5 bullets about the comfort improvements the homeowner should receive.
-The fourth section  of the health impacts of the recommended upgrades. Create a separate paragraph for each plan and title that paragraph with the plan number. The first sentence should say which project contributes to the health of the home, then return 3-5 bullets about the health-related improvements the homeowner should receive.
-Each section should be less than 200 words. The output should be in the following JSON format:
+Goal: return a JSON object in the following format:
 {
-    "summary": "",
-    "recommended": "",
-    "comfort": "",
-    "health": ""
+  "summary": "",
+  "recommended": "",
+  "comfort": "",
+  "health": ""
 }
+
+Rules: 
+1. The text for each section should be simple and plain-spoken, like you are a regular person.
+2. Always use "we" instead of "I".
+3. Every sections should be in paragraphs
+4. The first section summary of the current state of the home. This section should be two paragraphs. The first paragraph is up to 4 concise sentences as if the contractor is talking to the homeowner. The second paragraph gives a one-sentence summary of the upgrade plan options.
+5. The next section  of the recommended work. This section should be 3-5 concise sentences as if the contractor is talking to the homeowner.
+6. The third section  of the comfort impacts of the recommended upgrades. The first sentence should say which project contributes to the comfort of the home, then return 3-5 bullets about the comfort improvements the homeowner should receive.
+7. The fourth section  of the health impacts of the recommended upgrades. The first sentence should say which project contributes to the health of the home, then return 3-5 bullets about the health-related improvements the homeowner should receive.
+8. The output should be in JSON format
 `
 
   const params: OpenAI.Chat.ChatCompletionCreateParams = {
@@ -50,7 +53,6 @@ Each section should be less than 200 words. The output should be in the followin
     await openai.chat.completions.create(params)
 
   const content = chatCompletion.choices[0].message.content
-
   const json = content
     ? JSON.parse(content)
     : {
@@ -138,7 +140,7 @@ export const GET = withErrorHandler(
 
       try {
         content = await getCompletion(JSON.stringify(result))
-
+        console.log(content)
         await updatePlan(plan.id, {
           copy: content,
         })

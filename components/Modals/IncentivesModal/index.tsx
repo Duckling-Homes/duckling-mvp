@@ -13,6 +13,8 @@ import {
 import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
+import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
+import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
 import {
   CatalogueItem,
   Copy,
@@ -20,10 +22,8 @@ import {
   Plan,
   PlanDetails,
 } from '@/types/types'
-import './styles.scss'
 import { observer } from 'mobx-react-lite'
-import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
-import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
+import './styles.scss'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -75,6 +75,7 @@ const Incentives: React.FC<{
           rebates.map((incentive: Incentive) => (
             <>
               <div
+                key={incentive.id}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -178,6 +179,7 @@ const CopyReview: React.FC<{
   plan: Plan
   projectId: string
 }> = ({ plan, projectId }) => {
+  const [isLoading, setIsLoading] = useState(false)
   const [copyFields, setCopyFields] = useState({
     summary: '',
     recommended: '',
@@ -187,7 +189,12 @@ const CopyReview: React.FC<{
 
   useEffect(() => {
     if (!plan.copy) {
-      ModelStore.generateCopy(plan, projectId)
+      const generateCopy = async () => {
+        setIsLoading(true)
+        await ModelStore.generateCopy(plan, projectId)
+        setIsLoading(false)
+      }
+      generateCopy()
     }
     setCopyFields(plan?.copy as Copy)
   }, [])
@@ -201,13 +208,21 @@ const CopyReview: React.FC<{
     ModelStore.updatePlanCopy(plan.id as string, oldFields)
   }
 
+  if (isLoading) {
+    return (
+      <div className="copyReview">
+        <span>Generating Copy...</span>
+      </div>
+    )
+  }
+
   return (
     <div className="copyReview">
       <div className="copyReview__wrapper">
         <span className="copyReview__title">Home Summary</span>
         <TextField
           multiline
-          value={plan.copy?.summary || copyFields?.summary}
+          value={plan.copy?.summary || (copyFields && copyFields.summary) || ''}
           onChange={({ target }) => updateCopyFields(target.value, 'summary')}
         />
       </div>
@@ -215,7 +230,11 @@ const CopyReview: React.FC<{
         <span className="copyReview__title">Plan Summary</span>
         <TextField
           multiline
-          value={plan.copy?.recommended || copyFields.recommended}
+          value={
+            plan.copy?.recommended ||
+            (copyFields && copyFields.recommended) ||
+            ''
+          }
           onChange={({ target }) =>
             updateCopyFields(target.value, 'recommended')
           }
@@ -225,7 +244,7 @@ const CopyReview: React.FC<{
         <span className="copyReview__title">Comfort Summary</span>
         <TextField
           multiline
-          value={plan.copy?.comfort || copyFields.comfort}
+          value={plan.copy?.comfort || (copyFields && copyFields.comfort) || ''}
           onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
         />
       </div>
@@ -233,7 +252,7 @@ const CopyReview: React.FC<{
         <span className="copyReview__title">Health Summary</span>
         <TextField
           multiline
-          value={plan.copy?.health || copyFields.health}
+          value={plan.copy?.health || (copyFields && copyFields.health) || ''}
           onChange={({ target }) => updateCopyFields(target.value, 'health')}
         />
       </div>
