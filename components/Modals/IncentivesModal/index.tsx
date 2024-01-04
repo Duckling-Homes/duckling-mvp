@@ -13,7 +13,13 @@ import {
 import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
-import { CatalogueItem, Copy, Incentive, Plan, PlanDetails } from '@/types/types'
+import {
+  CatalogueItem,
+  Copy,
+  Incentive,
+  Plan,
+  PlanDetails,
+} from '@/types/types'
 import './styles.scss'
 import { observer } from 'mobx-react-lite'
 import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
@@ -26,106 +32,143 @@ const Incentives: React.FC<{
   taxCredits: Incentive[]
   onCheck: (incentiveId: string, parentId: string, parentCat: string) => void
 }> = ({ rebates, taxCredits, onCheck }) => {
-
   function calculateIncentiveValue(incentive: Incentive) {
-    switch(incentive.calculationType) {
+    switch (incentive.calculationType) {
       case 'FlatRate':
         return `up to $${incentive.calculationRateValue} per project`
       case 'PerUnit':
         return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
       case 'Percentage':
-        return `${(incentive.calculationRateValue as number)* 100}%, up to $${incentive.maxLimit}`
+        return `${(incentive.calculationRateValue as number) * 100}%, up to $${
+          incentive.maxLimit
+        }`
     }
   }
-  
+
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: "16px",
-    }}>
-      <div style={{
-        padding: "16px",
-        border: "1px solid rgba(0, 0, 0, 0.12)",
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px"
-      }}>
-        <span style={{
-          fontSize: '20px',
-          fontWeight: '500'
-        }}>Rebate</span>
-        {
-          rebates?.length > 0 ? rebates.map((incentive: Incentive) => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+      }}
+    >
+      <div
+        style={{
+          padding: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          borderRadius: '8px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}
+      >
+        <span
+          style={{
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          Rebate
+        </span>
+        {rebates?.length > 0 ? (
+          rebates.map((incentive: Incentive) => (
             <>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
                 <Checkbox
-                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string, incentive.parentCat as string)}
-                  checked={incentive.selected}/>
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
-                  flex: 1,
-                  minWidth: "65%"
-                }}>
+                  onChange={() =>
+                    onCheck(
+                      incentive.id as string,
+                      incentive.parentId as string,
+                      incentive.parentCat as string
+                    )
+                  }
+                  checked={incentive.selected}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    flex: 1,
+                    minWidth: '65%',
+                  }}
+                >
                   <span>{incentive.name}</span>
-                  <small>{incentive.descriptionText}</small>  
+                  <small>{incentive.descriptionText}</small>
                 </div>
-                <span>
-                  {calculateIncentiveValue(incentive)}
-                </span>
+                <span>{calculateIncentiveValue(incentive)}</span>
               </div>
               <Divider />
             </>
-          )) : <span>There are no rebates to select</span>
-        }
+          ))
+        ) : (
+          <span>There are no rebates to select</span>
+        )}
       </div>
-      <div style={{
-        padding: "16px",
-        border: "1px solid rgba(0, 0, 0, 0.12)",
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px"
-      }}>
-        <span style={{
-          fontSize: '20px',
-          fontWeight: '500'
-        }}>Tax Credits</span>
-        {
-          taxCredits?.length > 0 ? taxCredits.map((incentive: Incentive) => (
+      <div
+        style={{
+          padding: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          borderRadius: '8px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}
+      >
+        <span
+          style={{
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          Tax Credits
+        </span>
+        {taxCredits?.length > 0 ? (
+          taxCredits.map((incentive: Incentive) => (
             <>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
                 <Checkbox
-                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string, incentive.parentCat as string)}
-                  checked={incentive.selected}/>
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
-                  flex: 1
-                }}>
+                  onChange={() =>
+                    onCheck(
+                      incentive.id as string,
+                      incentive.parentId as string,
+                      incentive.parentCat as string
+                    )
+                  }
+                  checked={incentive.selected}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    flex: 1,
+                  }}
+                >
                   <span>{incentive.name}</span>
-                  <small>{incentive.descriptionText}</small>  
+                  <small>{incentive.descriptionText}</small>
                 </div>
-                <span>
-                  {calculateIncentiveValue(incentive)}
-                </span>
+                <span>{calculateIncentiveValue(incentive)}</span>
               </div>
               <Divider />
             </>
-          )) : <span>There are no Tax Credits to select</span>
-        }
+          ))
+        ) : (
+          <span>There are no Tax Credits to select</span>
+        )}
       </div>
     </div>
   )
@@ -139,7 +182,7 @@ const CopyReview: React.FC<{
     summary: '',
     recommended: '',
     comfort: '',
-    health: ''
+    health: '',
   })
 
   useEffect(() => {
@@ -150,7 +193,7 @@ const CopyReview: React.FC<{
   }, [])
 
   function updateCopyFields(newValue: string, field: string) {
-    const oldFields = {...copyFields} as Copy
+    const oldFields = { ...copyFields } as Copy
 
     oldFields[field] = newValue
 
@@ -159,41 +202,41 @@ const CopyReview: React.FC<{
   }
 
   return (
-    <div className='copyReview'>
-      <div className='copyReview__wrapper'>
-        <span className='copyReview__title'>Home Summary</span>
+    <div className="copyReview">
+      <div className="copyReview__wrapper">
+        <span className="copyReview__title">Home Summary</span>
         <TextField
           multiline
-          value={plan.copy?.summary || copyFields.summary}
-          onChange={({target}) => updateCopyFields(target.value, 'summary')}
+          value={plan.copy?.summary || copyFields?.summary}
+          onChange={({ target }) => updateCopyFields(target.value, 'summary')}
         />
       </div>
-      <div className='copyReview__wrapper'>
-        <span className='copyReview__title'>Plan Summary</span>
+      <div className="copyReview__wrapper">
+        <span className="copyReview__title">Plan Summary</span>
         <TextField
           multiline
           value={plan.copy?.recommended || copyFields.recommended}
-          onChange={({target}) => updateCopyFields(target.value, 'recommended')}
+          onChange={({ target }) =>
+            updateCopyFields(target.value, 'recommended')
+          }
         />
       </div>
-      <div className='copyReview__wrapper'>
-        <span className='copyReview__title'>Comfort Summary</span>
+      <div className="copyReview__wrapper">
+        <span className="copyReview__title">Comfort Summary</span>
         <TextField
           multiline
           value={plan.copy?.comfort || copyFields.comfort}
-          onChange={({target}) => updateCopyFields(target.value, 'comfort')}
-
+          onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
         />
       </div>
-      <div className='copyReview__wrapper'>
-        <span className='copyReview__title'>Health Summary</span>
+      <div className="copyReview__wrapper">
+        <span className="copyReview__title">Health Summary</span>
         <TextField
           multiline
           value={plan.copy?.health || copyFields.health}
-          onChange={({target}) => updateCopyFields(target.value, 'health')}
+          onChange={({ target }) => updateCopyFields(target.value, 'health')}
         />
       </div>
-
     </div>
   )
 }
@@ -203,42 +246,42 @@ const IncentivesModal: React.FC<{
   onClose: () => void
   currentPlanId: string
   projectId: string
-}> = observer(
-  ({ open, onClose, currentPlanId, projectId }) => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [plan, planDetails]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
+}> = observer(({ open, onClose, currentPlanId, projectId }) => {
+  const [activeStep, setActiveStep] = useState(0)
+  const [plan, planDetails]: [Plan, PlanDetails] = ModelStore?.getPlan(
+    currentPlanId
+  ) as [Plan, PlanDetails]
 
   function getAllIncentivesByType(type: string) {
-    const incentives = [] as Incentive[];
-    const uniqueIds = new Set();
+    const incentives = [] as Incentive[]
+    const uniqueIds = new Set()
 
     if (!plan) {
-      return incentives;
+      return incentives
     }
-  
+
     const incentivesByCat = Object.values(planDetails)
 
-    incentivesByCat.forEach(categoryArray => {
+    incentivesByCat.forEach((categoryArray) => {
       categoryArray.forEach((item: CatalogueItem) => {
         if (item.incentives && item.incentives.length > 0) {
           const filteredIncentives = item.incentives.filter((incentive) => {
             incentive.parentId = item.id as string
             incentive.parentCat = item.category as string
             if (incentive.type === type && !uniqueIds.has(incentive.id)) {
-              uniqueIds.add(incentive.id);
-              return true;
+              uniqueIds.add(incentive.id)
+              return true
             }
-            return false;
-          });
+            return false
+          })
 
-          incentives.push(...filteredIncentives);
+          incentives.push(...filteredIncentives)
         }
-      });
-    });
+      })
+    })
 
     return incentives
   }
-
 
   function handleNext() {
     if (activeStep === STEPS.length - 1) {
@@ -247,15 +290,19 @@ const IncentivesModal: React.FC<{
       onClose()
       return
     }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  function handleBack() {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1)
   }
 
-  function handleSelectIncentive(incentiveId: string, parentId: string, parentCat: string) {
-    const details = {...planDetails}
+  function handleBack() {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
+
+  function handleSelectIncentive(
+    incentiveId: string,
+    parentId: string,
+    parentCat: string
+  ) {
+    const details = { ...planDetails }
 
     console.log(incentiveId, 'caiu')
 
@@ -275,41 +322,45 @@ const IncentivesModal: React.FC<{
 
     console.log(details[parentCat])
 
-    ModelStore.updatePlanCategory(plan.id as string, details[parentCat] as CatalogueItem[], parentCat)
-
+    ModelStore.updatePlanCategory(
+      plan.id as string,
+      details[parentCat] as CatalogueItem[],
+      parentCat
+    )
   }
 
   function renderStep() {
-    switch(activeStep) {
+    switch (activeStep) {
       case 0:
         return (
           <Incentives
-            onCheck={
-              (incentiveId: string, parentId: string, parentCat: string) => handleSelectIncentive(incentiveId, parentId, parentCat)
-            }
+            onCheck={(
+              incentiveId: string,
+              parentId: string,
+              parentCat: string
+            ) => handleSelectIncentive(incentiveId, parentId, parentCat)}
             rebates={getAllIncentivesByType('Rebate') as Incentive[]}
             taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
           />
         )
       case 1:
         return (
-          <CopyReview
-            plan={plan as Plan}
-            projectId={projectId as string}
-          />
+          <CopyReview plan={plan as Plan} projectId={projectId as string} />
         )
     }
   }
 
   async function savePlan() {
-    const catalogueItems: CatalogueItem[] = ([] as CatalogueItem[]).concat(...Object.values(planDetails) as CatalogueItem[][]);
+    const catalogueItems: CatalogueItem[] = ([] as CatalogueItem[]).concat(
+      ...(Object.values(planDetails) as CatalogueItem[][])
+    )
 
     console.log(catalogueItems)
 
     const newPlan = {
       ...plan,
       planDetails: JSON.stringify(planDetails),
-      catalogueItems: catalogueItems
+      catalogueItems: catalogueItems,
     }
 
     processPlanWithAggregationLimits(newPlan, aggregationLimits)
@@ -344,15 +395,15 @@ const IncentivesModal: React.FC<{
         <div className="incentivesModal__body">
           <Stepper activeStep={activeStep}>
             {STEPS.map((label) => {
-              const stepProps: { completed?: boolean } = {};
+              const stepProps: { completed?: boolean } = {}
               const labelProps: {
-                optional?: React.ReactNode;
-              } = {};
+                optional?: React.ReactNode
+              } = {}
               return (
                 <Step key={label} {...stepProps}>
                   <StepLabel {...labelProps}>{label}</StepLabel>
                 </Step>
-              );
+              )
             })}
           </Stepper>
           {renderStep()}
