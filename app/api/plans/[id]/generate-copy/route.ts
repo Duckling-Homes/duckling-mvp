@@ -47,11 +47,13 @@ Rules:
       },
       { role: 'user', content: input },
     ],
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-3.5-turbo-1106',
+    response_format: {
+      type: 'json_object',
+    },
   }
 
-  const chatCompletion: OpenAI.Chat.ChatCompletion =
-    await openai.chat.completions.create(params)
+  const chatCompletion = await openai.chat.completions.create(params)
 
   const content = chatCompletion.choices[0].message.content
   const json = content
