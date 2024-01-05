@@ -11,9 +11,8 @@ import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
 import PlanItem from './Upgrades/PlanItem'
 import { observer } from 'mobx-react-lite'
-
-import './style.scss'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
+import './style.scss'
 
 interface PlansProps {
   currentProject: Project
@@ -151,7 +150,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         </div>
         {currentPlan?.id && (
           <div className="planCreation__wrapper">
-            <div className={`planCreation__leftContainer ${hideFinance ? 'hidden' : ''}`}>
+            <div
+              className={`planCreation__leftContainer ${
+                hideFinance ? 'hidden' : ''
+              }`}
+            >
               <div className="planCreation__leftHeader">
                 <p className="planCreation__title">{currentPlan.name}</p>
                 <IconButton
@@ -219,7 +222,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
               />
               <Photos plan={currentPlan} project={currentProject} />
             </div>
-            <div className={`planCreation__rightContainer ${hideFinance ? 'hidden' : ''}`}>
+            <div
+              className={`planCreation__rightContainer ${
+                hideFinance ? 'hidden' : ''
+              }`}
+            >
               <div className="planCreation__rightHeader">
                 <IconButton
                   sx={{
@@ -234,7 +241,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </IconButton>
                 <span>Finance & Impact</span>
               </div>
-              <div className='planCreation__cost'>
+              <div className="planCreation__cost">
                 <div className="planCreation__sectionHeader">
                   <div>
                     <Icons.AttachMoney fontSize="small" />
