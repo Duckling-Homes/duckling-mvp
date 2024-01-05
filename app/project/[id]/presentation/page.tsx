@@ -5,10 +5,16 @@ import ModelStore from '@/app/stores/modelStore'
 import { PhotoDetails, Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import TabHolder from './Tabs/TabHolder'
+import LinkCopier from './Components/LinkCopier'
+import './style.scss'
+import { useUser } from '@clerk/nextjs'
 
 const Presentation = observer(() => {
+  const { user } = useUser()
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const project = ModelStore.currentProject as Project
+
+  const baseUrl = `${window.location.protocol}//${window.location.host}`
 
   useEffect(() => {
     if (project.images && project.images.length > 0) {
@@ -28,7 +34,18 @@ const Presentation = observer(() => {
     }
   }, [project.images?.length])
 
-  return <TabHolder project={project} photos={photos}></TabHolder>
+  return (
+    <>
+      <TabHolder project={project} photos={photos}></TabHolder>
+      <div className="summary">
+        <div className="summary__header">
+          <LinkCopier
+            link={`${baseUrl}/presentation/${user?.publicMetadata?.organization_id}/projects/${project.id}`}
+          ></LinkCopier>
+        </div>
+      </div>
+    </>
+  )
 })
 
 export default Presentation
