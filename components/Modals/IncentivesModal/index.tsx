@@ -164,7 +164,7 @@ const CopyReview: React.FC<{
         <span className='copyReview__title'>Home Summary</span>
         <TextField
           multiline
-          value={plan.copy?.summary || copyFields.summary}
+          value={plan.copy?.summary || copyFields?.summary}
           onChange={({target}) => updateCopyFields(target.value, 'summary')}
         />
       </div>
@@ -172,7 +172,7 @@ const CopyReview: React.FC<{
         <span className='copyReview__title'>Plan Summary</span>
         <TextField
           multiline
-          value={plan.copy?.recommended || copyFields.recommended}
+          value={plan.copy?.recommended || copyFields?.recommended}
           onChange={({target}) => updateCopyFields(target.value, 'recommended')}
         />
       </div>
@@ -180,7 +180,7 @@ const CopyReview: React.FC<{
         <span className='copyReview__title'>Comfort Summary</span>
         <TextField
           multiline
-          value={plan.copy?.comfort || copyFields.comfort}
+          value={plan.copy?.comfort || copyFields?.comfort}
           onChange={({target}) => updateCopyFields(target.value, 'comfort')}
 
         />
@@ -189,7 +189,7 @@ const CopyReview: React.FC<{
         <span className='copyReview__title'>Health Summary</span>
         <TextField
           multiline
-          value={plan.copy?.health || copyFields.health}
+          value={plan.copy?.health || copyFields?.health}
           onChange={({target}) => updateCopyFields(target.value, 'health')}
         />
       </div>
