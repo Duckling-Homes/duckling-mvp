@@ -454,29 +454,21 @@ export class _ModelStore {
 
   updatePlanCategory = (
     planId: string,
-    planCategory: CatalogueItem[],
-    category: string
+    newCatalogueItems: CatalogueItem[],
   ) => {
-    // const plans = this.plans
-    // const plan = plans.find((p) => p.id === planId) as Plan
-    // let planDetails = {} as PlanDetails
+    const plans = this.plans
+    
+    plans.forEach((plan, index) => {
+      if (plan.id === planId) {
+        plans[index] = {
+          ...plan,
+          catalogueItems: newCatalogueItems,
+        }
+      }
+    })
 
-    // if (plan?.planDetails) {
-    //   planDetails = JSON.parse(plan?.planDetails as string)
-    // }
-
-    // planDetails[category] = planCategory
-
-    // plans.forEach((plan, index) => {
-    //   if (plan.id === planId) {
-    //     plans[index] = {
-    //       ...plan,
-    //       planDetails: JSON.stringify(planDetails),
-    //     }
-    //   }
-    // })
-
-    // this.plans = plans
+    this.plans = plans
+    this.catalogueItems = newCatalogueItems
   }
 
   updatePlanCopy = (planId: string, newCopy: Copy) => {
