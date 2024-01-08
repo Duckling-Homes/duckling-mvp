@@ -347,7 +347,7 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addPlanItem = (planId: string, item: CatalogueItem) => {
+  addPlanItem = async (planId: string, item: CatalogueItem) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
     const catalogueItems = this.catalogueItems
@@ -374,7 +374,7 @@ export class _ModelStore {
     this.plans = plans
   }
 
-  removePlanItem = (
+  removePlanItem = async (
     planId: string,
     itemCustomId: string,
   ) => {
@@ -386,7 +386,6 @@ export class _ModelStore {
       console.error('There is no plan with this ID')
       return
     }
-
     catalogueItems.forEach((item: CatalogueItem, index) => {
       if (item.customId === itemCustomId) {
         catalogueItems.splice(index, 1)
@@ -401,13 +400,13 @@ export class _ModelStore {
         }
       }
     })
-
+    
     console.log(toJS(catalogueItems))
     this.catalogueItems = catalogueItems
     this.plans = plans
   }
 
-  updatePlanItem = (
+  updatePlanItem = async (
     planId: string,
     newItem: CatalogueItem,
   ) => {

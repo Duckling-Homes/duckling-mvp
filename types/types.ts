@@ -229,6 +229,7 @@ export interface CatalogueItem {
   organizationId?: string
   organization?: Organization
   calculatedPrice?: number
+  additionalCosts?: string[]
 }
 
 export interface Incentive {
