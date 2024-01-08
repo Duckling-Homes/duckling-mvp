@@ -15,7 +15,7 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction } from 'mobx'
+import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 
@@ -39,6 +39,8 @@ export class _ModelStore {
   plans: Plan[] = []
   productCatalogue: ProductCatalogue[] = []
   financingOptions: FinancingOption[] = []
+  catalogueItems: CatalogueItem[] = []
+
   constructor() {
     makeAutoObservable(this)
   }
@@ -108,10 +110,11 @@ export class _ModelStore {
     this.currentProject = null
   }
 
-  setCurrentPresentation = async (projectId: string) => {
-    // TODO kiley: determine what needs to happen for offline mode
-    // for the present tab
-    const presentationData = await ModelStore.getPresentationData(projectId)
+  setCurrentPresentation = async (orgID: string, projectId: string) => {
+    const presentationData = await ModelStore.unauthedGetPresentationData(
+      orgID,
+      projectId
+    )
     this.currentPresentation = presentationData
     return presentationData
   }
@@ -344,74 +347,46 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addPlanItem = async (
-    planId: string,
-    item: CatalogueItem,
-    propertyName: string
-  ) => {
+  addPlanItem = async (planId: string, item: CatalogueItem) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
-    let planDetails = {} as PlanDetails
-    const catalogueItems = currentPlan?.catalogueItems || []
-    catalogueItems.push(item)
+    const catalogueItems = this.catalogueItems
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
       return
     }
 
-    if (currentPlan.planDetails) {
-      planDetails = JSON.parse(currentPlan.planDetails)
-    }
-
-    const propertyArray = (planDetails[propertyName] as CatalogueItem[]) || []
-    propertyArray.push(item)
-
-    planDetails[propertyName] = propertyArray
+    catalogueItems.push(item)
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
         plans[index] = {
           ...currentPlan,
           catalogueItems: catalogueItems,
-          planDetails: JSON.stringify(planDetails),
         }
       }
     })
 
-    for (const plan of plans) {
-      await this.patchPlan(this.currentProject?.id as string, plan)
-    }
+    console.log(toJS(catalogueItems))
+
+    this.catalogueItems = catalogueItems
+    this.plans = plans
   }
 
   removePlanItem = async (
     planId: string,
     itemCustomId: string,
-    propertyName: string
   ) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
-    let planDetails = {} as PlanDetails
-    const catalogueItems = currentPlan?.catalogueItems as CatalogueItem[]
+    const catalogueItems = this.catalogueItems
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
       return
     }
-
-    if (currentPlan.planDetails) {
-      planDetails = JSON.parse(currentPlan.planDetails)
-    }
-
-    const propertyArray = planDetails[propertyName] || []
-
-    propertyArray.forEach((item: CatalogueItem, index) => {
-      if (item.customId === itemCustomId) {
-        propertyArray.splice(index, 1)
-      }
-    })
-
-    catalogueItems?.forEach((item: CatalogueItem, index) => {
+    catalogueItems.forEach((item: CatalogueItem, index) => {
       if (item.customId === itemCustomId) {
         catalogueItems.splice(index, 1)
       }
@@ -421,97 +396,78 @@ export class _ModelStore {
       if (plan.id === planId) {
         plans[index] = {
           ...currentPlan,
-          planDetails: JSON.stringify(planDetails),
           catalogueItems: catalogueItems,
         }
       }
     })
-
-    for (const plan of plans) {
-      await this.patchPlan(this.currentProject?.id as string, plan)
-    }
+    
+    console.log(toJS(catalogueItems))
+    this.catalogueItems = catalogueItems
+    this.plans = plans
   }
 
   updatePlanItem = async (
     planId: string,
     newItem: CatalogueItem,
-    category: string
   ) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
-    let planDetails = {} as PlanDetails
-    const catalogueItems =
-      (currentPlan?.catalogueItems as CatalogueItem[]) ||
-      ([] as CatalogueItem[])
+    const catalogueItems = this.catalogueItems as CatalogueItem[]
+    console.log(toJS(catalogueItems))
 
-    if (currentPlan.planDetails) {
-      planDetails = JSON.parse(currentPlan.planDetails)
+    if (!currentPlan) {
+      console.error('There is no plan with this ID')
+      return
     }
-
-    const planCategory = (planDetails[category] as CatalogueItem[]) || []
-
-    const updatedItems = planCategory.map((item: CatalogueItem) =>
-      item.customId === newItem.customId ? newItem : item
-    )
 
     const updatedCatalogueItems = catalogueItems.map((item: CatalogueItem) =>
       item.customId === newItem.customId ? newItem : item
     )
 
-    planDetails[category] = updatedItems
-
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
         plans[index] = {
           ...currentPlan,
-          planDetails: JSON.stringify(planDetails),
           catalogueItems: updatedCatalogueItems,
         }
       }
     })
 
-    for (const plan of plans) {
-      await this.patchPlan(this.currentProject?.id as string, plan)
-    }
+    this.catalogueItems = catalogueItems
+    this.plans = plans
   }
 
   getPlan = (planId: string) => {
     const plans = this.plans
     const plan = plans.find((p) => p.id === planId) as Plan
-    let planDetails = {}
+    let planDetails = {} as PlanDetails
 
     if (plan?.planDetails) {
       planDetails = JSON.parse(plan?.planDetails as string)
     }
+
+    this.catalogueItems = plan?.catalogueItems || planDetails?.catalogueItems || []
 
     return [plan, planDetails]
   }
 
   updatePlanCategory = (
     planId: string,
-    planCategory: CatalogueItem[],
-    category: string
+    newCatalogueItems: CatalogueItem[],
   ) => {
     const plans = this.plans
-    const plan = plans.find((p) => p.id === planId) as Plan
-    let planDetails = {} as PlanDetails
-
-    if (plan?.planDetails) {
-      planDetails = JSON.parse(plan?.planDetails as string)
-    }
-
-    planDetails[category] = planCategory
-
+    
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
         plans[index] = {
           ...plan,
-          planDetails: JSON.stringify(planDetails),
+          catalogueItems: newCatalogueItems,
         }
       }
     })
 
     this.plans = plans
+    this.catalogueItems = newCatalogueItems
   }
 
   updatePlanCopy = (planId: string, newCopy: Copy) => {
@@ -534,8 +490,16 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  getPresentationData = async (projectID: string) => {
-    return await SyncAPI.presentation.get(projectID)
+  unauthedGetPresentationData = async (orgID: string, projectID: string) => {
+    return await SyncAPI.presentation.get(orgID, projectID)
+  }
+
+  unauthedDownloadPhotoForProject = async (
+    orgID: string,
+    projectID: string,
+    imageID: string
+  ) => {
+    return await SyncAPI.presentation.downloadImage(orgID, projectID, imageID)
   }
 }
 

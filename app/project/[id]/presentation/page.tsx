@@ -1,42 +1,34 @@
 'use client'
 
-import { Tab, Tabs } from '@mui/material'
-import { useState } from 'react'
-import HomeSummary from './Tabs/HomeSummary'
-import PlansPresentation from './Tabs/PlansPresentation'
+import { useEffect, useState } from 'react'
 import ModelStore from '@/app/stores/modelStore'
-import { Project } from '@/types/types'
+import { PhotoDetails, Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
+import TabHolder from './Tabs/TabHolder'
 
 const Presentation = observer(() => {
-  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0)
-
-  function handleChangeTab(event: React.SyntheticEvent, newValue: number) {
-    setCurrentTabIndex(newValue)
-  }
-
-  // TODO: going to need to get this from presenetation not project
+  const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const project = ModelStore.currentProject as Project
 
-  const renderTabContent = (index: number, component: JSX.Element) => (
-    <div hidden={currentTabIndex !== index}>{component}</div>
-  )
+  useEffect(() => {
+    if (project.images && project.images.length > 0) {
+      const downloadPromises = project.images.map((image: PhotoDetails) => {
+        return ModelStore.downloadPhoto(image.id!).then((response) => {
+          return { ...image, photoUrl: response }
+        })
+      })
 
-  return (
-    <div>
-      <Tabs
-        sx={{ background: '#FAFAFA' }}
-        variant="fullWidth"
-        value={currentTabIndex}
-        onChange={handleChangeTab}
-      >
-        <Tab label="Home Summary" />
-        <Tab label="Plans" />
-      </Tabs>
-      {renderTabContent(0, <HomeSummary project={project} />)}
-      {renderTabContent(1, <PlansPresentation />)}
-    </div>
-  )
+      Promise.all(downloadPromises)
+        .then((photos) => {
+          setPhotos(photos)
+        })
+        .catch((error) => {
+          console.error('Failed to download photos:', error)
+        })
+    }
+  }, [project.images?.length])
+
+  return <TabHolder project={project} photos={photos}></TabHolder>
 })
 
 export default Presentation

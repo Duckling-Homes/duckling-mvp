@@ -7,7 +7,7 @@ export default authMiddleware({
   publicRoutes: [
     '/presentation/:orgId/projects/:id',
     '/api/presentation/:orgId/projects/:projectId',
-    '/api/presentation/:orgId/projects/:projectId/images/:iamgeId',
+    '/api/presentation/:orgId/projects/:projectId/images/:imageId',
   ],
   afterAuth(auth, req: NextRequest, evt) {
     if (req.nextUrl.pathname.startsWith('/api/export')) {

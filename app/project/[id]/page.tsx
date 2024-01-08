@@ -2,10 +2,14 @@
 
 import React, { useEffect, useState } from 'react'
 import { Button, Tab, Tabs } from '@mui/material'
-import { CalendarMonth, Delete, Edit, FormatListNumbered, Home, Person, Tune } from '@mui/icons-material'
-import Image from 'next/image'
+import {
+  Delete,
+  Edit,
+  FormatListNumbered,
+  Home,
+  Tune,
+} from '@mui/icons-material'
 import { Container } from '@/components/Container'
-import PlaceHolderPhoto from '../../assets/placeholder-image.png'
 import {
   Appliances,
   Basics,
@@ -23,12 +27,12 @@ import { observer } from 'mobx-react-lite'
 import ProjectModal from '@/components/Modals/ProjectModal'
 
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
-import dayjs from 'dayjs'
 import ModelStore from '@/app/stores/modelStore'
 import Plans from './plans/Plans'
 import Presentation from './presentation/page'
 
 import './style.scss'
+import ProjectDetails from './Tabs/ProjectDetailsView'
 
 const DataCollection = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false)
@@ -51,22 +55,25 @@ const DataCollection = observer(() => {
     }
   }, [id])
 
-
   useEffect(() => {
     if (currentProject?.heroImageId) {
       ModelStore.downloadPhoto(currentProject.heroImageId).then((response) => {
         setHeroPhoto({ photoUrl: response })
       })
-    }
-    else {
-      setHeroPhoto({});
+    } else {
+      setHeroPhoto({})
     }
   }, [currentProject?.heroImageId])
 
   const renderTabContent = (index: number, component: JSX.Element) => (
-    <div style={{
-      backgroundColor: "#FFF"
-    }} hidden={currentTabIndex !== index}>{component}</div>
+    <div
+      style={{
+        backgroundColor: '#FFF',
+      }}
+      hidden={currentTabIndex !== index}
+    >
+      {component}
+    </div>
   )
 
   function handleChangeTab(event: React.SyntheticEvent, newValue: number) {
@@ -82,10 +89,10 @@ const DataCollection = observer(() => {
   function handleUpdateProject(updatedProject: Project) {
     ModelStore.patchProject(updatedProject)
   }
-  
+
   function renderContent() {
-    switch(currentContent) {
-      case "tabs":
+    switch (currentContent) {
+      case 'tabs':
         return (
           <div>
             <Tabs
@@ -102,18 +109,12 @@ const DataCollection = observer(() => {
               <Tab label="Electrical" />
               <Tab label="Photos" />
             </Tabs>
-            {renderTabContent(
-              0,
-              <Basics currentProject={currentProject} />
-            )}
+            {renderTabContent(0, <Basics currentProject={currentProject} />)}
             {renderTabContent(
               1,
               <Objectives currentProject={currentProject} />
             )}
-            {renderTabContent(
-              2,
-              <Envelope currentProject={currentProject} />
-            )}
+            {renderTabContent(2, <Envelope currentProject={currentProject} />)}
             {renderTabContent(3, <Rooms currentProject={currentProject} />)}
             {renderTabContent(
               4,
@@ -123,20 +124,13 @@ const DataCollection = observer(() => {
               5,
               <Electrical currentProject={currentProject} />
             )}
-            {renderTabContent(
-              6,
-              <Photos currentProject={currentProject} />
-            )}
+            {renderTabContent(6, <Photos currentProject={currentProject} />)}
           </div>
         )
-      case "plans":
-        return (
-          <Plans currentProject={currentProject}/>
-        )
-      case "presentation":
-        return (
-          <Presentation />
-        )
+      case 'plans':
+        return <Plans currentProject={currentProject} />
+      case 'presentation':
+        return <Presentation />
     }
   }
 
@@ -147,7 +141,7 @@ const DataCollection = observer(() => {
           open={openCamera}
           project={currentProject}
           onClose={() => setOpenCamera(false)}
-          photo={{isHeroPhoto: true}}
+          photo={{ isHeroPhoto: true }}
         />
       )}
       {currentProject && (
@@ -172,43 +166,11 @@ const DataCollection = observer(() => {
         <Container>
           <div className="dataCollection">
             <div className="dataCollection__header">
-              <div className="dataCollection__photoWrapper">
-                {!heroPhoto?.photoUrl && (
-                  <Image src={PlaceHolderPhoto} alt="project-image" />
-                )}
-                {heroPhoto?.photoUrl && (
-                  <img
-                    style={{ width: '150px', height: '150px', objectFit: 'cover' }}
-                    src={heroPhoto.photoUrl}
-                  ></img>
-                )}
-                {!heroPhoto?.photoUrl && (
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => setOpenCamera(true)}
-                  >
-                    Add Photo
-                  </Button>
-                )}
-              </div>
-              <div className="dataCollection__projectInfo">
-                <p className="dataCollection__title">{currentProject?.name}</p>
-                <div className="dataCollection__infoWrapper">
-                  <span className="dataCollection__info">
-                    <Home />
-                    {currentProject?.homeownerAddress}
-                  </span>
-                  <span className="dataCollection__info">
-                    <Person />
-                    {currentProject?.homeownerName}
-                  </span>
-                  <span className="dataCollection__info">
-                    <CalendarMonth />
-                    {dayjs(currentProject?.createdAt).format('MMMM D, YYYY')}
-                  </span>
-                </div>
-              </div>
+              <ProjectDetails
+                project={currentProject}
+                heroPhoto={heroPhoto}
+                setOpenCamera={setOpenCamera}
+              ></ProjectDetails>
               <div
                 style={{
                   display: 'flex',
@@ -235,49 +197,64 @@ const DataCollection = observer(() => {
                 </Button>
               </div>
             </div>
-            <div
-              className='dataCollection__buttonGroup'
-            >
+            <div className="dataCollection__buttonGroup">
               <Button
                 style={{
-                  backgroundColor: "#FFF",
-                  textTransform: "capitalize",
-                  fontWeight: "400",
-                  padding: "16px 0px",
-                  width: "200px",
-                  color: currentContent === 'tabs' ? "#2196F3" : "rgba(0,0,0,0.6)",
-                  border: currentContent === 'tabs' ? "2px solid #2196F3" : 'none'
+                  backgroundColor: '#FFF',
+                  textTransform: 'capitalize',
+                  fontWeight: '400',
+                  padding: '16px 0px',
+                  width: '200px',
+                  color:
+                    currentContent === 'tabs' ? '#2196F3' : 'rgba(0,0,0,0.6)',
+                  border:
+                    currentContent === 'tabs' ? '2px solid #2196F3' : 'none',
                 }}
                 startIcon={<Home />}
-                onClick={() => setCurrentContent('tabs')}>Home Info</Button>
+                onClick={() => setCurrentContent('tabs')}
+              >
+                Home Info
+              </Button>
               <Button
                 style={{
-                  backgroundColor: "#FFF",
-                  textTransform: "capitalize",
-                  fontWeight: "400",
-                  padding: "16px 0px",
-                  width: "200px",
-                  color: currentContent === 'plans' ? "#2196F3" : "rgba(0,0,0,0.6)",
-                  border: currentContent === 'plans' ? "2px solid #2196F3" : 'none'
+                  backgroundColor: '#FFF',
+                  textTransform: 'capitalize',
+                  fontWeight: '400',
+                  padding: '16px 0px',
+                  width: '200px',
+                  color:
+                    currentContent === 'plans' ? '#2196F3' : 'rgba(0,0,0,0.6)',
+                  border:
+                    currentContent === 'plans' ? '2px solid #2196F3' : 'none',
                 }}
                 startIcon={<Tune />}
-                onClick={() => setCurrentContent('plans')}>Plans</Button>
+                onClick={() => setCurrentContent('plans')}
+              >
+                Plans
+              </Button>
               <Button
                 style={{
-                  backgroundColor: "#FFF",
-                  textTransform: "capitalize",
-                  fontWeight: "400",
-                  padding: "16px 0px",
-                  width: "200px",
-                  color: currentContent === 'presentation' ? "#2196F3" : "rgba(0,0,0,0.6)",
-                  border: currentContent === 'presentation' ? "2px solid #2196F3" : 'none'
+                  backgroundColor: '#FFF',
+                  textTransform: 'capitalize',
+                  fontWeight: '400',
+                  padding: '16px 0px',
+                  width: '200px',
+                  color:
+                    currentContent === 'presentation'
+                      ? '#2196F3'
+                      : 'rgba(0,0,0,0.6)',
+                  border:
+                    currentContent === 'presentation'
+                      ? '2px solid #2196F3'
+                      : 'none',
                 }}
                 startIcon={<FormatListNumbered />}
-                onClick={() => setCurrentContent('presentation')}>Present</Button>
+                onClick={() => setCurrentContent('presentation')}
+              >
+                Present
+              </Button>
             </div>
-            {currentProject ? (
-              renderContent()
-            ) : null}
+            {currentProject ? renderContent() : null}
           </div>
         </Container>
       )}

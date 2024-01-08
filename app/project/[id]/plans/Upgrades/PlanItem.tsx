@@ -32,14 +32,14 @@ const PlanItem: React.FC<PlanItemProps> = observer(
 
     const items = plan.planDetails ? extractPlanDetails(plan, property) : []
 
-    function extractPlanDetails(plan: Plan, property: string) {
-      if (plan.planDetails) {
-        if (typeof plan.planDetails === 'string') {
-          return JSON.parse(plan.planDetails)[property] || []
-        } else {
-          return plan.planDetails[property] || []
-        }
-      }
+    function extractPlanDetails(plan, property) {
+      const planDetails = JSON.parse(plan.planDetails)
+
+      const catalogueItems = planDetails.catalogueItems
+
+      const itemsByProperty = catalogueItems.filter(item => item.category === property)
+
+      return itemsByProperty
     }
 
     function handleMenuClick(event: React.MouseEvent<HTMLButtonElement>) {
@@ -63,6 +63,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
       })
 
       return uniqueSubcategories
+
     }
 
     function addItem(item: string) {

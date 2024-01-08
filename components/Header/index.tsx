@@ -14,10 +14,16 @@ import ModelStore from '@/app/stores/modelStore'
 import { Organization } from '@/types/types'
 import PendingStatus from '../PendingStatus'
 
-const Header: React.FC<{ publicRoute?: boolean }> = ({ publicRoute }) => {
+const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
+  publicRoute,
+  orgName,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [organization, setOrganization] = useState<null | Organization>(
     ModelStore.organization
+  )
+  const [organizationName, setOrganizationName] = useState<string | undefined>(
+    orgName
   )
 
   const open = Boolean(anchorEl)
@@ -32,9 +38,10 @@ const Header: React.FC<{ publicRoute?: boolean }> = ({ publicRoute }) => {
       | undefined
 
     if (organizationId) {
-      ModelStore.fetchOrganization(organizationId).then((data) =>
+      ModelStore.fetchOrganization(organizationId).then((data) => {
         setOrganization(data)
-      )
+        setOrganizationName(data?.name)
+      })
     }
   }, [organization, user])
 
@@ -74,7 +81,7 @@ const Header: React.FC<{ publicRoute?: boolean }> = ({ publicRoute }) => {
             </IconButton>
           </Link>
         )}
-        <p className="header__title">{organization?.name}</p>
+        <p className="header__title">{organizationName}</p>
         {!publicRoute && (
           <IconButton
             sx={{

@@ -48,6 +48,14 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     }
   }, [])
 
+  function changeCurrentPlan(id: String) {
+    if (!id) {
+      setCurrentPlan({})
+    }
+    const [plan, planDetails] = ModelStore.getPlan(id as string)
+    setCurrentPlan(plan)
+  }
+
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
       return
@@ -81,7 +89,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     }
 
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
-
+    
     setCurrentPlanID(updatedPlan?.id ?? null)
   }
 

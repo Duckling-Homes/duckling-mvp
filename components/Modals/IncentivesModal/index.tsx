@@ -18,6 +18,7 @@ import './styles.scss'
 import { observer } from 'mobx-react-lite'
 import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
 import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
+import { toJS } from 'mobx'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -65,7 +66,7 @@ const Incentives: React.FC<{
                 gap: "8px"
               }}>
                 <Checkbox
-                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string, incentive.parentCat as string)}
+                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string)}
                   checked={incentive.selected}/>
                 <div style={{
                   display: "flex",
@@ -107,7 +108,7 @@ const Incentives: React.FC<{
                 gap: "8px"
               }}>
                 <Checkbox
-                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string, incentive.parentCat as string)}
+                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string)}
                   checked={incentive.selected}/>
                 <div style={{
                   display: "flex",
@@ -210,33 +211,27 @@ const IncentivesModal: React.FC<{
 
   function getAllIncentivesByType(type: string) {
     const incentives = [] as Incentive[];
-    const uniqueIds = new Set();
+    const uniqueIncentivesSet = new Set<string>();
+    const catalogueItems = planDetails.catalogueItems || []
 
     if (!plan) {
       return incentives;
     }
-  
-    const incentivesByCat = Object.values(planDetails)
 
-    incentivesByCat.forEach(categoryArray => {
-      categoryArray.forEach((item: CatalogueItem) => {
-        if (item.incentives && item.incentives.length > 0) {
-          const filteredIncentives = item.incentives.filter((incentive) => {
-            incentive.parentId = item.id as string
-            incentive.parentCat = item.category as string
-            if (incentive.type === type && !uniqueIds.has(incentive.id)) {
-              uniqueIds.add(incentive.id);
-              return true;
-            }
-            return false;
-          });
 
-          incentives.push(...filteredIncentives);
-        }
+  catalogueItems.forEach((item) => {
+    if (item.incentives && Array.isArray(item.incentives)) {
+      item.incentives.forEach((incentive) => {
+        incentive.parentId = item.customId
+        const incentiveString = JSON.stringify(incentive);
+        uniqueIncentivesSet.add(incentiveString);
       });
-    });
+    }
+  });
 
-    return incentives
+  const uniqueIncentivesArray = Array.from(uniqueIncentivesSet, (str) => JSON.parse(str) as Incentive);
+
+  return uniqueIncentivesArray;
   }
 
 
@@ -255,13 +250,15 @@ const IncentivesModal: React.FC<{
   }
 
   function handleSelectIncentive(incentiveId: string, parentId: string, parentCat: string) {
-    const details = {...planDetails}
 
-    console.log(incentiveId, 'caiu')
+    const catalogueItems = planDetails?.catalogueItems || []
 
-    details[parentCat].forEach((workItem: CatalogueItem) => {
-      if (workItem?.id === parentId) {
-        workItem?.incentives?.forEach((incentive: Incentive) => {
+    console.log(parentId, 'caiu')
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      console.log(item)
+      if (item?.customId === parentId) {
+        item?.incentives?.forEach((incentive: Incentive) => {
           if (incentive.id === incentiveId) {
             if (incentive.selected) {
               incentive.selected = false
@@ -273,9 +270,9 @@ const IncentivesModal: React.FC<{
       }
     })
 
-    console.log(details[parentCat])
+    console.log(catalogueItems)
 
-    ModelStore.updatePlanCategory(plan.id as string, details[parentCat] as CatalogueItem[], parentCat)
+    ModelStore.updatePlanCategory(plan.id as string, catalogueItems as CatalogueItem[])
 
   }
 
@@ -302,17 +299,22 @@ const IncentivesModal: React.FC<{
   }
 
   async function savePlan() {
-    const catalogueItems: CatalogueItem[] = ([] as CatalogueItem[]).concat(...Object.values(planDetails) as CatalogueItem[][]);
+    const catalogueItems: CatalogueItem[] = ModelStore.catalogueItems as CatalogueItem[]
 
-    console.log(catalogueItems)
+    console.log(catalogueItems, '############')
 
     const newPlan = {
       ...plan,
-      planDetails: JSON.stringify(planDetails),
       catalogueItems: catalogueItems
+    }
+    
+    if (newPlan.planDetails) {
+      delete newPlan.planDetails
     }
 
     processPlanWithAggregationLimits(newPlan, aggregationLimits)
+
+    newPlan.planDetails = JSON.stringify(newPlan)
 
     ModelStore.patchPlan(projectId, newPlan)
   }
