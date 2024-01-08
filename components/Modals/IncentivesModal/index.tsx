@@ -18,6 +18,7 @@ import './styles.scss'
 import { observer } from 'mobx-react-lite'
 import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
 import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
+import { toJS } from 'mobx'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -216,25 +217,25 @@ const IncentivesModal: React.FC<{
       return incentives;
     }
   
-    const incentivesByCat = Object.values(planDetails)
+    // const incentivesByCat = Object.values(planDetails.planInfo.catalogueItems)
 
-    incentivesByCat.forEach(categoryArray => {
-      categoryArray.forEach((item: CatalogueItem) => {
-        if (item.incentives && item.incentives.length > 0) {
-          const filteredIncentives = item.incentives.filter((incentive) => {
-            incentive.parentId = item.id as string
-            incentive.parentCat = item.category as string
-            if (incentive.type === type && !uniqueIds.has(incentive.id)) {
-              uniqueIds.add(incentive.id);
-              return true;
-            }
-            return false;
-          });
+    // incentivesByCat.forEach(categoryArray => {
+    //   categoryArray.forEach((item: CatalogueItem) => {
+    //     if (item.incentives && item.incentives.length > 0) {
+    //       const filteredIncentives = item.incentives.filter((incentive) => {
+    //         incentive.parentId = item.id as string
+    //         incentive.parentCat = item.category as string
+    //         if (incentive.type === type && !uniqueIds.has(incentive.id)) {
+    //           uniqueIds.add(incentive.id);
+    //           return true;
+    //         }
+    //         return false;
+    //       });
 
-          incentives.push(...filteredIncentives);
-        }
-      });
-    });
+    //       incentives.push(...filteredIncentives);
+    //     }
+    //   });
+    // });
 
     return incentives
   }
@@ -254,6 +255,7 @@ const IncentivesModal: React.FC<{
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   }
 
+  //TODO: take a look here
   function handleSelectIncentive(incentiveId: string, parentId: string, parentCat: string) {
     const details = {...planDetails}
 
@@ -302,17 +304,22 @@ const IncentivesModal: React.FC<{
   }
 
   async function savePlan() {
-    const catalogueItems: CatalogueItem[] = ([] as CatalogueItem[]).concat(...Object.values(planDetails) as CatalogueItem[][]);
+    const catalogueItems: CatalogueItem[] = ModelStore.catalogueItems as CatalogueItem[]
 
-    console.log(catalogueItems)
+    console.log(catalogueItems, '############')
 
     const newPlan = {
       ...plan,
-      planDetails: JSON.stringify(planDetails),
       catalogueItems: catalogueItems
+    }
+    
+    if (newPlan.planDetails) {
+      delete newPlan.planDetails
     }
 
     processPlanWithAggregationLimits(newPlan, aggregationLimits)
+
+    newPlan.planDetails = JSON.stringify(newPlan)
 
     ModelStore.patchPlan(projectId, newPlan)
   }

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 import { Add, Bolt, Construction, DeviceThermostat, Home } from "@mui/icons-material"
 import { Button, Menu, MenuItem } from "@mui/material"
 import { v4 as uuidv4 } from 'uuid'
-import { CatalogueItem, Plan } from "@/types/types"
+import { CatalogueItem, Plan, PlanDetails } from "@/types/types"
 import ModelStore from "@/app/stores/modelStore"
 import PlanSubItem from "./PlanSubItem"
 
@@ -38,14 +38,14 @@ const PlanItem: React.FC<PlanItemProps> = (
     }
   }, [plan, property]);
 
-  function extractPlanDetails(plan: Plan, property: string) {
-    if (plan.planDetails) {
-      if (typeof plan.planDetails === 'string') {
-        return JSON.parse(plan.planDetails)[property] || [];
-      } else {
-        return plan.planDetails[property] || [];
-      }
-    }
+  function extractPlanDetails(plan, property) {
+    const planDetails = JSON.parse(plan.planDetails)
+
+    const catalogueItems = planDetails.catalogueItems
+
+    const itemsByProperty = catalogueItems.filter(item => item.category === property)
+
+    return itemsByProperty
   }
 
   function handleMenuClick(event: React.MouseEvent<HTMLButtonElement>) {
@@ -80,7 +80,7 @@ const PlanItem: React.FC<PlanItemProps> = (
     setItems([...(items || []), newItem]);
 
     if (plan?.id) {
-      ModelStore.addPlanItem(plan.id, newItem, property);
+      ModelStore.addPlanItem(plan.id, newItem);
     }
   }
 

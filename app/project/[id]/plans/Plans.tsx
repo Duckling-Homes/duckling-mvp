@@ -33,7 +33,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     if (currentProject && currentProject?.plans) {
       setPlans(currentProject.plans)
       if (!currentPlan?.id) {
-        setCurrentPlan(currentProject.plans[0])
+        changeCurrentPlan(currentProject.plans[0]?.id as string || '')
       }
     }
   })
@@ -43,6 +43,14 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       ModelStore.fetchCatalogue().then((data) => setCatalogue(data))
     }
   }, [])
+
+  function changeCurrentPlan(id: String) {
+    if (!id) {
+      setCurrentPlan({})
+    }
+    const [plan, planDetails] = ModelStore.getPlan(id as string)
+    setCurrentPlan(plan)
+  }
 
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
@@ -55,7 +63,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     }
 
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
-    setCurrentPlan(newPlan)
+    changeCurrentPlan(newPlan.id as string)
   }
 
   async function handlePlanDeletion() {
@@ -67,7 +75,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     const newPlansList = plans.filter((plan) => plan.id !== currentPlan?.id)
 
     setPlans(newPlansList)
-    setCurrentPlan(newPlansList[0] || {})
+    changeCurrentPlan(newPlansList[0]?.id || '')
   }
 
   async function handlePlanEdition(name: string) {
@@ -78,7 +86,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
 
-    setCurrentPlan(updatedPlan)
+    changeCurrentPlan(updatedPlan.id)
   }
 
   return (
@@ -122,7 +130,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   key={plan.id}
                   label={plan.name}
                   color={currentPlan?.id === plan.id ? 'primary' : 'default'}
-                  onClick={() => setCurrentPlan(plan)}
+                  onClick={() => changeCurrentPlan(plan.id)}
                 />
               ))}
               <IconButton
