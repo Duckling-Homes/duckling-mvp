@@ -344,7 +344,7 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  addPlanItem = (
+  addPlanItem = async (
     planId: string,
     item: CatalogueItem,
     propertyName: string
@@ -364,26 +364,27 @@ export class _ModelStore {
       planDetails = JSON.parse(currentPlan.planDetails)
     }
 
-    const propertyArray = planDetails[propertyName] as CatalogueItem[] || []
+    const propertyArray = (planDetails[propertyName] as CatalogueItem[]) || []
     propertyArray.push(item)
 
     planDetails[propertyName] = propertyArray
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = 
-        {
+        plans[index] = {
           ...currentPlan,
           catalogueItems: catalogueItems,
-          planDetails: JSON.stringify(planDetails)
+          planDetails: JSON.stringify(planDetails),
         }
       }
     })
 
-    this.plans = plans
+    for (const plan of plans) {
+      await this.patchPlan(this.currentProject?.id as string, plan)
+    }
   }
 
-  removePlanItem = (
+  removePlanItem = async (
     planId: string,
     itemCustomId: string,
     propertyName: string
@@ -404,14 +405,13 @@ export class _ModelStore {
 
     const propertyArray = planDetails[propertyName] || []
 
-
     propertyArray.forEach((item: CatalogueItem, index) => {
       if (item.customId === itemCustomId) {
         propertyArray.splice(index, 1)
       }
     })
 
-    catalogueItems.forEach((item: CatalogueItem, index) => {
+    catalogueItems?.forEach((item: CatalogueItem, index) => {
       if (item.customId === itemCustomId) {
         catalogueItems.splice(index, 1)
       }
@@ -419,19 +419,20 @@ export class _ModelStore {
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
-        plans[index] = 
-        {
+        plans[index] = {
           ...currentPlan,
           planDetails: JSON.stringify(planDetails),
-          catalogueItems: catalogueItems
+          catalogueItems: catalogueItems,
         }
       }
     })
 
-    this.plans = plans
+    for (const plan of plans) {
+      await this.patchPlan(this.currentProject?.id as string, plan)
+    }
   }
 
-  updatePlanItem = (
+  updatePlanItem = async (
     planId: string,
     newItem: CatalogueItem,
     category: string
@@ -439,13 +440,15 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
     let planDetails = {} as PlanDetails
-    const catalogueItems = currentPlan?.catalogueItems as CatalogueItem[] || [] as CatalogueItem[]
+    const catalogueItems =
+      (currentPlan?.catalogueItems as CatalogueItem[]) ||
+      ([] as CatalogueItem[])
 
     if (currentPlan.planDetails) {
       planDetails = JSON.parse(currentPlan.planDetails)
     }
 
-    const planCategory = planDetails[category] as CatalogueItem[] || []
+    const planCategory = (planDetails[category] as CatalogueItem[]) || []
 
     const updatedItems = planCategory.map((item: CatalogueItem) =>
       item.customId === newItem.customId ? newItem : item
@@ -462,12 +465,14 @@ export class _ModelStore {
         plans[index] = {
           ...currentPlan,
           planDetails: JSON.stringify(planDetails),
-          catalogueItems: updatedCatalogueItems
+          catalogueItems: updatedCatalogueItems,
         }
       }
     })
 
-    this.plans = plans
+    for (const plan of plans) {
+      await this.patchPlan(this.currentProject?.id as string, plan)
+    }
   }
 
   getPlan = (planId: string) => {
@@ -482,7 +487,11 @@ export class _ModelStore {
     return [plan, planDetails]
   }
 
-  updatePlanCategory = (planId: string, planCategory: CatalogueItem[], category: string) => {
+  updatePlanCategory = (
+    planId: string,
+    planCategory: CatalogueItem[],
+    category: string
+  ) => {
     const plans = this.plans
     const plan = plans.find((p) => p.id === planId) as Plan
     let planDetails = {} as PlanDetails
@@ -497,7 +506,7 @@ export class _ModelStore {
       if (plan.id === planId) {
         plans[index] = {
           ...plan,
-          planDetails: JSON.stringify(planDetails)
+          planDetails: JSON.stringify(planDetails),
         }
       }
     })
@@ -512,7 +521,7 @@ export class _ModelStore {
       if (plan.id === planId) {
         plans[index] = {
           ...plan,
-          copy: newCopy
+          copy: newCopy,
         }
       }
     })

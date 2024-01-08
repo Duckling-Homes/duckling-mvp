@@ -21,7 +21,7 @@ interface PlansProps {
 
 const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [plans, setPlans] = useState<Plan[]>([])
-  const [currentPlan, setCurrentPlan] = useState<Plan>()
+  const [currentPlanID, setCurrentPlanID] = useState<string | null>(null)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
@@ -29,11 +29,15 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [incentivesModal, setIncentivesModal] = useState(false)
   const [catalogue, setCatalogue] = useState(ModelStore.productCatalogue)
 
+  const currentPlan = (currentProject?.plans ?? []).find(
+    (p) => p.id === currentPlanID
+  )
+
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
       setPlans(currentProject.plans)
-      if (!currentPlan?.id) {
-        setCurrentPlan(currentProject.plans[0])
+      if (!currentPlanID) {
+        setCurrentPlanID(currentProject.plans[0]?.id ?? null)
       }
     }
   })
@@ -55,7 +59,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     }
 
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
-    setCurrentPlan(newPlan)
+    setCurrentPlanID(newPlan.id as string)
   }
 
   async function handlePlanDeletion() {
@@ -67,7 +71,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     const newPlansList = plans.filter((plan) => plan.id !== currentPlan?.id)
 
     setPlans(newPlansList)
-    setCurrentPlan(newPlansList[0] || {})
+    setCurrentPlanID(newPlansList[0]?.id || null)
   }
 
   async function handlePlanEdition(name: string) {
@@ -78,7 +82,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
 
-    setCurrentPlan(updatedPlan)
+    setCurrentPlanID(updatedPlan?.id ?? null)
   }
 
   return (
@@ -122,7 +126,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   key={plan.id}
                   label={plan.name}
                   color={currentPlan?.id === plan.id ? 'primary' : 'default'}
-                  onClick={() => setCurrentPlan(plan)}
+                  onClick={() => setCurrentPlanID(plan.id ?? null)}
                 />
               ))}
               <IconButton
@@ -151,7 +155,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         </div>
         {currentPlan?.id && (
           <div className="planCreation__wrapper">
-            <div className={`planCreation__leftContainer ${hideFinance ? 'hidden' : ''}`}>
+            <div
+              className={`planCreation__leftContainer ${
+                hideFinance ? 'hidden' : ''
+              }`}
+            >
               <div className="planCreation__leftHeader">
                 <p className="planCreation__title">{currentPlan.name}</p>
                 <IconButton
@@ -219,7 +227,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
               />
               <Photos plan={currentPlan} project={currentProject} />
             </div>
-            <div className={`planCreation__rightContainer ${hideFinance ? 'hidden' : ''}`}>
+            <div
+              className={`planCreation__rightContainer ${
+                hideFinance ? 'hidden' : ''
+              }`}
+            >
               <div className="planCreation__rightHeader">
                 <IconButton
                   sx={{
@@ -234,7 +246,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </IconButton>
                 <span>Finance & Impact</span>
               </div>
-              <div className='planCreation__cost'>
+              <div className="planCreation__cost">
                 <div className="planCreation__sectionHeader">
                   <div>
                     <Icons.AttachMoney fontSize="small" />
