@@ -98,6 +98,13 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
     catalogueItems.forEach(item => {
       estimatedCost += (item.quantity * item.basePricePer)
+      if (item.additionalCosts) {
+        item.additionalCosts.forEach(cost => {
+          console.log(cost)
+          estimatedCost += Number(cost.price)
+          console.log(estimatedCost)
+        })
+      }
     });
 
     return `$${estimatedCost.toFixed(2)}`
