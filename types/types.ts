@@ -213,7 +213,7 @@ export interface CatalogueItem {
   id?: string
   customId?: string
   customName?: string
-  quantity?: number | string
+  quantity?: number
   category?: string
   subcategory?: string
   name?: string
@@ -229,7 +229,7 @@ export interface CatalogueItem {
   organizationId?: string
   organization?: Organization
   calculatedPrice?: number
-  additionalCosts?: string[]
+  additionalCosts?: AdditionalCost[]
 }
 
 export interface Incentive {
@@ -293,4 +293,10 @@ export interface Copy {
   recommended: string
   summary: string
   [key: string]: string
+}
+
+export interface AdditionalCost {
+  id: string
+  name: string
+  price: number
 }

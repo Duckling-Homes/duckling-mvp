@@ -8,11 +8,15 @@ import {
   Modal,
   TextField,
 } from '@mui/material'
-import { CatalogueItem } from '@/types/types'
+import { AdditionalCost, CatalogueItem } from '@/types/types'
 import { v4 as uuidv4 } from 'uuid'
 import ModelStore from '@/app/stores/modelStore'
 
-const AdditionalCost: React.FC = ({cost, onDelete, onChange}) => {
+const AdditionalCost: React.FC<{
+  cost: AdditionalCost
+  onDelete: (costId: string) => void
+  onChange: (value: string, property: string, costId: string) => void
+}> = ({cost, onDelete, onChange}) => {
   return (
     <div style={{
       display: 'flex',
@@ -65,11 +69,10 @@ const AdditionalCost: React.FC = ({cost, onDelete, onChange}) => {
 const CostsModal: React.FC<{
   open: boolean
   onClose: () => void
-  onConfirm: () => void
   item: CatalogueItem
   planId: string
 }> = ({ open, onClose, item, planId }) => {
-  const [additionalCosts, setAdditionalCosts] = useState([])
+  const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([])
 
   useEffect(() => {
     if (item?.additionalCosts) {
@@ -89,14 +92,14 @@ const CostsModal: React.FC<{
     setAdditionalCosts(costsList)
   }
 
-  function deleteCost(costId) {
+  function deleteCost(costId: string) {
     const costsList = [...additionalCosts]
 
     const updatedCosts = costsList.filter(cost => cost.id !== costId)
     setAdditionalCosts(updatedCosts)
   }
 
-  function changeCost(value, property, costId) {
+  function changeCost(value: number | string, property: string, costId: string) {
     const costsList = [...additionalCosts]
 
     const updatedCosts = costsList.map(cost => {
@@ -118,7 +121,7 @@ const CostsModal: React.FC<{
       additionalCosts: additionalCosts
     }
 
-    ModelStore.updatePlanItem(planId, updatedItem, item.category)
+    ModelStore.updatePlanItem(planId, updatedItem)
     onClose()
   }
   

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Add,
   Bolt,
@@ -32,7 +32,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
 
     const items = extractPlanDetails(plan, property)
 
-    function extractPlanDetails(plan, property) {
+    function extractPlanDetails(plan: Plan, property: string) {
       let catalogueItems = []
       
       if (plan.catalogueItems) {
@@ -42,7 +42,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
         catalogueItems = planDetails.catalogueItems
       }
 
-      const itemsByProperty = catalogueItems.filter(item => item.category === property)
+      const itemsByProperty = catalogueItems.filter((item: CatalogueItem) => item.category === property)
 
       return itemsByProperty
     }
@@ -79,21 +79,13 @@ const PlanItem: React.FC<PlanItemProps> = observer(
         category: property
       }
 
-      // setItems([...(items || []), newItem])
-
       if (plan?.id) {
         ModelStore.addPlanItem(plan.id, newItem)
       }
     }
 
     function removeItem(itemCustomId: string) {
-      // setItems((prevWorkItems) => {
-      //   const updatedWorkItems =
-      //     prevWorkItems?.filter((item) => item.customId !== itemCustomId) || []
-      //   return updatedWorkItems
-      // })
-
-      ModelStore.removePlanItem(plan?.id as string, itemCustomId, property)
+      ModelStore.removePlanItem(plan?.id as string, itemCustomId)
     }
 
     function selectItem(customId: string, itemDetails: CatalogueItem) {
@@ -105,10 +97,8 @@ const PlanItem: React.FC<PlanItemProps> = observer(
         (item: CatalogueItem) => item.customId === customId
       )
 
-      // setItems(updatedWorkItemsList)
-
       if (plan?.id && updatedItem) {
-        ModelStore.updatePlanItem(plan.id, updatedItem, property)
+        ModelStore.updatePlanItem(plan.id, updatedItem)
       }
     }
 
@@ -127,10 +117,8 @@ const PlanItem: React.FC<PlanItemProps> = observer(
         (item: CatalogueItem) => item.customId === customId
       )
 
-      // setItems(updatedWorkItemsList)
-
       if (plan?.id && updatedItem) {
-        ModelStore.updatePlanItem(plan.id, updatedItem, property)
+        ModelStore.updatePlanItem(plan.id, updatedItem)
       }
     }
 

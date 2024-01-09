@@ -15,7 +15,7 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
+import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 
@@ -445,7 +445,7 @@ export class _ModelStore {
       planDetails = JSON.parse(plan?.planDetails as string)
     }
 
-    this.catalogueItems = plan?.catalogueItems || planDetails?.catalogueItems || []
+    this.catalogueItems = plan?.catalogueItems as CatalogueItem[] || planDetails?.catalogueItems || []
 
     return [plan, planDetails]
   }

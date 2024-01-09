@@ -4,7 +4,7 @@ import ModelStore from '@/app/stores/modelStore'
 import DeletePlanModal from '@/components/Modals/DeletePlan'
 import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
-import { Plan, Project } from '@/types/types'
+import { CatalogueItem, Plan, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
 import { Button, Chip, Divider, IconButton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
@@ -14,7 +14,6 @@ import { observer } from 'mobx-react-lite'
 
 import './style.scss'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
-import { toJS } from 'mobx'
 
 interface PlansProps {
   currentProject: Project
@@ -86,7 +85,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     setCurrentPlanID(updatedPlan?.id ?? null)
   }
 
-  function calculateEstimatedCost(plan) {
+  function calculateEstimatedCost(plan: Plan) {
     let catalogueItems = []
     let estimatedCost = 0
 
@@ -96,9 +95,9 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
     }
 
-    catalogueItems.forEach(item => {
+    catalogueItems.forEach((item: CatalogueItem) => {
       if (item.quantity && item.basePricePer) {
-        estimatedCost += (item.quantity * item.basePricePer)
+        estimatedCost += (item.quantity as number * item.basePricePer)
         if (item.additionalCosts) {
           item.additionalCosts.forEach(cost => {
             estimatedCost += Number(cost.price)
@@ -110,7 +109,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     return estimatedCost
   }
 
-  function calculateRebates(plan) {
+  function calculateRebates(plan: Plan) {
     let totalRebates = 0
     let catalogueItems = []
 
@@ -120,11 +119,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
     }
 
-    catalogueItems.forEach(item => {
+    catalogueItems.forEach((item: CatalogueItem) => {
       if (item.incentives) {
         item.incentives.forEach(incentive => {
           if (incentive.selected && incentive.type == "Rebate") {
-            totalRebates += incentive.finalCalculations.usedAmount
+            totalRebates += incentive.finalCalculations?.usedAmount || 0
           }
         })
       }
@@ -133,14 +132,14 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     return totalRebates
   }
 
-  function calculateNetCost(plan) {
+  function calculateNetCost(plan: Plan) {
     const estimatedCost = calculateEstimatedCost(plan)
     const totalRebates = calculateRebates(plan)
 
     return estimatedCost - totalRebates
   }
 
-  function calculateFinalCost(plan) {
+  function calculateFinalCost(plan: Plan) {
     const netCost = calculateNetCost(plan)
     let totalTaxCredits = 0
     let catalogueItems = []
@@ -151,11 +150,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
     }
 
-    catalogueItems.forEach(item => {
+    catalogueItems.forEach((item: CatalogueItem) => {
       if (item.incentives) {
         item.incentives.forEach(incentive => {
           if (incentive.selected && incentive.type == "TaxCredit") {
-            totalTaxCredits += incentive.finalCalculations.usedAmount
+            totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
           }
         })
       }

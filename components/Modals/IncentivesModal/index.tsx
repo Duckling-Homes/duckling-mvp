@@ -18,14 +18,13 @@ import './styles.scss'
 import { observer } from 'mobx-react-lite'
 import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
 import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
-import { toJS } from 'mobx'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
 const Incentives: React.FC<{
   rebates: Incentive[]
   taxCredits: Incentive[]
-  onCheck: (incentiveId: string, parentId: string, parentCat: string) => void
+  onCheck: (incentiveId: string, parentId: string) => void
 }> = ({ rebates, taxCredits, onCheck }) => {
   function calculateIncentiveValue(incentive: Incentive) {
     switch(incentive.calculationType) {
@@ -206,7 +205,7 @@ const IncentivesModal: React.FC<{
 }> = observer(
   ({ open, onClose, currentPlanId, projectId }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [plan, planDetails]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
+  const [plan]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
 
   function getAllIncentivesByType(type: string) {
     const uniqueIncentivesSet = new Set<string>();
@@ -223,7 +222,7 @@ const IncentivesModal: React.FC<{
       catalogueItems = planDetails.catalogueItems
     }
 
-    catalogueItems.forEach((item) => {
+    catalogueItems.forEach((item: CatalogueItem) => {
       if (item.incentives && Array.isArray(item.incentives)) {
         item.incentives.forEach((incentive) => {
           if (incentive.type === type) {
@@ -255,7 +254,7 @@ const IncentivesModal: React.FC<{
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   }
 
-  function handleSelectIncentive(incentiveId: string, parentId: string, parentCat: string) {
+  function handleSelectIncentive(incentiveId: string, parentId: string) {
 
     let catalogueItems = []
 
@@ -290,7 +289,7 @@ const IncentivesModal: React.FC<{
         return (
           <Incentives
             onCheck={
-              (incentiveId: string, parentId: string, parentCat: string) => handleSelectIncentive(incentiveId, parentId, parentCat)
+              (incentiveId: string, parentId: string) => handleSelectIncentive(incentiveId, parentId)
             }
             rebates={getAllIncentivesByType('Rebate') as Incentive[]}
             taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
