@@ -1,3 +1,4 @@
+import { filterJson } from '@/app/utils/filterJson'
 import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
 import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
 import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
@@ -19,14 +20,21 @@ export const GET = withErrorHandler(
     const electrical = await getProjectElectrical(params.id)
     const plans = await getPlansByProjectId(params.id)
 
-    return NextResponse.json({
-      ...project,
-      data: projectData,
-      rooms,
-      envelopes,
-      appliances,
-      electrical,
-      plans,
-    })
+    const plansWithDetails = plans.map((plan) => ({
+      planName: plan.name,
+      planDetails: JSON.parse(plan.planDetails?.toString() || '{}'),
+    }))
+
+    return NextResponse.json(
+      filterJson({
+        ...project,
+        data: projectData,
+        rooms,
+        envelopes,
+        appliances,
+        electrical,
+        plans: plansWithDetails,
+      })
+    )
   }
 )

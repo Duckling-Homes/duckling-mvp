@@ -11,9 +11,8 @@ import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
 import PlanItem from './Upgrades/PlanItem'
 import { observer } from 'mobx-react-lite'
-
-import './style.scss'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
+import './style.scss'
 
 interface PlansProps {
   currentProject: Project

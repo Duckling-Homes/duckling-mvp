@@ -115,9 +115,11 @@ const PlanPresentation: React.FC<{
                 />
                 <div style={{ flexDirection: 'row' }}>
                   <span style={{ fontWeight: 'bold' }}>
-                    {displayedPhoto.name}
+                    {displayedPhoto.name ? `${displayedPhoto.name}. ` : ''}
                   </span>
-                  {`. ${displayedPhoto.homeownerNotes}`}
+                  {displayedPhoto.homeownerNotes
+                    ? displayedPhoto.homeownerNotes
+                    : ''}
                 </div>
               </>
             )}

@@ -12,12 +12,15 @@ const CatalogItemView: React.FC<{
   function renderIcon() {
     switch (category) {
       case 'Home Performance':
+      case 'HomePerformance':
         return <Home color="primary" />
       case 'HVAC':
         return <DeviceThermostat color="primary" />
       case 'Appliance Upgrades':
+      case 'Appliances':
         return <Construction color="primary" />
       case 'Energy and Storage':
+      case 'Electrical':
         return <Bolt color="primary" />
     }
   }

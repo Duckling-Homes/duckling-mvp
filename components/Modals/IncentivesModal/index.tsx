@@ -13,11 +13,17 @@ import {
 import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
-import { CatalogueItem, Copy, Incentive, Plan, PlanDetails } from '@/types/types'
-import './styles.scss'
-import { observer } from 'mobx-react-lite'
-import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
 import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
+import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
+import {
+  CatalogueItem,
+  Copy,
+  Incentive,
+  Plan,
+  PlanDetails,
+} from '@/types/types'
+import { observer } from 'mobx-react-lite'
+import './styles.scss'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -27,42 +33,55 @@ const Incentives: React.FC<{
   onCheck: (incentiveId: string, parentId: string) => void
 }> = ({ rebates, taxCredits, onCheck }) => {
   function calculateIncentiveValue(incentive: Incentive) {
-    switch(incentive.calculationType) {
+    switch (incentive.calculationType) {
       case 'FlatRate':
         return `up to $${incentive.calculationRateValue} per project`
       case 'PerUnit':
         return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
       case 'Percentage':
-        return `${(incentive.calculationRateValue as number)* 100}%, up to $${incentive.maxLimit}`
+        return `${(incentive.calculationRateValue as number) * 100}%, up to $${
+          incentive.maxLimit
+        }`
     }
   }
-  
+
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: "16px",
-    }}>
-      <div style={{
-        padding: "16px",
-        border: "1px solid rgba(0, 0, 0, 0.12)",
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px"
-      }}>
-        <span style={{
-          fontSize: '20px',
-          fontWeight: '500'
-        }}>Rebate</span>
-        {
-          rebates?.length > 0 ? rebates.map((incentive: Incentive) => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+      }}
+    >
+      <div
+        style={{
+          padding: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          borderRadius: '8px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}
+      >
+        <span
+          style={{
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          Rebate
+        </span>
+        {rebates?.length > 0 ? (
+          rebates.map((incentive: Incentive) => (
             <>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}>
+              <div
+                key={incentive.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
                 <Checkbox
                   onChange={() => onCheck(incentive.id as string, incentive.parentId as string)}
                   checked={incentive.selected}/>
@@ -74,37 +93,45 @@ const Incentives: React.FC<{
                   minWidth: "65%"
                 }}>
                   <span>{incentive.name}</span>
-                  <small>{incentive.descriptionText}</small>  
+                  <small>{incentive.descriptionText}</small>
                 </div>
-                <span>
-                  {calculateIncentiveValue(incentive)}
-                </span>
+                <span>{calculateIncentiveValue(incentive)}</span>
               </div>
               <Divider />
             </>
-          )) : <span>There are no rebates to select</span>
-        }
+          ))
+        ) : (
+          <span>There are no rebates to select</span>
+        )}
       </div>
-      <div style={{
-        padding: "16px",
-        border: "1px solid rgba(0, 0, 0, 0.12)",
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px"
-      }}>
-        <span style={{
-          fontSize: '20px',
-          fontWeight: '500'
-        }}>Tax Credits</span>
-        {
-          taxCredits?.length > 0 ? taxCredits.map((incentive: Incentive) => (
+      <div
+        style={{
+          padding: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          borderRadius: '8px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}
+      >
+        <span
+          style={{
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          Tax Credits
+        </span>
+        {taxCredits?.length > 0 ? (
+          taxCredits.map((incentive: Incentive) => (
             <>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
                 <Checkbox
                   onChange={() => onCheck(incentive.id as string, incentive.parentId as string)}
                   checked={incentive.selected}/>
@@ -115,16 +142,16 @@ const Incentives: React.FC<{
                   flex: 1
                 }}>
                   <span>{incentive.name}</span>
-                  <small>{incentive.descriptionText}</small>  
+                  <small>{incentive.descriptionText}</small>
                 </div>
-                <span>
-                  {calculateIncentiveValue(incentive)}
-                </span>
+                <span>{calculateIncentiveValue(incentive)}</span>
               </div>
               <Divider />
             </>
-          )) : <span>There are no Tax Credits to select</span>
-        }
+          ))
+        ) : (
+          <span>There are no Tax Credits to select</span>
+        )}
       </div>
     </div>
   )
@@ -134,22 +161,28 @@ const CopyReview: React.FC<{
   plan: Plan
   projectId: string
 }> = ({ plan, projectId }) => {
+  const [isLoading, setIsLoading] = useState(false)
   const [copyFields, setCopyFields] = useState({
     summary: '',
     recommended: '',
     comfort: '',
-    health: ''
+    health: '',
   })
 
   useEffect(() => {
     if (!plan.copy) {
-      ModelStore.generateCopy(plan, projectId)
+      const generateCopy = async () => {
+        setIsLoading(true)
+        await ModelStore.generateCopy(plan, projectId)
+        setIsLoading(false)
+      }
+      generateCopy()
     }
     setCopyFields(plan?.copy as Copy)
   }, [])
 
   function updateCopyFields(newValue: string, field: string) {
-    const oldFields = {...copyFields} as Copy
+    const oldFields = { ...copyFields } as Copy
 
     oldFields[field] = newValue
 
@@ -157,42 +190,48 @@ const CopyReview: React.FC<{
     ModelStore.updatePlanCopy(plan.id as string, oldFields)
   }
 
+  if (isLoading) {
+    return (
+      <div className="copyReview">
+        <span>Generating Copy...</span>
+      </div>
+    )
+  }
+
   return (
-    <div className='copyReview'>
-      <div className='copyReview__wrapper'>
-        <span className='copyReview__title'>Home Summary</span>
+    <div className="copyReview">
+      <div className="copyReview__wrapper">
+        <span className="copyReview__title">Home Summary</span>
         <TextField
           multiline
           value={plan.copy?.summary || copyFields?.summary}
           onChange={({target}) => updateCopyFields(target.value, 'summary')}
         />
       </div>
-      <div className='copyReview__wrapper'>
-        <span className='copyReview__title'>Plan Summary</span>
+      <div className="copyReview__wrapper">
+        <span className="copyReview__title">Plan Summary</span>
         <TextField
           multiline
           value={plan.copy?.recommended || copyFields?.recommended}
           onChange={({target}) => updateCopyFields(target.value, 'recommended')}
         />
       </div>
-      <div className='copyReview__wrapper'>
-        <span className='copyReview__title'>Comfort Summary</span>
+      <div className="copyReview__wrapper">
+        <span className="copyReview__title">Comfort Summary</span>
         <TextField
           multiline
           value={plan.copy?.comfort || copyFields?.comfort}
           onChange={({target}) => updateCopyFields(target.value, 'comfort')}
-
         />
       </div>
-      <div className='copyReview__wrapper'>
-        <span className='copyReview__title'>Health Summary</span>
+      <div className="copyReview__wrapper">
+        <span className="copyReview__title">Health Summary</span>
         <TextField
           multiline
           value={plan.copy?.health || copyFields?.health}
           onChange={({target}) => updateCopyFields(target.value, 'health')}
         />
       </div>
-
     </div>
   )
 }
@@ -239,7 +278,6 @@ const IncentivesModal: React.FC<{
     return uniqueIncentivesArray
   }
 
-
   function handleNext() {
     if (activeStep === STEPS.length - 1) {
       savePlan()
@@ -247,13 +285,12 @@ const IncentivesModal: React.FC<{
       onClose()
       return
     }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  function handleBack() {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1)
   }
 
+  function handleBack() {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
   function handleSelectIncentive(incentiveId: string, parentId: string) {
 
     let catalogueItems = []
@@ -278,13 +315,11 @@ const IncentivesModal: React.FC<{
         })
       }
     })
-
     ModelStore.updatePlanCategory(plan.id as string, catalogueItems as CatalogueItem[])
-
   }
 
   function renderStep() {
-    switch(activeStep) {
+    switch (activeStep) {
       case 0:
         return (
           <Incentives
@@ -297,10 +332,7 @@ const IncentivesModal: React.FC<{
         )
       case 1:
         return (
-          <CopyReview
-            plan={plan as Plan}
-            projectId={projectId as string}
-          />
+          <CopyReview plan={plan as Plan} projectId={projectId as string} />
         )
     }
   }
@@ -351,15 +383,15 @@ const IncentivesModal: React.FC<{
         <div className="incentivesModal__body">
           <Stepper activeStep={activeStep}>
             {STEPS.map((label) => {
-              const stepProps: { completed?: boolean } = {};
+              const stepProps: { completed?: boolean } = {}
               const labelProps: {
-                optional?: React.ReactNode;
-              } = {};
+                optional?: React.ReactNode
+              } = {}
               return (
                 <Step key={label} {...stepProps}>
                   <StepLabel {...labelProps}>{label}</StepLabel>
                 </Step>
-              );
+              )
             })}
           </Stepper>
           {renderStep()}

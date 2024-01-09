@@ -1,8 +1,8 @@
-import { v4 as uuidv4 } from 'uuid'
-import { db } from '../db'
-import { SyncAPI } from '..'
 import { Plan } from '@/types/types'
+import { v4 as uuidv4 } from 'uuid'
 import { syncAPImutation } from '.'
+import { SyncAPI } from '..'
+import { db } from '../db'
 import { synchronizedFetch } from '../utils'
 
 export class PlansSyncOperations {
@@ -67,14 +67,17 @@ export class PlansSyncOperations {
   })
 
   generateCopy = async (plan: Plan) => {
-    const a = await synchronizedFetch(`/api/plans/${plan.id}/generate-copy`, {
-      method: 'GET'
-    })
+    const response = await synchronizedFetch(
+      `/api/plans/${plan.id}/generate-copy`,
+      {
+        method: 'GET',
+      }
+    )
 
-    const b = await a.json()
+    plan.copy = await response.json()
 
-    console.log(b, 'aaaa')
-
-    SyncAPI.pushChanges()
+    if (plan.projectId) {
+      await this.update(plan.projectId, plan)
+    }
   }
 }
