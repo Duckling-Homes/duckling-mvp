@@ -30,12 +30,17 @@ const PlanItem: React.FC<PlanItemProps> = observer(
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const subcategoryMenuOpen = Boolean(anchorEl)
 
-    const items = plan.planDetails ? extractPlanDetails(plan, property) : []
+    const items = extractPlanDetails(plan, property)
 
     function extractPlanDetails(plan, property) {
-      const planDetails = JSON.parse(plan.planDetails)
-
-      const catalogueItems = planDetails.catalogueItems
+      let catalogueItems = []
+      
+      if (plan.catalogueItems) {
+        catalogueItems = plan.catalogueItems
+      } else if (plan.planDetails) {
+        const planDetails = JSON.parse(plan.planDetails)
+        catalogueItems = planDetails.catalogueItems
+      }
 
       const itemsByProperty = catalogueItems.filter(item => item.category === property)
 
@@ -71,12 +76,13 @@ const PlanItem: React.FC<PlanItemProps> = observer(
         customId: uuidv4(),
         subcategory: item,
         quantity: 0,
+        category: property
       }
 
       // setItems([...(items || []), newItem])
 
       if (plan?.id) {
-        ModelStore.addPlanItem(plan.id, newItem, property)
+        ModelStore.addPlanItem(plan.id, newItem)
       }
     }
 

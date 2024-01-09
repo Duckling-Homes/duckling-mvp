@@ -210,28 +210,30 @@ const IncentivesModal: React.FC<{
   const [plan, planDetails]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
 
   function getAllIncentivesByType(type: string) {
-    const incentives = [] as Incentive[];
     const uniqueIncentivesSet = new Set<string>();
-    const catalogueItems = planDetails.catalogueItems || []
+
+    console.log(toJS(plan))
 
     if (!plan) {
-      return incentives;
+      return []
     }
+  
+    const catalogueItems = planDetails.catalogueItems as CatalogueItem[] || []
 
+    catalogueItems.forEach((item) => {
+      if (item.incentives && Array.isArray(item.incentives)) {
+        item.incentives.forEach((incentive) => {
+          if (incentive.type === type) {
+            const incentiveString = JSON.stringify(incentive);
+            uniqueIncentivesSet.add(incentiveString);
+          }
+        });
+      }
+    });
 
-  catalogueItems.forEach((item) => {
-    if (item.incentives && Array.isArray(item.incentives)) {
-      item.incentives.forEach((incentive) => {
-        incentive.parentId = item.customId
-        const incentiveString = JSON.stringify(incentive);
-        uniqueIncentivesSet.add(incentiveString);
-      });
-    }
-  });
+    const uniqueIncentivesArray = Array.from(uniqueIncentivesSet, (str) => JSON.parse(str) as Incentive);
 
-  const uniqueIncentivesArray = Array.from(uniqueIncentivesSet, (str) => JSON.parse(str) as Incentive);
-
-  return uniqueIncentivesArray;
+    return uniqueIncentivesArray
   }
 
 

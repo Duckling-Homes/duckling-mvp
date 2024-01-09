@@ -357,6 +357,8 @@ export class _ModelStore {
       return
     }
 
+    console.log(toJS(catalogueItems))
+
     catalogueItems.push(item)
 
     plans.forEach((plan, index) => {
@@ -368,10 +370,11 @@ export class _ModelStore {
       }
     })
 
-    console.log(toJS(catalogueItems))
+    console.log(toJS(plans))
 
-    this.catalogueItems = catalogueItems
-    this.plans = plans
+    for (const plan of plans) {
+      await this.patchPlan(this.currentProject?.id as string, plan)
+    }
   }
 
   removePlanItem = async (
@@ -402,8 +405,9 @@ export class _ModelStore {
     })
     
     console.log(toJS(catalogueItems))
-    this.catalogueItems = catalogueItems
-    this.plans = plans
+    for (const plan of plans) {
+      await this.patchPlan(this.currentProject?.id as string, plan)
+    }
   }
 
   updatePlanItem = async (
@@ -433,8 +437,9 @@ export class _ModelStore {
       }
     })
 
-    this.catalogueItems = catalogueItems
-    this.plans = plans
+    for (const plan of plans) {
+      await this.patchPlan(this.currentProject?.id as string, plan)
+    }
   }
 
   getPlan = (planId: string) => {
