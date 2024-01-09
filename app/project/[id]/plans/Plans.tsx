@@ -86,7 +86,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     setCurrentPlanID(updatedPlan?.id ?? null)
   }
 
-  function calculateCost(plan) {
+  function calculateEstimatedCost(plan) {
     let catalogueItems = []
     let estimatedCost = 0
 
@@ -97,17 +97,71 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     }
 
     catalogueItems.forEach(item => {
-      estimatedCost += (item.quantity * item.basePricePer)
-      if (item.additionalCosts) {
-        item.additionalCosts.forEach(cost => {
-          console.log(cost)
-          estimatedCost += Number(cost.price)
-          console.log(estimatedCost)
-        })
+      if (item.quantity && item.basePricePer) {
+        estimatedCost += (item.quantity * item.basePricePer)
+        if (item.additionalCosts) {
+          item.additionalCosts.forEach(cost => {
+            estimatedCost += Number(cost.price)
+          })
+        }
       }
     });
 
-    return `$${estimatedCost.toFixed(2)}`
+    return estimatedCost
+  }
+
+  function calculateRebates(plan) {
+    let totalRebates = 0
+    let catalogueItems = []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach(item => {
+      if (item.incentives) {
+        item.incentives.forEach(incentive => {
+          if (incentive.selected && incentive.type == "Rebate") {
+            totalRebates += incentive.finalCalculations.usedAmount
+          }
+        })
+      }
+    })
+
+    return totalRebates
+  }
+
+  function calculateNetCost(plan) {
+    const estimatedCost = calculateEstimatedCost(plan)
+    const totalRebates = calculateRebates(plan)
+
+    return estimatedCost - totalRebates
+  }
+
+  function calculateFinalCost(plan) {
+    const netCost = calculateNetCost(plan)
+    let totalTaxCredits = 0
+    let catalogueItems = []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach(item => {
+      if (item.incentives) {
+        item.incentives.forEach(incentive => {
+          if (incentive.selected && incentive.type == "TaxCredit") {
+            totalTaxCredits += incentive.finalCalculations.usedAmount
+          }
+        })
+      }
+    })
+
+    return netCost - totalTaxCredits
   }
 
   return (
@@ -290,21 +344,26 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </div>
                 <div className="planCreation__sectionItem">
                   Estimated Cost
-                  <span>{calculateCost(currentPlan)}</span>
+                  <span>{`$${calculateEstimatedCost(currentPlan).toFixed(2)}`}</span>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
-                  Incentives
-                  <span>-</span>
+                  Rebates
+                  <span>{`$${calculateRebates(currentPlan).toFixed(2)}`}</span>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
-                  Cost
-                  <span>-</span>
+                  Net Cost
+                  <span>{`$${calculateNetCost(currentPlan).toFixed(2)}`}</span>
+                </div>
+                <Divider />
+                <div className="planCreation__sectionItem">
+                  Final Cost
+                  <span>{`$${calculateFinalCost(currentPlan).toFixed(2)}`}</span>
                 </div>
                 <Divider />
                 <InlineFinancingCalculator
-                  totalAmount={17000}
+                  totalAmount={calculateFinalCost(currentPlan)}
                   financingOptions={ModelStore.financingOptions}
                   onUpdate={() => null}
                 />
