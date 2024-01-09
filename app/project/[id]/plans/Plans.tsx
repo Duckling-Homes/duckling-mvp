@@ -4,7 +4,7 @@ import ModelStore from '@/app/stores/modelStore'
 import DeletePlanModal from '@/components/Modals/DeletePlan'
 import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
-import { CatalogueItem, Plan, Project } from '@/types/types'
+import { CatalogueItem, Incentive, Plan, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
 import { Button, Chip, Divider, IconButton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
@@ -160,6 +160,34 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     })
 
     return netCost - totalTaxCredits
+  }
+
+  function renderIncentivesList(type: string, plan: Plan) {
+    let catalogueItems = []
+    const incentivesToRender = [] as Incentive[]
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach(incentive => {
+          if (incentive.selected && incentive.type == type) {
+            incentivesToRender.push(incentive)
+          }
+        })
+      }
+    })
+
+    return incentivesToRender.map(incentive => (
+      <div className='incentive' key={incentive.id}>
+        <span className='name'>{incentive.name}</span>
+        <span>{`$${incentive.finalCalculations?.usedAmount.toFixed(2) || 0}`}</span>
+      </div>
+    ))
   }
 
   return (
@@ -341,23 +369,37 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   </IconButton>
                 </div>
                 <div className="planCreation__sectionItem">
-                  Estimated Cost
-                  <span>{`$${calculateEstimatedCost(currentPlan).toFixed(2)}`}</span>
+                  <div className="title">
+                    Estimated Cost
+                    <span>{`$${calculateEstimatedCost(currentPlan).toFixed(2)}`}</span>
+                  </div>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
-                  Rebates
-                  <span>{`$${calculateRebates(currentPlan).toFixed(2)}`}</span>
+                  <div className="title">
+                    Rebates
+                    <span>{`$${calculateRebates(currentPlan).toFixed(2)}`}</span>
+                  </div>
+                  <div className='incentiveList'>
+                    {renderIncentivesList('Rebate', currentPlan)}
+                  </div>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
-                  Net Cost
-                  <span>{`$${calculateNetCost(currentPlan).toFixed(2)}`}</span>
+                  <div className="title">
+                    Net Cost
+                    <span>{`$${calculateNetCost(currentPlan).toFixed(2)}`}</span>
+                  </div>
+                  <div className='incentiveList'>
+                    {renderIncentivesList('TaxCredit', currentPlan)}
+                  </div>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
-                  Final Cost
-                  <span>{`$${calculateFinalCost(currentPlan).toFixed(2)}`}</span>
+                  <div className="title">
+                    Final Cost
+                    <span>{`$${calculateFinalCost(currentPlan).toFixed(2)}`}</span>
+                  </div>
                 </div>
                 <Divider />
                 <InlineFinancingCalculator
