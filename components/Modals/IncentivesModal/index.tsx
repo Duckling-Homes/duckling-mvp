@@ -266,8 +266,6 @@ const IncentivesModal: React.FC<{
       catalogueItems = planDetails.catalogueItems
     }
 
-    console.log(parentId, 'caiu')
-
     catalogueItems.forEach((item: CatalogueItem) => {
       if (item?.customId === parentId) {
         item?.incentives?.forEach((incentive: Incentive) => {
@@ -310,8 +308,6 @@ const IncentivesModal: React.FC<{
 
   async function savePlan() {
     const catalogueItems: CatalogueItem[] = ModelStore.catalogueItems as CatalogueItem[]
-
-    console.log(catalogueItems, '############')
 
     const newPlan = {
       ...plan,

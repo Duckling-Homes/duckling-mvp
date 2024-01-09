@@ -357,8 +357,6 @@ export class _ModelStore {
       return
     }
 
-    console.log(toJS(catalogueItems))
-
     catalogueItems.push(item)
 
     plans.forEach((plan, index) => {
@@ -369,8 +367,6 @@ export class _ModelStore {
         }
       }
     })
-
-    console.log(toJS(plans))
 
     for (const plan of plans) {
       await this.patchPlan(this.currentProject?.id as string, plan)
@@ -404,7 +400,6 @@ export class _ModelStore {
       }
     })
     
-    console.log(toJS(catalogueItems))
     for (const plan of plans) {
       await this.patchPlan(this.currentProject?.id as string, plan)
     }
@@ -417,7 +412,6 @@ export class _ModelStore {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
     const catalogueItems = this.catalogueItems as CatalogueItem[]
-    console.log(toJS(catalogueItems))
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')

@@ -109,8 +109,6 @@ const CostsModal: React.FC<{
       return cost;
     });
 
-    console.log(updatedCosts)
-
     setAdditionalCosts(updatedCosts)
   }
 
