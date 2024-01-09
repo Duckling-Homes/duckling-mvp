@@ -27,7 +27,6 @@ const Incentives: React.FC<{
   taxCredits: Incentive[]
   onCheck: (incentiveId: string, parentId: string, parentCat: string) => void
 }> = ({ rebates, taxCredits, onCheck }) => {
-
   function calculateIncentiveValue(incentive: Incentive) {
     switch(incentive.calculationType) {
       case 'FlatRate':
@@ -211,19 +210,24 @@ const IncentivesModal: React.FC<{
 
   function getAllIncentivesByType(type: string) {
     const uniqueIncentivesSet = new Set<string>();
-
-    console.log(toJS(plan))
+    let catalogueItems = []
 
     if (!plan) {
       return []
     }
-  
-    const catalogueItems = planDetails.catalogueItems as CatalogueItem[] || []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      const planDetails = JSON.parse(plan.planDetails)
+      catalogueItems = planDetails.catalogueItems
+    }
 
     catalogueItems.forEach((item) => {
       if (item.incentives && Array.isArray(item.incentives)) {
         item.incentives.forEach((incentive) => {
           if (incentive.type === type) {
+            incentive.parentId = item.customId
             const incentiveString = JSON.stringify(incentive);
             uniqueIncentivesSet.add(incentiveString);
           }
@@ -253,12 +257,18 @@ const IncentivesModal: React.FC<{
 
   function handleSelectIncentive(incentiveId: string, parentId: string, parentCat: string) {
 
-    const catalogueItems = planDetails?.catalogueItems || []
+    let catalogueItems = []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      const planDetails = JSON.parse(plan.planDetails)
+      catalogueItems = planDetails.catalogueItems
+    }
 
     console.log(parentId, 'caiu')
 
     catalogueItems.forEach((item: CatalogueItem) => {
-      console.log(item)
       if (item?.customId === parentId) {
         item?.incentives?.forEach((incentive: Incentive) => {
           if (incentive.id === incentiveId) {
@@ -271,8 +281,6 @@ const IncentivesModal: React.FC<{
         })
       }
     })
-
-    console.log(catalogueItems)
 
     ModelStore.updatePlanCategory(plan.id as string, catalogueItems as CatalogueItem[])
 

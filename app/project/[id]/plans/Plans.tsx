@@ -14,6 +14,7 @@ import { observer } from 'mobx-react-lite'
 
 import './style.scss'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
+import { toJS } from 'mobx'
 
 interface PlansProps {
   currentProject: Project
@@ -47,14 +48,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       ModelStore.fetchCatalogue().then((data) => setCatalogue(data))
     }
   }, [])
-
-  function changeCurrentPlan(id: String) {
-    if (!id) {
-      setCurrentPlan({})
-    }
-    const [plan, planDetails] = ModelStore.getPlan(id as string)
-    setCurrentPlan(plan)
-  }
 
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
@@ -91,6 +84,24 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
     
     setCurrentPlanID(updatedPlan?.id ?? null)
+  }
+
+  function calculateCost(plan) {
+    let catalogueItems = []
+    let estimatedCost = 0
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach(item => {
+      estimatedCost += (item.quantity * item.basePricePer)
+    });
+
+    console.log(toJS(plan), 'CALCULATIOONSSSSSSSSSSSS')
+    return `$${estimatedCost.toFixed(2)}`
   }
 
   return (
@@ -273,7 +284,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </div>
                 <div className="planCreation__sectionItem">
                   Estimated Cost
-                  <span>-</span>
+                  <span>{calculateCost(currentPlan)}</span>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
