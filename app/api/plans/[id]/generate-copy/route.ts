@@ -69,7 +69,6 @@ Rules:
 }
 
 // https://vercel.com/docs/functions/configuring-functions/duration
-export const maxDuration = 30
 
 export const GET = withErrorHandler(
   async (
