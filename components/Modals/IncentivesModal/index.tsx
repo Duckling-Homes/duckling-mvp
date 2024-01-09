@@ -30,7 +30,7 @@ const STEPS = ['Select Incentives', 'Review Copy']
 const Incentives: React.FC<{
   rebates: Incentive[]
   taxCredits: Incentive[]
-  onCheck: (incentiveId: string, parentId: string, parentCat: string) => void
+  onCheck: (incentiveId: string, parentId: string) => void
 }> = ({ rebates, taxCredits, onCheck }) => {
   function calculateIncentiveValue(incentive: Incentive) {
     switch (incentive.calculationType) {
@@ -83,24 +83,15 @@ const Incentives: React.FC<{
                 }}
               >
                 <Checkbox
-                  onChange={() =>
-                    onCheck(
-                      incentive.id as string,
-                      incentive.parentId as string,
-                      incentive.parentCat as string
-                    )
-                  }
-                  checked={incentive.selected}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                    flex: 1,
-                    minWidth: '65%',
-                  }}
-                >
+                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string)}
+                  checked={incentive.selected}/>
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "4px",
+                  flex: 1,
+                  minWidth: "65%"
+                }}>
                   <span>{incentive.name}</span>
                   <small>{incentive.descriptionText}</small>
                 </div>
@@ -142,23 +133,14 @@ const Incentives: React.FC<{
                 }}
               >
                 <Checkbox
-                  onChange={() =>
-                    onCheck(
-                      incentive.id as string,
-                      incentive.parentId as string,
-                      incentive.parentCat as string
-                    )
-                  }
-                  checked={incentive.selected}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                    flex: 1,
-                  }}
-                >
+                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string)}
+                  checked={incentive.selected}/>
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "4px",
+                  flex: 1
+                }}>
                   <span>{incentive.name}</span>
                   <small>{incentive.descriptionText}</small>
                 </div>
@@ -222,38 +204,32 @@ const CopyReview: React.FC<{
         <span className="copyReview__title">Home Summary</span>
         <TextField
           multiline
-          value={plan.copy?.summary || (copyFields && copyFields.summary) || ''}
-          onChange={({ target }) => updateCopyFields(target.value, 'summary')}
+          value={plan.copy?.summary || copyFields?.summary}
+          onChange={({target}) => updateCopyFields(target.value, 'summary')}
         />
       </div>
       <div className="copyReview__wrapper">
         <span className="copyReview__title">Plan Summary</span>
         <TextField
           multiline
-          value={
-            plan.copy?.recommended ||
-            (copyFields && copyFields.recommended) ||
-            ''
-          }
-          onChange={({ target }) =>
-            updateCopyFields(target.value, 'recommended')
-          }
+          value={plan.copy?.recommended || copyFields?.recommended}
+          onChange={({target}) => updateCopyFields(target.value, 'recommended')}
         />
       </div>
       <div className="copyReview__wrapper">
         <span className="copyReview__title">Comfort Summary</span>
         <TextField
           multiline
-          value={plan.copy?.comfort || (copyFields && copyFields.comfort) || ''}
-          onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
+          value={plan.copy?.comfort || copyFields?.comfort}
+          onChange={({target}) => updateCopyFields(target.value, 'comfort')}
         />
       </div>
       <div className="copyReview__wrapper">
         <span className="copyReview__title">Health Summary</span>
         <TextField
           multiline
-          value={plan.copy?.health || (copyFields && copyFields.health) || ''}
-          onChange={({ target }) => updateCopyFields(target.value, 'health')}
+          value={plan.copy?.health || copyFields?.health}
+          onChange={({target}) => updateCopyFields(target.value, 'health')}
         />
       </div>
     </div>
@@ -265,41 +241,41 @@ const IncentivesModal: React.FC<{
   onClose: () => void
   currentPlanId: string
   projectId: string
-}> = observer(({ open, onClose, currentPlanId, projectId }) => {
-  const [activeStep, setActiveStep] = useState(0)
-  const [plan, planDetails]: [Plan, PlanDetails] = ModelStore?.getPlan(
-    currentPlanId
-  ) as [Plan, PlanDetails]
+}> = observer(
+  ({ open, onClose, currentPlanId, projectId }) => {
+  const [activeStep, setActiveStep] = useState(0);
+  const [plan]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
 
   function getAllIncentivesByType(type: string) {
-    const incentives = [] as Incentive[]
-    const uniqueIds = new Set()
+    const uniqueIncentivesSet = new Set<string>();
+    let catalogueItems = []
 
     if (!plan) {
-      return incentives
+      return []
     }
 
-    const incentivesByCat = Object.values(planDetails)
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      const planDetails = JSON.parse(plan.planDetails)
+      catalogueItems = planDetails.catalogueItems
+    }
 
-    incentivesByCat.forEach((categoryArray) => {
-      categoryArray.forEach((item: CatalogueItem) => {
-        if (item.incentives && item.incentives.length > 0) {
-          const filteredIncentives = item.incentives.filter((incentive) => {
-            incentive.parentId = item.id as string
-            incentive.parentCat = item.category as string
-            if (incentive.type === type && !uniqueIds.has(incentive.id)) {
-              uniqueIds.add(incentive.id)
-              return true
-            }
-            return false
-          })
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.incentives && Array.isArray(item.incentives)) {
+        item.incentives.forEach((incentive) => {
+          if (incentive.type === type) {
+            incentive.parentId = item.customId
+            const incentiveString = JSON.stringify(incentive);
+            uniqueIncentivesSet.add(incentiveString);
+          }
+        });
+      }
+    });
 
-          incentives.push(...filteredIncentives)
-        }
-      })
-    })
+    const uniqueIncentivesArray = Array.from(uniqueIncentivesSet, (str) => JSON.parse(str) as Incentive);
 
-    return incentives
+    return uniqueIncentivesArray
   }
 
   function handleNext() {
@@ -315,19 +291,20 @@ const IncentivesModal: React.FC<{
   function handleBack() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   }
+  function handleSelectIncentive(incentiveId: string, parentId: string) {
 
-  function handleSelectIncentive(
-    incentiveId: string,
-    parentId: string,
-    parentCat: string
-  ) {
-    const details = { ...planDetails }
+    let catalogueItems = []
 
-    console.log(incentiveId, 'caiu')
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      const planDetails = JSON.parse(plan.planDetails)
+      catalogueItems = planDetails.catalogueItems
+    }
 
-    details[parentCat].forEach((workItem: CatalogueItem) => {
-      if (workItem?.id === parentId) {
-        workItem?.incentives?.forEach((incentive: Incentive) => {
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item?.customId === parentId) {
+        item?.incentives?.forEach((incentive: Incentive) => {
           if (incentive.id === incentiveId) {
             if (incentive.selected) {
               incentive.selected = false
@@ -338,14 +315,7 @@ const IncentivesModal: React.FC<{
         })
       }
     })
-
-    console.log(details[parentCat])
-
-    ModelStore.updatePlanCategory(
-      plan.id as string,
-      details[parentCat] as CatalogueItem[],
-      parentCat
-    )
+    ModelStore.updatePlanCategory(plan.id as string, catalogueItems as CatalogueItem[])
   }
 
   function renderStep() {
@@ -353,11 +323,9 @@ const IncentivesModal: React.FC<{
       case 0:
         return (
           <Incentives
-            onCheck={(
-              incentiveId: string,
-              parentId: string,
-              parentCat: string
-            ) => handleSelectIncentive(incentiveId, parentId, parentCat)}
+            onCheck={
+              (incentiveId: string, parentId: string) => handleSelectIncentive(incentiveId, parentId)
+            }
             rebates={getAllIncentivesByType('Rebate') as Incentive[]}
             taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
           />
@@ -370,19 +338,20 @@ const IncentivesModal: React.FC<{
   }
 
   async function savePlan() {
-    const catalogueItems: CatalogueItem[] = ([] as CatalogueItem[]).concat(
-      ...(Object.values(planDetails) as CatalogueItem[][])
-    )
-
-    console.log(catalogueItems)
+    const catalogueItems: CatalogueItem[] = ModelStore.catalogueItems as CatalogueItem[]
 
     const newPlan = {
       ...plan,
-      planDetails: JSON.stringify(planDetails),
-      catalogueItems: catalogueItems,
+      catalogueItems: catalogueItems
+    }
+    
+    if (newPlan.planDetails) {
+      delete newPlan.planDetails
     }
 
     processPlanWithAggregationLimits(newPlan, aggregationLimits)
+
+    newPlan.planDetails = JSON.stringify(newPlan)
 
     ModelStore.patchPlan(projectId, newPlan)
   }

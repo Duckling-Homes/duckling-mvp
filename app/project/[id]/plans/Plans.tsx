@@ -4,7 +4,7 @@ import ModelStore from '@/app/stores/modelStore'
 import DeletePlanModal from '@/components/Modals/DeletePlan'
 import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
-import { Plan, Project } from '@/types/types'
+import { CatalogueItem, Plan, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
 import { Button, Chip, Divider, IconButton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
@@ -20,7 +20,7 @@ interface PlansProps {
 
 const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [plans, setPlans] = useState<Plan[]>([])
-  const [currentPlan, setCurrentPlan] = useState<Plan>()
+  const [currentPlanID, setCurrentPlanID] = useState<string | null>(null)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [hideFinance, setHideFinance] = useState(false)
@@ -28,11 +28,15 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [incentivesModal, setIncentivesModal] = useState(false)
   const [catalogue, setCatalogue] = useState(ModelStore.productCatalogue)
 
+  const currentPlan = (currentProject?.plans ?? []).find(
+    (p) => p.id === currentPlanID
+  )
+
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
       setPlans(currentProject.plans)
-      if (!currentPlan?.id) {
-        setCurrentPlan(currentProject.plans[0])
+      if (!currentPlanID) {
+        setCurrentPlanID(currentProject.plans[0]?.id ?? null)
       }
     }
   })
@@ -54,7 +58,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     }
 
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
-    setCurrentPlan(newPlan)
+    setCurrentPlanID(newPlan.id as string)
   }
 
   async function handlePlanDeletion() {
@@ -66,7 +70,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     const newPlansList = plans.filter((plan) => plan.id !== currentPlan?.id)
 
     setPlans(newPlansList)
-    setCurrentPlan(newPlansList[0] || {})
+    setCurrentPlanID(newPlansList[0]?.id || null)
   }
 
   async function handlePlanEdition(name: string) {
@@ -76,8 +80,86 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     }
 
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
+    
+    setCurrentPlanID(updatedPlan?.id ?? null)
+  }
 
-    setCurrentPlan(updatedPlan)
+  function calculateEstimatedCost(plan: Plan) {
+    let catalogueItems = []
+    let estimatedCost = 0
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.quantity && item.basePricePer) {
+        estimatedCost += (item.quantity as number * item.basePricePer)
+        if (item.additionalCosts) {
+          item.additionalCosts.forEach(cost => {
+            estimatedCost += Number(cost.price)
+          })
+        }
+      }
+    });
+
+    return estimatedCost
+  }
+
+  function calculateRebates(plan: Plan) {
+    let totalRebates = 0
+    let catalogueItems = []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach(incentive => {
+          if (incentive.selected && incentive.type == "Rebate") {
+            totalRebates += incentive.finalCalculations?.usedAmount || 0
+          }
+        })
+      }
+    })
+
+    return totalRebates
+  }
+
+  function calculateNetCost(plan: Plan) {
+    const estimatedCost = calculateEstimatedCost(plan)
+    const totalRebates = calculateRebates(plan)
+
+    return estimatedCost - totalRebates
+  }
+
+  function calculateFinalCost(plan: Plan) {
+    const netCost = calculateNetCost(plan)
+    let totalTaxCredits = 0
+    let catalogueItems = []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach(incentive => {
+          if (incentive.selected && incentive.type == "TaxCredit") {
+            totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
+          }
+        })
+      }
+    })
+
+    return netCost - totalTaxCredits
   }
 
   return (
@@ -121,7 +203,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   key={plan.id}
                   label={plan.name}
                   color={currentPlan?.id === plan.id ? 'primary' : 'default'}
-                  onClick={() => setCurrentPlan(plan)}
+                  onClick={() => setCurrentPlanID(plan.id ?? null)}
                 />
               ))}
               <IconButton
@@ -260,21 +342,26 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </div>
                 <div className="planCreation__sectionItem">
                   Estimated Cost
-                  <span>-</span>
+                  <span>{`$${calculateEstimatedCost(currentPlan).toFixed(2)}`}</span>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
-                  Incentives
-                  <span>-</span>
+                  Rebates
+                  <span>{`$${calculateRebates(currentPlan).toFixed(2)}`}</span>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
-                  Cost
-                  <span>-</span>
+                  Net Cost
+                  <span>{`$${calculateNetCost(currentPlan).toFixed(2)}`}</span>
+                </div>
+                <Divider />
+                <div className="planCreation__sectionItem">
+                  Final Cost
+                  <span>{`$${calculateFinalCost(currentPlan).toFixed(2)}`}</span>
                 </div>
                 <Divider />
                 <InlineFinancingCalculator
-                  totalAmount={17000}
+                  totalAmount={calculateFinalCost(currentPlan)}
                   financingOptions={ModelStore.financingOptions}
                   onUpdate={() => null}
                 />
