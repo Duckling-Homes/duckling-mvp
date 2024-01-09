@@ -42,8 +42,16 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
         return 'error'
       }
 
+      let additionalCostTotal = 0
+
+      if (item.additionalCosts) {
+        item.additionalCosts.forEach(cost => {
+          additionalCostTotal += Number(cost.price)
+        })
+      }
+
       const quantValue = parseInt(item.quantity as string)
-      const roundedCost = (quantValue * (item.basePricePer as number)).toFixed(
+      const roundedCost = (quantValue * (item.basePricePer as number) +  + additionalCostTotal).toFixed(
         2
       )
 

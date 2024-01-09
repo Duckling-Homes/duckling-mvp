@@ -100,7 +100,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       estimatedCost += (item.quantity * item.basePricePer)
     });
 
-    console.log(toJS(plan), 'CALCULATIOONSSSSSSSSSSSS')
     return `$${estimatedCost.toFixed(2)}`
   }
 
