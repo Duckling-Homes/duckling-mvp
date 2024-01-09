@@ -81,10 +81,32 @@
       }
       #{$self}__sectionItem {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-        font-weight: 400;
+        flex-direction: column;
+        gap: 12px;
+        .title {
+          color: rgba(0, 0, 0, 0.87);
+          font-size: 14px;
+          font-weight: 400;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .incentiveList {
+          display: flex;
+          flex-direction: column;
+          font-size: 12px;
+          font-weight: 400;
+          color: rgba(0, 0, 0, 0.6);
+          gap: 12px;
+          .incentive {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            .name {
+              max-width: 70%;
+            }
+          }
+        }
         #{$self}__sectionStars {
           svg {
             color: #FFB300;
