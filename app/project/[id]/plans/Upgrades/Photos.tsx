@@ -2,10 +2,10 @@
 
 import ModelStore from '@/app/stores/modelStore'
 import PhotoPickerModal from '@/components/Modals/PhotoPicker'
-import { PhotoDetails, Plan, PlanDetails, Project } from '@/types/types'
+import { PhotoDetails, Plan, Project } from '@/types/types'
 import { CameraAlt } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import PhotoDisplay from '@/components/PhotoDisplay'
 
@@ -15,23 +15,8 @@ interface PlanPhotoProps {
 }
 
 const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
-  const parsePlanDetails = () => {
-    const planDetails = {} as PlanDetails
-
-    if (planDetails && !planDetails?.imageIds) {
-      planDetails.imageIds = [] as string[]
-    }
-    return planDetails
-  }
-
   const [openPhotoPicker, setOpenPhotoPicker] = useState<boolean>(false)
-  const [planDetails, setPlanDetails] = useState<PlanDetails>(
-    parsePlanDetails()
-  )
-
-  useEffect(() => {
-    setPlanDetails(parsePlanDetails())
-  }, [plan])
+  const planDetails = JSON.parse(plan.planDetails || '{}')
 
   const filterForDisplay = (photos: PhotoDetails[]) => {
     return photos.filter(
@@ -47,7 +32,6 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
       }
       const newPlan = { ...plan }
       newPlan.planDetails = JSON.stringify(newPlanDetails)
-      setPlanDetails(newPlanDetails)
       await ModelStore.patchPlan(plan.projectId, newPlan)
     }
   }
@@ -93,7 +77,7 @@ const Photos: React.FC<PlanPhotoProps> = observer(({ plan, project }) => {
         handleFinishSelect={handleFinishSelect}
         initialSelection={new Set(planDetails?.imageIds)}
       />
-      {planDetails?.imageIds.length > 0 && (
+      {planDetails?.imageIds?.length > 0 && (
         <PhotoDisplay
           currentProject={project}
           filterPhotos={filterForDisplay}
