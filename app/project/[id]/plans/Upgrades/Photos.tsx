@@ -2,10 +2,10 @@
 
 import ModelStore from '@/app/stores/modelStore'
 import PhotoPickerModal from '@/components/Modals/PhotoPicker'
-import { PhotoDetails, Plan, PlanDetails, Project } from '@/types/types'
+import { PhotoDetails, Plan, Project } from '@/types/types'
 import { CameraAlt } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import PhotoDisplay from '@/components/PhotoDisplay'
 
