@@ -35,7 +35,15 @@ const PlanPresentation: React.FC<{
 
   const sortCatalogItems = () => {
     const catalogMapping: Record<string, CatalogueItem[]> = {}
-    for (const item of plan.catalogueItems ?? []) {
+    let catalogueItems = []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    for (const item of catalogueItems) {
       if (!catalogMapping[item.category ?? '']) {
         catalogMapping[item.category ?? ''] = []
       }
@@ -313,7 +321,7 @@ const PlanPresentation: React.FC<{
           </div>
           <div className='financing__card'>
             <LargeFinancingCalculator
-              totalAmount={260000}
+              totalAmount={calculateFinalCost(plan)}
               financingOptions={financingOptions}
             />
           </div>
