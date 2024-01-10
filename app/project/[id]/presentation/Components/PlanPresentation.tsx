@@ -1,5 +1,5 @@
 'use client'
-import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
+import { CatalogueItem, Incentive, PhotoDetails, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { Home } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
@@ -14,7 +14,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CatalogItemView from './CatalogItemView'
 import { useEffect, useState } from 'react'
-import { Button } from '@mui/material'
+import { Button, Divider } from '@mui/material'
 import '../style.scss'
 
 const PlanPresentation: React.FC<{
@@ -57,6 +57,113 @@ const PlanPresentation: React.FC<{
     setPhotoIndex(newIndex)
     setDisplayedPhoto(photos[newIndex])
   }
+
+    function calculateEstimatedCost(plan: Plan) {
+    let catalogueItems = []
+    let estimatedCost = 0
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.quantity && item.basePricePer) {
+        estimatedCost += (item.quantity as number * item.basePricePer)
+        if (item.additionalCosts) {
+          item.additionalCosts.forEach(cost => {
+            estimatedCost += Number(cost.price)
+          })
+        }
+      }
+    });
+
+    return estimatedCost
+  }
+
+  function calculateRebates(plan: Plan) {
+    let totalRebates = 0
+    let catalogueItems = []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach(incentive => {
+          if (incentive.selected && incentive.type == "Rebate") {
+            totalRebates += incentive.finalCalculations?.usedAmount || 0
+          }
+        })
+      }
+    })
+
+    return totalRebates
+  }
+
+  function calculateNetCost(plan: Plan) {
+    const estimatedCost = calculateEstimatedCost(plan)
+    const totalRebates = calculateRebates(plan)
+
+    return estimatedCost - totalRebates
+  }
+
+  function calculateFinalCost(plan: Plan) {
+    const netCost = calculateNetCost(plan)
+    let totalTaxCredits = 0
+    let catalogueItems = []
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach(incentive => {
+          if (incentive.selected && incentive.type == "TaxCredit") {
+            totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
+          }
+        })
+      }
+    })
+
+    return netCost - totalTaxCredits
+  }
+
+  function renderIncentivesList(type: string, plan: Plan) {
+    let catalogueItems = []
+    const incentivesToRender = [] as Incentive[]
+
+    if (plan.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan.planDetails) {
+      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    }
+
+    catalogueItems.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach(incentive => {
+          if (incentive.selected && incentive.type == type) {
+            incentivesToRender.push(incentive)
+          }
+        })
+      }
+    })
+
+    return incentivesToRender.map(incentive => (
+      <div className='incentive' key={incentive.id}>
+        <span className='name'>{incentive.name}</span>
+        <span className='price'>{`-$${incentive.finalCalculations?.usedAmount.toFixed(2) || 0}`}</span>
+      </div>
+    ))
+  }
+
   return (
     <>
       {/* Plan Summary */}
@@ -175,10 +282,42 @@ const PlanPresentation: React.FC<{
           <AttachMoneyIcon />
           <p>Financing</p>
         </div>
-        <LargeFinancingCalculator
-          totalAmount={260000}
-          financingOptions={financingOptions}
-        />
+        <div className='financing__content'>
+          <div className='financing__card'>
+            <div className="financing__sectionItem">
+              <div className="title">
+                Upgrade Value
+                <span>{`$${calculateEstimatedCost(plan).toFixed(2)}`}</span>
+              </div>
+              <div className='incentiveList'>
+                {renderIncentivesList('Rebate', plan)}
+              </div>
+            </div>
+            <Divider />
+            <div className="financing__sectionItem">
+              <div className="title">
+                Net Cost
+                <span>{`$${calculateNetCost(plan).toFixed(2)}`}</span>
+              </div>
+              <div className='incentiveList'>
+                {renderIncentivesList('TaxCredit', plan)}
+              </div>
+              <Divider />
+              <div className="planCreation__sectionItem">
+                <div className="title">
+                  Final Cost
+                  <span>{`$${calculateFinalCost(plan).toFixed(2)}`}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='financing__card'>
+            <LargeFinancingCalculator
+              totalAmount={260000}
+              financingOptions={financingOptions}
+            />
+          </div>
+        </div>
       </div>
     </>
   )
