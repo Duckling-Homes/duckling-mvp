@@ -77,10 +77,10 @@ const PlanPresentation: React.FC<{
     }
 
     catalogueItems.forEach((item: CatalogueItem) => {
-      if (item.quantity && item.basePricePer) {
-        estimatedCost += (item.quantity as number * item.basePricePer)
-        if (item.additionalCosts) {
-          item.additionalCosts.forEach(cost => {
+      if (item?.quantity && item?.basePricePer) {
+        estimatedCost += ((item?.quantity as number || 0) * item.basePricePer)
+        if (item?.additionalCosts) {
+          item?.additionalCosts.forEach(cost => {
             estimatedCost += Number(cost.price)
           })
         }
