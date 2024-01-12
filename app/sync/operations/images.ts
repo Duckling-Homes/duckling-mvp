@@ -5,59 +5,65 @@ import { db } from '../db'
 import { syncAPImutation } from '.'
 
 export class ImageSyncOperations {
-
-  create = syncAPImutation(async (
-    projectID: string,
-    imgDataUrl: string,
-    photoDetails: PhotoDetails
-  ) => {
-    photoDetails.id = photoDetails.id ?? uuidv4()
-    await db.enqueueRequest(`/api/images`, {
-      method: 'POST',
-      body: JSON.stringify({
+  create = syncAPImutation(
+    async (
+      projectID: string,
+      imgDataUrl: string,
+      photoDetails: PhotoDetails
+    ) => {
+      photoDetails.id = photoDetails.id ?? uuidv4()
+      await db.enqueueRequest(`/api/images`, {
+        method: 'POST',
+        body: JSON.stringify({
+          ...photoDetails,
+          projectId: projectID,
+        }),
+      })
+      await this.upload(photoDetails.id!, imgDataUrl)
+      const photo = {
         ...photoDetails,
-        projectId: projectID,
-      }),
-    })
-    await this.upload(photoDetails.id!, imgDataUrl);
-    const photo = {
-      ...photoDetails,
-      photoUrl: imgDataUrl,
-    }
-
-    await SyncAPI.projects._swap(projectID, (proj) => {
-      if (photoDetails.isHeroPhoto) {
-        proj.heroImageId = photoDetails.id
+        photoUrl: imgDataUrl,
       }
-      proj.images = proj.images ?? []
-      proj.images.push(photo)
-      return proj
-    })
-    SyncAPI.pushChanges();
-    return photo
-  })
+
+      await SyncAPI.projects._swap(projectID, (proj) => {
+        if (photoDetails.isHeroPhoto) {
+          proj.heroImageId = photoDetails.id
+        }
+        proj.images = proj.images ?? []
+        proj.images.push(photo)
+        return proj
+      })
+      SyncAPI.pushChanges()
+      return photo
+    }
+  )
 
   _putCachedContent = async (imageID: string, content: ArrayBuffer) => {
-    const urlKey = 'url:' + imageID;
-    const b64encodedContent = Buffer.from(content).toString('base64');
-    return db.putObject({id: urlKey, type: "ImageURL", json: b64encodedContent, source: 'client' })
+    const urlKey = 'url:' + imageID
+    const b64encodedContent = Buffer.from(content).toString('base64')
+    return db.putObject({
+      id: urlKey,
+      type: 'ImageURL',
+      json: b64encodedContent,
+      source: 'client',
+    })
   }
 
-  _getCachedContent = async (imageID: string) : Promise<ArrayBuffer| null> => {
-    const urlKey = 'url:' + imageID;
-    const resolved = await db.objects.get(urlKey);
+  _getCachedContent = async (imageID: string): Promise<ArrayBuffer | null> => {
+    const urlKey = 'url:' + imageID
+    const resolved = await db.objects.get(urlKey)
     if (resolved?.json) {
-      return Buffer.from(resolved.json as string, 'base64');
+      return Buffer.from(resolved.json as string, 'base64')
     }
 
-    return null;
+    return null
   }
 
   upload = syncAPImutation(async (imageID: string, photoUrl: string) => {
     try {
       const response = await fetch(photoUrl)
       const arrayBuffer = await response.arrayBuffer()
-      await this._putCachedContent(imageID, arrayBuffer);
+      await this._putCachedContent(imageID, arrayBuffer)
       await db.enqueueRequest(`/api/images/${imageID}/upload`, {
         method: 'POST',
         body: arrayBuffer,
@@ -68,32 +74,31 @@ export class ImageSyncOperations {
     } catch (error) {
       console.error('Error uploading the photo:', error)
     }
-    SyncAPI.pushChanges();
+    SyncAPI.pushChanges()
     return photoUrl
   })
 
-
   download = async (imageID: string) => {
     try {
-
-      let data;
-      const cached = await this._getCachedContent(imageID);
+      let data
+      const cached = await this._getCachedContent(imageID)
 
       if (cached) {
-        console.log("RESOLVED IMAGE CACHE!");
-        data = cached;
-      } 
-      else {
+        console.debug('[offline]', 'RESOLVED IMAGE CACHE!')
+        data = cached
+      } else {
         const response = await fetch(`/api/images/${imageID}/download`, {
           method: 'GET',
         })
-  
+
         if (!response.ok) {
-          throw new Error(`Failed to download image. Status: ${response.status}`)
+          throw new Error(
+            `Failed to download image. Status: ${response.status}`
+          )
         }
-  
+
         data = await response.arrayBuffer()
-        await this._putCachedContent(imageID, data);
+        await this._putCachedContent(imageID, data)
       }
 
       const blob = new Blob([data], { type: 'image/png' })
@@ -104,52 +109,51 @@ export class ImageSyncOperations {
     }
   }
 
-  update = syncAPImutation(async (projectID: string, photoDetails: PhotoDetails) => {
-    await db.enqueueRequest(`/api/images/${photoDetails.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(photoDetails),
-    })
-    await SyncAPI.projects._swap(projectID, (proj) => {
-      const newHeroImageId = photoDetails.isHeroPhoto
-        ? photoDetails.id
-        : proj.heroImageId
+  update = syncAPImutation(
+    async (projectID: string, photoDetails: PhotoDetails) => {
+      await db.enqueueRequest(`/api/images/${photoDetails.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(photoDetails),
+      })
+      await SyncAPI.projects._swap(projectID, (proj) => {
+        const newHeroImageId = photoDetails.isHeroPhoto
+          ? photoDetails.id
+          : proj.heroImageId
 
-      const idx = proj.images?.findIndex(
-        (image) => image.id === photoDetails.id
-      )
-      const newImages = proj.images ? [...proj.images] : []
-      if (idx !== undefined && idx !== -1) {
-        newImages.splice(idx, 1)
-      }
-      newImages.push(photoDetails)
+        const idx = proj.images?.findIndex(
+          (image) => image.id === photoDetails.id
+        )
+        const newImages = proj.images ? [...proj.images] : []
+        if (idx !== undefined && idx !== -1) {
+          newImages.splice(idx, 1)
+        }
+        newImages.push(photoDetails)
 
-      return {
-        ...proj,
-        heroImageId: newHeroImageId,
-        images: newImages,
-      }
-    })
-    SyncAPI.pushChanges();
-    return photoDetails
-  })
+        return {
+          ...proj,
+          heroImageId: newHeroImageId,
+          images: newImages,
+        }
+      })
+      SyncAPI.pushChanges()
+      return photoDetails
+    }
+  )
 
   delete = syncAPImutation(async (projectID: string, imageID: string) => {
-    await db.enqueueRequest(
-      `/api/images/${imageID}`,
-      {method: 'DELETE'}
-    )
+    await db.enqueueRequest(`/api/images/${imageID}`, { method: 'DELETE' })
 
     await SyncAPI.projects._swap(projectID, (proj) => {
       const idx = proj.images?.findIndex((image) => image.id === imageID)
-      if(imageID == proj.heroImageId) {
+      if (imageID == proj.heroImageId) {
         proj.heroImageId = undefined
       }
 
-      if(idx != undefined) {
+      if (idx != undefined) {
         proj.images?.splice(idx, 1)
       }
       return proj
     })
-    SyncAPI.pushChanges();
+    SyncAPI.pushChanges()
   })
 }
