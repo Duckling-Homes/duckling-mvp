@@ -128,7 +128,7 @@ export class _ModelStore {
    * called on every model store mutation to make keep the ModelStore and SyncAPI views in lockstep.
    */
   reloadProject = async (projectID: string) => {
-    console.debug(['offline'], 'loading')
+    console.debug('[offline]', 'loading')
     this.init()
     const project = await SyncAPI.projects.get(projectID)
     this.plans = project.plans || []
