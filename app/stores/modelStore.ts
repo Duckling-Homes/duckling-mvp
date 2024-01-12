@@ -128,7 +128,7 @@ export class _ModelStore {
    * called on every model store mutation to make keep the ModelStore and SyncAPI views in lockstep.
    */
   reloadProject = async (projectID: string) => {
-    console.log('loading')
+    console.debug('[offline]', 'loading')
     this.init()
     const project = await SyncAPI.projects.get(projectID)
     this.plans = project.plans || []
@@ -373,10 +373,7 @@ export class _ModelStore {
     }
   }
 
-  removePlanItem = async (
-    planId: string,
-    itemCustomId: string,
-  ) => {
+  removePlanItem = async (planId: string, itemCustomId: string) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
     const catalogueItems = this.catalogueItems
@@ -399,16 +396,13 @@ export class _ModelStore {
         }
       }
     })
-    
+
     for (const plan of plans) {
       await this.patchPlan(this.currentProject?.id as string, plan)
     }
   }
 
-  updatePlanItem = async (
-    planId: string,
-    newItem: CatalogueItem,
-  ) => {
+  updatePlanItem = async (planId: string, newItem: CatalogueItem) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
     const catalogueItems = this.catalogueItems as CatalogueItem[]
@@ -445,17 +439,17 @@ export class _ModelStore {
       planDetails = JSON.parse(plan?.planDetails as string)
     }
 
-    this.catalogueItems = plan?.catalogueItems as CatalogueItem[] || planDetails?.catalogueItems || []
+    this.catalogueItems =
+      (plan?.catalogueItems as CatalogueItem[]) ||
+      planDetails?.catalogueItems ||
+      []
 
     return [plan, planDetails]
   }
 
-  updatePlanCategory = (
-    planId: string,
-    newCatalogueItems: CatalogueItem[],
-  ) => {
+  updatePlanCategory = (planId: string, newCatalogueItems: CatalogueItem[]) => {
     const plans = this.plans
-    
+
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
         plans[index] = {

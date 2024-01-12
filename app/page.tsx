@@ -49,8 +49,8 @@ const Home = observer(() => {
   const projects = ModelStore.projects
 
   useEffect(() => {
-    ModelStore.init();
-  }, []);
+    ModelStore.init()
+  }, [])
 
   useEffect(() => {
     setFilteredProjects(projects)
@@ -86,10 +86,12 @@ const Home = observer(() => {
     { field: 'homeownerName', headerName: 'Name', flex: 1 },
     { field: 'homeownerAddress', headerName: 'Address', flex: 1 },
     {
-      field: 'createdAt', 
+      field: 'createdAt',
       headerName: 'Created',
       flex: 1,
-      renderCell: (params) => <div>{dayjs(params.value).format('MMMM D, YYYY')} </div>
+      renderCell: (params) => (
+        <div>{dayjs(params.value).format('MMMM D, YYYY')} </div>
+      ),
     },
     {
       field: 'edit',
@@ -139,10 +141,12 @@ const Home = observer(() => {
         onClose={() => setOpenModal(false)}
       />
       <Container>
-        <div style={{
-          padding: "16px"
-        }}>
-          <div className='projectList'>
+        <div
+          style={{
+            padding: '16px',
+          }}
+        >
+          <div className="projectList">
             <div className="projectList__upperWrapper">
               <div className="projectList__header">
                 <p>My Projects</p>
@@ -166,7 +170,7 @@ const Home = observer(() => {
                 onChange={({ target }) => searchData(target.value)}
               />
             </div>
-            {filteredProjects.length > 0 &&
+            {filteredProjects.length > 0 && (
               <DataGrid
                 rows={filteredProjects}
                 columns={device === 'phone' ? mobileColumns : columns}
@@ -182,11 +186,9 @@ const Home = observer(() => {
                 }}
                 pageSizeOptions={[5, 10]}
               />
-            }
+            )}
           </div>
         </div>
-
-
       </Container>
     </main>
   )

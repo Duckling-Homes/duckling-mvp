@@ -17,7 +17,7 @@ export interface _Request {
   id?: number
   url: string
   options?: RequestInit
-  added: number,
+  added: number
 }
 
 export class DucklingDexie extends Dexie {
@@ -33,14 +33,14 @@ export class DucklingDexie extends Dexie {
   }
 
   putObject = async (obj: _Object) => {
-    obj.added = Date.now();
+    obj.added = Date.now()
     obj.json = JSON.parse(JSON.stringify(obj.json))
-    SyncAPIEvents.emit('did-modify-dbobject', obj.id, obj);
+    SyncAPIEvents.emit('did-modify-dbobject', obj.id, obj)
     return this.objects.put(obj, obj.id)
   }
 
   removeObject = async (objID: string) => {
-    SyncAPIEvents.emit('did-modify-dbobject', objID, null);
+    SyncAPIEvents.emit('did-modify-dbobject', objID, null)
     return this.objects.delete(objID)
   }
 
@@ -62,61 +62,60 @@ export class DucklingDexie extends Dexie {
   }
 
   hasPendingChanges = async () => {
-    const pending = await this.requests.count();
-    return pending > 0;
+    const pending = await this.requests.count()
+    return pending > 0
   }
 
-
   private collateRequests = async () => {
-    const pendingRequests = await this.requests.orderBy('added').toArray();
+    const pendingRequests = await this.requests.orderBy('added').toArray()
 
     // Maps unique key -> Tuple (collated request, original ids related)
-    const collated = new Map<string, [_Request, number[]]>();
+    const collated = new Map<string, [_Request, number[]]>()
 
     for (const req of pendingRequests) {
-      const uniqueKey = req.options?.method + req.url;
-      const [col, ids] = collated.get(uniqueKey) ?? [req, []];
-      Object.assign(col, req);
-      ids.push(req.id!);
-      collated.set(uniqueKey, [col, ids]);
+      const uniqueKey = req.options?.method + req.url
+      const [col, ids] = collated.get(uniqueKey) ?? [req, []]
+      Object.assign(col, req)
+      ids.push(req.id!)
+      collated.set(uniqueKey, [col, ids])
     }
 
-    const collatedRequestTuples = Array.from(collated.values());
-    collatedRequestTuples.sort((a,b) => a[0].added < b[0].added ? -1 : 1);
+    const collatedRequestTuples = Array.from(collated.values())
+    collatedRequestTuples.sort((a, b) => (a[0].added < b[0].added ? -1 : 1))
 
-    return collatedRequestTuples;
-
+    return collatedRequestTuples
   }
 
   publishChanges = debounce(async () => {
     if (!isOnline()) return false
-      const publishedRequests = [];
+    const publishedRequests = []
 
-      const collated = await this.collateRequests();
-      for (const [req, ids] of collated) {
-        try {
-          await fetch(req.url, req.options);
-          await Promise.all(ids.map(db.dequeueRequest));
-          publishedRequests.push(req);
-          console.log(
-            'Dequeued',
-            req.options?.method,
-            req.url,
-            req.id,
-            "collated these reqs", ids
-          )
-        } catch (err) {
+    const collated = await this.collateRequests()
+    for (const [req, ids] of collated) {
+      try {
+        await fetch(req.url, req.options)
+        await Promise.all(ids.map(db.dequeueRequest))
+        publishedRequests.push(req)
+        console.debug(
+          '[offline]',
+          'Dequeued',
+          req.options?.method,
+          req.url,
+          req.id,
+          'collated these reqs',
+          ids
+        )
+      } catch (err) {
         console.error('REQUEST FAILED TO PUSH...', { req, err })
-        }
       }
+    }
 
-    const didChange = publishedRequests.length > 0;
+    const didChange = publishedRequests.length > 0
     if (didChange) {
       SyncAPIEvents.emit('did-push-requests', publishedRequests)
     }
-    return didChange;
+    return didChange
   }, 200)
-
 }
 
 export const db = new DucklingDexie()
