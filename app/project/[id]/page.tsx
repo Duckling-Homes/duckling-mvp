@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { Button, Tab, Tabs } from '@mui/material'
+import { Container } from '@/components/Container'
+import DeleteProjectModal from '@/components/Modals/DeleteProject'
+import ProjectModal from '@/components/Modals/ProjectModal'
+import { PhotoDetails, Project } from '@/types/types'
 import {
   Delete,
   Edit,
@@ -9,7 +11,10 @@ import {
   Home,
   Tune,
 } from '@mui/icons-material'
-import { Container } from '@/components/Container'
+import { Button, Tab, Tabs } from '@mui/material'
+import { observer } from 'mobx-react-lite'
+import { useParams, useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 import {
   Appliances,
   Basics,
@@ -19,15 +24,9 @@ import {
   Photos,
   Rooms,
 } from './Tabs/index'
-import { PhotoDetails, Project } from '@/types/types'
-import { useParams } from 'next/navigation'
-import DeleteProjectModal from '@/components/Modals/DeleteProject'
-import { useRouter } from 'next/navigation'
-import { observer } from 'mobx-react-lite'
-import ProjectModal from '@/components/Modals/ProjectModal'
 
-import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import ModelStore from '@/app/stores/modelStore'
+import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import Plans from './plans/Plans'
 import Presentation from './presentation/page'
 
@@ -230,7 +229,7 @@ const DataCollection = observer(() => {
                 startIcon={<Tune />}
                 onClick={() => setCurrentContent('plans')}
               >
-                Plans
+                Create Plans
               </Button>
               <Button
                 style={{
