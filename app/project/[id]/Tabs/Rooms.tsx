@@ -9,11 +9,8 @@ import PhotoDisplay from '@/components/PhotoDisplay'
 import { Project, ProjectRoom } from '@/types/types'
 import {
   Chip,
-  FormControl,
   FormGroup,
-  FormLabel,
-  ToggleButton,
-  ToggleButtonGroup,
+  FormLabel
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 
@@ -170,39 +167,6 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                 onBlur={() => patchRoom('type')}
                 options={ROOM_TYPES}
               />
-              <TextInput
-                label="Width"
-                placeholder="Width"
-                type="tel"
-                value={currentRoom?.width || ''}
-                onChange={(value) =>
-                  handleInputChange('width', parseInt(value))
-                }
-                onBlur={() => patchRoom('width')}
-                endAdornment="ft"
-              />
-              <TextInput
-                label="Length"
-                placeholder="Length"
-                type="tel"
-                value={currentRoom?.length || ''}
-                onChange={(value) =>
-                  handleInputChange('length', parseInt(value))
-                }
-                onBlur={() => patchRoom('length')}
-                endAdornment="ft"
-              />
-              <TextInput
-                label="Ceiling Height"
-                placeholder="Ceiling Height"
-                type="tel"
-                value={currentRoom?.ceilingHeight || ''}
-                onChange={(value) =>
-                  handleInputChange('ceilingHeight', parseInt(value))
-                }
-                onBlur={() => patchRoom('ceilingHeight')}
-                endAdornment="ft"
-              />
               <SelectInput
                 label="Floor"
                 value={currentRoom?.floor || ''}
@@ -210,27 +174,7 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                 onBlur={() => patchRoom('floor')}
                 options={ROOM_FLOORS}
               />
-              <FormControl>
-                <FormLabel component="legend">Usage</FormLabel>
-                <ToggleButtonGroup
-                  value={currentRoom?.usage}
-                  exclusive
-                  color="primary"
-                  onChange={(e, value) => handleInputChange('usage', value)}
-                  onBlur={() => patchRoom('usage')}
-                  aria-label="usage"
-                >
-                  <ToggleButton value="rare" aria-label="left aligned">
-                    Rare
-                  </ToggleButton>
-                  <ToggleButton value="regular" aria-label="centered">
-                    Regular
-                  </ToggleButton>
-                  <ToggleButton value="frequent" aria-label="right aligned">
-                    Frequent
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </FormControl>
+              
               <FormGroup>
                 <FormLabel>Comfort Issues</FormLabel>
                 <div
