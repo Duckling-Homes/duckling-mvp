@@ -381,11 +381,13 @@ const IncentivesModal: React.FC<{
         delete newPlan.planDetails
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const aggLimitClasses = aggregationLimits.map((limit: any) => {
         // Transform the limit object
         const processedLimit: ProcessableAggregationLimit = {
           ...limit,
           impactedIncentiveIds: limit.impactedIncentives.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (incentive: any) => incentive?.id
           ),
         }
