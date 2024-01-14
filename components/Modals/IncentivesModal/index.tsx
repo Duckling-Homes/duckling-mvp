@@ -13,8 +13,11 @@ import {
 import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
-import { aggregationLimits } from '@/app/utils/hardcodedAggregationLimits'
-import { processPlanWithAggregationLimits } from '@/app/utils/planCalculation'
+import {
+  ProcessableAggregationLimit,
+  AggregationLimitClass,
+  processPlanWithAggregationLimits,
+} from '@/app/utils/planCalculation'
 import {
   CatalogueItem,
   Copy,
@@ -24,6 +27,7 @@ import {
 } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import './styles.scss'
+import { AggregationLimit } from '@prisma/client'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -83,15 +87,23 @@ const Incentives: React.FC<{
                 }}
               >
                 <Checkbox
-                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string)}
-                  checked={incentive.selected}/>
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
-                  flex: 1,
-                  minWidth: "65%"
-                }}>
+                  onChange={() =>
+                    onCheck(
+                      incentive.id as string,
+                      incentive.parentId as string
+                    )
+                  }
+                  checked={incentive.selected}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    flex: 1,
+                    minWidth: '65%',
+                  }}
+                >
                   <span>{incentive.name}</span>
                   <small>{incentive.descriptionText}</small>
                 </div>
@@ -133,14 +145,22 @@ const Incentives: React.FC<{
                 }}
               >
                 <Checkbox
-                  onChange={() => onCheck(incentive.id as string, incentive.parentId as string)}
-                  checked={incentive.selected}/>
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
-                  flex: 1
-                }}>
+                  onChange={() =>
+                    onCheck(
+                      incentive.id as string,
+                      incentive.parentId as string
+                    )
+                  }
+                  checked={incentive.selected}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    flex: 1,
+                  }}
+                >
                   <span>{incentive.name}</span>
                   <small>{incentive.descriptionText}</small>
                 </div>
@@ -205,7 +225,7 @@ const CopyReview: React.FC<{
         <TextField
           multiline
           value={plan.copy?.summary || copyFields?.summary}
-          onChange={({target}) => updateCopyFields(target.value, 'summary')}
+          onChange={({ target }) => updateCopyFields(target.value, 'summary')}
         />
       </div>
       <div className="copyReview__wrapper">
@@ -213,7 +233,9 @@ const CopyReview: React.FC<{
         <TextField
           multiline
           value={plan.copy?.recommended || copyFields?.recommended}
-          onChange={({target}) => updateCopyFields(target.value, 'recommended')}
+          onChange={({ target }) =>
+            updateCopyFields(target.value, 'recommended')
+          }
         />
       </div>
       <div className="copyReview__wrapper">
@@ -221,7 +243,7 @@ const CopyReview: React.FC<{
         <TextField
           multiline
           value={plan.copy?.comfort || copyFields?.comfort}
-          onChange={({target}) => updateCopyFields(target.value, 'comfort')}
+          onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
         />
       </div>
       <div className="copyReview__wrapper">
@@ -229,7 +251,7 @@ const CopyReview: React.FC<{
         <TextField
           multiline
           value={plan.copy?.health || copyFields?.health}
-          onChange={({target}) => updateCopyFields(target.value, 'health')}
+          onChange={({ target }) => updateCopyFields(target.value, 'health')}
         />
       </div>
     </div>
@@ -241,172 +263,198 @@ const IncentivesModal: React.FC<{
   onClose: () => void
   currentPlanId: string
   projectId: string
+  aggregationLimits: AggregationLimit[]
 }> = observer(
-  ({ open, onClose, currentPlanId, projectId }) => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [plan]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [Plan, PlanDetails]
+  ({ open, onClose, currentPlanId, projectId, aggregationLimits }) => {
+    const [activeStep, setActiveStep] = useState(0)
+    const [plan]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [
+      Plan,
+      PlanDetails,
+    ]
 
-  function getAllIncentivesByType(type: string) {
-    const uniqueIncentivesSet = new Set<string>();
-    let catalogueItems = []
+    function getAllIncentivesByType(type: string) {
+      const uniqueIncentivesSet = new Set<string>()
+      let catalogueItems = []
 
-    if (!plan) {
-      return []
-    }
-
-    if (plan.catalogueItems) {
-      catalogueItems = plan.catalogueItems
-    } else if (plan.planDetails) {
-      const planDetails = JSON.parse(plan.planDetails)
-      catalogueItems = planDetails.catalogueItems
-    }
-
-    catalogueItems.forEach((item: CatalogueItem) => {
-      if (item.incentives && Array.isArray(item.incentives)) {
-        item.incentives.forEach((incentive) => {
-          if (incentive.type === type) {
-            incentive.parentId = item.customId
-            const incentiveString = JSON.stringify(incentive);
-            uniqueIncentivesSet.add(incentiveString);
-          }
-        });
+      if (!plan) {
+        return []
       }
-    });
 
-    const uniqueIncentivesArray = Array.from(uniqueIncentivesSet, (str) => JSON.parse(str) as Incentive);
-
-    return uniqueIncentivesArray
-  }
-
-  function handleNext() {
-    if (activeStep === STEPS.length - 1) {
-      savePlan()
-      setActiveStep(0)
-      onClose()
-      return
-    }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
-  }
-
-  function handleBack() {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1)
-  }
-  function handleSelectIncentive(incentiveId: string, parentId: string) {
-
-    let catalogueItems = []
-
-    if (plan.catalogueItems) {
-      catalogueItems = plan.catalogueItems
-    } else if (plan.planDetails) {
-      const planDetails = JSON.parse(plan.planDetails)
-      catalogueItems = planDetails.catalogueItems
-    }
-
-    catalogueItems.forEach((item: CatalogueItem) => {
-      if (item?.customId === parentId) {
-        item?.incentives?.forEach((incentive: Incentive) => {
-          if (incentive.id === incentiveId) {
-            if (incentive.selected) {
-              incentive.selected = false
-            } else {
-              incentive.selected = true
-            }
-          }
-        })
+      if (plan.catalogueItems) {
+        catalogueItems = plan.catalogueItems
+      } else if (plan.planDetails) {
+        const planDetails = JSON.parse(plan.planDetails)
+        catalogueItems = planDetails.catalogueItems
       }
-    })
-    ModelStore.updatePlanCategory(plan.id as string, catalogueItems as CatalogueItem[])
-  }
 
-  function renderStep() {
-    switch (activeStep) {
-      case 0:
-        return (
-          <Incentives
-            onCheck={
-              (incentiveId: string, parentId: string) => handleSelectIncentive(incentiveId, parentId)
+      catalogueItems.forEach((item: CatalogueItem) => {
+        if (item.incentives && Array.isArray(item.incentives)) {
+          item.incentives.forEach((incentive) => {
+            if (incentive.type === type) {
+              incentive.parentId = item.customId
+              const incentiveString = JSON.stringify(incentive)
+              uniqueIncentivesSet.add(incentiveString)
             }
-            rebates={getAllIncentivesByType('Rebate') as Incentive[]}
-            taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
-          />
-        )
-      case 1:
-        return (
-          <CopyReview plan={plan as Plan} projectId={projectId as string} />
-        )
+          })
+        }
+      })
+
+      const uniqueIncentivesArray = Array.from(
+        uniqueIncentivesSet,
+        (str) => JSON.parse(str) as Incentive
+      )
+
+      return uniqueIncentivesArray
     }
+
+    function handleNext() {
+      if (activeStep === STEPS.length - 1) {
+        savePlan()
+        setActiveStep(0)
+        onClose()
+        return
+      }
+      setActiveStep((prevActiveStep) => prevActiveStep + 1)
+    }
+
+    function handleBack() {
+      setActiveStep((prevActiveStep) => prevActiveStep - 1)
+    }
+    function handleSelectIncentive(incentiveId: string, parentId: string) {
+      let catalogueItems = []
+
+      if (plan.catalogueItems) {
+        catalogueItems = plan.catalogueItems
+      } else if (plan.planDetails) {
+        const planDetails = JSON.parse(plan.planDetails)
+        catalogueItems = planDetails.catalogueItems
+      }
+
+      catalogueItems.forEach((item: CatalogueItem) => {
+        if (item?.customId === parentId) {
+          item?.incentives?.forEach((incentive: Incentive) => {
+            if (incentive.id === incentiveId) {
+              if (incentive.selected) {
+                incentive.selected = false
+              } else {
+                incentive.selected = true
+              }
+            }
+          })
+        }
+      })
+      ModelStore.updatePlanCategory(
+        plan.id as string,
+        catalogueItems as CatalogueItem[]
+      )
+    }
+
+    function renderStep() {
+      switch (activeStep) {
+        case 0:
+          return (
+            <Incentives
+              onCheck={(incentiveId: string, parentId: string) =>
+                handleSelectIncentive(incentiveId, parentId)
+              }
+              rebates={getAllIncentivesByType('Rebate') as Incentive[]}
+              taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
+            />
+          )
+        case 1:
+          return (
+            <CopyReview plan={plan as Plan} projectId={projectId as string} />
+          )
+      }
+    }
+
+    async function savePlan() {
+      const catalogueItems: CatalogueItem[] =
+        ModelStore.catalogueItems as CatalogueItem[]
+
+      const newPlan = {
+        ...plan,
+        catalogueItems: catalogueItems,
+      }
+
+      if (newPlan.planDetails) {
+        delete newPlan.planDetails
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const aggLimitClasses = aggregationLimits.map((limit: any) => {
+        // Transform the limit object
+        const processedLimit: ProcessableAggregationLimit = {
+          ...limit,
+          impactedIncentiveIds: limit.impactedIncentives.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (incentive: any) => incentive?.id
+          ),
+        }
+
+        // Create a new instance of AggregationLimitClass with the transformed object
+        return new AggregationLimitClass(processedLimit)
+      })
+
+      processPlanWithAggregationLimits(newPlan, aggLimitClasses)
+
+      newPlan.planDetails = JSON.stringify(newPlan)
+
+      ModelStore.patchPlan(projectId, newPlan)
+    }
+
+    return (
+      <Modal
+        open={open}
+        className="incentivesModal"
+        onClose={onClose}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <div className="incentivesModal__content">
+          <div className="incentivesModal__header">
+            <p>Select Incentives</p>
+            <IconButton
+              sx={{
+                borderRadius: '4px',
+                border: '1px solid #2196F3',
+                color: '#2196F3',
+                padding: '4px 10px',
+              }}
+              onClick={onClose}
+              aria-label="close"
+            >
+              <Close />
+            </IconButton>
+          </div>
+          <div className="incentivesModal__body">
+            <Stepper activeStep={activeStep}>
+              {STEPS.map((label) => {
+                const stepProps: { completed?: boolean } = {}
+                const labelProps: {
+                  optional?: React.ReactNode
+                } = {}
+                return (
+                  <Step key={label} {...stepProps}>
+                    <StepLabel {...labelProps}>{label}</StepLabel>
+                  </Step>
+                )
+              })}
+            </Stepper>
+            {renderStep()}
+          </div>
+          <div className="incentivesModal__footer">
+            <Button onClick={handleBack} disabled={activeStep === 0}>
+              Back
+            </Button>
+            <Button onClick={handleNext}>
+              {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    )
   }
-
-  async function savePlan() {
-    const catalogueItems: CatalogueItem[] = ModelStore.catalogueItems as CatalogueItem[]
-
-    const newPlan = {
-      ...plan,
-      catalogueItems: catalogueItems
-    }
-    
-    if (newPlan.planDetails) {
-      delete newPlan.planDetails
-    }
-
-    processPlanWithAggregationLimits(newPlan, aggregationLimits)
-
-    newPlan.planDetails = JSON.stringify(newPlan)
-
-    ModelStore.patchPlan(projectId, newPlan)
-  }
-
-  return (
-    <Modal
-      open={open}
-      className="incentivesModal"
-      onClose={onClose}
-      aria-labelledby="modal-title"
-      aria-describedby="modal-description"
-    >
-      <div className="incentivesModal__content">
-        <div className="incentivesModal__header">
-          <p>Select Incentives</p>
-          <IconButton
-            sx={{
-              borderRadius: '4px',
-              border: '1px solid #2196F3',
-              color: '#2196F3',
-              padding: '4px 10px',
-            }}
-            onClick={onClose}
-            aria-label="close"
-          >
-            <Close />
-          </IconButton>
-        </div>
-        <div className="incentivesModal__body">
-          <Stepper activeStep={activeStep}>
-            {STEPS.map((label) => {
-              const stepProps: { completed?: boolean } = {}
-              const labelProps: {
-                optional?: React.ReactNode
-              } = {}
-              return (
-                <Step key={label} {...stepProps}>
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              )
-            })}
-          </Stepper>
-          {renderStep()}
-        </div>
-        <div className="incentivesModal__footer">
-          <Button onClick={handleBack} disabled={activeStep === 0}>
-            Back
-          </Button>
-          <Button onClick={handleNext}>
-            {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'}
-          </Button>
-        </div>
-      </div>
-    </Modal>
-  )
-})
+)
 
 export default IncentivesModal

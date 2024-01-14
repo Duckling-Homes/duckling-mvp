@@ -30,7 +30,7 @@ export class OrganizationSyncOperations {
     })
     const catalogue = await response.json()
 
-    return catalogue.productCatalogue
+    return catalogue
   }
 
   getFinancingOptions = async () => {

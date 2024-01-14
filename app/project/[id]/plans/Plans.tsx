@@ -27,6 +27,9 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [deleteModal, setDeleteModal] = useState(false)
   const [incentivesModal, setIncentivesModal] = useState(false)
   const [catalogue, setCatalogue] = useState(ModelStore.productCatalogue)
+  const [aggregationLimits, setAggregationLimits] = useState(
+    ModelStore.aggregationLimits
+  )
 
   const currentPlan = (currentProject?.plans ?? []).find(
     (p) => p.id === currentPlanID
@@ -43,7 +46,17 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
   useEffect(() => {
     if (catalogue.length === 0) {
-      ModelStore.fetchCatalogue().then((data) => setCatalogue(data))
+      ModelStore.fetchCatalogue().then((data) =>
+        setCatalogue(data.productCatalogue)
+      )
+    }
+  }, [])
+
+  useEffect(() => {
+    if (aggregationLimits.length === 0) {
+      ModelStore.fetchCatalogue().then((data) =>
+        setAggregationLimits(data.aggregationLimits)
+      )
     }
   }, [])
 
@@ -80,7 +93,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     }
 
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
-    
+
     setCurrentPlanID(updatedPlan?.id ?? null)
   }
 
@@ -91,19 +104,19 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
     } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
     catalogueItems.forEach((item: CatalogueItem) => {
       if (item?.quantity && item?.basePricePer) {
-        estimatedCost += ((item.quantity as number || 0) * item.basePricePer)
+        estimatedCost += ((item.quantity as number) || 0) * item.basePricePer
         if (item?.additionalCosts) {
-          item?.additionalCosts.forEach(cost => {
+          item?.additionalCosts.forEach((cost) => {
             estimatedCost += Number(cost.price)
           })
         }
       }
-    });
+    })
 
     return estimatedCost
   }
@@ -115,13 +128,13 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
     } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
     catalogueItems.forEach((item: CatalogueItem) => {
       if (item.incentives) {
-        item.incentives.forEach(incentive => {
-          if (incentive.selected && incentive.type == "Rebate") {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == 'Rebate') {
             totalRebates += incentive.finalCalculations?.usedAmount || 0
           }
         })
@@ -146,13 +159,13 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
     } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
     catalogueItems.forEach((item: CatalogueItem) => {
       if (item.incentives) {
-        item.incentives.forEach(incentive => {
-          if (incentive.selected && incentive.type == "TaxCredit") {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == 'TaxCredit') {
             totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
           }
         })
@@ -169,12 +182,12 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
     } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
     catalogueItems.forEach((item: CatalogueItem) => {
       if (item.incentives) {
-        item.incentives.forEach(incentive => {
+        item.incentives.forEach((incentive) => {
           if (incentive.selected && incentive.type == type) {
             incentivesToRender.push(incentive)
           }
@@ -182,10 +195,12 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       }
     })
 
-    return incentivesToRender.map(incentive => (
-      <div className='incentive' key={incentive.id}>
-        <span className='name'>{incentive.name}</span>
-        <span>{`$${incentive.finalCalculations?.usedAmount.toFixed(2) || 0}`}</span>
+    return incentivesToRender.map((incentive) => (
+      <div className="incentive" key={incentive.id}>
+        <span className="name">{incentive.name}</span>
+        <span>{`$${
+          incentive.finalCalculations?.usedAmount.toFixed(2) || 0
+        }`}</span>
       </div>
     ))
   }
@@ -197,6 +212,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         onClose={() => setIncentivesModal(false)}
         currentPlanId={currentPlan?.id as string}
         projectId={currentProject.id as string}
+        aggregationLimits={aggregationLimits}
       />
       <DeletePlanModal
         open={deleteModal}
@@ -371,16 +387,20 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 <div className="planCreation__sectionItem">
                   <div className="title">
                     Estimated Cost
-                    <span>{`$${calculateEstimatedCost(currentPlan).toFixed(2)}`}</span>
+                    <span>{`$${calculateEstimatedCost(currentPlan).toFixed(
+                      2
+                    )}`}</span>
                   </div>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
                   <div className="title">
                     Rebates
-                    <span>{`$${calculateRebates(currentPlan).toFixed(2)}`}</span>
+                    <span>{`$${calculateRebates(currentPlan).toFixed(
+                      2
+                    )}`}</span>
                   </div>
-                  <div className='incentiveList'>
+                  <div className="incentiveList">
                     {renderIncentivesList('Rebate', currentPlan)}
                   </div>
                 </div>
@@ -388,9 +408,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 <div className="planCreation__sectionItem">
                   <div className="title">
                     Net Cost
-                    <span>{`$${calculateNetCost(currentPlan).toFixed(2)}`}</span>
+                    <span>{`$${calculateNetCost(currentPlan).toFixed(
+                      2
+                    )}`}</span>
                   </div>
-                  <div className='incentiveList'>
+                  <div className="incentiveList">
                     {renderIncentivesList('TaxCredit', currentPlan)}
                   </div>
                 </div>
@@ -398,7 +420,9 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 <div className="planCreation__sectionItem">
                   <div className="title">
                     Final Cost
-                    <span>{`$${calculateFinalCost(currentPlan).toFixed(2)}`}</span>
+                    <span>{`$${calculateFinalCost(currentPlan).toFixed(
+                      2
+                    )}`}</span>
                   </div>
                 </div>
                 <Divider />
