@@ -55,7 +55,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   useEffect(() => {
     if (aggregationLimits.length === 0) {
       ModelStore.fetchCatalogue().then((data) =>
-        setCatalogue(data.aggregationLimits)
+        setAggregationLimits(data.aggregationLimits)
       )
     }
   }, [])
