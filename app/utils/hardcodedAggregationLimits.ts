@@ -1,6 +1,9 @@
-import { AggregationLimit, AggregationLimitClass } from './planCalculation'
+import {
+  ProcessableAggregationLimit,
+  AggregationLimitClass,
+} from './planCalculation'
 
-const hardcodedAggregationLimits: AggregationLimit[] = [
+const hardcodedAggregationLimits: ProcessableAggregationLimit[] = [
   {
     id: 'uuid-al-101',
     limitName:

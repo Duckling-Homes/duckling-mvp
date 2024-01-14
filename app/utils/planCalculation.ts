@@ -69,10 +69,10 @@ export function calculatePreliminaryCatalogItems(plan: Plan): CatalogueItem[] {
   })
 }
 
-export interface AggregationLimit {
+export interface ProcessableAggregationLimit {
   id: string
   limitName: string
-  limitDescription: string
+  limitDescription?: string
   limitWarning: string
   impactedIncentiveIds: string[]
   limitAmount: number
@@ -86,10 +86,10 @@ export class AggregationLimitClass {
   impactedIncentiveIds: string[]
   limitAmount: number
 
-  constructor(aggregationLimit: AggregationLimit) {
+  constructor(aggregationLimit: ProcessableAggregationLimit) {
     this.id = aggregationLimit.id
     this.limitName = aggregationLimit.limitName
-    this.limitDescription = aggregationLimit.limitDescription
+    this.limitDescription = aggregationLimit.limitDescription || ''
     this.limitWarning = aggregationLimit.limitWarning
     this.impactedIncentiveIds = aggregationLimit.impactedIncentiveIds
     this.limitAmount = aggregationLimit.limitAmount
@@ -190,5 +190,4 @@ export function processPlanWithAggregationLimits(
   aggregationLimits.forEach((limit) =>
     limit.processCatalogueItems(processedCatalogItems)
   )
-
 }

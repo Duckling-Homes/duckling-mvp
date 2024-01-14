@@ -18,6 +18,7 @@ import {
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
+import { AggregationLimit } from '@prisma/client'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -38,6 +39,7 @@ export class _ModelStore {
   onlineStatus: 'online' | 'offline' = 'online'
   plans: Plan[] = []
   productCatalogue: ProductCatalogue[] = []
+  aggregationLimits: AggregationLimit[] = []
   financingOptions: FinancingOption[] = []
   catalogueItems: CatalogueItem[] = []
 
@@ -180,8 +182,11 @@ export class _ModelStore {
   }
 
   fetchCatalogue = async () => {
-    this.productCatalogue = await SyncAPI.organizations.getCatalogue()
-    return this.productCatalogue
+    const productCatalogueAndAggLimits =
+      await SyncAPI.organizations.getCatalogue()
+    this.productCatalogue = productCatalogueAndAggLimits.productCatalogue
+    this.aggregationLimits = productCatalogueAndAggLimits.aggregationLimits
+    return productCatalogueAndAggLimits
   }
 
   fetchFinancingOptions = async () => {
