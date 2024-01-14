@@ -36,18 +36,8 @@ export const DELETE = withErrorHandler(
  */
 export const PATCH = withErrorHandler(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const {
-      name,
-      type,
-      width,
-      length,
-      ceilingHeight,
-      floor,
-      usage,
-      comfortIssueTags,
-      safetyIssueTags,
-      notes,
-    } = await req.json()
+    const { name, type, floor, comfortIssueTags, safetyIssueTags, notes } =
+      await req.json()
     const orgContext = req.headers.get('organization-context')
     await validateProjectRoomPermission(orgContext as string, params.id)
 
@@ -55,11 +45,7 @@ export const PATCH = withErrorHandler(
       await updateProjectRoom(params.id, {
         name,
         type,
-        width,
-        length,
-        ceilingHeight,
         floor,
-        usage,
         comfortIssueTags,
         safetyIssueTags,
         notes,

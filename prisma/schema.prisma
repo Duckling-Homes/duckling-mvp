@@ -101,11 +101,7 @@ model ProjectRoom {
   id                String @id @default(uuid())
   name              String?
   type              String?
-  width             Int?
-  length            Int?
-  ceilingHeight     Int?
   floor             String?
-  usage             String?
   comfortIssueTags String[] @default([])
   safetyIssueTags  String[] @default([])
   notes             String?

@@ -73,11 +73,7 @@ export interface ProjectRoom {
   id?: string
   name?: string
   type?: string
-  width?: number
-  length?: number
-  ceilingHeight?: number
   floor?: string
-  usage?: string
   comfortIssueTags?: string[]
   safetyIssueTags?: string[]
   notes?: string
