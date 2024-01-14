@@ -21,7 +21,7 @@ describe('calculatePriceOfItem', () => {
 
   it('handles string quantities correctly', () => {
     const item: CatalogueItem = {
-      quantity: '3',
+      quantity: 3,
       basePricePer: 50,
     }
 
@@ -240,7 +240,7 @@ describe('processPlanWithAggregationLimits case 1', () => {
       catalogueItems: [
         {
           id: 'item-1',
-          quantity: '10',
+          quantity: 10,
           basePricePer: 500,
           calculatedPrice: 1500,
           incentives: [
@@ -336,7 +336,7 @@ describe('processPlanWithAggregationLimits case 2', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-121',
-          quantity: '1200',
+          quantity: 1200,
           basePricePer: 2.1,
           calculatedPrice: 2520,
           incentives: [
@@ -432,7 +432,7 @@ describe('processPlanWithAggregationLimits case 3', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-121',
-          quantity: '1200',
+          quantity: 1200,
           basePricePer: 2.1,
           //calculatedPrice: 2520,
           incentives: [
@@ -528,7 +528,7 @@ describe('processPlanWithAggregationLimits case 4', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-111',
-          quantity: '1',
+          quantity: 1,
           basePricePer: 24468.47,
           calculatedPrice: 24468.47,
           incentives: [
@@ -624,7 +624,7 @@ describe('processPlanWithAggregationLimits case 5', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-106',
-          quantity: '800',
+          quantity: 800,
           basePricePer: 3.18,
           calculatedPrice: 2544,
           incentives: [
@@ -720,7 +720,7 @@ describe('processPlanWithAggregationLimits case 6', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-111',
-          quantity: '1',
+          quantity: 1,
           basePricePer: 24468.47,
           calculatedPrice: 24468.47,
           incentives: [
@@ -815,7 +815,7 @@ describe('processPlanWithAggregationLimits case 7', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-127',
-          quantity: '8200',
+          quantity: 8200,
           basePricePer: 2.86,
           calculatedPrice: 23452,
           incentives: [
@@ -878,7 +878,7 @@ describe('processPlanWithAggregationLimits case 9', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-101',
-          quantity: '1',
+          quantity: 1,
           basePricePer: 16292.64,
           calculatedPrice: 16292.64,
           incentives: [],
@@ -940,7 +940,7 @@ describe('processPlanWithAggregationLimits case 10', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-121',
-          quantity: '1200',
+          quantity: 1200,
           basePricePer: 2.1,
           calculatedPrice: 2520,
           incentives: [
@@ -1029,7 +1029,7 @@ describe('processPlanWithAggregationLimits case 11', () => {
       catalogueItems: [
         {
           id: 'uuid-pc-121',
-          quantity: '1200',
+          quantity: 1200,
           basePricePer: 2.1,
           calculatedPrice: 2520,
           incentives: [
