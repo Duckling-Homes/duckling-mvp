@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Add, Close, Delete } from '@mui/icons-material'
+import { Add, AttachMoney, Close, Delete } from '@mui/icons-material'
 import {
   Button,
   Divider,
   FormControl,
   IconButton,
+  InputAdornment,
   Modal,
   TextField,
 } from '@mui/material'
@@ -48,6 +49,13 @@ const AdditionalCost: React.FC<{
           size='small'
           required
           placeholder="Price"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <AttachMoney />
+              </InputAdornment>
+            ),
+          }}
         />
       </FormControl>
       <IconButton
@@ -164,6 +172,13 @@ const CostsModal: React.FC<{
               type='tel'
               required
               placeholder="Base Cost"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AttachMoney />
+                  </InputAdornment>
+                ),
+              }}
             />
           </FormControl>
           <Button
