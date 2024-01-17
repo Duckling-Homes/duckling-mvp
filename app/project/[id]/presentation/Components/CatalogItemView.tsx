@@ -31,7 +31,7 @@ const CatalogItemView: React.FC<{
         {renderIcon()}
         <p>{category}</p>
       </div>
-      {catalogItems.map((item) => (
+      {(catalogItems || []).map((item) => (
         <>
           <Divider />
           <FormLabel>{item.subcategory}</FormLabel>

@@ -181,21 +181,22 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     let catalogueItems = []
     const incentivesToRender = [] as Incentive[]
 
-    if (plan.catalogueItems) {
+    if (plan?.catalogueItems) {
       catalogueItems = plan.catalogueItems
-    } else if (plan.planDetails) {
-      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
+    } else if (plan?.planDetails) {
+      catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
 
-    catalogueItems.forEach((item: CatalogueItem) => {
-      if (item.incentives) {
-        item.incentives.forEach((incentive) => {
-          if (incentive.selected && incentive.type == type) {
-            incentivesToRender.push(incentive)
-          }
-        })
-      }
-    })
+    catalogueItems ||
+      [].forEach((item: CatalogueItem) => {
+        if (item.incentives) {
+          item.incentives.forEach((incentive) => {
+            if (incentive.selected && incentive.type == type) {
+              incentivesToRender.push(incentive)
+            }
+          })
+        }
+      })
 
     return incentivesToRender.map((incentive) => (
       <div className="incentive" key={incentive.id}>
