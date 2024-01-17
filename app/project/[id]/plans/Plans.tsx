@@ -101,22 +101,23 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     let catalogueItems = []
     let estimatedCost = 0
 
-    if (plan.catalogueItems) {
+    if (plan?.catalogueItems) {
       catalogueItems = plan.catalogueItems
-    } else if (plan.planDetails) {
-      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
+    } else if (plan?.planDetails) {
+      catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
 
-    catalogueItems.forEach((item: CatalogueItem) => {
-      if (item?.quantity && item?.basePricePer) {
-        estimatedCost += ((item.quantity as number) || 0) * item.basePricePer
-        if (item?.additionalCosts) {
-          item?.additionalCosts.forEach((cost) => {
-            estimatedCost += Number(cost.price)
-          })
+    catalogueItems ||
+      [].forEach((item: CatalogueItem) => {
+        if (item?.quantity && item?.basePricePer) {
+          estimatedCost += ((item.quantity as number) || 0) * item.basePricePer
+          if (item?.additionalCosts) {
+            item?.additionalCosts.forEach((cost) => {
+              estimatedCost += Number(cost.price)
+            })
+          }
         }
-      }
-    })
+      })
 
     return estimatedCost
   }
