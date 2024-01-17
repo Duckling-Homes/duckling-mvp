@@ -164,15 +164,16 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
-    catalogueItems.forEach((item: CatalogueItem) => {
-      if (item.incentives) {
-        item.incentives.forEach((incentive) => {
-          if (incentive.selected && incentive.type == 'TaxCredit') {
-            totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
-          }
-        })
-      }
-    })
+    catalogueItems ||
+      [].forEach((item: CatalogueItem) => {
+        if (item.incentives) {
+          item.incentives.forEach((incentive) => {
+            if (incentive.selected && incentive.type == 'TaxCredit') {
+              totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
+            }
+          })
+        }
+      })
 
     return netCost - totalTaxCredits
   }
