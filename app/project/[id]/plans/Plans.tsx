@@ -126,21 +126,22 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     let totalRebates = 0
     let catalogueItems = []
 
-    if (plan.catalogueItems) {
-      catalogueItems = plan.catalogueItems
-    } else if (plan.planDetails) {
-      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
+    if (plan?.catalogueItems) {
+      catalogueItems = plan?.catalogueItems
+    } else if (plan?.planDetails) {
+      catalogueItems = JSON.parse(plan?.planDetails)?.catalogueItems
     }
 
-    catalogueItems.forEach((item: CatalogueItem) => {
-      if (item.incentives) {
-        item.incentives.forEach((incentive) => {
-          if (incentive.selected && incentive.type == 'Rebate') {
-            totalRebates += incentive.finalCalculations?.usedAmount || 0
-          }
-        })
-      }
-    })
+    catalogueItems ||
+      [].forEach((item: CatalogueItem) => {
+        if (item.incentives) {
+          item.incentives.forEach((incentive) => {
+            if (incentive.selected && incentive.type == 'Rebate') {
+              totalRebates += incentive.finalCalculations?.usedAmount || 0
+            }
+          })
+        }
+      })
 
     return totalRebates
   }
