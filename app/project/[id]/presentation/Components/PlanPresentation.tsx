@@ -40,7 +40,7 @@ const PlanPresentation: React.FC<{
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
     } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
     for (const item of catalogueItems) {
@@ -66,26 +66,26 @@ const PlanPresentation: React.FC<{
     setDisplayedPhoto(photos[newIndex])
   }
 
-    function calculateEstimatedCost(plan: Plan) {
+  function calculateEstimatedCost(plan: Plan) {
     let catalogueItems = []
     let estimatedCost = 0
 
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
     } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
     catalogueItems.forEach((item: CatalogueItem) => {
       if (item?.quantity && item?.basePricePer) {
-        estimatedCost += ((item?.quantity as number || 0) * item.basePricePer)
+        estimatedCost += ((item?.quantity as number) || 0) * item.basePricePer
         if (item?.additionalCosts) {
-          item?.additionalCosts.forEach(cost => {
+          item?.additionalCosts.forEach((cost) => {
             estimatedCost += Number(cost.price)
           })
         }
       }
-    });
+    })
 
     return estimatedCost
   }
@@ -97,13 +97,13 @@ const PlanPresentation: React.FC<{
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
     } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
     catalogueItems.forEach((item: CatalogueItem) => {
       if (item.incentives) {
-        item.incentives.forEach(incentive => {
-          if (incentive.selected && incentive.type == "Rebate") {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == 'Rebate') {
             totalRebates += incentive.finalCalculations?.usedAmount || 0
           }
         })
@@ -128,13 +128,13 @@ const PlanPresentation: React.FC<{
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
     } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+      catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
     catalogueItems.forEach((item: CatalogueItem) => {
       if (item.incentives) {
-        item.incentives.forEach(incentive => {
-          if (incentive.selected && incentive.type == "TaxCredit") {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == 'TaxCredit') {
             totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
           }
         })
@@ -148,26 +148,29 @@ const PlanPresentation: React.FC<{
     let catalogueItems = []
     const incentivesToRender = [] as Incentive[]
 
-    if (plan.catalogueItems) {
-      catalogueItems = plan.catalogueItems
-    } else if (plan.planDetails) {
-      catalogueItems = (JSON.parse(plan.planDetails)).catalogueItems
+    if (plan?.catalogueItems) {
+      catalogueItems = plan?.catalogueItems
+    } else if (plan?.planDetails) {
+      catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
 
-    catalogueItems.forEach((item: CatalogueItem) => {
-      if (item.incentives) {
-        item.incentives.forEach(incentive => {
-          if (incentive.selected && incentive.type == type) {
-            incentivesToRender.push(incentive)
-          }
-        })
-      }
-    })
+    catalogueItems ||
+      [].forEach((item: CatalogueItem) => {
+        if (item.incentives) {
+          item.incentives.forEach((incentive) => {
+            if (incentive.selected && incentive.type == type) {
+              incentivesToRender.push(incentive)
+            }
+          })
+        }
+      })
 
-    return incentivesToRender.map(incentive => (
-      <div className='incentive' key={incentive.id}>
-        <span className='name'>{incentive.name}</span>
-        <span className='price'>{`-$${incentive.finalCalculations?.usedAmount.toFixed(2) || 0}`}</span>
+    return incentivesToRender.map((incentive) => (
+      <div className="incentive" key={incentive.id}>
+        <span className="name">{incentive.name}</span>
+        <span className="price">{`-$${
+          incentive.finalCalculations?.usedAmount.toFixed(2) || 0
+        }`}</span>
       </div>
     ))
   }
@@ -290,14 +293,14 @@ const PlanPresentation: React.FC<{
           <AttachMoneyIcon />
           <p>Financing</p>
         </div>
-        <div className='financing__content'>
-          <div className='financing__card'>
+        <div className="financing__content">
+          <div className="financing__card">
             <div className="financing__sectionItem">
               <div className="title">
                 Upgrade Value
                 <span>{`$${calculateEstimatedCost(plan).toFixed(2)}`}</span>
               </div>
-              <div className='incentiveList'>
+              <div className="incentiveList">
                 {renderIncentivesList('Rebate', plan)}
               </div>
             </div>
@@ -307,7 +310,7 @@ const PlanPresentation: React.FC<{
                 Net Cost
                 <span>{`$${calculateNetCost(plan).toFixed(2)}`}</span>
               </div>
-              <div className='incentiveList'>
+              <div className="incentiveList">
                 {renderIncentivesList('TaxCredit', plan)}
               </div>
               <Divider />
@@ -319,7 +322,7 @@ const PlanPresentation: React.FC<{
               </div>
             </div>
           </div>
-          <div className='financing__card'>
+          <div className="financing__card">
             <LargeFinancingCalculator
               totalAmount={calculateFinalCost(plan)}
               financingOptions={financingOptions}
