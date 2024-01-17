@@ -287,17 +287,18 @@ const IncentivesModal: React.FC<{
         catalogueItems = planDetails.catalogueItems
       }
 
-      catalogueItems.forEach((item: CatalogueItem) => {
-        if (item.incentives && Array.isArray(item.incentives)) {
-          item.incentives.forEach((incentive) => {
-            if (incentive.type === type) {
-              incentive.parentId = item.customId
-              const incentiveString = JSON.stringify(incentive)
-              uniqueIncentivesSet.add(incentiveString)
-            }
-          })
-        }
-      })
+      catalogueItems ||
+        [].forEach((item: CatalogueItem) => {
+          if (item.incentives && Array.isArray(item.incentives)) {
+            item.incentives.forEach((incentive) => {
+              if (incentive.type === type) {
+                incentive.parentId = item.customId
+                const incentiveString = JSON.stringify(incentive)
+                uniqueIncentivesSet.add(incentiveString)
+              }
+            })
+          }
+        })
 
       const uniqueIncentivesArray = Array.from(
         uniqueIncentivesSet,
@@ -330,19 +331,20 @@ const IncentivesModal: React.FC<{
         catalogueItems = planDetails.catalogueItems
       }
 
-      catalogueItems.forEach((item: CatalogueItem) => {
-        if (item?.customId === parentId) {
-          item?.incentives?.forEach((incentive: Incentive) => {
-            if (incentive.id === incentiveId) {
-              if (incentive.selected) {
-                incentive.selected = false
-              } else {
-                incentive.selected = true
+      catalogueItems ||
+        [].forEach((item: CatalogueItem) => {
+          if (item?.customId === parentId) {
+            item?.incentives?.forEach((incentive: Incentive) => {
+              if (incentive.id === incentiveId) {
+                if (incentive.selected) {
+                  incentive.selected = false
+                } else {
+                  incentive.selected = true
+                }
               }
-            }
-          })
-        }
-      })
+            })
+          }
+        })
       ModelStore.updatePlanCategory(
         plan.id as string,
         catalogueItems as CatalogueItem[]
