@@ -28,6 +28,7 @@ import {
 import { observer } from 'mobx-react-lite'
 import './styles.scss'
 import { AggregationLimit } from '@prisma/client'
+import { toJS } from 'mobx'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -287,10 +288,14 @@ const IncentivesModal: React.FC<{
         catalogueItems = planDetails.catalogueItems
       }
 
+      console.log('In getAllIncentivesByType', toJS(plan), toJS(catalogueItems))
+
       catalogueItems ||
         [].forEach((item: CatalogueItem) => {
+          console.log('for each item', toJS(item))
           if (item.incentives && Array.isArray(item.incentives)) {
             item.incentives.forEach((incentive) => {
+              console.log('for each incentive', toJS(incentive))
               if (incentive.type === type) {
                 incentive.parentId = item.customId
                 const incentiveString = JSON.stringify(incentive)
@@ -404,6 +409,7 @@ const IncentivesModal: React.FC<{
 
       ModelStore.patchPlan(projectId, newPlan)
     }
+    console.log('In Incentives modal index', toJS(plan))
 
     return (
       <Modal
