@@ -5,12 +5,12 @@ import HandlerError from './HandlerError'
 type NextEdgeHandler = (req: NextRequest) => Promise<NextResponse>
 type NextEdgeHandlerParams = (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: any }
 ) => Promise<NextResponse>
 
 const withErrorHandler =
   (handler: NextEdgeHandler | NextEdgeHandlerParams) =>
-  async (req: NextRequest, params?: { params: { id: string } }) => {
+  async (req: NextRequest, params?: { params: any }) => {
     try {
       if (handler.length === 1) {
         return await (handler as NextEdgeHandler)(req)

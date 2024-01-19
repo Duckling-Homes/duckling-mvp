@@ -1,62 +1,79 @@
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
-import { ProjectEnvelope } from '@/types/types'
+import { ProjectEnvelopeComponent } from '@/types/types'
 import { SyncAPI } from '..'
 import { syncAPImutation } from '.'
 
-export class EnvelopeSyncOperations {
-  create = syncAPImutation(async (projectID: string, envelope: ProjectEnvelope) => {
-    envelope.id = envelope.id ?? uuidv4()
-    await db.enqueueRequest(`/api/project${envelope.type}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        ...envelope,
-        projectId: projectID,
-      }),
-    })
+export class EnvelopeComponentSyncOperations {
+  create = syncAPImutation(
+    async (projectID: string, envelopeComponent: ProjectEnvelopeComponent) => {
+      envelopeComponent.id = envelopeComponent.id ?? uuidv4()
+      await db.enqueueRequest(
+        `/api/projects/${projectID}/envelopes/components`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            ...envelopeComponent,
+            projectId: projectID,
+          }),
+        }
+      )
 
-    await SyncAPI.projects._swap(projectID, (proj) => {
-      proj.envelopes = proj.envelopes ?? []
-      proj.envelopes.push(envelope)
-      return proj
-    })
-    return envelope
-  })
+      await SyncAPI.projects._swap(projectID, (proj) => {
+        proj.envelopeComponents = proj.envelopeComponents ?? []
+        proj.envelopeComponents.push(envelopeComponent)
+        return proj
+      })
+      return envelopeComponent
+    }
+  )
 
-  update = syncAPImutation(async (projectID: string, envelope: ProjectEnvelope) => {
-    await db.enqueueRequest(`/api/project${envelope.type}/${envelope.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        ...envelope,
-        projectId: projectID,
-      }),
-    })
+  update = syncAPImutation(
+    async (projectID: string, envelopeComponent: ProjectEnvelopeComponent) => {
+      await db.enqueueRequest(
+        `/api/projects/${projectID}/envelopes/components/${envelopeComponent.id}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({
+            ...envelopeComponent,
+            projectId: projectID,
+          }),
+        }
+      )
 
-    await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.envelopes?.findIndex((env) => env.id === envelope.id) ?? -1;
-      if (idx > -1) {
-        proj.envelopes?.splice(idx, 1, envelope)
-      }
-      return proj
-    })
+      await SyncAPI.projects._swap(projectID, (proj) => {
+        const idx =
+          proj.envelopeComponents?.findIndex(
+            (env) => env.id === envelopeComponent.id
+          ) ?? -1
+        if (idx > -1) {
+          proj.envelopeComponents?.splice(idx, 1, envelopeComponent)
+        }
+        return proj
+      })
 
-    return envelope
-  })
+      return envelopeComponent
+    }
+  )
 
-  delete = syncAPImutation(async (
-    projectID: string,
-    envelopeType: string,
-    envelopeID: string
-  ) => {
-    await db.enqueueRequest(`/api/project${envelopeType}/${envelopeID}`, {
-      method: 'DELETE',
-    })
-    await SyncAPI.projects._swap(projectID, (proj) => {
-      const idx = proj.envelopes?.findIndex((env) => env.id === envelopeID) ?? -1
-      if (idx > -1) {
-        proj.envelopes?.splice(idx, 1)
-      }
-      return proj
-    })
-  })
+  delete = syncAPImutation(
+    async (projectID: string, envelopeComponentID: string) => {
+      await db.enqueueRequest(
+        `/api/projects/${projectID}/envelopes/components/${envelopeComponentID}`,
+        {
+          method: 'DELETE',
+        }
+      )
+      await SyncAPI.projects._swap(projectID, (proj) => {
+        const idx =
+          proj.envelopeComponents?.findIndex(
+            (env) => env.id === envelopeComponentID
+          ) ?? -1
+        if (idx > -1) {
+          proj.envelopeComponents?.splice(idx, 1)
+        }
+        return proj
+      })
+    }
+  )
 }

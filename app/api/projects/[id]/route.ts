@@ -1,7 +1,6 @@
 import { ProjectNotFoundError } from '@/app/utils/errors'
 import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
 import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
-import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
 import { getImagesByProjectId } from '@/app/utils/repositories/image'
 import { getPlansByProjectId } from '@/app/utils/repositories/plan'
 import { getProjectRooms } from '@/app/utils/repositories/projectRoom'
@@ -13,6 +12,7 @@ import {
   updateProject,
 } from '../../../utils/repositories/project'
 import { getProjectData } from '../../../utils/repositories/projectData'
+import { getProjectEnvelopeComponents } from '@/app/utils/repositories/envelopeComponent/components'
 
 /**
  * Get project by id
@@ -29,7 +29,7 @@ export const GET = withErrorHandler(
 
     const projectData = await getProjectData(params.id)
     const rooms = await getProjectRooms(params.id)
-    const envelopes = await getProjectEnvelopes(params.id)
+    const envelopeComponents = await getProjectEnvelopeComponents(params.id)
     const appliances = await getProjectAppliances(params.id)
     const electrical = await getProjectElectrical(params.id)
     const images = await getImagesByProjectId(params.id, orgContext)
@@ -39,7 +39,7 @@ export const GET = withErrorHandler(
       ...project,
       data: projectData,
       rooms,
-      envelopes,
+      envelopeComponents,
       appliances,
       electrical,
       images,
