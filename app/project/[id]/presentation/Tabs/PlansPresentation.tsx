@@ -7,6 +7,7 @@ import { Chip } from '@mui/material'
 import PlanPresentation from '../Components/PlanPresentation'
 
 import '../style.scss'
+import { toJS } from 'mobx'
 
 const PlansPresentation: React.FC<{
   project: Project
@@ -17,12 +18,20 @@ const PlansPresentation: React.FC<{
   const [planPhotos, setPlanPhotos] = useState<PhotoDetails[]>([])
 
   const parsePlanDetails = (plan: Plan) => {
-    const planDetails = JSON.parse(plan.planDetails as string)
+    console.log(toJS(plan))
 
-    if (planDetails && !planDetails?.imageIds) {
-      planDetails.imageIds = [] as string[]
+    let catalogueItems = []
+
+    if (plan?.catalogueItems) {
+      catalogueItems = plan.catalogueItems
+    } else if (plan?.planDetails) {
+      catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
-    return planDetails
+
+    if (catalogueItems && !catalogueItems?.imageIds) {
+      catalogueItems.imageIds = [] as string[]
+    }
+    return catalogueItems
   }
 
   useEffect(() => {
