@@ -366,11 +366,7 @@ export class _ModelStore {
   addPlanItem = async (planId: string, item: CatalogueItem) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
-    let catalogueItems = this.catalogueItems
-    if (!catalogueItems) {
-      this.catalogueItems = []
-      catalogueItems = this.catalogueItems
-    }
+    const catalogueItems = this.catalogueItems
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
@@ -396,17 +392,12 @@ export class _ModelStore {
   removePlanItem = async (planId: string, itemCustomId: string) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId)
-    let catalogueItems = this.catalogueItems
-    if (!catalogueItems) {
-      this.catalogueItems = []
-      catalogueItems = this.catalogueItems
-    }
+    const catalogueItems = this.catalogueItems
 
     if (!currentPlan) {
       console.error('There is no plan with this ID')
       return
     }
-    // what if this is undefined?
     catalogueItems.forEach((item: CatalogueItem, index) => {
       if (item.customId === itemCustomId) {
         catalogueItems.splice(index, 1)
@@ -437,11 +428,9 @@ export class _ModelStore {
       return
     }
 
-    const updatedCatalogueItems =
-      catalogueItems ||
-      [].map((item: CatalogueItem) =>
-        item.customId === newItem.customId ? newItem : item
-      )
+    const updatedCatalogueItems = catalogueItems.map((item: CatalogueItem) =>
+      item.customId === newItem.customId ? newItem : item
+    )
 
     plans.forEach((plan, index) => {
       if (plan.id === planId) {
