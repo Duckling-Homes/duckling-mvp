@@ -42,9 +42,9 @@ const PlanItem: React.FC<PlanItemProps> = observer(
         catalogueItems = planDetails.catalogueItems
       }
 
-      const itemsByProperty =
-        catalogueItems ||
-        [].filter((item: CatalogueItem) => item.category === property)
+      const itemsByProperty = catalogueItems?.filter(
+        (item: CatalogueItem) => item.category === property
+      )
 
       return itemsByProperty
     }
