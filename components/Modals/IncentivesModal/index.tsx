@@ -28,7 +28,6 @@ import {
 import { observer } from 'mobx-react-lite'
 import './styles.scss'
 import { AggregationLimit } from '@prisma/client'
-import { toJS } from 'mobx'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -288,22 +287,17 @@ const IncentivesModal: React.FC<{
         catalogueItems = planDetails.catalogueItems
       }
 
-      console.log('In getAllIncentivesByType', toJS(plan), toJS(catalogueItems))
-
-      catalogueItems ||
-        [].forEach((item: CatalogueItem) => {
-          console.log('for each item', toJS(item))
-          if (item.incentives && Array.isArray(item.incentives)) {
-            item.incentives.forEach((incentive) => {
-              console.log('for each incentive', toJS(incentive))
-              if (incentive.type === type) {
-                incentive.parentId = item.customId
-                const incentiveString = JSON.stringify(incentive)
-                uniqueIncentivesSet.add(incentiveString)
-              }
-            })
-          }
-        })
+      catalogueItems?.forEach((item: CatalogueItem) => {
+        if (item.incentives && Array.isArray(item.incentives)) {
+          item.incentives.forEach((incentive) => {
+            if (incentive.type === type) {
+              incentive.parentId = item.customId
+              const incentiveString = JSON.stringify(incentive)
+              uniqueIncentivesSet.add(incentiveString)
+            }
+          })
+        }
+      })
 
       const uniqueIncentivesArray = Array.from(
         uniqueIncentivesSet,
@@ -336,20 +330,19 @@ const IncentivesModal: React.FC<{
         catalogueItems = planDetails.catalogueItems
       }
 
-      catalogueItems ||
-        [].forEach((item: CatalogueItem) => {
-          if (item?.customId === parentId) {
-            item?.incentives?.forEach((incentive: Incentive) => {
-              if (incentive.id === incentiveId) {
-                if (incentive.selected) {
-                  incentive.selected = false
-                } else {
-                  incentive.selected = true
-                }
+      catalogueItems?.forEach((item: CatalogueItem) => {
+        if (item?.customId === parentId) {
+          item?.incentives?.forEach((incentive: Incentive) => {
+            if (incentive.id === incentiveId) {
+              if (incentive.selected) {
+                incentive.selected = false
+              } else {
+                incentive.selected = true
               }
-            })
-          }
-        })
+            }
+          })
+        }
+      })
       ModelStore.updatePlanCategory(
         plan.id as string,
         catalogueItems as CatalogueItem[]
@@ -409,7 +402,6 @@ const IncentivesModal: React.FC<{
 
       ModelStore.patchPlan(projectId, newPlan)
     }
-    console.log('In Incentives modal index', toJS(plan))
 
     return (
       <Modal
