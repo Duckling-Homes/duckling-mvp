@@ -28,7 +28,6 @@ import {
 import { observer } from 'mobx-react-lite'
 import './styles.scss'
 import { AggregationLimit } from '@prisma/client'
-import { toJS } from 'mobx'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
