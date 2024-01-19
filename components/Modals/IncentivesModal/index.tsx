@@ -28,6 +28,7 @@ import {
 import { observer } from 'mobx-react-lite'
 import './styles.scss'
 import { AggregationLimit } from '@prisma/client'
+import { toJS } from 'mobx'
 
 const STEPS = ['Select Incentives', 'Review Copy']
 
@@ -274,6 +275,7 @@ const IncentivesModal: React.FC<{
 
     function getAllIncentivesByType(type: string) {
       const uniqueIncentivesSet = new Set<string>()
+      const dedupedIncentives = [] as Incentive[]
       let catalogueItems = []
 
       if (!plan) {
@@ -290,21 +292,16 @@ const IncentivesModal: React.FC<{
       catalogueItems?.forEach((item: CatalogueItem) => {
         if (item.incentives && Array.isArray(item.incentives)) {
           item.incentives.forEach((incentive) => {
-            if (incentive.type === type) {
+            if (incentive.type === type && !uniqueIncentivesSet.has(incentive.id as string)) {
               incentive.parentId = item.customId
-              const incentiveString = JSON.stringify(incentive)
-              uniqueIncentivesSet.add(incentiveString)
+              uniqueIncentivesSet.add(incentive.id as string)
+              dedupedIncentives.push(incentive)
             }
           })
         }
       })
 
-      const uniqueIncentivesArray = Array.from(
-        uniqueIncentivesSet,
-        (str) => JSON.parse(str) as Incentive
-      )
-
-      return uniqueIncentivesArray
+      return dedupedIncentives
     }
 
     function handleNext() {

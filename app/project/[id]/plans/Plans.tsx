@@ -195,8 +195,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       }
     })
 
-    console.log(incentivesToRender)
-
     return incentivesToRender.map((incentive) => (
       <div className="incentive" key={incentive.id}>
         <div className='textWrapper'>
