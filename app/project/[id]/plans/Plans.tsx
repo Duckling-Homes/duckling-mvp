@@ -107,17 +107,16 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
 
-    catalogueItems ||
-      [].forEach((item: CatalogueItem) => {
-        if (item?.quantity && item?.basePricePer) {
-          estimatedCost += ((item.quantity as number) || 0) * item.basePricePer
-          if (item?.additionalCosts) {
-            item?.additionalCosts.forEach((cost) => {
-              estimatedCost += Number(cost.price)
-            })
-          }
+    catalogueItems?.forEach((item: CatalogueItem) => {
+      if (item?.quantity && item?.basePricePer) {
+        estimatedCost += ((item.quantity as number) || 0) * item.basePricePer
+        if (item?.additionalCosts) {
+          item?.additionalCosts.forEach((cost) => {
+            estimatedCost += Number(cost.price)
+          })
         }
-      })
+      }
+    })
 
     return estimatedCost
   }
@@ -132,16 +131,15 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       catalogueItems = JSON.parse(plan?.planDetails)?.catalogueItems
     }
 
-    catalogueItems ||
-      [].forEach((item: CatalogueItem) => {
-        if (item.incentives) {
-          item.incentives.forEach((incentive) => {
-            if (incentive.selected && incentive.type == 'Rebate') {
-              totalRebates += incentive.finalCalculations?.usedAmount || 0
-            }
-          })
-        }
-      })
+    catalogueItems?.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == 'Rebate') {
+            totalRebates += incentive.finalCalculations?.usedAmount || 0
+          }
+        })
+      }
+    })
 
     return totalRebates
   }
@@ -164,16 +162,15 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
-    catalogueItems ||
-      [].forEach((item: CatalogueItem) => {
-        if (item.incentives) {
-          item.incentives.forEach((incentive) => {
-            if (incentive.selected && incentive.type == 'TaxCredit') {
-              totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
-            }
-          })
-        }
-      })
+    catalogueItems?.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == 'TaxCredit') {
+            totalTaxCredits += incentive.finalCalculations?.usedAmount || 0
+          }
+        })
+      }
+    })
 
     return netCost - totalTaxCredits
   }
@@ -188,16 +185,15 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
 
-    catalogueItems ||
-      [].forEach((item: CatalogueItem) => {
-        if (item.incentives) {
-          item.incentives.forEach((incentive) => {
-            if (incentive.selected && incentive.type == type) {
-              incentivesToRender.push(incentive)
-            }
-          })
-        }
-      })
+    catalogueItems?.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == type) {
+            incentivesToRender.push(incentive)
+          }
+        })
+      }
+    })
 
     return incentivesToRender.map((incentive) => (
       <div className="incentive" key={incentive.id}>
