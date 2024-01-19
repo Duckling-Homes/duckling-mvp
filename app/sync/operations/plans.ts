@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { syncAPImutation } from '.'
 import { SyncAPI } from '..'
 import { db } from '../db'
-import { synchronizedFetch } from '../utils'
 
 export class PlansSyncOperations {
   create = syncAPImutation(async (projectID: string, plan: Plan) => {
