@@ -195,9 +195,14 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       }
     })
 
+    console.log(incentivesToRender)
+
     return incentivesToRender.map((incentive) => (
       <div className="incentive" key={incentive.id}>
-        <span className="name">{incentive.name}</span>
+        <div className='textWrapper'>
+          <span className="name">{incentive.name}</span>
+          <small>{incentive.finalCalculations?.warningText}</small>
+        </div>
         <span>{`$${
           incentive.finalCalculations?.usedAmount.toFixed(2) || 0
         }`}</span>
