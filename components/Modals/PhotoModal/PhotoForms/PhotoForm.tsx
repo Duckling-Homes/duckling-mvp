@@ -35,7 +35,7 @@ const PhotoForm: React.FC<PhotoFormProps> = observer(
     const [showVisualizer, setShowVisualizer] = useState<boolean>(false)
 
     const rooms = project.rooms ?? []
-    const envelopes = project.envelopes ?? []
+    const envelopeComponents = project.envelopeComponents ?? []
     const appliances = project.appliances ?? []
     const electrical = project.electrical ?? []
 
@@ -182,21 +182,23 @@ const PhotoForm: React.FC<PhotoFormProps> = observer(
                 ))}
               </Select>
             </FormControl>
-            {/* envelope */}
+            {/* envelope component */}
             <FormControl fullWidth>
-              <InputLabel id="envelope-label">Envelope</InputLabel>
+              <InputLabel id="component-label">Component</InputLabel>
               <Select
-                labelId="envelope-label"
-                id="envelope-select"
-                label="Envelope"
-                onChange={(e) => onChange({ envelopeId: e.target.value })}
+                labelId="component-label"
+                id="component-select"
+                label="Component"
+                onChange={(e) =>
+                  onChange({ envelopeComponentId: e.target.value })
+                }
                 onBlur={() => patchPhotoDetails()}
-                value={currentPhoto?.envelopeId}
+                value={currentPhoto?.envelopeComponentId}
               >
                 <MenuItem value={undefined}>None</MenuItem>
-                {envelopes.map((envelope, i) => (
-                  <MenuItem key={i} value={envelope.id}>
-                    {envelope.name}
+                {envelopeComponents.map((envelopeComponent, i) => (
+                  <MenuItem key={i} value={envelopeComponent.id}>
+                    {envelopeComponent.name}
                   </MenuItem>
                 ))}
               </Select>

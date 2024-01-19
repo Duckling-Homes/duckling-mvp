@@ -1,6 +1,6 @@
 import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
 import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
-import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
+import { getProjectEnvelopeComponents } from '@/app/utils/repositories/envelopeComponent/components'
 import { getImagesByProjectId } from '@/app/utils/repositories/image'
 import { getOrganization } from '@/app/utils/repositories/organization'
 import { getPlansByProjectId } from '@/app/utils/repositories/plan'
@@ -31,7 +31,7 @@ export const GET = async (req: NextRequest, context: ContextType) => {
   const organization = await getOrganization(orgId)
   const projectData = await getProjectData(projectId)
   const rooms = await getProjectRooms(projectId)
-  const envelopes = await getProjectEnvelopes(projectId)
+  const envelopeComponents = await getProjectEnvelopeComponents(projectId)
   const appliances = await getProjectAppliances(projectId)
   const electrical = await getProjectElectrical(projectId)
   const images = await getImagesByProjectId(projectId, orgId)
@@ -43,7 +43,7 @@ export const GET = async (req: NextRequest, context: ContextType) => {
       ...project,
       data: projectData,
       rooms,
-      envelopes,
+      envelopeComponents,
       appliances,
       electrical,
       images,

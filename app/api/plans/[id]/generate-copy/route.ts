@@ -1,7 +1,7 @@
 import { filterJson } from '@/app/utils/filterJson'
 import { getProjectAppliances } from '@/app/utils/repositories/appliances/appliances'
 import { getProjectElectrical } from '@/app/utils/repositories/electrical/electrical'
-import { getProjectEnvelopes } from '@/app/utils/repositories/envelopes/envelopes'
+import { getProjectEnvelopeComponents } from '@/app/utils/repositories/envelopeComponent/components'
 import {
   getPlanById,
   isPlanInOrganization,
@@ -92,7 +92,7 @@ export const GET = withErrorHandler(
 
       const projectData = await getProjectData(projectId)
       const rooms = await getProjectRooms(projectId)
-      const envelopes = await getProjectEnvelopes(projectId)
+      const envelopeComponents = await getProjectEnvelopeComponents(projectId)
       const appliances = await getProjectAppliances(projectId)
       const electrical = await getProjectElectrical(projectId)
 
@@ -100,7 +100,7 @@ export const GET = withErrorHandler(
         ...project,
         data: projectData,
         rooms,
-        envelopes,
+        envelopeComponents,
         appliances,
         electrical,
         planName: plan.name,
