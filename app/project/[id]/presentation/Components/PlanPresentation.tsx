@@ -16,7 +16,6 @@ import CatalogItemView from './CatalogItemView'
 import { useEffect, useState } from 'react'
 import { Button, Divider } from '@mui/material'
 import '../style.scss'
-import { toJS } from 'mobx'
 
 const PlanPresentation: React.FC<{
   plan: Plan
@@ -70,8 +69,6 @@ const PlanPresentation: React.FC<{
   function calculateEstimatedCost(plan: Plan) {
     let catalogueItems = []
     let estimatedCost = 0
-
-    console.log('in calculateEstimatedCost', toJS(plan))
 
     if (plan.catalogueItems) {
       catalogueItems = plan.catalogueItems
