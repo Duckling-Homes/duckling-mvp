@@ -17,6 +17,9 @@ const PlansPresentation: React.FC<{
   const [planPhotos, setPlanPhotos] = useState<PhotoDetails[]>([])
 
   const parsePlanDetails = (plan: Plan) => {
+    if (!plan.planDetails) {
+      return {}
+    }
     const planDetails = JSON.parse(plan.planDetails as string)
 
     if (planDetails && !planDetails?.imageIds) {
