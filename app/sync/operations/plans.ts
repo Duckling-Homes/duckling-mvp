@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { syncAPImutation } from '.'
 import { SyncAPI } from '..'
 import { db } from '../db'
-import { synchronizedFetch } from '../utils'
 
 export class PlansSyncOperations {
   create = syncAPImutation(async (projectID: string, plan: Plan) => {
@@ -67,17 +66,18 @@ export class PlansSyncOperations {
   })
 
   generateCopy = async (plan: Plan) => {
-    const response = await synchronizedFetch(
-      `/api/plans/${plan.id}/generate-copy`,
-      {
+    try {
+      const response = await fetch(`/api/plans/${plan.id}/generate-copy`, {
         method: 'GET',
+      })
+
+      plan.copy = await response.json()
+
+      if (plan.projectId) {
+        await this.update(plan.projectId, plan)
       }
-    )
-
-    plan.copy = await response.json()
-
-    if (plan.projectId) {
-      await this.update(plan.projectId, plan)
+    } catch (err) {
+      console.warn('Copy generation failed', { plan, err })
     }
   }
 }
