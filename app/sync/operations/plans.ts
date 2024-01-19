@@ -67,17 +67,18 @@ export class PlansSyncOperations {
   })
 
   generateCopy = async (plan: Plan) => {
-    const response = await synchronizedFetch(
-      `/api/plans/${plan.id}/generate-copy`,
-      {
+    try {
+      const response = await fetch(`/api/plans/${plan.id}/generate-copy`, {
         method: 'GET',
+      })
+
+      plan.copy = await response.json()
+
+      if (plan.projectId) {
+        await this.update(plan.projectId, plan)
       }
-    )
-
-    plan.copy = await response.json()
-
-    if (plan.projectId) {
-      await this.update(plan.projectId, plan)
+    } catch (err) {
+      console.warn('Copy generation failed', { plan, err })
     }
   }
 }
