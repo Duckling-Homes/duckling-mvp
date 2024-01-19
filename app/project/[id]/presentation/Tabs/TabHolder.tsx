@@ -34,7 +34,7 @@ const TabHolder: React.FC<{
       {renderTabContent(0, <HomeSummary project={project} />)}
       {renderTabContent(
         1,
-        <PlansPresentation project={project} photos={photos} />
+        (project.plans?.length > 0 ? <PlansPresentation project={project} photos={photos} /> : <div style={{ backgroundColor: "#fff", padding: "16px", display: "flex", justifyContent: "center", alignContent: "center", margin: "16px", borderRadius: "8px"}}>This project doesn't have any plans to present yet</div>)
       )}
     </div>
   )
