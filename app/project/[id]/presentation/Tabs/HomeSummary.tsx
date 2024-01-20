@@ -1,5 +1,4 @@
 'use client'
-import { Home } from '@mui/icons-material'
 import IssuesView from '../Components/IssuesSummary'
 import { Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
@@ -11,7 +10,8 @@ const HomeSummary: React.FC<{
 }> = observer(({ project }) => {
   return (
     <>
-      <div className="summary">
+      {/* TODO: Add summary back in - need to generate it first */}
+      {/* <div className="summary">
         <div className="summary__header">
           <Home />
           <p>Summary</p>
@@ -27,7 +27,7 @@ const HomeSummary: React.FC<{
             eu scelerisque tempus. Donec id placerat nisi.
           </p>
         </div>
-      </div>
+      </div> */}
       <div className="issuesOverview">
         <div className="issuesOverview__header">
           <p>Issues</p>

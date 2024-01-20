@@ -4,6 +4,7 @@ import '../style.scss'
 import { Divider, FormLabel } from '@mui/material'
 import { CatalogueItem } from '@/types/types'
 import { Bolt, Construction, DeviceThermostat, Home } from '@mui/icons-material'
+import Markdown from 'react-markdown'
 
 const CatalogItemView: React.FC<{
   category: string
@@ -43,13 +44,7 @@ const CatalogItemView: React.FC<{
           >
             {item.name}
           </p>
-          <p
-            style={{
-              fontSize: '15px',
-            }}
-          >
-            {item.description}
-          </p>
+          <Markdown>{item.description}</Markdown>
         </>
       ))}
     </div>
