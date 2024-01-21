@@ -7,7 +7,6 @@ import { Chip } from '@mui/material'
 import PlanPresentation from '../Components/PlanPresentation'
 
 import '../style.scss'
-import { toJS } from 'mobx'
 
 const PlansPresentation: React.FC<{
   project: Project
@@ -17,21 +16,12 @@ const PlansPresentation: React.FC<{
   const [currentPlan, setCurrentPlan] = useState<Plan>()
   const [planPhotos, setPlanPhotos] = useState<PhotoDetails[]>([])
 
-  const parsePlanDetails = (plan: Plan) => {
-    console.log(toJS(plan))
-
-    let catalogueItems = []
-
-    if (plan?.catalogueItems) {
-      catalogueItems = plan.catalogueItems
-    } else if (plan?.planDetails) {
-      catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
+  const getPlanImages = (plan: Plan) => {
+    if (plan.planDetails) {
+      const parsedPlan = JSON.parse(plan.planDetails)
+      return parsedPlan.imageIds ?? []
     }
-
-    if (catalogueItems && !catalogueItems?.imageIds) {
-      catalogueItems.imageIds = [] as string[]
-    }
-    return catalogueItems
+    return []
   }
 
   useEffect(() => {
@@ -39,11 +29,10 @@ const PlansPresentation: React.FC<{
       setPlans(project.plans)
       if (!currentPlan?.id) {
         setCurrentPlan(project.plans[0])
-        const planDetails = parsePlanDetails(project.plans[0])
-        const newPlanPhotos = photos.filter(
-          (photo) => planDetails?.imageIds?.includes(photo.id ?? '')
+        const planImages = getPlanImages(project.plans[0])
+        const newPlanPhotos = photos.filter((photo) =>
+          planImages.includes(photo.id ?? '')
         )
-
         setPlanPhotos(newPlanPhotos)
       }
     }
@@ -51,9 +40,9 @@ const PlansPresentation: React.FC<{
 
   useEffect(() => {
     if (currentPlan) {
-      const planDetails = parsePlanDetails(currentPlan)
-      const newPlanPhotos = photos.filter(
-        (photo) => planDetails?.imageIds?.includes(photo.id ?? '')
+      const planImages = getPlanImages(currentPlan)
+      const newPlanPhotos = photos.filter((photo) =>
+        planImages.includes(photo.id ?? '')
       )
       setPlanPhotos(newPlanPhotos)
     }
