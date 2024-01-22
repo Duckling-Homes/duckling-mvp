@@ -9,6 +9,7 @@ export default authMiddleware({
     '/api/presentation/:orgId/projects/:projectId',
     '/api/presentation/:orgId/projects/:projectId/images/:imageId',
   ],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   afterAuth(auth, req: NextRequest, evt) {
     if (req.nextUrl.pathname.startsWith('/api/export')) {
       return // don't do anything for the export route
@@ -27,9 +28,11 @@ export default authMiddleware({
       !req.nextUrl.pathname.startsWith('/api/presentation')
     ) {
       // if this is an api route, add this header so our back end can tenantize its apis
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((auth.sessionClaims?.metadata as any)?.organization_id) {
         req.headers.set(
           'organization-context',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (auth.sessionClaims?.metadata as any)?.organization_id
         )
       } else {
