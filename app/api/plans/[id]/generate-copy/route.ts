@@ -15,6 +15,8 @@ import openai from '@/lib/ai'
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
+export const maxDuration = 100
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getCompletion(input: string) {
   const systemContent = `
