@@ -208,6 +208,24 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     ))
   }
 
+  async function duplicatePlan() {
+    if (!currentProject.id || !currentPlan?.id) {
+      console.error("current project doesn't have an id")
+      return
+    }
+
+    const plan = {
+      ...currentPlan,
+      name: `${currentPlan.name} copy`,
+    }
+
+    delete plan.id
+
+    const newPlan = await ModelStore.createPlan(currentProject.id, plan)
+
+    setCurrentPlanID(newPlan.id as string)
+  }
+
   return (
     <>
       <IncentivesModal
@@ -311,6 +329,17 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   aria-label="add"
                 >
                   <Icons.Delete onClick={() => setDeleteModal(true)} />
+                </IconButton>
+                <IconButton
+                  sx={{
+                    borderRadius: '4px',
+                    border: '1px solid #2196F3',
+                    color: '#2196F3',
+                    padding: '4px 11px',
+                  }}
+                  aria-label="add"
+                >
+                  <Icons.ContentCopy onClick={() => duplicatePlan()} />
                 </IconButton>
                 <Button
                   variant="contained"
