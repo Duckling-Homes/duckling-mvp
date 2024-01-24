@@ -304,18 +304,23 @@ const IncentivesModal: React.FC<{
     }
 
     function handleNext() {
-      if (activeStep === STEPS.length - 1) {
-        savePlan()
-        setActiveStep(0)
-        onClose()
-        return
-      }
-      setActiveStep((prevActiveStep) => prevActiveStep + 1)
+      savePlan()
+      onClose()
+      return
+      // if (activeStep === STEPS.length - 1) {
+      //   savePlan()
+      //   setActiveStep(0)
+      //   onClose()
+      //   return
+      // }
+      // setActiveStep((prevActiveStep) => prevActiveStep + 1)
     }
 
     function handleBack() {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1)
+      // setActiveStep((prevActiveStep) => prevActiveStep - 1)
+      onClose()
     }
+    
     function handleSelectIncentive(incentiveId: string, parentId: string) {
       let catalogueItems = []
 
@@ -424,7 +429,7 @@ const IncentivesModal: React.FC<{
             </IconButton>
           </div>
           <div className="incentivesModal__body">
-            <Stepper activeStep={activeStep}>
+            {/* <Stepper activeStep={activeStep}>
               {STEPS.map((label) => {
                 const stepProps: { completed?: boolean } = {}
                 const labelProps: {
@@ -437,14 +442,22 @@ const IncentivesModal: React.FC<{
                 )
               })}
             </Stepper>
-            {renderStep()}
+            {renderStep()} */}
+            <Incentives
+              onCheck={(incentiveId: string, parentId: string) =>
+                handleSelectIncentive(incentiveId, parentId)
+              }
+              rebates={getAllIncentivesByType('Rebate') as Incentive[]}
+              taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
+            />
           </div>
           <div className="incentivesModal__footer">
-            <Button onClick={handleBack} disabled={activeStep === 0}>
-              Back
+            <Button onClick={handleBack}>
+              Cancel
             </Button>
             <Button onClick={handleNext}>
-              {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'}
+              {/* {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'} */}
+              Finish
             </Button>
           </div>
         </div>
