@@ -6,7 +6,7 @@ import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
 import { CatalogueItem, Copy, Incentive, Plan, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
-import { Button, Chip, Divider, IconButton, TextField } from '@mui/material'
+import { Button, Chip, CircularProgress, Divider, IconButton, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
 import PlanItem from './Upgrades/PlanItem'
@@ -242,8 +242,9 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       console.error("current project or plan doesn't have an id")
       return
     }
-
+    setIsLoading(true)
     await ModelStore.generateCopy(currentPlan, currentProject.id)
+    setIsLoading(false)
   }
 
   function updateCopyFields(newValue: string, field: string) {
@@ -257,14 +258,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
     setCopyFields(oldFields)
     ModelStore.updatePlanCopy(currentPlan.id, oldFields)
-  }
-
-  if (isLoading) {
-    return (
-      <div className="copyReview">
-        <span>Generating Copy...</span>
-      </div>
-    )
   }
 
   return (
@@ -519,38 +512,46 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                     Generate
                   </Button>
                 </div>
-                <div className="planCreation__sectionItem">
-                  Plan Summary
-                  <TextField
-                    multiline
-                    value={copyFields?.summary || ''}
-                    onChange={({ target }) => updateCopyFields(target.value, 'summary')}
-                  />
-                </div>
-                <div className="planCreation__sectionItem">
-                  Comfort Summary
-                  <TextField
-                    multiline
-                    value={copyFields?.comfort || ''}
-                    onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
-                  />
-                </div>
-                <div className="planCreation__sectionItem">
-                  Health Summary
-                  <TextField
-                    multiline
-                    value={copyFields?.health || ''}
-                    onChange={({ target }) => updateCopyFields(target.value, 'health')}
-                  />
-                </div>
-                <div className="planCreation__sectionItem">
-                  Recommended
-                  <TextField
-                    multiline
-                    value={copyFields?.recommended || ''}
-                    onChange={({ target }) => updateCopyFields(target.value, 'recommended')}
-                  />
-                </div>
+                { isLoading ? 
+                (<div className="planCreation__copyReview">
+                  <span>Generating Copy</span>
+                  <CircularProgress />
+                </div>) :
+                (<>
+                  <div className="planCreation__sectionItem">
+                    Plan Summary
+                    <TextField
+                      multiline
+                      value={copyFields?.summary || ''}
+                      onChange={({ target }) => updateCopyFields(target.value, 'summary')}
+                    />
+                  </div>
+                  <div className="planCreation__sectionItem">
+                    Comfort Summary
+                    <TextField
+                      multiline
+                      value={copyFields?.comfort || ''}
+                      onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
+                    />
+                  </div>
+                  <div className="planCreation__sectionItem">
+                    Health Summary
+                    <TextField
+                      multiline
+                      value={copyFields?.health || ''}
+                      onChange={({ target }) => updateCopyFields(target.value, 'health')}
+                    />
+                  </div>
+                  <div className="planCreation__sectionItem">
+                    Recommended
+                    <TextField
+                      multiline
+                      value={copyFields?.recommended || ''}
+                      onChange={({ target }) => updateCopyFields(target.value, 'recommended')}
+                    />
+                  </div>
+                </>)
+                }
               </div>
             </div>
           </div>
