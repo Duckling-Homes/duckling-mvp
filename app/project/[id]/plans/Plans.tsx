@@ -4,9 +4,9 @@ import ModelStore from '@/app/stores/modelStore'
 import DeletePlanModal from '@/components/Modals/DeletePlan'
 import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
-import { CatalogueItem, Incentive, Plan, Project } from '@/types/types'
+import { CatalogueItem, Copy, Incentive, Plan, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
-import { Button, Chip, Divider, IconButton } from '@mui/material'
+import { Button, Chip, CircularProgress, Divider, IconButton, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
 import PlanItem from './Upgrades/PlanItem'
@@ -30,6 +30,13 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   const [aggregationLimits, setAggregationLimits] = useState(
     ModelStore.aggregationLimits
   )
+  const [isLoading, setIsLoading] = useState(false)
+  const [copyFields, setCopyFields] = useState<Copy>({
+    summary: '',
+    comfort: '',
+    health: '',
+    recommended: ''
+  })
 
   const currentPlan = (currentProject?.plans ?? []).find(
     (p) => p.id === currentPlanID
@@ -59,6 +66,10 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
       )
     }
   }, [])
+
+  useEffect(() => {
+    setCopyFields(currentPlan?.copy as Copy)
+  }, [currentPlan])
 
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
@@ -224,6 +235,29 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
 
     setCurrentPlanID(newPlan.id as string)
+  }
+
+  async function handleGenerateSummary() {
+    if (!currentProject.id || !currentPlan?.id) {
+      console.error("current project or plan doesn't have an id")
+      return
+    }
+    setIsLoading(true)
+    await ModelStore.generateCopy(currentPlan, currentProject.id)
+    setIsLoading(false)
+  }
+
+  function updateCopyFields(newValue: string, field: string) {
+    if (!currentProject.id || !currentPlan?.id) {
+      console.error("current project or plan doesn't have an id")
+      return
+    }
+
+    const oldFields = { ...copyFields } as Copy
+    oldFields[field] = newValue
+
+    setCopyFields(oldFields)
+    ModelStore.updatePlanCopy(currentPlan.id, oldFields)
   }
 
   return (
@@ -468,38 +502,56 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 <div className="planCreation__sectionHeader">
                   <div>
                     <Icons.Home fontSize="small" />
-                    <p>Upgrade Impact</p>
+                    <p>Plan Summary</p>
                   </div>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleGenerateSummary()}
+                  >
+                    Generate
+                  </Button>
                 </div>
-                <div className="planCreation__sectionItem">
-                  Comfort:
-                  <div className="planCreation__sectionStars">
-                    <Icons.Star />
-                    <Icons.Star />
+                { isLoading ? 
+                (<div className="planCreation__copyReview">
+                  <span>Generating Copy</span>
+                  <CircularProgress />
+                </div>) :
+                (<>
+                  <div className="planCreation__sectionItem">
+                    Plan Summary
+                    <TextField
+                      multiline
+                      value={copyFields?.summary || ''}
+                      onChange={({ target }) => updateCopyFields(target.value, 'summary')}
+                    />
                   </div>
-                </div>
-                <div className="planCreation__sectionItem">
-                  Health & Safety:
-                  <div className="planCreation__sectionStars">
-                    <Icons.Star />
-                    <Icons.Star />
-                    <Icons.Star />
+                  <div className="planCreation__sectionItem">
+                    Comfort Summary
+                    <TextField
+                      multiline
+                      value={copyFields?.comfort || ''}
+                      onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
+                    />
                   </div>
-                </div>
-                <div className="planCreation__sectionItem">
-                  Performance
-                  <div className="planCreation__sectionStars">
-                    <Icons.Star />
-                    <Icons.Star />
+                  <div className="planCreation__sectionItem">
+                    Health Summary
+                    <TextField
+                      multiline
+                      value={copyFields?.health || ''}
+                      onChange={({ target }) => updateCopyFields(target.value, 'health')}
+                    />
                   </div>
-                </div>
-                <div className="planCreation__sectionItem">
-                  Emissions
-                  <div className="planCreation__sectionStars">
-                    <Icons.Star />
-                    <Icons.Star />
+                  <div className="planCreation__sectionItem">
+                    Recommended
+                    <TextField
+                      multiline
+                      value={copyFields?.recommended || ''}
+                      onChange={({ target }) => updateCopyFields(target.value, 'recommended')}
+                    />
                   </div>
-                </div>
+                </>)
+                }
               </div>
             </div>
           </div>
