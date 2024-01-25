@@ -64,7 +64,7 @@ export async function createImage(
         homeownerNotes: imageData.homeownerNotes,
         internalNotes: imageData.internalNotes,
         roomId: imageData.roomId,
-        envelopeId: imageData.envelopeId,
+        envelopeComponentId: imageData.envelopeComponentId,
         applianceId: imageData.applianceId,
         electricalId: imageData.electricalId,
         project: {

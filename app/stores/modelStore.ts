@@ -12,7 +12,7 @@ import {
   ProjectAppliance,
   ProjectData,
   ProjectElectrical,
-  ProjectEnvelope,
+  ProjectEnvelopeComponent,
   ProjectRoom,
 } from '@/types/types'
 import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
@@ -248,24 +248,35 @@ export class _ModelStore {
     await this.reloadProject(projectID)
   }
 
-  createEnvelope = async (projectID: string, envelope: ProjectEnvelope) => {
-    const created = await SyncAPI.envelopes.create(projectID, envelope)
+  createEnvelopeComponent = async (
+    projectID: string,
+    envelopeComponent: ProjectEnvelopeComponent
+  ) => {
+    const created = await SyncAPI.envelopeComponents.create(
+      projectID,
+      envelopeComponent
+    )
     await this.reloadProject(projectID)
     return created
   }
 
-  updateEnvelope = async (projectID: string, envelope: ProjectEnvelope) => {
-    const updated = await SyncAPI.envelopes.update(projectID, envelope)
+  updateEnvelopeComponent = async (
+    projectID: string,
+    envelopeComponent: ProjectEnvelopeComponent
+  ) => {
+    const updated = await SyncAPI.envelopeComponents.update(
+      projectID,
+      envelopeComponent
+    )
     await this.reloadProject(projectID)
     return updated
   }
 
-  deleteEnvelope = async (
+  deleteEnvelopeComponent = async (
     projectID: string,
-    envelopeType: string,
-    envelopeID: string
+    envelopeComponentID: string
   ) => {
-    await SyncAPI.envelopes.delete(projectID, envelopeType, envelopeID)
+    await SyncAPI.envelopeComponents.delete(projectID, envelopeComponentID)
     await this.reloadProject(projectID)
   }
 

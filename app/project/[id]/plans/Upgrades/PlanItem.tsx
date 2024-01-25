@@ -34,7 +34,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
 
     function extractPlanDetails(plan: Plan, property: string) {
       let catalogueItems = []
-      
+
       if (plan.catalogueItems) {
         catalogueItems = plan.catalogueItems
       } else if (plan.planDetails) {
@@ -42,7 +42,9 @@ const PlanItem: React.FC<PlanItemProps> = observer(
         catalogueItems = planDetails.catalogueItems
       }
 
-      const itemsByProperty = catalogueItems?.filter((item: CatalogueItem) => item.category === property)
+      const itemsByProperty = catalogueItems?.filter(
+        (item: CatalogueItem) => item.category === property
+      )
 
       return itemsByProperty
     }
@@ -68,7 +70,6 @@ const PlanItem: React.FC<PlanItemProps> = observer(
       })
 
       return uniqueSubcategories
-
     }
 
     function addItem(item: string) {
@@ -76,7 +77,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
         customId: uuidv4(),
         subcategory: item,
         quantity: 0,
-        category: property
+        category: property,
       }
 
       if (plan?.id) {

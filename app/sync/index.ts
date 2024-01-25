@@ -2,7 +2,7 @@ import { isOnline } from './utils'
 import { ProjectSyncOperations } from './operations/project'
 import { OrganizationSyncOperations } from './operations/organization'
 import { ApplianceSyncOperations } from './operations/appliances'
-import { EnvelopeSyncOperations } from './operations/envelope'
+import { EnvelopeComponentSyncOperations } from './operations/envelope'
 import { ElectricalSyncOperations } from './operations/electrical'
 import { RoomSyncOperations } from './operations/room'
 import { ImageSyncOperations } from './operations/images'
@@ -49,7 +49,7 @@ class _SyncAPI {
   projects = new ProjectSyncOperations()
   appliances = new ApplianceSyncOperations()
   electrical = new ElectricalSyncOperations()
-  envelopes = new EnvelopeSyncOperations()
+  envelopeComponents = new EnvelopeComponentSyncOperations()
   rooms = new RoomSyncOperations()
   images = new ImageSyncOperations()
   plans = new PlansSyncOperations()

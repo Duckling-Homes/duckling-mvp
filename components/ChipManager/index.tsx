@@ -6,7 +6,7 @@ import { Button, Chip, Modal } from '@mui/material'
 import {
   ProjectAppliance,
   ProjectElectrical,
-  ProjectEnvelope,
+  ProjectEnvelopeComponent,
   ProjectRoom,
 } from '@/types/types'
 
@@ -17,7 +17,7 @@ interface ChipManagerProps {
   chips: (
     | ProjectRoom
     | ProjectAppliance
-    | ProjectEnvelope
+    | ProjectEnvelopeComponent
     | ProjectElectrical
   )[]
   currentChip: string
@@ -61,7 +61,6 @@ const DeleteModal: React.FC<{
 
 const ChipManager: React.FC<ChipManagerProps> = observer(
   ({ chips, currentChip, chipType, onChipClick, onDelete, onCreate }) => {
-
     const [deleteEnvelope, setDeleteEnvelope] = useState<{
       id: string
       name: string

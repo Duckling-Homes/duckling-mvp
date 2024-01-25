@@ -15,6 +15,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CatalogItemView from './CatalogItemView'
 import { useEffect, useState } from 'react'
 import { Button, Divider } from '@mui/material'
+import Markdown from 'react-markdown'
 import '../style.scss'
 
 const PlanPresentation: React.FC<{
@@ -76,7 +77,7 @@ const PlanPresentation: React.FC<{
       catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
-    catalogueItems.forEach((item: CatalogueItem) => {
+    catalogueItems?.forEach((item: CatalogueItem) => {
       if (item?.quantity && item?.basePricePer) {
         estimatedCost += ((item?.quantity as number) || 0) * item.basePricePer
         if (item?.additionalCosts) {
@@ -100,7 +101,7 @@ const PlanPresentation: React.FC<{
       catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
-    catalogueItems.forEach((item: CatalogueItem) => {
+    catalogueItems?.forEach((item: CatalogueItem) => {
       if (item.incentives) {
         item.incentives.forEach((incentive) => {
           if (incentive.selected && incentive.type == 'Rebate') {
@@ -131,7 +132,7 @@ const PlanPresentation: React.FC<{
       catalogueItems = JSON.parse(plan.planDetails).catalogueItems
     }
 
-    catalogueItems.forEach((item: CatalogueItem) => {
+    catalogueItems?.forEach((item: CatalogueItem) => {
       if (item.incentives) {
         item.incentives.forEach((incentive) => {
           if (incentive.selected && incentive.type == 'TaxCredit') {
@@ -154,16 +155,15 @@ const PlanPresentation: React.FC<{
       catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
 
-    catalogueItems ||
-      [].forEach((item: CatalogueItem) => {
-        if (item.incentives) {
-          item.incentives.forEach((incentive) => {
-            if (incentive.selected && incentive.type == type) {
-              incentivesToRender.push(incentive)
-            }
-          })
-        }
-      })
+    catalogueItems?.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == type) {
+            incentivesToRender.push(incentive)
+          }
+        })
+      }
+    })
 
     return incentivesToRender.map((incentive) => (
       <div className="incentive" key={incentive.id}>
@@ -195,54 +195,56 @@ const PlanPresentation: React.FC<{
           <p>Scope</p>
         </div>
         {/* Plan Photos */}
-        <div className="scope__photoHeader">
-          {displayedPhoto && (
-            <div style={{ flexDirection: 'row' }}>
-              <Button
-                disabled={photoIndex == 0}
-                style={{ marginRight: '16px' }}
-                variant="outlined"
-                size="small"
-                onClick={decrementPhoto}
-              >
-                <ArrowBackIosIcon />
-              </Button>
-              <Button
-                disabled={photoIndex == photos.length - 1}
-                style={{ marginRight: '16px' }}
-                variant="outlined"
-                size="small"
-                onClick={incrementPhoto}
-              >
-                <ArrowForwardIosIcon />
-              </Button>
-            </div>
-          )}
-          <div className="scope__photoDisplay">
+        {photos.length > 0 && (
+          <div className="scope__photoHeader">
             {displayedPhoto && (
-              <>
-                <img
-                  src={displayedPhoto.photoUrl}
-                  alt={`Image ${displayedPhoto.id}`}
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'cover',
-                    margin: '16px',
-                  }}
-                />
-                <div style={{ flexDirection: 'row' }}>
-                  <span style={{ fontWeight: 'bold' }}>
-                    {displayedPhoto.name ? `${displayedPhoto.name}. ` : ''}
-                  </span>
-                  {displayedPhoto.homeownerNotes
-                    ? displayedPhoto.homeownerNotes
-                    : ''}
-                </div>
-              </>
+              <div style={{ flexDirection: 'row' }}>
+                <Button
+                  disabled={photoIndex == 0}
+                  style={{ marginRight: '16px' }}
+                  variant="outlined"
+                  size="small"
+                  onClick={decrementPhoto}
+                >
+                  <ArrowBackIosIcon />
+                </Button>
+                <Button
+                  disabled={photoIndex == photos.length - 1}
+                  style={{ marginRight: '16px' }}
+                  variant="outlined"
+                  size="small"
+                  onClick={incrementPhoto}
+                >
+                  <ArrowForwardIosIcon />
+                </Button>
+              </div>
             )}
+            <div className="scope__photoDisplay">
+              {displayedPhoto && (
+                <>
+                  <img
+                    src={displayedPhoto.photoUrl}
+                    alt={`Image ${displayedPhoto.id}`}
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      objectFit: 'cover',
+                      margin: '16px',
+                    }}
+                  />
+                  <div style={{ flexDirection: 'row' }}>
+                    <span style={{ fontWeight: 'bold' }}>
+                      {displayedPhoto.name ? `${displayedPhoto.name}. ` : ''}
+                    </span>
+                    {displayedPhoto.homeownerNotes
+                      ? displayedPhoto.homeownerNotes
+                      : ''}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
         {/* Catalog Items */}
         {Object.entries(sortCatalogItems()).map(([category, items]) => (
           <CatalogItemView
@@ -265,7 +267,7 @@ const PlanPresentation: React.FC<{
             <p>Comfort</p>
           </div>
           <div className="benefit__text">
-            <p>{plan.copy?.comfort}</p>
+            <Markdown>{plan.copy?.comfort}</Markdown>
           </div>
         </div>
         <div className="benefit">
@@ -274,7 +276,7 @@ const PlanPresentation: React.FC<{
             <p>Health & Safety</p>
           </div>
           <div className="benefit__text">
-            <p>{plan.copy?.health}</p>
+            <Markdown>{plan.copy?.health}</Markdown>
           </div>
         </div>
         <div className="benefit">
@@ -283,7 +285,7 @@ const PlanPresentation: React.FC<{
             <p>Other Benefits</p>
           </div>
           <div className="benefit__text">
-            <p>{plan.copy?.recommended}</p>
+            <Markdown>{plan.copy?.recommended}</Markdown>
           </div>
         </div>
       </div>

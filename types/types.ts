@@ -10,7 +10,7 @@ export interface Project {
   rooms?: ProjectRoom[]
   appliances?: ProjectAppliance[]
   electrical?: ProjectElectrical[]
-  envelopes?: ProjectEnvelope[]
+  envelopeComponents?: ProjectEnvelopeComponent[]
   images?: PhotoDetails[]
   plans?: Plan[]
   heroImageId?: string
@@ -39,7 +39,7 @@ export interface PhotoDetails {
   homeownerNotes?: string
   internalNotes?: string
   roomId?: string
-  envelopeId?: string
+  envelopeComponentId?: string
   applianceId?: string
   electricalId?: string
   isHeroPhoto?: boolean
@@ -55,13 +55,14 @@ export interface NewProject {
   homeownerAddress: string
 }
 
-export interface ProjectEnvelope {
+export interface ProjectEnvelopeComponent {
   id?: string
   name?: string
   type?: string
-  leakinessDescription?: string
-  insulationLocation?: string
   insulationCondition?: string
+  airSealingCondition?: string
+  location?: string
+  condition?: string
   notes?: string
   projectId?: string
   createdAt?: string

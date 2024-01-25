@@ -16,13 +16,12 @@ const PlansPresentation: React.FC<{
   const [currentPlan, setCurrentPlan] = useState<Plan>()
   const [planPhotos, setPlanPhotos] = useState<PhotoDetails[]>([])
 
-  const parsePlanDetails = (plan: Plan) => {
-    const planDetails = JSON.parse(plan.planDetails as string)
-
-    if (planDetails && !planDetails?.imageIds) {
-      planDetails.imageIds = [] as string[]
+  const getPlanImages = (plan: Plan) => {
+    if (plan.planDetails) {
+      const parsedPlan = JSON.parse(plan.planDetails)
+      return parsedPlan.imageIds ?? []
     }
-    return planDetails
+    return []
   }
 
   useEffect(() => {
@@ -30,11 +29,10 @@ const PlansPresentation: React.FC<{
       setPlans(project.plans)
       if (!currentPlan?.id) {
         setCurrentPlan(project.plans[0])
-        const planDetails = parsePlanDetails(project.plans[0])        
-        const newPlanPhotos = photos.filter(
-          (photo) => planDetails?.imageIds?.includes(photo.id ?? '')
+        const planImages = getPlanImages(project.plans[0])
+        const newPlanPhotos = photos.filter((photo) =>
+          planImages.includes(photo.id ?? '')
         )
-
         setPlanPhotos(newPlanPhotos)
       }
     }
@@ -42,9 +40,9 @@ const PlansPresentation: React.FC<{
 
   useEffect(() => {
     if (currentPlan) {
-      const planDetails = parsePlanDetails(currentPlan)
-      const newPlanPhotos = photos.filter(
-        (photo) => planDetails?.imageIds?.includes(photo.id ?? '')
+      const planImages = getPlanImages(currentPlan)
+      const newPlanPhotos = photos.filter((photo) =>
+        planImages.includes(photo.id ?? '')
       )
       setPlanPhotos(newPlanPhotos)
     }

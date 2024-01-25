@@ -5,12 +5,7 @@ import {
   Divider,
   IconButton,
   Modal,
-  Step,
-  StepLabel,
-  Stepper,
-  TextField,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
 
 import ModelStore from '@/app/stores/modelStore'
 import {
@@ -20,7 +15,6 @@ import {
 } from '@/app/utils/planCalculation'
 import {
   CatalogueItem,
-  Copy,
   Incentive,
   Plan,
   PlanDetails,
@@ -29,7 +23,7 @@ import { observer } from 'mobx-react-lite'
 import './styles.scss'
 import { AggregationLimit } from '@prisma/client'
 
-const STEPS = ['Select Incentives', 'Review Copy']
+// const STEPS = ['Select Incentives', 'Review Copy']
 
 const Incentives: React.FC<{
   rebates: Incentive[]
@@ -177,86 +171,86 @@ const Incentives: React.FC<{
   )
 }
 
-const CopyReview: React.FC<{
-  plan: Plan
-  projectId: string
-}> = ({ plan, projectId }) => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [copyFields, setCopyFields] = useState({
-    summary: '',
-    recommended: '',
-    comfort: '',
-    health: '',
-  })
+// const CopyReview: React.FC<{
+//   plan: Plan
+//   projectId: string
+// }> = ({ plan, projectId }) => {
+//   const [isLoading, setIsLoading] = useState(false)
+//   const [copyFields, setCopyFields] = useState({
+//     summary: '',
+//     recommended: '',
+//     comfort: '',
+//     health: '',
+//   })
 
-  useEffect(() => {
-    if (!plan.copy) {
-      const generateCopy = async () => {
-        setIsLoading(true)
-        await ModelStore.generateCopy(plan, projectId)
-        setIsLoading(false)
-      }
-      generateCopy()
-    }
-    setCopyFields(plan?.copy as Copy)
-  }, [])
+//   useEffect(() => {
+//     if (!plan.copy) {
+//       const generateCopy = async () => {
+//         setIsLoading(true)
+//         await ModelStore.generateCopy(plan, projectId)
+//         setIsLoading(false)
+//       }
+//       generateCopy()
+//     }
+//     setCopyFields(plan?.copy as Copy)
+//   }, [])
 
-  function updateCopyFields(newValue: string, field: string) {
-    const oldFields = { ...copyFields } as Copy
+//   function updateCopyFields(newValue: string, field: string) {
+//     const oldFields = { ...copyFields } as Copy
 
-    oldFields[field] = newValue
+//     oldFields[field] = newValue
 
-    setCopyFields(oldFields)
-    ModelStore.updatePlanCopy(plan.id as string, oldFields)
-  }
+//     setCopyFields(oldFields)
+//     ModelStore.updatePlanCopy(plan.id as string, oldFields)
+//   }
 
-  if (isLoading) {
-    return (
-      <div className="copyReview">
-        <span>Generating Copy...</span>
-      </div>
-    )
-  }
+//   if (isLoading) {
+//     return (
+//       <div className="copyReview">
+//         <span>Generating Copy...</span>
+//       </div>
+//     )
+//   }
 
-  return (
-    <div className="copyReview">
-      <div className="copyReview__wrapper">
-        <span className="copyReview__title">Home Summary</span>
-        <TextField
-          multiline
-          value={plan.copy?.summary || copyFields?.summary}
-          onChange={({ target }) => updateCopyFields(target.value, 'summary')}
-        />
-      </div>
-      <div className="copyReview__wrapper">
-        <span className="copyReview__title">Plan Summary</span>
-        <TextField
-          multiline
-          value={plan.copy?.recommended || copyFields?.recommended}
-          onChange={({ target }) =>
-            updateCopyFields(target.value, 'recommended')
-          }
-        />
-      </div>
-      <div className="copyReview__wrapper">
-        <span className="copyReview__title">Comfort Summary</span>
-        <TextField
-          multiline
-          value={plan.copy?.comfort || copyFields?.comfort}
-          onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
-        />
-      </div>
-      <div className="copyReview__wrapper">
-        <span className="copyReview__title">Health Summary</span>
-        <TextField
-          multiline
-          value={plan.copy?.health || copyFields?.health}
-          onChange={({ target }) => updateCopyFields(target.value, 'health')}
-        />
-      </div>
-    </div>
-  )
-}
+//   return (
+//     <div className="copyReview">
+//       <div className="copyReview__wrapper">
+//         <span className="copyReview__title">Home Summary</span>
+//         <TextField
+//           multiline
+//           value={plan.copy?.summary || copyFields?.summary}
+//           onChange={({ target }) => updateCopyFields(target.value, 'summary')}
+//         />
+//       </div>
+//       <div className="copyReview__wrapper">
+//         <span className="copyReview__title">Plan Summary</span>
+//         <TextField
+//           multiline
+//           value={plan.copy?.recommended || copyFields?.recommended}
+//           onChange={({ target }) =>
+//             updateCopyFields(target.value, 'recommended')
+//           }
+//         />
+//       </div>
+//       <div className="copyReview__wrapper">
+//         <span className="copyReview__title">Comfort Summary</span>
+//         <TextField
+//           multiline
+//           value={plan.copy?.comfort || copyFields?.comfort}
+//           onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
+//         />
+//       </div>
+//       <div className="copyReview__wrapper">
+//         <span className="copyReview__title">Health Summary</span>
+//         <TextField
+//           multiline
+//           value={plan.copy?.health || copyFields?.health}
+//           onChange={({ target }) => updateCopyFields(target.value, 'health')}
+//         />
+//       </div>
+//     </div>
+//   )
+// }
 
 const IncentivesModal: React.FC<{
   open: boolean
@@ -266,7 +260,7 @@ const IncentivesModal: React.FC<{
   aggregationLimits: AggregationLimit[]
 }> = observer(
   ({ open, onClose, currentPlanId, projectId, aggregationLimits }) => {
-    const [activeStep, setActiveStep] = useState(0)
+    // const [activeStep, setActiveStep] = useState(0)
     const [plan]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [
       Plan,
       PlanDetails,
@@ -274,6 +268,7 @@ const IncentivesModal: React.FC<{
 
     function getAllIncentivesByType(type: string) {
       const uniqueIncentivesSet = new Set<string>()
+      const dedupedIncentives = [] as Incentive[]
       let catalogueItems = []
 
       if (!plan) {
@@ -287,40 +282,39 @@ const IncentivesModal: React.FC<{
         catalogueItems = planDetails.catalogueItems
       }
 
-      catalogueItems ||
-        [].forEach((item: CatalogueItem) => {
-          if (item.incentives && Array.isArray(item.incentives)) {
-            item.incentives.forEach((incentive) => {
-              if (incentive.type === type) {
-                incentive.parentId = item.customId
-                const incentiveString = JSON.stringify(incentive)
-                uniqueIncentivesSet.add(incentiveString)
-              }
-            })
-          }
-        })
+      catalogueItems?.forEach((item: CatalogueItem) => {
+        if (item.incentives && Array.isArray(item.incentives)) {
+          item.incentives.forEach((incentive) => {
+            if (incentive.type === type && !uniqueIncentivesSet.has(incentive.id as string)) {
+              incentive.parentId = item.customId
+              uniqueIncentivesSet.add(incentive.id as string)
+              dedupedIncentives.push(incentive)
+            }
+          })
+        }
+      })
 
-      const uniqueIncentivesArray = Array.from(
-        uniqueIncentivesSet,
-        (str) => JSON.parse(str) as Incentive
-      )
-
-      return uniqueIncentivesArray
+      return dedupedIncentives
     }
 
     function handleNext() {
-      if (activeStep === STEPS.length - 1) {
-        savePlan()
-        setActiveStep(0)
-        onClose()
-        return
-      }
-      setActiveStep((prevActiveStep) => prevActiveStep + 1)
+      savePlan()
+      onClose()
+      return
+      // if (activeStep === STEPS.length - 1) {
+      //   savePlan()
+      //   setActiveStep(0)
+      //   onClose()
+      //   return
+      // }
+      // setActiveStep((prevActiveStep) => prevActiveStep + 1)
     }
 
     function handleBack() {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1)
+      // setActiveStep((prevActiveStep) => prevActiveStep - 1)
+      onClose()
     }
+    
     function handleSelectIncentive(incentiveId: string, parentId: string) {
       let catalogueItems = []
 
@@ -331,44 +325,43 @@ const IncentivesModal: React.FC<{
         catalogueItems = planDetails.catalogueItems
       }
 
-      catalogueItems ||
-        [].forEach((item: CatalogueItem) => {
-          if (item?.customId === parentId) {
-            item?.incentives?.forEach((incentive: Incentive) => {
-              if (incentive.id === incentiveId) {
-                if (incentive.selected) {
-                  incentive.selected = false
-                } else {
-                  incentive.selected = true
-                }
+      catalogueItems?.forEach((item: CatalogueItem) => {
+        if (item?.customId === parentId) {
+          item?.incentives?.forEach((incentive: Incentive) => {
+            if (incentive.id === incentiveId) {
+              if (incentive.selected) {
+                incentive.selected = false
+              } else {
+                incentive.selected = true
               }
-            })
-          }
-        })
+            }
+          })
+        }
+      })
       ModelStore.updatePlanCategory(
         plan.id as string,
         catalogueItems as CatalogueItem[]
       )
     }
 
-    function renderStep() {
-      switch (activeStep) {
-        case 0:
-          return (
-            <Incentives
-              onCheck={(incentiveId: string, parentId: string) =>
-                handleSelectIncentive(incentiveId, parentId)
-              }
-              rebates={getAllIncentivesByType('Rebate') as Incentive[]}
-              taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
-            />
-          )
-        case 1:
-          return (
-            <CopyReview plan={plan as Plan} projectId={projectId as string} />
-          )
-      }
-    }
+    // function renderStep() {
+    //   switch (activeStep) {
+    //     case 0:
+    //       return (
+    //         <Incentives
+    //           onCheck={(incentiveId: string, parentId: string) =>
+    //             handleSelectIncentive(incentiveId, parentId)
+    //           }
+    //           rebates={getAllIncentivesByType('Rebate') as Incentive[]}
+    //           taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
+    //         />
+    //       )
+    //     case 1:
+    //       return (
+    //         <CopyReview plan={plan as Plan} projectId={projectId as string} />
+    //       )
+    //   }
+    // }
 
     async function savePlan() {
       const catalogueItems: CatalogueItem[] =
@@ -430,7 +423,7 @@ const IncentivesModal: React.FC<{
             </IconButton>
           </div>
           <div className="incentivesModal__body">
-            <Stepper activeStep={activeStep}>
+            {/* <Stepper activeStep={activeStep}>
               {STEPS.map((label) => {
                 const stepProps: { completed?: boolean } = {}
                 const labelProps: {
@@ -443,14 +436,22 @@ const IncentivesModal: React.FC<{
                 )
               })}
             </Stepper>
-            {renderStep()}
+            {renderStep()} */}
+            <Incentives
+              onCheck={(incentiveId: string, parentId: string) =>
+                handleSelectIncentive(incentiveId, parentId)
+              }
+              rebates={getAllIncentivesByType('Rebate') as Incentive[]}
+              taxCredits={getAllIncentivesByType('TaxCredit') as Incentive[]}
+            />
           </div>
           <div className="incentivesModal__footer">
-            <Button onClick={handleBack} disabled={activeStep === 0}>
-              Back
+            <Button onClick={handleBack}>
+              Cancel
             </Button>
             <Button onClick={handleNext}>
-              {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'}
+              {/* {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'} */}
+              Finish
             </Button>
           </div>
         </div>

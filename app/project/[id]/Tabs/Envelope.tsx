@@ -4,88 +4,100 @@ import ModelStore from '@/app/stores/modelStore'
 import ChipManager from '@/components/ChipManager'
 import { SelectInput } from '@/components/Inputs'
 import PhotoDisplay from '@/components/PhotoDisplay'
-import { Project, ProjectEnvelope } from '@/types/types'
+import { Project, ProjectEnvelopeComponent } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import { v4 } from 'uuid'
-import AirSealingForm from './EnvelopesForms/AirSealingForm'
-import InsulationForm from './EnvelopesForms/InsulationForm'
 import AddPhotoButton from '@/components/AddPhotoButton'
 import { defaultPhotoFilter } from '@/app/helpers/defaultPhotoFilter'
+import FoundationsComponentForm from './EnvelopesForms/FoundationsComponentForm'
+import PortalComponentForm from './EnvelopesForms/PortalComponentForm'
 
 interface EnvelopeProps {
   currentProject: Project
 }
 
 const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
-  const [currentEnvelope, setCurrentEnvelope] = useState<ProjectEnvelope>({})
+  const [currentEnvelopeComponent, setCurrentEnvelopeComponent] =
+    useState<ProjectEnvelopeComponent>({})
 
-  const envelopes = currentProject.envelopes || []
+  const components = currentProject.envelopeComponents || []
 
   useEffect(() => {
-    if (!currentEnvelope && currentProject?.envelopes) {
-      setCurrentEnvelope(currentProject.envelopes[0])
+    if (!currentEnvelopeComponent && currentProject?.envelopeComponents) {
+      setCurrentEnvelopeComponent(currentProject.envelopeComponents[0])
     }
-  }, [currentProject, currentProject.envelopes, currentEnvelope])
+  }, [
+    currentProject,
+    currentProject.envelopeComponents,
+    currentEnvelopeComponent,
+  ])
 
   function handleTypeChange(value: string) {
-    const updatedEnvelope = { ...currentEnvelope, type: value }
-    handlePostEnvelope(updatedEnvelope, value)
+    const updatedComponent = { ...currentEnvelopeComponent, type: value }
+    handlePostEnvelopeComponent(updatedComponent, value)
   }
 
-  function createEnvelope() {
-    const newEnvelope = {
+  function createEnvelopeComponent() {
+    const newComponent = {
       id: v4(),
-      name: 'New Envelope',
+      name: 'New Component',
     }
-    setCurrentEnvelope(newEnvelope)
+    setCurrentEnvelopeComponent(newComponent)
   }
 
-  async function handlePostEnvelope(envelope: ProjectEnvelope, type: string) {
-    envelope.type = type
-    const createdEnvelope = await ModelStore.createEnvelope(
+  async function handlePostEnvelopeComponent(
+    envelopeComponent: ProjectEnvelopeComponent,
+    type: string
+  ) {
+    envelopeComponent.type = type
+
+    const createdEnvelope = await ModelStore.createEnvelopeComponent(
       currentProject.id!,
-      envelope
+      envelopeComponent
     )
-    setCurrentEnvelope(createdEnvelope)
+    setCurrentEnvelopeComponent(createdEnvelope)
   }
 
-  async function deleteEnvelope(envelopeId: string) {
-    const envelopeToDelete = envelopes.find(
-      (envelope) => envelope.id === envelopeId
+  async function deleteEnvelopeComponent(componentId: string) {
+    const componentToDelete = components.find(
+      (component) => component.id === componentId
     )
 
-    if (!envelopeToDelete) {
+    if (!componentToDelete) {
       return
     }
 
-    if (!envelopeToDelete.type) {
-      const newEnvelopeList = envelopes.filter((r) => r.id !== envelopeId)
-      setCurrentEnvelope(newEnvelopeList[0] || {})
+    if (!componentToDelete.type) {
+      const newEnvelopeComponentList = components.filter(
+        (r) => r.id !== componentId
+      )
+      setCurrentEnvelopeComponent(newEnvelopeComponentList[0] || {})
       return
     }
 
-    await ModelStore.deleteEnvelope(
-      currentProject.id!,
-      envelopeToDelete.type,
-      envelopeId
+    await ModelStore.deleteEnvelopeComponent(currentProject.id!, componentId)
+    const newEnvelopeComponentList = components.filter(
+      (r) => r.id !== componentId
     )
-    const newEnvelopeList = envelopes.filter((r) => r.id !== envelopeId)
-    setCurrentEnvelope(newEnvelopeList[0] || {})
+    setCurrentEnvelopeComponent(newEnvelopeComponentList[0] || {})
   }
 
   function handleInputChange(inputName: string, value: string) {
-    if (currentEnvelope && currentEnvelope.id) {
-      const updatedEnvelope = { ...currentEnvelope, [inputName]: value }
-      setCurrentEnvelope(updatedEnvelope)
+    if (currentEnvelopeComponent && currentEnvelopeComponent.id) {
+      const updatedEnvelopeComponent = {
+        ...currentEnvelopeComponent,
+        [inputName]: value,
+      }
+      setCurrentEnvelopeComponent(updatedEnvelopeComponent)
     }
   }
 
   async function patchEnvelope(
     propName: string,
-    updatedEnvelope = currentEnvelope
+    updatedEnvelopeComponent = currentEnvelopeComponent
   ) {
-    if (!updatedEnvelope) {
+    if (!updatedEnvelopeComponent) {
       return
     }
 
@@ -97,25 +109,32 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
     //   [propName]: updatedEnvelope[propName],
     // }
 
-    await ModelStore.updateEnvelope(currentProject.id!, updatedEnvelope)
+    await ModelStore.updateEnvelopeComponent(
+      currentProject.id!,
+      updatedEnvelopeComponent
+    )
   }
 
   const renderForm = () => {
-    switch (currentEnvelope?.type) {
-      case 'Insulation':
+    switch (currentEnvelopeComponent?.type) {
+      case 'Attic':
+      case 'Wall':
+      case 'Basement':
+      case 'Foundation':
         return (
-          <InsulationForm
+          <FoundationsComponentForm
             onUpdate={(inputName: string) => patchEnvelope(inputName)}
             onChange={handleInputChange}
-            currentEnvelope={currentEnvelope}
+            currentEnvelopeComponent={currentEnvelopeComponent}
           />
         )
-      case 'AirSealing':
+      case 'Window':
+      case 'Door':
         return (
-          <AirSealingForm
+          <PortalComponentForm
             onUpdate={(inputName: string) => patchEnvelope(inputName)}
             onChange={handleInputChange}
-            currentEnvelope={currentEnvelope}
+            currentEnvelopeComponent={currentEnvelopeComponent}
           />
         )
       default:
@@ -133,13 +152,13 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
         }}
       >
         <ChipManager
-          onCreate={createEnvelope}
-          onDelete={deleteEnvelope}
-          chips={envelopes}
-          currentChip={currentEnvelope?.id || ''}
-          chipType="Envelope"
+          onCreate={createEnvelopeComponent}
+          onDelete={deleteEnvelopeComponent}
+          chips={components}
+          currentChip={currentEnvelopeComponent?.id || ''}
+          chipType="Component"
           onChipClick={(i: number) => {
-            setCurrentEnvelope(envelopes[i])
+            setCurrentEnvelopeComponent(components[i])
           }}
         />
         <div
@@ -147,7 +166,7 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
             width: '100%',
           }}
         >
-          {currentEnvelope?.id && (
+          {currentEnvelopeComponent?.id && (
             <form
               style={{
                 display: 'flex',
@@ -157,20 +176,29 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
             >
               <SelectInput
                 label="Type"
-                value={currentEnvelope?.type || ''}
+                value={currentEnvelopeComponent?.type || ''}
                 onChange={(value) => handleTypeChange(value)}
-                disabled={currentEnvelope?.type ? true : false}
-                options={['Insulation', 'AirSealing']}
+                disabled={currentEnvelopeComponent?.type ? true : false}
+                options={[
+                  'Attic',
+                  'Wall',
+                  'Basement',
+                  'Foundation',
+                  'Window',
+                  'Door',
+                ]}
               />
               {renderForm()}
               <PhotoDisplay
                 currentProject={currentProject}
                 filterPhotos={defaultPhotoFilter({
-                  envelopeId: currentEnvelope.id!,
+                  envelopeComponentId: currentEnvelopeComponent.id!,
                 })}
               ></PhotoDisplay>
               <AddPhotoButton
-                photoUpdates={{ envelopeId: currentEnvelope?.id }}
+                photoUpdates={{
+                  envelopeComponentId: currentEnvelopeComponent?.id,
+                }}
               />
             </form>
           )}
