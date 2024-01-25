@@ -390,19 +390,6 @@ export class _ModelStore {
     delete currentPlan.planDetails
     currentPlan.planDetails = JSON.stringify(currentPlan);
     await this.patchPlan(this.currentProject?.id as string, currentPlan);
-
-    // for (let index = 0; index < plans.length; index++) {
-    //   const plan = plans[index];
-
-    //   if (plan.id === planId) {
-    //     plans[index] = {
-    //       ...currentPlan,
-    //       catalogueItems: catalogueItems,
-    //     }
-    //   }
-    //   await this.patchPlan(this.currentProject?.id as string, plans[index]);
-    // }
-    
   }
 
   updatePlanItem = async (planId: string, newItem: CatalogueItem) => {
