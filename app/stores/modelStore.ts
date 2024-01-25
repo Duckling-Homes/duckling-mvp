@@ -15,7 +15,7 @@ import {
   ProjectEnvelope,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction } from 'mobx'
+import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 import { AggregationLimit } from '@prisma/client'
@@ -342,6 +342,11 @@ export class _ModelStore {
   }
 
   patchPlan = async (projectID: string, plan: Plan) => {
+    
+    // Details are set via planDetailsJSON. 
+    plan.planDetails = undefined;
+    plan.planDetails = JSON.stringify(plan);
+
     const updated = await SyncAPI.plans.update(projectID, plan)
     await this.reloadProject(projectID)
     return updated
