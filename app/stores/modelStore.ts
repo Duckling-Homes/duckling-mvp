@@ -373,20 +373,12 @@ export class _ModelStore {
       return
     }
 
-    catalogueItems.push(item)
-
-    plans.forEach((plan, index) => {
-      if (plan.id === planId) {
-        plans[index] = {
-          ...currentPlan,
-          catalogueItems: catalogueItems,
-        }
-      }
-    })
-
-    for (const plan of plans) {
-      await this.patchPlan(this.currentProject?.id as string, plan)
-    }
+    catalogueItems.push(item);
+    currentPlan.catalogueItems = catalogueItems;
+    // Details are set via planDetailsJSON. 
+    delete currentPlan.planDetails
+    currentPlan.planDetails = JSON.stringify(currentPlan);
+    await this.patchPlan(this.currentProject?.id as string, currentPlan);
   }
 
   removePlanItem = async (planId: string, itemCustomId: string) => {
@@ -404,18 +396,11 @@ export class _ModelStore {
       }
     })
 
-    plans.forEach((plan, index) => {
-      if (plan.id === planId) {
-        plans[index] = {
-          ...currentPlan,
-          catalogueItems: catalogueItems,
-        }
-      }
-    })
-
-    for (const plan of plans) {
-      await this.patchPlan(this.currentProject?.id as string, plan)
-    }
+    currentPlan.catalogueItems = catalogueItems;
+    // Details are set via planDetailsJSON. 
+    delete currentPlan.planDetails
+    currentPlan.planDetails = JSON.stringify(currentPlan);
+    await this.patchPlan(this.currentProject?.id as string, currentPlan);
   }
 
   updatePlanItem = async (planId: string, newItem: CatalogueItem) => {
@@ -432,18 +417,12 @@ export class _ModelStore {
       item.customId === newItem.customId ? newItem : item
     )
 
-    plans.forEach((plan, index) => {
-      if (plan.id === planId) {
-        plans[index] = {
-          ...currentPlan,
-          catalogueItems: updatedCatalogueItems,
-        }
-      }
-    })
+    currentPlan.catalogueItems = updatedCatalogueItems;
+    // Details are set via planDetailsJSON. 
+    delete currentPlan.planDetails
+    currentPlan.planDetails = JSON.stringify(currentPlan);
+    await this.patchPlan(this.currentProject?.id as string, currentPlan);
 
-    for (const plan of plans) {
-      await this.patchPlan(this.currentProject?.id as string, plan)
-    }
   }
 
   getPlan = (planId: string) => {
