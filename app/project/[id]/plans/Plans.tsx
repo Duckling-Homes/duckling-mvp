@@ -88,9 +88,12 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
   async function handlePlanEdition(name: string) {
     const updatedPlan: Plan = {
+      ...currentPlan,
       id: currentPlan?.id,
       name: name,
     }
+
+    console.log("PLAN", updatedPlan);
 
     await ModelStore.patchPlan(currentProject.id as string, updatedPlan)
 

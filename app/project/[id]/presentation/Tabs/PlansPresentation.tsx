@@ -30,7 +30,7 @@ const PlansPresentation: React.FC<{
       setPlans(project.plans)
       if (!currentPlan?.id) {
         setCurrentPlan(project.plans[0])
-        const planDetails = parsePlanDetails(project.plans[0])
+        const planDetails = parsePlanDetails(project.plans[0])        
         const newPlanPhotos = photos.filter(
           (photo) => planDetails?.imageIds?.includes(photo.id ?? '')
         )
