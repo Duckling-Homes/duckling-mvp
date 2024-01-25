@@ -15,7 +15,7 @@ import {
   ProjectEnvelopeComponent,
   ProjectRoom,
 } from '@/types/types'
-import { makeAutoObservable, observable, runInAction, toJS } from 'mobx'
+import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 import { AggregationLimit } from '@prisma/client'
