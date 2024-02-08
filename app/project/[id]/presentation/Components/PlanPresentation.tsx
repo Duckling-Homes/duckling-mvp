@@ -1,5 +1,5 @@
 'use client'
-import { CatalogueItem, Incentive, PhotoDetails, Plan } from '@/types/types'
+import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { Home } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
@@ -14,9 +14,10 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CatalogItemView from './CatalogItemView'
 import { useEffect, useState } from 'react'
-import { Button, Divider } from '@mui/material'
+import { Button } from '@mui/material'
 import Markdown from 'react-markdown'
 import '../style.scss'
+import FinancingCard from './FinancingCard'
 
 const PlanPresentation: React.FC<{
   plan: Plan
@@ -145,36 +146,6 @@ const PlanPresentation: React.FC<{
     return netCost - totalTaxCredits
   }
 
-  function renderIncentivesList(type: string, plan: Plan) {
-    let catalogueItems = []
-    const incentivesToRender = [] as Incentive[]
-
-    if (plan?.catalogueItems) {
-      catalogueItems = plan?.catalogueItems
-    } else if (plan?.planDetails) {
-      catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
-    }
-
-    catalogueItems?.forEach((item: CatalogueItem) => {
-      if (item.incentives) {
-        item.incentives.forEach((incentive) => {
-          if (incentive.selected && incentive.type == type) {
-            incentivesToRender.push(incentive)
-          }
-        })
-      }
-    })
-
-    return incentivesToRender.map((incentive) => (
-      <div className="incentive" key={incentive.id}>
-        <span className="name">{incentive.name}</span>
-        <span className="price">{`-$${
-          incentive.finalCalculations?.usedAmount.toFixed(2) || 0
-        }`}</span>
-      </div>
-    ))
-  }
-
   return (
     <>
       {/* Plan Summary */}
@@ -296,34 +267,12 @@ const PlanPresentation: React.FC<{
           <p>Financing</p>
         </div>
         <div className="financing__content">
-          <div className="financing__card">
-            <div className="financing__sectionItem">
-              <div className="title">
-                Upgrade Value
-                <span>{`$${calculateEstimatedCost(plan).toFixed(2)}`}</span>
-              </div>
-              <div className="incentiveList">
-                {renderIncentivesList('Rebate', plan)}
-              </div>
-            </div>
-            <Divider />
-            <div className="financing__sectionItem">
-              <div className="title">
-                Net Cost
-                <span>{`$${calculateNetCost(plan).toFixed(2)}`}</span>
-              </div>
-              <div className="incentiveList">
-                {renderIncentivesList('TaxCredit', plan)}
-              </div>
-              <Divider />
-              <div className="planCreation__sectionItem">
-                <div className="title">
-                  Final Cost
-                  <span>{`$${calculateFinalCost(plan).toFixed(2)}`}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <FinancingCard
+            plan={plan}
+            totalValue={calculateEstimatedCost(plan).toFixed(2)}
+            netCost={calculateNetCost(plan).toFixed(2)}
+            finalCost={calculateFinalCost(plan).toFixed(2)}
+          />
           <div className="financing__card">
             <LargeFinancingCalculator
               totalAmount={calculateFinalCost(plan)}

@@ -1,0 +1,70 @@
+.financingCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+
+  .bottomCard {
+    background-color: #e8eaf6;
+    border-radius: 16px;
+    color: #000;
+    width: 350px;
+
+    .content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: space-between;
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
+
+  .secondCard {
+    background-color: #c5cae9;
+    border-radius: 16px;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      color: #000;
+    }
+  }
+
+  .thirdCard {
+    background-color: #000d5a;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 8px;
+    color: #fff;
+    align-items: flex-start;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s ease-in-out;
+    box-sizing: border-box;
+
+    .item {
+      color: #efefef;
+    }
+  }
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-weight: 500;
+    font-size: 20px;
+  }
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 12px;
+  }
+}
