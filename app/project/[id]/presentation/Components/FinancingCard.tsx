@@ -45,12 +45,20 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
 
     console.log(catalogueItems)
 
-    return catalogueItems.map((item: CatalogueItem) => (
-      <div className="item" key={item.customId}>
-        <small>{item.name}</small>
-        <small>{`$${item.calculatedPrice.toFixed(2) || 0}`}</small>
-      </div>
-    ))
+    return catalogueItems.map((item: CatalogueItem) => {
+      const cost = item.calculatedPrice
+        ? item.calculatedPrice
+        : item.basePricePer && item.quantity
+          ? item.basePricePer * item.quantity
+          : 0
+
+      return (
+        <div className="item" key={item.customId}>
+          <small>{item.name}</small>
+          <small>{`$${cost.toFixed(2) || 0}`}</small>
+        </div>
+      )
+    })
   }
 
   return (
