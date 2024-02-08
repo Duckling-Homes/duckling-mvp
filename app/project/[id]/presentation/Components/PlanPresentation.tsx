@@ -1,5 +1,5 @@
 'use client'
-import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
+import { CatalogueItem, Incentive, PhotoDetails, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { Home } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
@@ -14,7 +14,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CatalogItemView from './CatalogItemView'
 import { useEffect, useState } from 'react'
-import { Button } from '@mui/material'
+import { Button, Divider } from '@mui/material'
 import Markdown from 'react-markdown'
 import '../style.scss'
 import FinancingCard from './FinancingCard'
@@ -144,6 +144,36 @@ const PlanPresentation: React.FC<{
     })
 
     return netCost - totalTaxCredits
+  }
+
+  function renderIncentivesList(type: string, plan: Plan) {
+    let catalogueItems = []
+    const incentivesToRender = [] as Incentive[]
+
+    if (plan?.catalogueItems) {
+      catalogueItems = plan?.catalogueItems
+    } else if (plan?.planDetails) {
+      catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
+    }
+
+    catalogueItems?.forEach((item: CatalogueItem) => {
+      if (item.incentives) {
+        item.incentives.forEach((incentive) => {
+          if (incentive.selected && incentive.type == type) {
+            incentivesToRender.push(incentive)
+          }
+        })
+      }
+    })
+
+    return incentivesToRender.map((incentive) => (
+      <div className="incentive" key={incentive.id}>
+        <span className="name">{incentive.name}</span>
+        <span className="price">{`-$${
+          incentive.finalCalculations?.usedAmount.toFixed(2) || 0
+        }`}</span>
+      </div>
+    ))
   }
 
   return (
