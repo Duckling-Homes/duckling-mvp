@@ -355,6 +355,7 @@ enum Category {
   HVAC
   Appliances
   Electrical
+  Other
 }
 
 enum CatalogEntryType {
