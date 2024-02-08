@@ -176,6 +176,20 @@ const PlanPresentation: React.FC<{
     ))
   }
 
+  function formatCurrency(amount) {
+    amount = parseFloat(amount)
+
+    amount = Math.round((amount + Number.EPSILON) * 100) / 100
+
+    return (
+      '$' +
+      amount.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    )
+  }
+
   return (
     <>
       {/* Plan Summary */}
@@ -299,9 +313,9 @@ const PlanPresentation: React.FC<{
         <div className="financing__content">
           <FinancingCard
             plan={plan}
-            totalValue={calculateEstimatedCost(plan).toFixed(2)}
-            netCost={calculateNetCost(plan).toFixed(2)}
-            finalCost={calculateFinalCost(plan).toFixed(2)}
+            totalValue={formatCurrency(calculateEstimatedCost(plan))}
+            netCost={formatCurrency(calculateNetCost(plan))}
+            finalCost={formatCurrency(calculateFinalCost(plan))}
           />
           <div className="financing__card">
             <LargeFinancingCalculator

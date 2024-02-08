@@ -43,10 +43,13 @@
     padding: 16px;
     gap: 8px;
     color: #fff;
-    align-items: flex-start;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
     transition: all 0.5s ease-in-out;
     box-sizing: border-box;
+
+    .MuiDivider-root {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
 
     .item {
       color: #efefef;
@@ -59,6 +62,7 @@
     width: 100%;
     font-weight: 500;
     font-size: 20px;
+    padding-bottom: 16px;
   }
 
   .item {
@@ -66,5 +70,8 @@
     justify-content: space-between;
     width: 100%;
     font-size: 12px;
+    small {
+      max-width: 80%;
+    }
   }
 }

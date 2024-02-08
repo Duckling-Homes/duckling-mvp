@@ -24,13 +24,18 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
       }
     })
 
-    return incentivesToRender.map((incentive) => (
-      <div className="item" key={incentive.id}>
-        <small>{incentive.name}</small>
-        <small>{`-$${
-          incentive.finalCalculations?.usedAmount.toFixed(2) || 0
-        }`}</small>
-      </div>
+    return incentivesToRender.map((incentive, index) => (
+      <>
+        <div className="item" key={incentive.id}>
+          <small>{incentive.name}</small>
+          <small>{`-$${
+            incentive.finalCalculations?.usedAmount.toFixed(2) || 0
+          }`}</small>
+        </div>
+        {index !== incentivesToRender.length - 1 && (
+          <Divider variant="middle" />
+        )}
+      </>
     ))
   }
 
@@ -45,7 +50,7 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
 
     console.log(catalogueItems)
 
-    return catalogueItems.map((item: CatalogueItem) => {
+    return catalogueItems.map((item: CatalogueItem, index) => {
       const cost = item.calculatedPrice
         ? item.calculatedPrice
         : item.basePricePer && item.quantity
@@ -53,10 +58,13 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
           : 0
 
       return (
-        <div className="item" key={item.customId}>
-          <small>{item.name}</small>
-          <small>{`$${cost.toFixed(2) || 0}`}</small>
-        </div>
+        <>
+          <div className="item" key={item.customId}>
+            <small>{item.name}</small>
+            <small>{`$${cost.toFixed(2) || 0}`}</small>
+          </div>
+          {index !== catalogueItems.length - 1 && <Divider variant="middle" />}
+        </>
       )
     })
   }
@@ -68,7 +76,7 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
           <div className="thirdCard">
             <div className="title">
               Upgrade Value
-              <span>{`$${totalValue}`}</span>
+              <span>{totalValue}</span>
             </div>
             {renderPlanItemsList(plan)}
           </div>
@@ -84,7 +92,7 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
             <Divider />
             <div className="title">
               Cost after Rebates
-              <span>{`$${netCost}`}</span>
+              <span>{netCost}</span>
             </div>
           </div>
         </div>
@@ -100,7 +108,7 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
           <Divider />
           <div className="title">
             Final Value
-            <span>{`$${finalCost}`}</span>
+            <span>{finalCost}</span>
           </div>
         </div>
       </div>
