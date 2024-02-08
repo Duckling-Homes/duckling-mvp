@@ -290,6 +290,7 @@ const PlanPresentation: React.FC<{
         </div>
       </div>
 
+      {/* Financing Calculator */}
       <div className="financing">
         <div className="financing__header">
           <AttachMoneyIcon />
