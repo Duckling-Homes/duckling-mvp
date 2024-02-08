@@ -355,6 +355,7 @@ enum Category {
   HVAC
   Appliances
   Electrical
+  Other
 }
 
 enum CatalogEntryType {
@@ -396,6 +397,7 @@ enum RebateOrg {
   BayREN
   IRA
   NYSERDA
+  ConsumersEnergy
 }
 
 enum CalculationType {
