@@ -1,21 +1,17 @@
 import fs from 'fs'
-import csv from 'csv-parser'
-import { PrismaClient, Prisma } from '@prisma/client'
+import * as Papa from 'papaparse'
+import { PrismaClient } from '@prisma/client'
 
 // Function to read CSV and print the details
 const processCSV = async (filePath: string, prisma: PrismaClient) => {
-  const rows: any[] = []
+  const csvFile = fs.readFileSync(filePath, 'utf8')
 
   // Read and collect rows
-  fs.createReadStream(filePath)
-    .pipe(csv())
-    .on('data', (row) => {
-      rows.push(row)
-    })
-    .on('end', async () => {
-      console.log('CSV file reading completed. Processing data...')
-
-      for (const row of rows) {
+  Papa.parse(csvFile, {
+    header: true,
+    skipEmptyLines: true,
+    complete: async (results) => {
+      for (const row of results.data as any[]) {
         if (!row.name || row.name.trim() === '') {
           console.error('Error: Missing orgName. Skipping row.')
           continue // Skip to the next iteration
@@ -88,9 +84,8 @@ const processCSV = async (filePath: string, prisma: PrismaClient) => {
           console.error(`Failed to process row for orgName: ${orgName}`, error)
         }
       }
-
-      console.log('CSV file successfully processed')
-    })
+    },
+  })
 }
 
 const main = async (): Promise<void> => {
