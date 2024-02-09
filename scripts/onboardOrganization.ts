@@ -13,7 +13,7 @@ const main = async (): Promise<void> => {
   if (args.length < 3) {
     console.error('Incorrect number of arguments.')
     console.error(
-      'Usage: ./scripts/onboardOrganization.ts <databaseEndpoint> <orgName> <email1,email2,...> [<orgDescription>] [<orgWebPage>]'
+      'Usage: ./scripts/onboardOrganization.ts <databaseEndpoint> <orgName> <email1,email2,...>'
     )
     console.error(
       "Example: ./scripts/onboardOrganization.ts 'postgresql://admin:admin@localhost:5432/db' 'NewOrg' 'user1@example.com,user2@example.com'"
@@ -21,13 +21,7 @@ const main = async (): Promise<void> => {
     process.exit(1)
   }
 
-  const [
-    databaseEndpoint,
-    orgName,
-    emailList,
-    description = null,
-    webpage = null,
-  ] = args
+  const [databaseEndpoint, orgName, emailList] = args
   const emails = emailList.split(',')
 
   // Initialize Prisma client
@@ -52,23 +46,10 @@ const main = async (): Promise<void> => {
     console.log(
       `Organization '${orgName}' already exists with ID: ${existingOrg.id}.`
     )
-
-    if (description) {
-      await prisma.organization.update({
-        where: { id: existingOrg.id },
-        data: { description },
-      })
-    }
-    if (webpage) {
-      await prisma.organization.update({
-        where: { id: existingOrg.id },
-        data: { webpage },
-      })
-    }
   } else {
     // Create a new organization if we don't have an existing one
     existingOrg = await prisma.organization.create({
-      data: { name: orgName, description, webpage },
+      data: { name: orgName },
     })
     console.log(
       `Created new organization '${orgName}' with ID: ${existingOrg.id}.`
