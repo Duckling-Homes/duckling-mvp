@@ -76,7 +76,7 @@ const ShareablePresentation = observer(() => {
       {currentPresentation && (
         <Container
           publicRoute={true}
-          orgName={currentPresentation?.organizationName}
+          orgName={currentPresentation.organization?.name}
         >
           <div className="dataCollection">
             <div className="dataCollection__header">
@@ -88,6 +88,7 @@ const ShareablePresentation = observer(() => {
           </div>
           <TabHolder
             project={currentPresentation.projectDetails}
+            organization={currentPresentation.organization}
             photos={photos}
           ></TabHolder>
         </Container>

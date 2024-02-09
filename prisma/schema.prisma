@@ -25,8 +25,10 @@ model User {
 }
 
 model Organization {
-  id        String @id @default(uuid())
-  name      String
+  id             String @id @default(uuid())
+  name           String
+  description    String?
+  webpage        String?
 
   users User[]
   projects Project[]

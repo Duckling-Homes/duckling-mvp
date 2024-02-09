@@ -38,7 +38,11 @@ export const GET = async (req: NextRequest, context: ContextType) => {
   const plans = await getPlansByProjectId(projectId)
 
   return NextResponse.json({
-    organizationName: organization?.name,
+    organization: {
+      name: organization?.name,
+      description: organization?.description,
+      webpage: organization?.webpage,
+    },
     projectDetails: {
       ...project,
       data: projectData,
