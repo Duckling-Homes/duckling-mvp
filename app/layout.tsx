@@ -4,6 +4,7 @@ import { Roboto } from 'next/font/google'
 import { Metadata } from 'next'
 
 import { ClerkProvider } from '@clerk/nextjs'
+import { init } from '@fullstory/browser'
 import './globals.scss'
 // import ducklingTheme from "./style/theme/theme" // Here whenever we decide to move to our own theme
 
@@ -37,6 +38,9 @@ export const metadata: Metadata = {
     'Contractor SaaS',
   ],
 }
+
+init({ orgId: 'o-1NMA36-na1' });
+
 
 export default function RootLayout({
   children,
