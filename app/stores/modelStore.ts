@@ -52,55 +52,60 @@ export class _ModelStore {
   }
 
   init = async () => {
-    if (this.isInitialized) return
-
-    this.isInitialized = true
-    // SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
-    console.log("SYNC IS ", SyncAPI.sync);
-
-    SyncAPI.events.on('has-pending-changes', (status: boolean) => {
-      runInAction(() => (this.hasPendingChanges = status))
-    })
-
-    SyncAPI.events.on('did-go-online', (_) => {
-      runInAction(() => {
-        this.onlineStatus = 'online'
-      })
-    })
-
-    SyncAPI.events.on('did-go-offline', (_) => {
-      runInAction(() => {
-        this.onlineStatus = 'offline'
-      })
-    })
-
-    // Any time a Project is updated by the SyncAPI, this hook will trigger to update MobX
-    SyncAPI.events.on(
-      'did-modify-dbobject',
-      (objectID: string, value: _Object | null) => {
-        const object = value?.json
-        const objectType = value?.type
-
-        runInAction(() => {
-          if (objectType === 'Project') {
-            this._updateMobxProject(object as Project)
-          } else if (!object) {
-            this.projectsByID.delete(objectID)
+    if (this.isInitialized) return Promise.resolve();
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.isInitialized = true;
+        // SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
+          
+        SyncAPI.events.on('has-pending-changes', (status: boolean) => {
+          runInAction(() => (this.hasPendingChanges = status));
+        });
+  
+        SyncAPI.events.on('did-go-online', (_) => {
+          runInAction(() => {
+            this.onlineStatus = 'online';
+          });
+        });
+  
+        SyncAPI.events.on('did-go-offline', (_) => {
+          runInAction(() => {
+            this.onlineStatus = 'offline';
+          });
+        });
+  
+        SyncAPI.events.on(
+          'did-modify-dbobject',
+          (objectID: string, value: _Object | null) => {
+            const object = value?.json;
+            const objectType = value?.type;
+  
+            runInAction(() => {
+              if (objectType === 'Project') {
+                this._updateMobxProject(object as Project);
+              } else if (!object) {
+                this.projectsByID.delete(objectID);
+              }
+            });
           }
-        })
+        );
+  
+        const projects = await SyncAPI.sync();
+        for (const proj of projects) {
+          if (!this.projectsByID.has(proj.id!)) {
+            this.projectsByID.set(proj.id!, proj);
+          }
+        }
+        resolve(null);
+      } catch (error) {
+        reject(error);
       }
-    )
-
-    await SyncAPI.sync()
-    const projects = await SyncAPI.projects.list()
-    for (const proj of projects) {
-      if (!this.projectsByID.has(proj.id!)) {
-        this.projectsByID.set(proj.id!, proj)
-      }
-    }
+    });
   }
 
+
   setCurrentProject = async (projectId: string) => {
+    await this.init();
     const project = await this.reloadProject(projectId)
     this.currentProject = project
     if (project.plans && this.plans.length === 0) {
@@ -133,7 +138,7 @@ export class _ModelStore {
   reloadProject = async (projectID: string) => {
     console.debug('[offline]', 'loading')
     this.init()
-    const project = await SyncAPI.projects.get(projectID)
+    const project = await SyncAPI.projects.get(projectID, {writable: true});
     this.plans = project.plans || []
     this._updateMobxProject(project)
     return project
