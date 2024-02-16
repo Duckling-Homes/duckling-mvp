@@ -56,6 +56,7 @@ export class _ModelStore {
 
     this.isInitialized = true
     // SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
+    console.log("SYNC IS ", SyncAPI.sync);
 
     SyncAPI.events.on('has-pending-changes', (status: boolean) => {
       runInAction(() => (this.hasPendingChanges = status))
