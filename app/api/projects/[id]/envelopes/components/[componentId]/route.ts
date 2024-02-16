@@ -21,7 +21,7 @@ export const DELETE = withErrorHandler(
       params.componentId
     )
 
-    return NextResponse.json(await deleteEnvelopeComponet(params.id))
+    return NextResponse.json(await deleteEnvelopeComponet(params.componentId))
   }
 )
 

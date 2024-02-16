@@ -61,7 +61,9 @@ const DeleteModal: React.FC<{
 
 const ChipManager: React.FC<ChipManagerProps> = observer(
   ({ chips, currentChip, chipType, onChipClick, onDelete, onCreate }) => {
-    const [deleteEnvelope, setDeleteEnvelope] = useState<{
+
+    console.log("CHIPS", chips);
+    const [toDelete, setToDelete] = useState<{
       id: string
       name: string
     }>({
@@ -70,8 +72,8 @@ const ChipManager: React.FC<ChipManagerProps> = observer(
     })
 
     const handleDeleteClick = () => {
-      onDelete(deleteEnvelope.id)
-      setDeleteEnvelope({
+      onDelete(toDelete.id)
+      setToDelete({
         id: '',
         name: '',
       })
@@ -80,15 +82,15 @@ const ChipManager: React.FC<ChipManagerProps> = observer(
     return (
       <>
         <DeleteModal
-          open={!!deleteEnvelope.name}
+          open={!!toDelete.name}
           onClose={() =>
-            setDeleteEnvelope({
+            setToDelete({
               id: '',
               name: '',
             })
           }
           onConfirm={handleDeleteClick}
-          chipName={deleteEnvelope.name}
+          chipName={toDelete.name}
         />
         <div
           style={{
@@ -108,7 +110,7 @@ const ChipManager: React.FC<ChipManagerProps> = observer(
               color={chip.id === currentChip ? 'primary' : 'default'}
               onClick={() => onChipClick(i)}
               onDelete={() =>
-                setDeleteEnvelope({
+                setToDelete({
                   id: chip.id as string,
                   name: chip.name || 'Unknown Name',
                 })

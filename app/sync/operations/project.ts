@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
 import { Project, ProjectData } from '@/types/types'
-import { isOnline, synchronizedFetch } from '../utils'
+import { isOnline, markObjectWritable, synchronizedFetch } from '../utils'
 import { SyncAPI } from '..'
 import { syncAPImutation } from '.'
 
@@ -32,7 +32,7 @@ export class ProjectSyncOperations {
     )
   }
 
-  get = syncAPImutation(async (projectID: string) => {
+  get = syncAPImutation(async (projectID: string, options?: {writable: boolean}) => {
     // Only pull latest if last view was not written by client
     let obj = await db.objects.where('id').equals(projectID).first()
 
@@ -45,6 +45,10 @@ export class ProjectSyncOperations {
       default:
         await this._pullProjectFromAPI(projectID)
         obj = await db.objects.where('id').equals(projectID).first()
+    }
+
+    if (options?.writable && (obj?.source === 'api' || !obj?.source)) {
+      await markObjectWritable(obj!);
     }
 
     console.debug('[offline]', 'GOT', projectID, obj?.json)
@@ -122,7 +126,7 @@ export class ProjectSyncOperations {
   })
 
   _swap = async (projectID: string, edit: (project: Project) => Project) => {
-    const project = await this.get(projectID)
+    const project = await this.get(projectID, {writable: true});
     const edited = edit(project)
     db.putObject({
       id: project.id!,

@@ -86,12 +86,14 @@ class _SyncAPI {
 
   sync = async () => {
     if (!this.loopingInterval) this.init()
+
     if (!isOnline()) {
       console.warn('Ignore sync, is offline...')
-      return
+    } else {
+      await this.pushChanges();
     }
-    await this.pushChanges()
-    await this.pullLatest()
+    
+    return await this.pullLatest();
   }
 
   pushChanges = async () => {
@@ -99,10 +101,11 @@ class _SyncAPI {
   }
 
   pullLatest = async () => {
-    const projects = await this.projects.list()
+    const projects = await this.projects.list();
     projects.forEach((p) => {
-      this.projects.get(p.id!)
+      this.projects.get(p.id!);
     })
+    return projects;
   }
 
   setBackgroundSync = (enabled: boolean, intervalMS: number = 5000) => {
