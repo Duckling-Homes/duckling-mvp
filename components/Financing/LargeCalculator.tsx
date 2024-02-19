@@ -2,7 +2,6 @@
 
 import {
   Box,
-  Button,
   Container,
   Divider,
   InputAdornment,
@@ -20,15 +19,12 @@ import {
 } from '../../lib/financing'
 
 import { useFinancingCalculator } from '@/hooks/useFinancingCalculator'
-import { InputSlider } from '../Sliders/InputSlider'
 import { useState } from 'react'
 
 import formatCurrency from '@/app/utils/utils'
-import { Check, Done, Edit, EditOutlined } from '@mui/icons-material'
+import { Done, EditOutlined } from '@mui/icons-material'
 
 import './style.scss'
-import { TextInput } from '../Inputs'
-import { toJS } from 'mobx'
 
 type Props = FinancingCalculatorProps & {
   onUpdate?: (selection: FinancingSelection) => void
@@ -161,7 +157,9 @@ export const LargeFinancingCalculator = (props: Props) => {
                     sx={{
                       width: '120px',
                     }}
-                    onChange={({ target }) => setLoanAmount(target.value)}
+                    onChange={({ target }) =>
+                      setLoanAmount(parseFloat(target.value))
+                    }
                   />
                 ) : (
                   <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>
@@ -179,7 +177,7 @@ export const LargeFinancingCalculator = (props: Props) => {
               </div>
               <Slider
                 value={loanAmount}
-                onChange={(e, newValue) => setLoanAmount(newValue)}
+                onChange={(e, newValue) => setLoanAmount(newValue as number)}
                 min={loanAmtSliderMin}
                 max={loanAmtSliderMax}
               />
@@ -223,7 +221,7 @@ export const LargeFinancingCalculator = (props: Props) => {
                     sx={{
                       width: '120px',
                     }}
-                    onChange={({ target }) => setAPR(target.value)}
+                    onChange={({ target }) => setAPR(parseFloat(target.value))}
                   />
                 ) : (
                   <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>
@@ -240,7 +238,7 @@ export const LargeFinancingCalculator = (props: Props) => {
                 )}
               </div>
               <Slider
-                onChange={(e, newValue) => setAPR(newValue)}
+                onChange={(e, newValue) => setAPR(newValue as number)}
                 value={apr ?? 0}
                 min={option?.minAPR ?? 0}
                 max={option?.maxAPR ?? 100}

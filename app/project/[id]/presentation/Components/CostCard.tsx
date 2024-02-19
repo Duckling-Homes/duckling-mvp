@@ -3,7 +3,19 @@ import { Divider } from '@mui/material'
 import './style.scss'
 import { CatalogueItem, Incentive, Plan } from '@/types/types'
 
-const CostCard = ({ plan, totalValue, netCost, finalCost }) => {
+interface CostCardProps {
+  plan: Plan
+  totalValue: string | number
+  netCost: string | number
+  finalCost: string | number
+}
+
+const CostCard: React.FC<CostCardProps> = ({
+  plan,
+  totalValue,
+  netCost,
+  finalCost,
+}) => {
   function renderIncentivesList(type: string, plan: Plan) {
     let catalogueItems = []
     const incentivesToRender = [] as Incentive[]
@@ -50,7 +62,7 @@ const CostCard = ({ plan, totalValue, netCost, finalCost }) => {
 
     console.log(catalogueItems)
 
-    return catalogueItems.map((item: CatalogueItem, index) => {
+    return catalogueItems.map((item: CatalogueItem, index: number) => {
       const cost = item.calculatedPrice
         ? item.calculatedPrice
         : item.basePricePer && item.quantity

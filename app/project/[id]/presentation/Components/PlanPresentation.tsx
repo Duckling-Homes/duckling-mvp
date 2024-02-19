@@ -147,14 +147,14 @@ const PlanPresentation: React.FC<{
     return netCost - totalTaxCredits
   }
 
-  function formatCurrency(amount) {
-    amount = parseFloat(amount)
+  function formatCurrency(amount: string | number) {
+    let formatedAmount = parseFloat(amount as string)
 
-    amount = Math.round((amount + Number.EPSILON) * 100) / 100
+    formatedAmount = Math.round((formatedAmount + Number.EPSILON) * 100) / 100
 
     return (
       '$' +
-      amount.toLocaleString('en-US', {
+      formatedAmount.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })
