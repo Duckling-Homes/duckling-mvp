@@ -6,7 +6,14 @@ import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
 import { CatalogueItem, Copy, Incentive, Plan, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
-import { Button, Chip, CircularProgress, Divider, IconButton, TextField } from '@mui/material'
+import {
+  Button,
+  Chip,
+  CircularProgress,
+  Divider,
+  IconButton,
+  TextField,
+} from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
 import PlanItem from './Upgrades/PlanItem'
@@ -35,7 +42,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     summary: '',
     comfort: '',
     health: '',
-    recommended: ''
+    recommended: '',
   })
 
   const currentPlan = (currentProject?.plans ?? []).find(
@@ -209,7 +216,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
     return incentivesToRender.map((incentive) => (
       <div className="incentive" key={incentive.id}>
-        <div className='textWrapper'>
+        <div className="textWrapper">
           <span className="name">{incentive.name}</span>
           <small>{incentive.finalCalculations?.warningText}</small>
         </div>
@@ -376,17 +383,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 >
                   <Icons.ContentCopy onClick={() => duplicatePlan()} />
                 </IconButton>
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => setIncentivesModal(true)}
-                  startIcon={<Icons.Check />}
-                  sx={{
-                    backgroundColor: '#2E7D32',
-                  }}
-                >
-                  Complete Plan
-                </Button>
               </div>
               <small>Click on “+ ADD” buttons to start adding projects.</small>
               <PlanItem
@@ -440,16 +436,17 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                     <Icons.AttachMoney fontSize="small" />
                     <p>Cost</p>
                   </div>
-                  <IconButton
+                  <Button
                     sx={{
-                      borderRadius: '4px',
-                      backgroundColor: '#2196F3',
-                      color: '#fff',
-                      padding: '4px 11px',
+                      fontSize: '10px',
                     }}
+                    variant="contained"
+                    size="small"
+                    onClick={() => setIncentivesModal(true)}
+                    endIcon={<Icons.Tune />}
                   >
-                    <Icons.Tune />
-                  </IconButton>
+                    Set Incentives
+                  </Button>
                 </div>
                 <div className="planCreation__sectionItem">
                   <div className="title">
@@ -513,46 +510,55 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                     Generate
                   </Button>
                 </div>
-                { isLoading ? 
-                (<div className="planCreation__copyReview">
-                  <span>Generating Copy</span>
-                  <CircularProgress />
-                </div>) :
-                (<>
-                  <div className="planCreation__sectionItem">
-                    Plan Summary
-                    <TextField
-                      multiline
-                      value={copyFields?.summary || ''}
-                      onChange={({ target }) => updateCopyFields(target.value, 'summary')}
-                    />
+                {isLoading ? (
+                  <div className="planCreation__copyReview">
+                    <span>Generating Copy</span>
+                    <CircularProgress />
                   </div>
-                  <div className="planCreation__sectionItem">
-                    Comfort Summary
-                    <TextField
-                      multiline
-                      value={copyFields?.comfort || ''}
-                      onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
-                    />
-                  </div>
-                  <div className="planCreation__sectionItem">
-                    Health Summary
-                    <TextField
-                      multiline
-                      value={copyFields?.health || ''}
-                      onChange={({ target }) => updateCopyFields(target.value, 'health')}
-                    />
-                  </div>
-                  <div className="planCreation__sectionItem">
-                    Recommended
-                    <TextField
-                      multiline
-                      value={copyFields?.recommended || ''}
-                      onChange={({ target }) => updateCopyFields(target.value, 'recommended')}
-                    />
-                  </div>
-                </>)
-                }
+                ) : (
+                  <>
+                    <div className="planCreation__sectionItem">
+                      Plan Summary
+                      <TextField
+                        multiline
+                        value={copyFields?.summary || ''}
+                        onChange={({ target }) =>
+                          updateCopyFields(target.value, 'summary')
+                        }
+                      />
+                    </div>
+                    <div className="planCreation__sectionItem">
+                      Comfort Summary
+                      <TextField
+                        multiline
+                        value={copyFields?.comfort || ''}
+                        onChange={({ target }) =>
+                          updateCopyFields(target.value, 'comfort')
+                        }
+                      />
+                    </div>
+                    <div className="planCreation__sectionItem">
+                      Health Summary
+                      <TextField
+                        multiline
+                        value={copyFields?.health || ''}
+                        onChange={({ target }) =>
+                          updateCopyFields(target.value, 'health')
+                        }
+                      />
+                    </div>
+                    <div className="planCreation__sectionItem">
+                      Recommended
+                      <TextField
+                        multiline
+                        value={copyFields?.recommended || ''}
+                        onChange={({ target }) =>
+                          updateCopyFields(target.value, 'recommended')
+                        }
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

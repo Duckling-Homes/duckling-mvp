@@ -128,16 +128,12 @@
   &__content {
     display: flex;
     flex-direction: row;
-    gap: 16px;
-    justify-content: center;
+    justify-content: space-around;
+    align-items: center;
   }
   &__card {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #eeeeee;
-    border-radius: 4px;
-    padding: 16px;
-    gap: 16px;
+    background-color: #e8eaf6;
+    border-radius: 8px;
   }
   &__sectionItem {
     display: flex;
@@ -208,5 +204,14 @@
     font-size: 16px;
     font-weight: 400;
     flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 769px) {
+  .financing {
+    &__content {
+      flex-direction: column;
+      gap: 24px;
+    }
   }
 }
