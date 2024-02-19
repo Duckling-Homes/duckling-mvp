@@ -5,10 +5,12 @@ import {
   Button,
   Container,
   Divider,
+  InputAdornment,
   MenuItem,
   Select,
   Slider,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material'
 
@@ -21,9 +23,11 @@ import { useFinancingCalculator } from '@/hooks/useFinancingCalculator'
 import { InputSlider } from '../Sliders/InputSlider'
 import { useState } from 'react'
 
-import './style.scss'
 import formatCurrency from '@/app/utils/utils'
-import { Edit, EditOutlined } from '@mui/icons-material'
+import { Check, Done, Edit, EditOutlined } from '@mui/icons-material'
+
+import './style.scss'
+import { TextInput } from '../Inputs'
 
 type Props = FinancingCalculatorProps & {
   onUpdate?: (selection: FinancingSelection) => void
@@ -45,7 +49,8 @@ export const LargeFinancingCalculator = (props: Props) => {
     loanAmtSliderMax,
     OPTION_IS_NO_LOAN,
   } = useFinancingCalculator(props)
-  const [selectedTerm, setSelectedTerm] = useState(0)
+  const [editLoan, setEditLoan] = useState(false)
+  const [editApr, setEditApr] = useState(false)
 
   const upfrontCostDisplayValue = calculated?.upfrontCost
     ? '$' + Math.round(calculated.upfrontCost).toLocaleString()
@@ -55,7 +60,11 @@ export const LargeFinancingCalculator = (props: Props) => {
     : '-'
 
   return (
-    <>
+    <div
+      style={{
+        width: '400px',
+      }}
+    >
       <Stack sx={{ rowGap: 4, my: 1 }}>
         <CalculatorRow label="Financing Option">
           <Select
@@ -90,46 +99,29 @@ export const LargeFinancingCalculator = (props: Props) => {
         </CalculatorRow>
 
         <CalculatorRow label="Length">
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              gap: '8px',
-              width: '100%',
+          <Select
+            fullWidth
+            size={'small'}
+            sx={{
+              backgroundColor: '#FFF',
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: 'none',
+              },
+            }}
+            disabled={option === undefined || OPTION_IS_NO_LOAN}
+            value={term ?? ''}
+            onChange={(event) => {
+              setTerm(event.target.value as number)
             }}
           >
             {option?.termLengths?.map((opt) => {
               return (
-                <div
-                  className={`termCard ${term === opt ? 'selected' : ''}`}
-                  key={opt}
-                  onClick={() => setTerm(opt)}
-                >
-                  <span>{opt}</span>
-                  <span>months</span>
-                </div>
+                <MenuItem value={opt} key={opt}>
+                  {opt + ' months'}
+                </MenuItem>
               )
             })}
-          </div>
-          {/* 
-            <Select
-              fullWidth
-              disabled={option === undefined || OPTION_IS_NO_LOAN}
-              size={'small'}
-              value={term ?? ''}
-              onChange={(event) => {
-                setTerm(event.target.value as number)
-              }}
-            >
-              {option?.termLengths?.map((opt) => {
-                return (
-                  <MenuItem value={opt} key={opt}>
-                    {opt + ' months'}
-                  </MenuItem>
-                )
-              })}
-            </Select> */}
+          </Select>
         </CalculatorRow>
 
         <CalculatorRow label="Loan Amount">
@@ -151,10 +143,34 @@ export const LargeFinancingCalculator = (props: Props) => {
               gap: '8px',
             }}
           >
-            <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>
-              {formatCurrency(loanAmount)}
-            </Typography>
-            <EditOutlined fontSize="small" />
+            {editLoan ? (
+              <TextField
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                }}
+                size="small"
+                variant="standard"
+                value={loanAmount.toFixed(2)}
+                sx={{
+                  width: '120px',
+                }}
+                onChange={({ target }) => setLoanAmount(target.value)}
+              />
+            ) : (
+              <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                {formatCurrency(loanAmount)}
+              </Typography>
+            )}
+            {editLoan ? (
+              <Done onClick={() => setEditLoan(false)} />
+            ) : (
+              <EditOutlined
+                fontSize="small"
+                onClick={() => setEditLoan(true)}
+              />
+            )}
           </div>
           <Slider
             value={loanAmount}
@@ -185,9 +201,36 @@ export const LargeFinancingCalculator = (props: Props) => {
               gap: '4px',
             }}
           >
-            <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>
-              {`${apr}%`}
-            </Typography>
+            {editApr ? (
+              <TextField
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">%</InputAdornment>
+                  ),
+                  inputProps: {
+                    max: option?.minAPR ?? 0,
+                    min: option?.maxAPR ?? 100,
+                  },
+                }}
+                type="number"
+                size="small"
+                variant="standard"
+                value={apr ?? 0}
+                sx={{
+                  width: '120px',
+                }}
+                onChange={({ target }) => setAPR(target.value)}
+              />
+            ) : (
+              <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                {`${apr}%`}
+              </Typography>
+            )}
+            {editApr ? (
+              <Done onClick={() => setEditApr(false)} />
+            ) : (
+              <EditOutlined fontSize="small" onClick={() => setEditApr(true)} />
+            )}
           </div>
           <Slider
             onChange={(e, newValue) => setAPR(newValue)}
@@ -212,7 +255,7 @@ export const LargeFinancingCalculator = (props: Props) => {
           </Box>
         </CalculatorRow>
       </Stack>
-    </>
+    </div>
   )
 }
 

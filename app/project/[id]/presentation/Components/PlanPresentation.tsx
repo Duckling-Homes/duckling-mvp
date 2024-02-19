@@ -1,5 +1,5 @@
 'use client'
-import { CatalogueItem, Incentive, PhotoDetails, Plan } from '@/types/types'
+import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { Home } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
