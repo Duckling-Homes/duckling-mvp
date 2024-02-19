@@ -3,7 +3,7 @@ import { Divider } from '@mui/material'
 import './style.scss'
 import { CatalogueItem, Incentive, Plan } from '@/types/types'
 
-const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
+const CostCard = ({ plan, totalValue, netCost, finalCost }) => {
   function renderIncentivesList(type: string, plan: Plan) {
     let catalogueItems = []
     const incentivesToRender = [] as Incentive[]
@@ -70,7 +70,7 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
   }
 
   return (
-    <div className="financingCard">
+    <div className="costCard">
       <div className="bottomCard">
         <div className="secondCard">
           <div className="thirdCard">
@@ -116,4 +116,4 @@ const FinancingCard = ({ plan, totalValue, netCost, finalCost }) => {
   )
 }
 
-export default FinancingCard
+export default CostCard

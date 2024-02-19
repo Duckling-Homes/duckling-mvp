@@ -14,10 +14,11 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CatalogItemView from './CatalogItemView'
 import { useEffect, useState } from 'react'
-import { Button, Divider } from '@mui/material'
+import { Button } from '@mui/material'
 import Markdown from 'react-markdown'
+import CostCard from './CostCard'
+
 import '../style.scss'
-import FinancingCard from './FinancingCard'
 
 const PlanPresentation: React.FC<{
   plan: Plan
@@ -146,36 +147,6 @@ const PlanPresentation: React.FC<{
     return netCost - totalTaxCredits
   }
 
-  function renderIncentivesList(type: string, plan: Plan) {
-    let catalogueItems = []
-    const incentivesToRender = [] as Incentive[]
-
-    if (plan?.catalogueItems) {
-      catalogueItems = plan?.catalogueItems
-    } else if (plan?.planDetails) {
-      catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
-    }
-
-    catalogueItems?.forEach((item: CatalogueItem) => {
-      if (item.incentives) {
-        item.incentives.forEach((incentive) => {
-          if (incentive.selected && incentive.type == type) {
-            incentivesToRender.push(incentive)
-          }
-        })
-      }
-    })
-
-    return incentivesToRender.map((incentive) => (
-      <div className="incentive" key={incentive.id}>
-        <span className="name">{incentive.name}</span>
-        <span className="price">{`-$${
-          incentive.finalCalculations?.usedAmount.toFixed(2) || 0
-        }`}</span>
-      </div>
-    ))
-  }
-
   function formatCurrency(amount) {
     amount = parseFloat(amount)
 
@@ -200,6 +171,41 @@ const PlanPresentation: React.FC<{
         </div>
         <div className="summary__text">
           <p>{plan.copy?.summary}</p>
+        </div>
+      </div>
+
+      {/* Home Benefits Copy */}
+      <div className="benefitsOverview">
+        <div className="benefitsOverview__header">
+          <NorthIcon />
+          <p>Benefits to Your Home</p>
+        </div>
+        <div className="benefit">
+          <div className="benefit__headerLeft">
+            <AcUnitIcon color="primary" />
+            <p>Comfort</p>
+          </div>
+          <div className="benefit__text">
+            <Markdown>{plan.copy?.comfort}</Markdown>
+          </div>
+        </div>
+        <div className="benefit">
+          <div className="benefit__headerLeft">
+            <FavoriteBorderIcon color="primary" />
+            <p>Health & Safety</p>
+          </div>
+          <div className="benefit__text">
+            <Markdown>{plan.copy?.health}</Markdown>
+          </div>
+        </div>
+        <div className="benefit">
+          <div className="benefit__headerLeft">
+            <Home color="primary" />
+            <p>Other Benefits</p>
+          </div>
+          <div className="benefit__text">
+            <Markdown>{plan.copy?.recommended}</Markdown>
+          </div>
         </div>
       </div>
 
@@ -270,48 +276,13 @@ const PlanPresentation: React.FC<{
         ))}
       </div>
 
-      {/* Home Benefits Copy */}
-      <div className="benefitsOverview">
-        <div className="benefitsOverview__header">
-          <NorthIcon />
-          <p>Benefits to Your Home</p>
-        </div>
-        <div className="benefit">
-          <div className="benefit__headerLeft">
-            <AcUnitIcon color="primary" />
-            <p>Comfort</p>
-          </div>
-          <div className="benefit__text">
-            <Markdown>{plan.copy?.comfort}</Markdown>
-          </div>
-        </div>
-        <div className="benefit">
-          <div className="benefit__headerLeft">
-            <FavoriteBorderIcon color="primary" />
-            <p>Health & Safety</p>
-          </div>
-          <div className="benefit__text">
-            <Markdown>{plan.copy?.health}</Markdown>
-          </div>
-        </div>
-        <div className="benefit">
-          <div className="benefit__headerLeft">
-            <Home color="primary" />
-            <p>Other Benefits</p>
-          </div>
-          <div className="benefit__text">
-            <Markdown>{plan.copy?.recommended}</Markdown>
-          </div>
-        </div>
-      </div>
-
       <div className="financing">
         <div className="financing__header">
           <AttachMoneyIcon />
           <p>Financing</p>
         </div>
         <div className="financing__content">
-          <FinancingCard
+          <CostCard
             plan={plan}
             totalValue={formatCurrency(calculateEstimatedCost(plan))}
             netCost={formatCurrency(calculateNetCost(plan))}

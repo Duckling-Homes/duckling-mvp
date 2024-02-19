@@ -1,4 +1,4 @@
-function formatCurrency(amount) {
+export default function formatCurrency(amount) {
   amount = parseFloat(amount)
   amount = Math.round((amount + Number.EPSILON) * 100) / 100
 
