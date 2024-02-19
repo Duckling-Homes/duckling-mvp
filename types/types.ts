@@ -154,6 +154,8 @@ export interface ProjectElectrical {
 
 export interface Organization {
   name: string
+  description?: string
+  webpage?: string
 }
 
 export interface VisualizerTextBlock {
@@ -280,7 +282,7 @@ export interface ProductCatalogue {
 }
 
 export interface PresentationDetails {
-  organizationName: string
+  organization: Organization
   projectDetails: Project
 }
 

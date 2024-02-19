@@ -81,7 +81,9 @@ const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
             </IconButton>
           </Link>
         )}
-        <p className="header__title">{organizationName}</p>
+        <p className="header__title">
+          {organization ? organization.name : organizationName}
+        </p>
         {!publicRoute && (
           <IconButton
             sx={{

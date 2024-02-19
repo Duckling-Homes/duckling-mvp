@@ -60,8 +60,6 @@ export class PlansSyncOperations {
       return proj
     })
 
-    SyncAPI.pushChanges()
-
     return plan
   })
 

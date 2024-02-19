@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import ModelStore from '@/app/stores/modelStore'
-import { PhotoDetails, Project } from '@/types/types'
+import { Organization, PhotoDetails, Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import TabHolder from './Tabs/TabHolder'
 import LinkCopier from './Components/LinkCopier'
@@ -13,6 +13,7 @@ const Presentation = observer(() => {
   const { user } = useUser()
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const project = ModelStore.currentProject as Project
+  const organization = ModelStore.organization as Organization
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`
 
@@ -36,7 +37,11 @@ const Presentation = observer(() => {
 
   return (
     <>
-      <TabHolder project={project} photos={photos}></TabHolder>
+      <TabHolder
+        project={project}
+        photos={photos}
+        organization={organization}
+      ></TabHolder>
       <div className="summary">
         <div className="summary__header">
           <LinkCopier
