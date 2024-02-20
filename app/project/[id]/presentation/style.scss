@@ -127,9 +127,14 @@
   }
   &__content {
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
+    gap: 24px;
     align-items: center;
+  }
+  &__wrapper {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
   }
   &__card {
     background-color: #e8eaf6;

@@ -443,7 +443,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                     variant="contained"
                     size="small"
                     onClick={() => setIncentivesModal(true)}
-                    endIcon={<Icons.Tune />}
+                    // endIcon={<Icons.Tune />}
                   >
                     Set Incentives
                   </Button>
