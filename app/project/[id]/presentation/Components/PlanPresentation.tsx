@@ -288,11 +288,13 @@ const PlanPresentation: React.FC<{
             netCost={formatCurrency(calculateNetCost(plan))}
             finalCost={formatCurrency(calculateFinalCost(plan))}
           />
-          <div className="financing__card">
-            <LargeFinancingCalculator
-              totalAmount={calculateFinalCost(plan)}
-              financingOptions={financingOptions}
-            />
+          <div className="financing__wrapper">
+            <div className="financing__card">
+              <LargeFinancingCalculator
+                totalAmount={calculateFinalCost(plan)}
+                financingOptions={financingOptions}
+              />
+            </div>
           </div>
         </div>
       </div>

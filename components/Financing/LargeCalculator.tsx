@@ -59,7 +59,6 @@ export const LargeFinancingCalculator = (props: Props) => {
   return (
     <div
       style={{
-        width: '400px',
         padding: '24px 0px',
       }}
     >
