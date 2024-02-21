@@ -39,10 +39,10 @@ const CostCard: React.FC<CostCardProps> = ({
     return incentivesToRender.map((incentive, index) => (
       <>
         <div className="item" key={incentive.id}>
-          <small>{incentive.name}</small>
-          <small>{`-$${
+          <span>{incentive.name}</span>
+          <span>{`-$${
             incentive.finalCalculations?.usedAmount.toFixed(2) || 0
-          }`}</small>
+          }`}</span>
         </div>
         {index !== incentivesToRender.length - 1 && (
           <Divider variant="middle" />
@@ -72,8 +72,8 @@ const CostCard: React.FC<CostCardProps> = ({
       return (
         <>
           <div className="item" key={item.customId}>
-            <small>{item.name}</small>
-            <small>{`$${cost.toFixed(2) || 0}`}</small>
+            <span>{item.name}</span>
+            <span>{`$${cost.toFixed(2) || 0}`}</span>
           </div>
           {index !== catalogueItems.length - 1 && <Divider variant="middle" />}
         </>
@@ -87,7 +87,7 @@ const CostCard: React.FC<CostCardProps> = ({
         <div className="secondCard">
           <div className="thirdCard">
             <div className="title">
-              Upgrade Value
+              Total estimated cost
               <span>{totalValue}</span>
             </div>
             {renderPlanItemsList(plan)}
@@ -98,12 +98,12 @@ const CostCard: React.FC<CostCardProps> = ({
               renderIncentivesList('Rebate', plan)
             ) : (
               <div className="item">
-                <small>No Rebates were selected for this plan</small>
+                <span>No Rebates were selected for this plan</span>
               </div>
             )}
             <Divider />
             <div className="title">
-              Cost after Rebates
+              Estimated cost after rebates
               <span>{netCost}</span>
             </div>
           </div>
@@ -114,12 +114,12 @@ const CostCard: React.FC<CostCardProps> = ({
             renderIncentivesList('TaxCredit', plan)
           ) : (
             <div className="item">
-              <small>No Tax Credits were selected for this plan</small>
+              <span>No Tax Credits were selected for this plan</span>
             </div>
           )}
           <Divider />
           <div className="title">
-            Final Value
+            Estimated cost after tax credits
             <span>{finalCost}</span>
           </div>
         </div>
