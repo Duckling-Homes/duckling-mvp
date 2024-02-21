@@ -30,7 +30,7 @@ const CatalogItemView: React.FC<{
     <div className="catalogItem">
       <div className="catalogItem__headerLeft">
         {renderIcon()}
-        <p>{category}</p>
+        <p>{category === 'HomePerformance' ? 'Home Performance' : category}</p>
       </div>
       {(catalogItems || []).map((item) => (
         <>
