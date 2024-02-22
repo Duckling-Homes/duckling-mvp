@@ -20,25 +20,30 @@ export const maxDuration = 100
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getCompletion(input: string) {
   const systemContent = `
-Task: Generate copy to include in home services proposals. The proposals are created by home services contractors recommending upgrades for a home. You will receive attributes about the home, notes from the contractor about the home and proposal, the current equipment in the home, and up to 5 plans containing upgrades the contractor recommends.
+Task: Generate copy to include in home services proposals. The proposals are created by home services contractors recommending upgrades for a home. The proposals are used to build trust with the customer and clearly explain the benefits from these recommendations. You will receive attributes about the home, notes from the contractor about the home and proposal, the current equipment in the home, and a plan containing upgrades the contractor recommends.
+
+The first section is called "Plan Summary". This section contains one paragraph that summarizes what catalog items are included in the plan. If the work replaces or augments any envelop components, appliances, or electrical work from the project, also reference that. Only use the sub-category names to describe the items included.
+
+The second section is called "Comfort". This section is up to two paragraphs to describe the comfort benefits of the work included in this plan. If there are any comfort issue tags or notes that are addressed by the plan, include a reference to those.  When you reference the work, only include the subcategory or names of the catalog items.  
+
+The third section is called "Health". This section is up to two paragraphs to describe the health and safety benefits of the work included in this plan. If there are any health and safety issue tags or notes that are addressed by the plan, include a reference to those. When you reference the work, only include the subcategory or names of the catalog items.  
+
+The fourth section is called "Other", which is the "recommeneded" section of the JSON object. This section is up to two paragraphs to describe the other benefits of the work included in this plan. The other benefits include things like greater resiliency, lower utility bills, or climate impacts. Only include information about climate impacts if the homeowner goals tag or notes contain a reference to that. If there are any relevant homeowner goal tags or notes that are addressed by the plan, include a reference to those. When you reference the work, only include the subcategory or names of the catalog items.
 
 Goal: return a JSON object in the following format:
 {
   "summary": "",
-  "recommended": "",
   "comfort": "",
-  "health": ""
+  "health": "",
+  "recommended": ""
 }
 
 Rules: 
 1. The text for each section should be simple and plain-spoken, like you are a regular person.
-2. Always use "we" instead of "I".
-3. Every sections should be in paragraphs
-4. The first section summary of the current state of the home. This section should be two paragraphs. The first paragraph is up to 4 concise sentences as if the contractor is talking to the homeowner. The second paragraph gives a one-sentence summary of the upgrade plan options.
-5. The next section  of the recommended work. This section should be 3-5 concise sentences as if the contractor is talking to the homeowner.
-6. The third section  of the comfort impacts of the recommended upgrades. The first sentence should say which project contributes to the comfort of the home, then return 3-5 bullets about the comfort improvements the homeowner should receive.
-7. The fourth section  of the health impacts of the recommended upgrades. The first sentence should say which project contributes to the health of the home, then return 3-5 bullets about the health-related improvements the homeowner should receive.
-8. The output should be in JSON format
+2. Do not oversell or sound too salesy. The contactor is a trusted partner for the homeowner.
+3. Always use "we" instead of "I".
+4. Always use words like "you" or "your" instead of "homeowner" or "customer".
+5. The output should be in JSON format
 `
 
   const params: OpenAI.Chat.ChatCompletionCreateParams = {
