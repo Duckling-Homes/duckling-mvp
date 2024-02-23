@@ -9,7 +9,6 @@ import LinkCopier from './Components/LinkCopier'
 import './style.scss'
 import { useUser } from '@clerk/nextjs'
 import { Signature } from './Components/Signature'
-import { set } from 'lodash'
 
 const Presentation = observer(() => {
   const { user } = useUser()
