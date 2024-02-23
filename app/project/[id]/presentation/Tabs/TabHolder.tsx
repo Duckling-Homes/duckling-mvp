@@ -12,11 +12,14 @@ const TabHolder: React.FC<{
   project: Project
   organization: Organization
   photos: PhotoDetails[]
-}> = observer(({ project, organization, photos }) => {
-  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0)
+  onTabChange?: (currentTab: string) => void
+}> = observer(({ project, organization, photos, onTabChange }) => {
+  const TabLabels = ['Home Summary', 'About Us', 'Plans']
 
+  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0)
   function handleChangeTab(event: React.SyntheticEvent, newValue: number) {
     setCurrentTabIndex(newValue)
+    onTabChange && onTabChange(TabLabels[newValue])
   }
   const renderTabContent = (index: number, component: JSX.Element) => (
     <div hidden={currentTabIndex !== index}>{component}</div>
@@ -30,16 +33,18 @@ const TabHolder: React.FC<{
         value={currentTabIndex}
         onChange={handleChangeTab}
       >
-        <Tab label="Home Summary" />
-        <Tab label="About Us" />
-        <Tab label="Plans" />
+        <Tab label={TabLabels[0]} />
+        <Tab label={TabLabels[1]} />
+        <Tab label={TabLabels[2]} />
       </Tabs>
       {renderTabContent(0, <HomeSummary project={project} />)}
       {renderTabContent(1, <AboutUsPage organization={organization} />)}
       {renderTabContent(
         2,
         project.plans && project.plans?.length > 0 ? (
-          <PlansPresentation project={project} photos={photos} />
+          <>
+            <PlansPresentation project={project} photos={photos} />
+          </>
         ) : (
           <div
             style={{
