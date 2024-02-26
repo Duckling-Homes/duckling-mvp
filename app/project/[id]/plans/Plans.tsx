@@ -1,7 +1,6 @@
 'use client'
 
 import ModelStore from '@/app/stores/modelStore'
-import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 import DeletePlanModal from '@/components/Modals/DeletePlan'
 import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
@@ -15,10 +14,11 @@ import {
   IconButton,
   TextField,
 } from '@mui/material'
-import { observer } from 'mobx-react-lite'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
 import PlanItem from './Upgrades/PlanItem'
+import { observer } from 'mobx-react-lite'
+import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 import './style.scss'
 
 interface PlansProps {
@@ -56,7 +56,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         setCurrentPlanID(currentProject.plans[0]?.id ?? null)
       }
     }
-  }, [currentProject, currentPlanID])
+  })
 
   useEffect(() => {
     if (catalogue.length === 0) {
@@ -64,7 +64,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         setCatalogue(data.productCatalogue)
       )
     }
-  }, [catalogue.length])
+  }, [])
 
   useEffect(() => {
     if (aggregationLimits.length === 0) {
@@ -72,7 +72,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         setAggregationLimits(data.aggregationLimits)
       )
     }
-  }, [aggregationLimits.length])
+  }, [])
 
   useEffect(() => {
     setCopyFields(currentPlan?.copy as Copy)

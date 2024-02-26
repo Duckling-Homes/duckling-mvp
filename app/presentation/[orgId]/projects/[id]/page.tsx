@@ -54,7 +54,7 @@ const ShareablePresentation = observer(() => {
           console.error('Failed to download photos:', error)
         })
     }
-  }, [currentPresentation.projectDetails.images, currentPresentation.projectDetails.images?.length, id, orgId])
+  }, [currentPresentation?.projectDetails.images?.length])
 
   const getHeroImage = () => {
     if (!currentPresentation?.projectDetails?.heroImageId) {

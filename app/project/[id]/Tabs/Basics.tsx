@@ -1,9 +1,9 @@
 'use client'
 
-import ModelStore from '@/app/stores/modelStore';
-import { SelectInput, TextInput } from "@/components/Inputs";
+import React, { useEffect, useState } from 'react'
+import ModelStore from '@/app/stores/modelStore'
 import { Project, ProjectData } from "@/types/types";
-import React, { useEffect, useState } from 'react';
+import { SelectInput, TextInput } from "@/components/Inputs";
 
 interface BasicsProps {
   currentProject: Project
@@ -16,7 +16,7 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
     if (!data && currentProject?.data) {
       setData(currentProject.data)
     }
-  }, [currentProject.data, data])
+  }, [currentProject.data])
 
   const handleInputChange = async (
     inputName: string,
