@@ -32,8 +32,7 @@ const DeleteModal: React.FC<{
   open: boolean
   onClose: () => void
   onConfirm: () => void
-  chipName?: string
-}> = ({ open, onClose, onConfirm, chipName }) => {
+}> = ({ open, onClose, onConfirm }) => {
   return (
     <Modal
       open={open}
