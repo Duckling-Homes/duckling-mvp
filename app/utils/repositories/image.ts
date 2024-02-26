@@ -6,6 +6,8 @@ type ExtendedImageCreateInput = Prisma.ImageUncheckedCreateInput & {
   isHeroPhoto?: boolean
 }
 
+export const validImageTypes = ['ORIGINAL', 'CROPPED']
+
 /**
  * Verifies if an image is part of a project that belongs to the specified organization.
  *

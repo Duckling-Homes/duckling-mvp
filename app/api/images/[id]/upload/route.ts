@@ -1,8 +1,10 @@
+import {
+  isImageInOrganization,
+  validImageTypes,
+} from '@/app/utils/repositories/image'
+import { ImageType, constructS3ImageKey, getS3Client } from '@/app/utils/s3'
 import { NextRequest, NextResponse } from 'next/server'
 import { Readable } from 'stream'
-import { ImageType, constructS3ImageKey, getS3Client } from '@/app/utils/s3'
-import { isImageInOrganization } from '@/app/utils/repositories/image'
-import { validImageTypes } from '../download/route'
 
 // Initialize the S3 client
 const s3 = getS3Client()

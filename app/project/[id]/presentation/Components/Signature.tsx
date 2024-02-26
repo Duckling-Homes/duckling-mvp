@@ -67,6 +67,7 @@ export const Signature = ({ signatureID }: Props) => {
 
   useEffect(() => {
     loadSignature()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

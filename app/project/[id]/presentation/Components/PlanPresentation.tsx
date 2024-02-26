@@ -1,23 +1,24 @@
 'use client'
-import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
-import { observer } from 'mobx-react-lite'
-import { Home } from '@mui/icons-material'
-import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
-import NorthIcon from '@mui/icons-material/North'
-import AcUnitIcon from '@mui/icons-material/AcUnit'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined'
 import ModelStore from '@/app/stores/modelStore'
+import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
+import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
+import { Home } from '@mui/icons-material'
+import AcUnitIcon from '@mui/icons-material/AcUnit'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import CatalogItemView from './CatalogItemView'
-import { useEffect, useState } from 'react'
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import NorthIcon from '@mui/icons-material/North'
+import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined'
 import { Button } from '@mui/material'
+import { observer } from 'mobx-react-lite'
+import { useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
+import CatalogItemView from './CatalogItemView'
 import CostCard from './CostCard'
 
+import Image from 'next/image'
 import '../style.scss'
 
 const PlanPresentation: React.FC<{
@@ -243,15 +244,14 @@ const PlanPresentation: React.FC<{
             <div className="scope__photoDisplay">
               {displayedPhoto && (
                 <>
-                  <img
+                  <Image
                     src={displayedPhoto.photoUrl}
                     alt={`Image ${displayedPhoto.id}`}
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%',
-                      objectFit: 'cover',
-                      margin: '16px',
-                    }}
+                    layout="responsive"
+                    width={500}
+                    height={300}
+                    objectFit="cover"
+                    className="plan-image"
                   />
                   <div style={{ flexDirection: 'row' }}>
                     <span style={{ fontWeight: 'bold' }}>

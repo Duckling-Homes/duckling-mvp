@@ -1,13 +1,13 @@
 'use client'
 
-import React from 'react'
-import { Button } from '@mui/material'
-import { CalendarMonth, Home, Person } from '@mui/icons-material'
-import Image from 'next/image'
-import PlaceHolderPhoto from '../../../assets/placeholder-image.png'
 import { PhotoDetails, Project } from '@/types/types'
-import { observer } from 'mobx-react-lite'
+import { CalendarMonth, Home, Person } from '@mui/icons-material'
+import { Button } from '@mui/material'
 import dayjs from 'dayjs'
+import { observer } from 'mobx-react-lite'
+import Image from 'next/image'
+import React from 'react'
+import PlaceHolderPhoto from '../../../assets/placeholder-image.png'
 
 import '../style.scss'
 
@@ -23,10 +23,13 @@ const ProjectDetails: React.FC<{
           <Image src={PlaceHolderPhoto} alt="project-image" />
         )}
         {heroPhoto?.photoUrl && (
-          <img
-            style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+          <Image
+            alt="project-image"
+            width={150}
+            height={150}
+            objectFit="cover"
             src={heroPhoto.photoUrl}
-          ></img>
+          />
         )}
         {setOpenCamera && !heroPhoto?.photoUrl && (
           <Button
