@@ -1,6 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import {
+  isImageInOrganization,
+  validImageTypes,
+} from '@/app/utils/repositories/image'
 import { ImageType, constructS3ImageKey, getS3Client } from '@/app/utils/s3'
-import { isImageInOrganization } from '@/app/utils/repositories/image'
+import { NextRequest, NextResponse } from 'next/server'
 
 // Initialize the S3 client
 const s3 = getS3Client()
@@ -10,8 +13,6 @@ type ContextType = {
     id: string
   }
 }
-
-export const validImageTypes = ['ORIGINAL', 'CROPPED']
 
 export async function GET(
   request: NextRequest,
