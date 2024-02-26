@@ -43,11 +43,7 @@ const DeleteModal: React.FC<{
       aria-describedby="modal-description"
     >
       <div className="deleteModal__content">
-        <p>
-          {chipName
-            ? `Are you sure you want to delete envelope: ${chipName}?`
-            : 'Are you sure you want to delete this envelope?'}
-        </p>
+        <p>Are you sure you want to delete this?</p>
         <div>
           <Button onClick={onClose}>Cancel</Button>
           <Button color="error" onClick={onConfirm}>
@@ -61,8 +57,7 @@ const DeleteModal: React.FC<{
 
 const ChipManager: React.FC<ChipManagerProps> = observer(
   ({ chips, currentChip, chipType, onChipClick, onDelete, onCreate }) => {
-
-    console.log("CHIPS", chips);
+    console.log('CHIPS', chips)
     const [toDelete, setToDelete] = useState<{
       id: string
       name: string

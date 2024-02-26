@@ -41,7 +41,7 @@ const DeleteProjectModal: React.FC<{
             <Close />
           </IconButton>
         </div>
-        <p>Are you sure you want to delete envelope: {project.name}?</p>
+        <p>Are you sure you want to delete: {project.name}?</p>
         <form className="createModal__form">
           <FormControl>
             <TextField
