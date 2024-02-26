@@ -69,6 +69,7 @@ export const LargeFinancingCalculator = (props: Props) => {
             size={'small'}
             sx={{
               backgroundColor: '#FFF',
+              fontSize: '16px',
               '& .MuiOutlinedInput-notchedOutline': {
                 border: 'none',
               },
@@ -124,7 +125,7 @@ export const LargeFinancingCalculator = (props: Props) => {
           <></>
         ) : (
           <>
-            <CalculatorRow label="Loan Amount">
+            <CalculatorRow label="Financing Amount">
               {/* <InputSlider
             inputSX={{ fontSize: 20, color: '#388E3C', fontWeight: 'bold' }}
             value={loanAmount}
@@ -161,7 +162,7 @@ export const LargeFinancingCalculator = (props: Props) => {
                     }
                   />
                 ) : (
-                  <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                  <Typography style={{ fontWeight: 'bold', fontSize: '16px' }}>
                     {formatCurrency(loanAmount)}
                   </Typography>
                 )}
@@ -223,7 +224,7 @@ export const LargeFinancingCalculator = (props: Props) => {
                     onChange={({ target }) => setAPR(parseFloat(target.value))}
                   />
                 ) : (
-                  <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                  <Typography style={{ fontWeight: 'bold', fontSize: '16px' }}>
                     {`${apr}%`}
                   </Typography>
                 )}
@@ -250,16 +251,55 @@ export const LargeFinancingCalculator = (props: Props) => {
 
         <Divider />
 
-        <CalculatorRow label="Upfront Cost">
-          <Box sx={{ fontSize: 20, color: '#000', fontWeight: 'bold' }}>
-            {upfrontCostDisplayValue}
-          </Box>
-        </CalculatorRow>
-        <CalculatorRow label="Monthly Payment">
-          <Box sx={{ fontSize: 20, color: '#000', fontWeight: 'bold' }}>
-            {monthlyCostDisplayValue}
-          </Box>
-        </CalculatorRow>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+        >
+          <Container
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              alignItems: 'center',
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: '18px',
+                fontWeight: 'bold',
+                textAlign: 'left',
+              }}
+            >
+              Upfront Cost
+            </Typography>
+            <Box sx={{ fontSize: '16px', color: '#000', fontWeight: 'bold' }}>
+              {upfrontCostDisplayValue}
+            </Box>
+          </Container>
+          <Container
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              alignItems: 'center',
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: '18px',
+                fontWeight: 'bold',
+                textAlign: 'left',
+              }}
+            >
+              Monthly Payment
+            </Typography>
+            <Box sx={{ fontSize: '16px', color: '#000', fontWeight: 'bold' }}>
+              {monthlyCostDisplayValue}
+            </Box>
+          </Container>
+        </div>
       </Stack>
     </div>
   )
@@ -277,13 +317,14 @@ const CalculatorRow = ({ children, label }: CalculatorRowProps) => {
         display: 'flex',
         flexDirection: 'column',
         gap: '8px',
-        alignItems: 'center',
+        alignItems: 'start',
       }}
     >
       <Typography
         sx={{
-          fontSize: 14,
+          fontSize: '18px',
           fontWeight: 'bold',
+          textAlign: 'left',
         }}
       >
         {label}:

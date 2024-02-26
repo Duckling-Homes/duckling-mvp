@@ -39,10 +39,10 @@ const CostCard: React.FC<CostCardProps> = ({
     return incentivesToRender.map((incentive, index) => (
       <>
         <div className="item" key={incentive.id}>
-          <small>{incentive.name}</small>
-          <small>{`-$${
+          <span>{incentive.name}</span>
+          <span>{`-$${
             incentive.finalCalculations?.usedAmount.toFixed(2) || 0
-          }`}</small>
+          }`}</span>
         </div>
         {index !== incentivesToRender.length - 1 && (
           <Divider variant="middle" />
@@ -72,8 +72,8 @@ const CostCard: React.FC<CostCardProps> = ({
       return (
         <>
           <div className="item" key={item.customId}>
-            <small>{item.name}</small>
-            <small>{`$${cost.toFixed(2) || 0}`}</small>
+            <span>{item.name}</span>
+            <span>{`$${cost.toFixed(2) || 0}`}</span>
           </div>
           {index !== catalogueItems.length - 1 && <Divider variant="middle" />}
         </>
@@ -87,42 +87,34 @@ const CostCard: React.FC<CostCardProps> = ({
         <div className="secondCard">
           <div className="thirdCard">
             <div className="title">
-              Upgrade Value
+              Total estimated cost
               <span>{totalValue}</span>
             </div>
             {renderPlanItemsList(plan)}
           </div>
-          <div className="content">
-            <div className="title">Rebates</div>
-            {renderIncentivesList('Rebate', plan).length > 0 ? (
-              renderIncentivesList('Rebate', plan)
-            ) : (
-              <div className="item">
-                <small>No Rebates were selected for this plan</small>
+          {renderIncentivesList('Rebate', plan).length > 0 ?? (
+            <div className="content">
+              <div className="title">Rebates</div>
+              {renderIncentivesList('Rebate', plan)}
+              <Divider />
+              <div className="title">
+                Estimated cost after rebates
+                <span>{netCost}</span>
               </div>
-            )}
-            <Divider />
-            <div className="title">
-              Cost after Rebates
-              <span>{netCost}</span>
-            </div>
-          </div>
-        </div>
-        <div className="content">
-          <div className="title">Tax Credits</div>
-          {renderIncentivesList('TaxCredit', plan).length > 0 ? (
-            renderIncentivesList('TaxCredit', plan)
-          ) : (
-            <div className="item">
-              <small>No Tax Credits were selected for this plan</small>
             </div>
           )}
-          <Divider />
-          <div className="title">
-            Final Value
-            <span>{finalCost}</span>
-          </div>
         </div>
+        {renderIncentivesList('TaxCredit', plan).length > 0 ?? (
+          <div className="content">
+            <div className="title">Tax Credits</div>
+            {renderIncentivesList('TaxCredit', plan)}
+            <Divider />
+            <div className="title">
+              Estimated cost after tax credits
+              <span>{finalCost}</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
