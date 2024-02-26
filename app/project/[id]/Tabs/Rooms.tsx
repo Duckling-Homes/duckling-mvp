@@ -7,12 +7,9 @@ import ChipManager from '@/components/ChipManager'
 import { SelectInput, TextInput } from '@/components/Inputs'
 import PhotoDisplay from '@/components/PhotoDisplay'
 import { Project, ProjectRoom } from '@/types/types'
-import {
-  Chip,
-  FormGroup,
-  FormLabel
-} from '@mui/material'
+import { Chip, FormGroup, FormLabel } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { v4 } from 'uuid'
 
 const COMFORT_ISSUES = [
   'Drafty',
@@ -69,11 +66,38 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
     setCurrentRoom(newRooms[0] || {})
   }
 
-  async function createRoom() {
-    const createdRoom = await ModelStore.createRoom(currentProject.id!, {
-      name: 'New Room',
+  function createRoom() {
+    const newRoom = {
+      id: v4(),
       projectId: currentProject.id,
+    }
+    setCurrentRoom(newRoom)
+  }
+
+  async function handleRoomType(value: string) {
+    let b = 0
+
+    rooms.forEach((room) => {
+      if (room.type === value) {
+        b++
+      }
     })
+
+    const words = value.match(/[A-Z][a-z]*/g)
+
+    const formatedName = words
+      ? b === 0
+        ? words.join(' ')
+        : `${words.join(' ')} - ${b + 1}`
+      : ''
+
+    const updatedRoom = { ...currentRoom, type: value, name: formatedName }
+
+    const createdRoom = await ModelStore.createRoom(
+      currentProject.id!,
+      updatedRoom
+    )
+
     setCurrentRoom(createdRoom)
   }
 
@@ -117,6 +141,101 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
     }
   }
 
+  const renderForm = () => {
+    if (currentRoom?.type) {
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '24px',
+          }}
+        >
+          <TextInput
+            label="Room Name"
+            placeholder="Room Name"
+            value={currentRoom?.name || ''}
+            onChange={(value) => handleInputChange('name', value)}
+            onBlur={() => patchRoom('name')}
+          />
+          <SelectInput
+            label="Floor"
+            value={currentRoom?.floor || ''}
+            onChange={(value) => handleInputChange('floor', value)}
+            onBlur={() => patchRoom('floor')}
+            options={ROOM_FLOORS}
+          />
+
+          <FormGroup>
+            <FormLabel>Comfort Issues</FormLabel>
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginTop: '12px',
+                marginBottom: '24px',
+              }}
+            >
+              {COMFORT_ISSUES.map((issue, i) => (
+                <Chip
+                  onClick={() => handleChipChange('comfortIssueTags', issue)}
+                  label={issue}
+                  key={i}
+                  color={
+                    currentRoom?.comfortIssueTags?.includes(issue)
+                      ? 'primary'
+                      : 'default'
+                  }
+                />
+              ))}
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>Health & Safety Issues</FormLabel>
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginTop: '12px',
+                marginBottom: '24px',
+              }}
+            >
+              {HEALTH_SAFETY.map((issue, i) => (
+                <Chip
+                  onClick={() => handleChipChange('safetyIssueTags', issue)}
+                  label={issue}
+                  key={i}
+                  color={
+                    currentRoom?.safetyIssueTags?.includes(issue)
+                      ? 'primary'
+                      : 'default'
+                  }
+                />
+              ))}
+            </div>
+          </FormGroup>
+          <TextInput
+            label="Notes"
+            placeholder="Notes"
+            onChange={(value) => handleInputChange('notes', value)}
+            onBlur={() => patchRoom('notes')}
+            value={currentRoom?.notes || ''}
+            multiline={true}
+          />
+          <PhotoDisplay
+            currentProject={currentProject}
+            filterPhotos={defaultPhotoFilter({
+              roomId: currentRoom.id!,
+            })}
+          ></PhotoDisplay>
+          <AddPhotoButton photoUpdates={{ roomId: currentRoom?.id }} />
+        </div>
+      )
+    }
+  }
+
   return (
     <div
       style={{
@@ -153,95 +272,14 @@ const Rooms: React.FC<RoomsProps> = ({ currentProject }) => {
                 gap: '24px',
               }}
             >
-              <TextInput
-                label="Room Name"
-                placeholder="Room Name"
-                value={currentRoom?.name || ''}
-                onChange={(value) => handleInputChange('name', value)}
-                onBlur={() => patchRoom('name')}
-              />
               <SelectInput
                 label="Room Type"
                 value={currentRoom?.type || ''}
-                onChange={(value) => handleInputChange('type', value)}
+                onChange={(value) => handleRoomType(value)}
                 onBlur={() => patchRoom('type')}
                 options={ROOM_TYPES}
               />
-              <SelectInput
-                label="Floor"
-                value={currentRoom?.floor || ''}
-                onChange={(value) => handleInputChange('floor', value)}
-                onBlur={() => patchRoom('floor')}
-                options={ROOM_FLOORS}
-              />
-              
-              <FormGroup>
-                <FormLabel>Comfort Issues</FormLabel>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '8px',
-                    flexWrap: 'wrap',
-                    marginTop: '12px',
-                    marginBottom: '24px',
-                  }}
-                >
-                  {COMFORT_ISSUES.map((issue, i) => (
-                    <Chip
-                      onClick={() =>
-                        handleChipChange('comfortIssueTags', issue)
-                      }
-                      label={issue}
-                      key={i}
-                      color={
-                        currentRoom?.comfortIssueTags?.includes(issue)
-                          ? 'primary'
-                          : 'default'
-                      }
-                    />
-                  ))}
-                </div>
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>Health & Safety Issues</FormLabel>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '8px',
-                    flexWrap: 'wrap',
-                    marginTop: '12px',
-                    marginBottom: '24px',
-                  }}
-                >
-                  {HEALTH_SAFETY.map((issue, i) => (
-                    <Chip
-                      onClick={() => handleChipChange('safetyIssueTags', issue)}
-                      label={issue}
-                      key={i}
-                      color={
-                        currentRoom?.safetyIssueTags?.includes(issue)
-                          ? 'primary'
-                          : 'default'
-                      }
-                    />
-                  ))}
-                </div>
-              </FormGroup>
-              <TextInput
-                label="Notes"
-                placeholder="Notes"
-                onChange={(value) => handleInputChange('notes', value)}
-                onBlur={() => patchRoom('notes')}
-                value={currentRoom?.notes || ''}
-                multiline={true}
-              />
-              <PhotoDisplay
-                currentProject={currentProject}
-                filterPhotos={defaultPhotoFilter({
-                  roomId: currentRoom.id!,
-                })}
-              ></PhotoDisplay>
-              <AddPhotoButton photoUpdates={{ roomId: currentRoom?.id }} />
+              {renderForm()}
             </div>
           </form>
         ) : (

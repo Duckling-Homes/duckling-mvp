@@ -51,7 +51,27 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
   }
 
   function handleTypeChange(name: string, value: string) {
-    const updatedElectrical = { ...currentElectrical, [name]: value }
+    let b = 0
+
+    electricals.forEach((electrical) => {
+      if (electrical.type === value) {
+        b++
+      }
+    })
+
+    const words = value.match(/[A-Z][a-z]*/g)
+
+    const formatedName = words
+      ? b === 0
+        ? words.join(' ')
+        : `${words.join(' ')} - ${b + 1}`
+      : ''
+
+    const updatedElectrical = {
+      ...currentElectrical,
+      [name]: value,
+      name: formatedName,
+    }
     handlePostElectrical(updatedElectrical, value)
   }
 

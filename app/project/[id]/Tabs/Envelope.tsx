@@ -34,7 +34,27 @@ const Envelope: React.FC<EnvelopeProps> = observer(({ currentProject }) => {
   ])
 
   function handleTypeChange(value: string) {
-    const updatedComponent = { ...currentEnvelopeComponent, type: value }
+    let b = 0
+
+    components.forEach((component) => {
+      if (component.type === value) {
+        b++
+      }
+    })
+
+    const words = value.match(/[A-Z][a-z]*/g)
+
+    const formatedName = words
+      ? b === 0
+        ? words.join(' ')
+        : `${words.join(' ')} - ${b + 1}`
+      : ''
+
+    const updatedComponent = {
+      ...currentEnvelopeComponent,
+      type: value,
+      name: formatedName,
+    }
     handlePostEnvelopeComponent(updatedComponent, value)
   }
 

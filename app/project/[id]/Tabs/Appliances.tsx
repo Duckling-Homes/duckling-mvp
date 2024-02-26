@@ -96,8 +96,27 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
   }
 
   const handleTypeChange = (name: string, value: string) => {
-    console.log(name)
-    const updatedAppliance = { ...currentAppliance, [name]: value }
+    let b = 0
+
+    appliances.forEach((appliance) => {
+      if (appliance.type === value) {
+        b++
+      }
+    })
+
+    const words = value.match(/(?:[A-Z]+[a-z]*|[A-Z]{1}[a-z]*)/g)
+
+    const formatedName = words
+      ? b === 0
+        ? words.join(' ')
+        : `${words.join(' ')} - ${b + 1}`
+      : ''
+
+    const updatedAppliance = {
+      ...currentAppliance,
+      [name]: value,
+      name: formatedName,
+    }
     handlePostAppliance(updatedAppliance, value)
   }
 

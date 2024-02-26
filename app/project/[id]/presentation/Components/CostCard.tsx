@@ -60,8 +60,6 @@ const CostCard: React.FC<CostCardProps> = ({
       catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
 
-    console.log(catalogueItems)
-
     return catalogueItems.map((item: CatalogueItem, index: number) => {
       const cost = item.calculatedPrice
         ? item.calculatedPrice
@@ -92,7 +90,7 @@ const CostCard: React.FC<CostCardProps> = ({
             </div>
             {renderPlanItemsList(plan)}
           </div>
-          {renderIncentivesList('Rebate', plan).length > 0 ?? (
+          {renderIncentivesList('Rebate', plan).length > 0 && (
             <div className="content">
               <div className="title">Rebates</div>
               {renderIncentivesList('Rebate', plan)}
@@ -104,7 +102,7 @@ const CostCard: React.FC<CostCardProps> = ({
             </div>
           )}
         </div>
-        {renderIncentivesList('TaxCredit', plan).length > 0 ?? (
+        {renderIncentivesList('TaxCredit', plan).length > 0 && (
           <div className="content">
             <div className="title">Tax Credits</div>
             {renderIncentivesList('TaxCredit', plan)}
