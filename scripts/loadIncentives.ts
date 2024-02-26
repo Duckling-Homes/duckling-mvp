@@ -1,8 +1,8 @@
 import {
-  PrismaClient,
-  RebateOrg,
   CalculationType,
   IncentiveType,
+  PrismaClient,
+  RebateOrg,
 } from '@prisma/client'
 import * as fs from 'fs'
 import * as Papa from 'papaparse'
@@ -25,6 +25,7 @@ const rebateOrgMapping: Record<string, RebateOrg> = {
   BayREN: RebateOrg.BayREN,
   IRA: RebateOrg.IRA,
   NYSERDA: RebateOrg.NYSERDA,
+  ConsumersEnergy: RebateOrg.ConsumersEnergy,
 }
 
 const calculationTypeMapping: Record<string, CalculationType> = {
