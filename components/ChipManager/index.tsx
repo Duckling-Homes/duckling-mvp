@@ -57,7 +57,6 @@ const DeleteModal: React.FC<{
 
 const ChipManager: React.FC<ChipManagerProps> = observer(
   ({ chips, currentChip, chipType, onChipClick, onDelete, onCreate }) => {
-    console.log('CHIPS', chips)
     const [toDelete, setToDelete] = useState<{
       id: string
       name: string
@@ -85,7 +84,6 @@ const ChipManager: React.FC<ChipManagerProps> = observer(
             })
           }
           onConfirm={handleDeleteClick}
-          chipName={toDelete.name}
         />
         <div
           style={{
