@@ -100,9 +100,7 @@ const Appliances: React.FC<AppliancesProps> = ({ currentProject }) => {
 
     appliances.forEach((appliance) => {
       if (appliance.type === value) {
-        console.log('caiu')
         b++
-        console.log(b)
       }
     })
 

@@ -60,8 +60,6 @@ const CostCard: React.FC<CostCardProps> = ({
       catalogueItems = JSON.parse(plan.planDetails)?.catalogueItems
     }
 
-    console.log(catalogueItems)
-
     return catalogueItems.map((item: CatalogueItem, index: number) => {
       const cost = item.calculatedPrice
         ? item.calculatedPrice

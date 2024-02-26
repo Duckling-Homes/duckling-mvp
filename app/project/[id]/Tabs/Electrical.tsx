@@ -55,9 +55,7 @@ const Electrical: React.FC<ElectricalProps> = observer(({ currentProject }) => {
 
     electricals.forEach((electrical) => {
       if (electrical.type === value) {
-        console.log('caiu')
         b++
-        console.log(b)
       }
     })
 
