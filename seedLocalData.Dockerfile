@@ -14,7 +14,7 @@ COPY ./app /app/
 COPY ./package.json /package.json
 COPY ./tsconfig.json /tsconfig.json
 
-RUN npm uninstall canvas
+RUN sed -i '/"canvas": "^2.11.2",/d' /package.json
 
 RUN npm i
 

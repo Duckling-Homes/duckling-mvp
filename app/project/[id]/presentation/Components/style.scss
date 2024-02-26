@@ -77,3 +77,52 @@
     }
   }
 }
+
+.signatureHolder {
+  background-color: white;
+  margin-right: 16px;
+  margin-left: 16px;
+  border-radius: 16px;
+  padding: 10px;
+}
+
+.signatureHolder.signed {
+  border: 2px solid green; /* Change the border color to indicate it's signed */
+}
+
+.sigCanvas {
+  /* Additional styling for the canvas */
+  width: 100%;
+  min-width: 500px;
+  max-width: 100%;
+  min-height: 150px;
+  border: 2px solid #ccc;
+  border-radius: 16px;
+}
+
+.signatureFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.signatureActions {
+  display: flex;
+  margin-top: 10px;
+  color: black;
+  justify-content: flex-end;
+}
+
+.signatureAccept {
+  max-width: 50px;
+  color: gray;
+  cursor: pointer;
+}
+
+.signatureClear {
+  max-width: 50px;
+  color: red;
+  cursor: pointer;
+  margin-left: 8px;
+  margin-right: 8px;
+}

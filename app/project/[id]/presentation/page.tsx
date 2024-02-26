@@ -8,12 +8,14 @@ import TabHolder from './Tabs/TabHolder'
 import LinkCopier from './Components/LinkCopier'
 import './style.scss'
 import { useUser } from '@clerk/nextjs'
+import { Signature } from './Components/Signature'
 
 const Presentation = observer(() => {
   const { user } = useUser()
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const project = ModelStore.currentProject as Project
   const organization = ModelStore.organization as Organization
+  const [tab, setTab] = useState<string>('Home Summary')
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`
 
@@ -41,7 +43,12 @@ const Presentation = observer(() => {
         project={project}
         photos={photos}
         organization={organization}
+        onTabChange={setTab}
       ></TabHolder>
+      <div>
+        {/* Signature is here instead of PlansPresentation because something about how that component is rendered makes this impossible to use there... to investigate */}
+        {tab === 'Plans' && <Signature signatureID={project.id!} />}
+      </div>
       <div className="summary">
         <div className="summary__header">
           <LinkCopier

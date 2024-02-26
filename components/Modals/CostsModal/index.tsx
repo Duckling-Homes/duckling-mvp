@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import ModelStore from '@/app/stores/modelStore'
+import { AdditionalCost, CatalogueItem } from '@/types/types'
 import { Add, Close, Delete } from '@mui/icons-material'
 import {
   Button,
@@ -8,11 +9,10 @@ import {
   Modal,
   TextField,
 } from '@mui/material'
-import { AdditionalCost, CatalogueItem } from '@/types/types'
+import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import ModelStore from '@/app/stores/modelStore'
 
-const AdditionalCost: React.FC<{
+const AdditionalCostFunctionalComponent: React.FC<{
   cost: AdditionalCost
   onDelete: (costId: string) => void
   onChange: (value: string, property: string, costId: string) => void
@@ -187,7 +187,7 @@ const CostsModal: React.FC<{
             <Divider style={{marginBottom: '8px'}}/>
             {additionalCosts.map((cost, index) => (
               <React.Fragment key={index}>
-                <AdditionalCost
+                <AdditionalCostFunctionalComponent
                   cost={cost}
                   onDelete={(costId) => deleteCost(costId)}
                   onChange={(value, property, costId) => changeCost(value, property, costId)}
