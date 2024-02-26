@@ -92,37 +92,29 @@ const CostCard: React.FC<CostCardProps> = ({
             </div>
             {renderPlanItemsList(plan)}
           </div>
-          <div className="content">
-            <div className="title">Rebates</div>
-            {renderIncentivesList('Rebate', plan).length > 0 ? (
-              renderIncentivesList('Rebate', plan)
-            ) : (
-              <div className="item">
-                <span>No Rebates were selected for this plan</span>
+          {renderIncentivesList('Rebate', plan).length > 0 ?? (
+            <div className="content">
+              <div className="title">Rebates</div>
+              {renderIncentivesList('Rebate', plan)}
+              <Divider />
+              <div className="title">
+                Estimated cost after rebates
+                <span>{netCost}</span>
               </div>
-            )}
-            <Divider />
-            <div className="title">
-              Estimated cost after rebates
-              <span>{netCost}</span>
-            </div>
-          </div>
-        </div>
-        <div className="content">
-          <div className="title">Tax Credits</div>
-          {renderIncentivesList('TaxCredit', plan).length > 0 ? (
-            renderIncentivesList('TaxCredit', plan)
-          ) : (
-            <div className="item">
-              <span>No Tax Credits were selected for this plan</span>
             </div>
           )}
-          <Divider />
-          <div className="title">
-            Estimated cost after tax credits
-            <span>{finalCost}</span>
-          </div>
         </div>
+        {renderIncentivesList('TaxCredit', plan).length > 0 ?? (
+          <div className="content">
+            <div className="title">Tax Credits</div>
+            {renderIncentivesList('TaxCredit', plan)}
+            <Divider />
+            <div className="title">
+              Estimated cost after tax credits
+              <span>{finalCost}</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
