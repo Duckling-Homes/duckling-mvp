@@ -548,7 +548,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                       />
                     </div>
                     <div className="planCreation__sectionItem">
-                      Recommended
+                      Additional Benefits
                       <TextField
                         multiline
                         value={copyFields?.recommended || ''}
