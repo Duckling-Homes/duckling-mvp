@@ -78,6 +78,8 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     setCopyFields(currentPlan?.copy as Copy)
   }, [currentPlan])
 
+  console.log(catalogue)
+
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
       return
@@ -408,6 +410,12 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 plan={currentPlan}
                 title={'Electrical'}
                 property={'Electrical'}
+              />
+              <PlanItem
+                catalogue={catalogue}
+                plan={currentPlan}
+                title={'Additional Services'}
+                property={'Other'}
               />
               <Photos plan={currentPlan} project={currentProject} />
             </div>

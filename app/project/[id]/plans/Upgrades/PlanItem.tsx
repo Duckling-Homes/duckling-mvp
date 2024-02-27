@@ -7,6 +7,7 @@ import {
   Construction,
   DeviceThermostat,
   Home,
+  SettingsSuggest,
 } from '@mui/icons-material'
 import { Button, Menu, MenuItem } from '@mui/material'
 import { v4 as uuidv4 } from 'uuid'
@@ -133,6 +134,8 @@ const PlanItem: React.FC<PlanItemProps> = observer(
           return <Construction />
         case 'Electrical':
           return <Bolt />
+        case 'Additional Services':
+          return <SettingsSuggest />
       }
     }
 
