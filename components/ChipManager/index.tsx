@@ -27,12 +27,12 @@ interface ChipManagerProps {
   onCreate: () => void
 }
 
-//TODO: Turn this into a component
 const DeleteModal: React.FC<{
   open: boolean
   onClose: () => void
   onConfirm: () => void
-}> = ({ open, onClose, onConfirm }) => {
+  chipName: string
+}> = ({ open, onClose, onConfirm, chipName }) => {
   return (
     <Modal
       open={open}
@@ -42,7 +42,7 @@ const DeleteModal: React.FC<{
       aria-describedby="modal-description"
     >
       <div className="deleteModal__content">
-        <p>Are you sure you want to delete this?</p>
+        <p>{`Are you sure you want to delete ${chipName} ?`}</p>
         <div>
           <Button onClick={onClose}>Cancel</Button>
           <Button color="error" onClick={onConfirm}>
@@ -83,6 +83,7 @@ const ChipManager: React.FC<ChipManagerProps> = observer(
             })
           }
           onConfirm={handleDeleteClick}
+          chipName={toDelete.name}
         />
         <div
           style={{
