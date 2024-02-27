@@ -12,6 +12,8 @@ import {
   CircularProgress,
   Divider,
   IconButton,
+  Menu,
+  MenuItem,
   TextField,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
@@ -44,6 +46,8 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     health: '',
     recommended: '',
   })
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
 
   const currentPlan = (currentProject?.plans ?? []).find(
     (p) => p.id === currentPlanID
@@ -270,6 +274,13 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     ModelStore.updatePlanCopy(currentPlan.id, oldFields)
   }
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   return (
     <>
       <IncentivesModal
@@ -351,40 +362,68 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 <IconButton
                   sx={{
                     borderRadius: '4px',
-                    border: '1px solid #2196F3',
                     color: '#2196F3',
                     padding: '4px 11px',
                   }}
                   aria-label="add"
-                  onClick={() => {
-                    setEditMode(true)
-                    setCreateModalOpen(true)
+                  onClick={(e) => handleClick(e)}
+                >
+                  <Icons.MoreHoriz />
+                </IconButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <Icons.Edit />
-                </IconButton>
-                <IconButton
-                  sx={{
-                    borderRadius: '4px',
-                    border: '1px solid #2196F3',
-                    color: '#2196F3',
-                    padding: '4px 11px',
-                  }}
-                  aria-label="add"
-                >
-                  <Icons.Delete onClick={() => setDeleteModal(true)} />
-                </IconButton>
-                <IconButton
-                  sx={{
-                    borderRadius: '4px',
-                    border: '1px solid #2196F3',
-                    color: '#2196F3',
-                    padding: '4px 11px',
-                  }}
-                  aria-label="add"
-                >
-                  <Icons.ContentCopy onClick={() => duplicatePlan()} />
-                </IconButton>
+                  <MenuItem>
+                    <Button
+                      sx={{
+                        color: '#000',
+                      }}
+                      startIcon={<Icons.Edit />}
+                      aria-label="add"
+                      onClick={() => {
+                        setEditMode(true)
+                        setCreateModalOpen(true)
+                        handleClose()
+                      }}
+                    >
+                      Edit Plan
+                    </Button>
+                  </MenuItem>
+                  <MenuItem>
+                    <Button
+                      sx={{
+                        color: '#000',
+                      }}
+                      startIcon={<Icons.Delete />}
+                      onClick={() => {
+                        setDeleteModal(true)
+                        handleClose()
+                      }}
+                    >
+                      Delete Plan
+                    </Button>
+                  </MenuItem>
+                  <MenuItem>
+                    <Button
+                      sx={{
+                        color: '#000',
+                      }}
+                      startIcon={<Icons.ContentCopy />}
+                      onClick={() => {
+                        duplicatePlan()
+                        handleClose()
+                      }}
+                    >
+                      Duplicate Plan
+                    </Button>
+                  </MenuItem>
+                </Menu>
               </div>
               <small>Click on “+ ADD” buttons to start adding projects.</small>
               <PlanItem
