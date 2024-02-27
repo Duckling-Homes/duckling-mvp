@@ -131,7 +131,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
           return <DeviceThermostat />
         case 'Appliance Upgrades':
           return <Construction />
-        case 'Energy and Storage':
+        case 'Electrical':
           return <Bolt />
       }
     }

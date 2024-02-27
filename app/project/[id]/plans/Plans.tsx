@@ -406,7 +406,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
-                title={'Energy and Storage'}
+                title={'Electrical'}
                 property={'Electrical'}
               />
               <Photos plan={currentPlan} project={currentProject} />
