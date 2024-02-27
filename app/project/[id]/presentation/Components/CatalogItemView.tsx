@@ -3,7 +3,13 @@ import { observer } from 'mobx-react-lite'
 import '../style.scss'
 import { Divider, FormLabel } from '@mui/material'
 import { CatalogueItem } from '@/types/types'
-import { Bolt, Construction, DeviceThermostat, Home } from '@mui/icons-material'
+import {
+  Bolt,
+  Construction,
+  DeviceThermostat,
+  Home,
+  SettingsSuggest,
+} from '@mui/icons-material'
 import Markdown from 'react-markdown'
 
 const CatalogItemView: React.FC<{
@@ -23,6 +29,9 @@ const CatalogItemView: React.FC<{
       case 'Energy and Storage':
       case 'Electrical':
         return <Bolt color="primary" />
+      case 'Other':
+      case 'Additional Services':
+        return <SettingsSuggest color="primary" />
     }
   }
 
