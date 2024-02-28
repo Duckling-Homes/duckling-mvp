@@ -164,50 +164,60 @@ const PlanPresentation: React.FC<{
   return (
     <>
       {/* Plan Summary */}
-      <div className="summary">
-        <div className="summary__header">
-          <AssignmentOutlinedIcon />
-          <p>Summary</p>
+      {plan.copy?.summary && (
+        <div className="summary">
+          <div className="summary__header">
+            <AssignmentOutlinedIcon />
+            <p>Summary</p>
+          </div>
+          <div className="summary__text">
+            <p>{plan.copy?.summary}</p>
+          </div>
         </div>
-        <div className="summary__text">
-          <p>{plan.copy?.summary}</p>
-        </div>
-      </div>
+      )}
 
       {/* Home Benefits Copy */}
-      <div className="benefitsOverview">
-        <div className="benefitsOverview__header">
-          <NorthIcon />
-          <p>Benefits to Your Home</p>
+      {(plan.copy?.comfort || plan.copy?.health || plan.copy?.recommended) && (
+        <div className="benefitsOverview">
+          <div className="benefitsOverview__header">
+            <NorthIcon />
+            <p>Benefits to Your Home</p>
+          </div>
+          {plan.copy?.comfort && (
+            <div className="benefit">
+              <div className="benefit__headerLeft">
+                <AcUnitIcon color="primary" />
+                <p>Comfort</p>
+              </div>
+              <div className="benefit__text">
+                <Markdown>{plan.copy?.comfort}</Markdown>
+              </div>
+            </div>
+          )}
+          {plan.copy?.health && (
+            <div className="benefit">
+              <div className="benefit__headerLeft">
+                <FavoriteBorderIcon color="primary" />
+                <p>Health & Safety</p>
+              </div>
+              <div className="benefit__text">
+                <Markdown>{plan.copy?.health}</Markdown>
+              </div>
+            </div>
+          )}
+          {plan.copy?.recommended && (
+            <div className="benefit">
+              <div className="benefit__headerLeft">
+                <Home color="primary" />
+                <p>Additional Benefits</p>
+              </div>
+              <div className="benefit__text">
+                <Markdown>{plan.copy?.recommended}</Markdown>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="benefit">
-          <div className="benefit__headerLeft">
-            <AcUnitIcon color="primary" />
-            <p>Comfort</p>
-          </div>
-          <div className="benefit__text">
-            <Markdown>{plan.copy?.comfort}</Markdown>
-          </div>
-        </div>
-        <div className="benefit">
-          <div className="benefit__headerLeft">
-            <FavoriteBorderIcon color="primary" />
-            <p>Health & Safety</p>
-          </div>
-          <div className="benefit__text">
-            <Markdown>{plan.copy?.health}</Markdown>
-          </div>
-        </div>
-        <div className="benefit">
-          <div className="benefit__headerLeft">
-            <Home color="primary" />
-            <p>Other Benefits</p>
-          </div>
-          <div className="benefit__text">
-            <Markdown>{plan.copy?.recommended}</Markdown>
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Plan Scope */}
       <div className="scope">
