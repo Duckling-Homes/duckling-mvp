@@ -364,6 +364,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                     borderRadius: '4px',
                     color: '#2196F3',
                     padding: '4px 11px',
+                    border: '1px solid #2196F3',
                   }}
                   aria-label="add"
                   onClick={(e) => handleClick(e)}
