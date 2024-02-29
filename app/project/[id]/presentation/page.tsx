@@ -1,14 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import ModelStore from '@/app/stores/modelStore'
 import { Organization, PhotoDetails, Project } from '@/types/types'
-import { observer } from 'mobx-react-lite'
-import TabHolder from './Tabs/TabHolder'
-import LinkCopier from './Components/LinkCopier'
-import './style.scss'
 import { useUser } from '@clerk/nextjs'
+import { observer } from 'mobx-react-lite'
+import { useEffect, useState } from 'react'
+import LinkCopier from './Components/LinkCopier'
 import { Signature } from './Components/Signature'
+import TabHolder from './Tabs/TabHolder'
+import './style.scss'
 
 const Presentation = observer(() => {
   const { user } = useUser()
@@ -47,7 +47,7 @@ const Presentation = observer(() => {
       ></TabHolder>
       <div>
         {/* Signature is here instead of PlansPresentation because something about how that component is rendered makes this impossible to use there... to investigate */}
-        {tab === 'Plans' && <Signature signatureID={project.id!} />}
+        {tab === 'Plans' && process.env["SIGNATURES"] &&  <Signature signatureID={project.id!} />}
       </div>
       <div className="summary">
         <div className="summary__header">
