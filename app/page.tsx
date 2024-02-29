@@ -16,11 +16,18 @@ import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import ModelStore from './stores/modelStore'
 
+import FS from '@/lib/tracking'
+import { init } from '@fullstory/browser'
 import './style.scss'
 
 const Home = observer(() => {
   const { user } = useUser()
   const router = useRouter()
+
+  useEffect(() => {
+    init({ orgId: 'o-1NMA36-na1' });
+  }, []);
+  
 
   useEffect(() => {
     // Check if user's publicMetadata has the organization_id
@@ -133,11 +140,21 @@ const Home = observer(() => {
     },
   ]
 
+  const onConfirm = (newProject: Project) => {
+    FS('trackEvent', {
+      name: "NEW_PROJECT", 
+      properties: {
+        ...newProject
+      }
+    })
+    handleCreate(newProject)
+  }
+
   return (
     <main>
       <ProjectModal
         open={openModal}
-        onConfirm={(newProject: Project) => handleCreate(newProject)}
+        onConfirm={onConfirm}
         onClose={() => setOpenModal(false)}
       />
       <Container>

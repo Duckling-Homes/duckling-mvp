@@ -14,6 +14,7 @@
     "@ducanh2912/next-pwa": "^9.7.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@fullstory/browser": "^2.0.3",
     "@mui/icons-material": "^5.14.9",
     "@mui/material": "^5.14.11",
     "@mui/x-data-grid": "^6.15.0",
