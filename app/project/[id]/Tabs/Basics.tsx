@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import ModelStore from '@/app/stores/modelStore'
-import { Project, ProjectData } from "@/types/types";
+import ModelStore from '@/app/stores/modelStore';
 import { SelectInput, TextInput } from "@/components/Inputs";
+import { Project, ProjectData } from "@/types/types";
+import { FullStory, init } from '@fullstory/browser';
+import React, { useEffect, useState } from 'react';
 
 interface BasicsProps {
   currentProject: Project
@@ -22,6 +23,16 @@ const Basics: React.FC<BasicsProps> = ({ currentProject }) => {
     inputName: string,
     value: string | number
   ) => {
+    init({ orgId: 'o-1NMA36-na1' });
+    console.log('init called')
+    FullStory('trackEvent', {
+      name: 'My Event',
+      properties: {
+        product: 'Sprockets',
+        quantity: 1,
+      },
+    })
+    console.log('track called')
     if (currentProject && currentProject.id) {
       const updatedData = { ...data, [inputName]: value };
       setData(updatedData);
