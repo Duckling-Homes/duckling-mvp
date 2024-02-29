@@ -4,9 +4,6 @@ import { observer } from 'mobx-react-lite'
 const AboutUsPage: React.FC<{
   organization: Organization
 }> = observer(({ organization }) => {
-  if (!organization) {
-    return null
-  }
   return (
     <>
       <div className="aboutUs">
