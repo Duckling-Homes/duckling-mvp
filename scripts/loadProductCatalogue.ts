@@ -1,8 +1,8 @@
 import {
-  PrismaClient,
-  Category,
   CatalogEntryType,
+  Category,
   PricingType,
+  PrismaClient,
 } from '@prisma/client'
 import * as fs from 'fs'
 import * as Papa from 'papaparse'
@@ -29,6 +29,7 @@ const categoryMapping: Record<string, Category> = {
   HVAC: Category.HVAC,
   Appliances: Category.Appliances,
   Electrical: Category.Electrical,
+  Other: Category.Other,
 }
 
 const entryTypeMapping: Record<string, CatalogEntryType> = {
