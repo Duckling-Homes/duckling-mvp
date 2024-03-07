@@ -7,11 +7,10 @@ import { ClerkProvider } from '@clerk/nextjs'
 import './globals.scss'
 // import ducklingTheme from "./style/theme/theme" // Here whenever we decide to move to our own theme
 
-const roboto = Roboto({ subsets: ['latin'],
+const roboto = Roboto({
+  subsets: ['latin'],
   display: 'swap',
-  weight: [
-  '300', '400', '500', '700', '900'
-  ]
+  weight: ['300', '400', '500', '700', '900'],
 })
 
 export const metadata: Metadata = {

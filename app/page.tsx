@@ -17,6 +17,8 @@ import { useRouter } from 'next/navigation'
 import ModelStore from './stores/modelStore'
 
 import './style.scss'
+import VersionManager from './utils/versioning'
+import { db } from './sync/db'
 
 const Home = observer(() => {
   const { user } = useUser()
@@ -41,6 +43,34 @@ const Home = observer(() => {
         })
     }
   }, [user])
+
+  // Clear offline cache whenever version changes
+  useEffect(() => {
+    VersionManager.onVersionUpdate(() => {
+      if ('caches' in window) {
+        caches.keys().then((names) => {
+          // Delete all the cache files
+          names.forEach((name) => {
+            caches.delete(name)
+          })
+        })
+      }
+
+      db.objects
+        .clear()
+        .then(() => {
+          console.log(
+            'All objects cleared from the database on version update.'
+          )
+        })
+        .catch((error) => {
+          console.error(
+            'Error clearing database objects on version update:',
+            error
+          )
+        })
+    })
+  }, [])
 
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
