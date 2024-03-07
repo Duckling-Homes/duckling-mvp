@@ -33,6 +33,7 @@ export class _ModelStore {
 
   projectsByID: Map<string, Project> = observable.map(new Map())
   currentProject: Project | null = null
+  currentProjectLoading = false
   currentPresentation: PresentationDetails | null = null
   organization: Organization | null = null
   hasPendingChanges = false
@@ -52,65 +53,69 @@ export class _ModelStore {
   }
 
   init = async () => {
-    if (this.isInitialized) return Promise.resolve();
+    if (this.isInitialized) return Promise.resolve()
     return new Promise(async (resolve, reject) => {
       try {
-        this.isInitialized = true;
+        this.isInitialized = true
         // SyncAPI.setBackgroundSync(true, 5 * 60 * 1000)
-          
+
         SyncAPI.events.on('has-pending-changes', (status: boolean) => {
-          runInAction(() => (this.hasPendingChanges = status));
-        });
-  
+          runInAction(() => (this.hasPendingChanges = status))
+        })
+
         SyncAPI.events.on('did-go-online', (_) => {
           runInAction(() => {
-            this.onlineStatus = 'online';
-          });
-        });
-  
+            this.onlineStatus = 'online'
+          })
+        })
+
         SyncAPI.events.on('did-go-offline', (_) => {
           runInAction(() => {
-            this.onlineStatus = 'offline';
-          });
-        });
-  
+            this.onlineStatus = 'offline'
+          })
+        })
+
         SyncAPI.events.on(
           'did-modify-dbobject',
           (objectID: string, value: _Object | null) => {
-            const object = value?.json;
-            const objectType = value?.type;
-  
+            const object = value?.json
+            const objectType = value?.type
+
             runInAction(() => {
               if (objectType === 'Project') {
-                this._updateMobxProject(object as Project);
+                this._updateMobxProject(object as Project)
               } else if (!object) {
-                this.projectsByID.delete(objectID);
+                this.projectsByID.delete(objectID)
               }
-            });
+            })
           }
-        );
-  
-        const projects = await SyncAPI.sync();
+        )
+
+        const projects = await SyncAPI.sync()
         for (const proj of projects) {
           if (!this.projectsByID.has(proj.id!)) {
-            this.projectsByID.set(proj.id!, proj);
+            this.projectsByID.set(proj.id!, proj)
           }
         }
-        resolve(null);
+        resolve(null)
       } catch (error) {
-        reject(error);
+        reject(error)
       }
-    });
+    })
   }
 
-
   setCurrentProject = async (projectId: string) => {
-    await this.init();
+    this.currentProjectLoading = true
+    await this.init()
+    // Shallow Load first
+    this.currentProject = this.projectsByID.get(projectId) as Project
+    // Fetch Hydrated
     const project = await this.reloadProject(projectId)
     this.currentProject = project
     if (project.plans && this.plans.length === 0) {
       this.plans = project.plans
     }
+    this.currentProjectLoading = false
     return project
   }
 
@@ -138,7 +143,7 @@ export class _ModelStore {
   reloadProject = async (projectID: string) => {
     console.debug('[offline]', 'loading')
     this.init()
-    const project = await SyncAPI.projects.get(projectID, {writable: true});
+    const project = await SyncAPI.projects.get(projectID, { writable: true })
     this.plans = project.plans || []
     this._updateMobxProject(project)
     return project
@@ -379,12 +384,12 @@ export class _ModelStore {
       return
     }
 
-    catalogueItems.push(item);
-    currentPlan.catalogueItems = catalogueItems;
-    // Details are set via planDetailsJSON. 
+    catalogueItems.push(item)
+    currentPlan.catalogueItems = catalogueItems
+    // Details are set via planDetailsJSON.
     delete currentPlan.planDetails
-    currentPlan.planDetails = JSON.stringify(currentPlan);
-    await this.patchPlan(this.currentProject?.id as string, currentPlan);
+    currentPlan.planDetails = JSON.stringify(currentPlan)
+    await this.patchPlan(this.currentProject?.id as string, currentPlan)
   }
 
   removePlanItem = async (planId: string, itemCustomId: string) => {
@@ -402,11 +407,11 @@ export class _ModelStore {
       }
     })
 
-    currentPlan.catalogueItems = catalogueItems;
-    // Details are set via planDetailsJSON. 
+    currentPlan.catalogueItems = catalogueItems
+    // Details are set via planDetailsJSON.
     delete currentPlan.planDetails
-    currentPlan.planDetails = JSON.stringify(currentPlan);
-    await this.patchPlan(this.currentProject?.id as string, currentPlan);
+    currentPlan.planDetails = JSON.stringify(currentPlan)
+    await this.patchPlan(this.currentProject?.id as string, currentPlan)
   }
 
   updatePlanItem = async (planId: string, newItem: CatalogueItem) => {
@@ -423,12 +428,11 @@ export class _ModelStore {
       item.customId === newItem.customId ? newItem : item
     )
 
-    currentPlan.catalogueItems = updatedCatalogueItems;
-    // Details are set via planDetailsJSON. 
+    currentPlan.catalogueItems = updatedCatalogueItems
+    // Details are set via planDetailsJSON.
     delete currentPlan.planDetails
-    currentPlan.planDetails = JSON.stringify(currentPlan);
-    await this.patchPlan(this.currentProject?.id as string, currentPlan);
-
+    currentPlan.planDetails = JSON.stringify(currentPlan)
+    await this.patchPlan(this.currentProject?.id as string, currentPlan)
   }
 
   getPlan = (planId: string) => {
