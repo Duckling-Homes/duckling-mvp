@@ -1,12 +1,13 @@
-.planItem, .photos {
+.planItem,
+.photos {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background-color: #FFF;
+  background-color: #fff;
   padding: 16px;
   border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   box-sizing: border-box;
   &__header {
     display: flex;
@@ -37,5 +38,8 @@
     justify-content: space-between;
     align-items: center;
     gap: 16px;
+    .autocomplete {
+      flex: 1;
+    }
   }
 }

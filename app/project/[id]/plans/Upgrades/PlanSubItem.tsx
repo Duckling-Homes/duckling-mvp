@@ -3,7 +3,7 @@ import { SelectInput } from '@/components/Inputs'
 import CostsModal from '@/components/Modals/CostsModal'
 import { CatalogueItem } from '@/types/types'
 import { Clear, Edit, ExpandLess, ExpandMore } from '@mui/icons-material'
-import { Divider, IconButton, TextField } from '@mui/material'
+import { Autocomplete, Divider, IconButton, TextField } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 
 interface PlanSubItemProps {
@@ -30,9 +30,11 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
       )
 
       const resultArray = filteredArray.map((item) => ({
-        name: item.name,
+        label: item.name,
         value: item.id,
       }))
+
+      console.log(resultArray)
 
       return resultArray
     }
@@ -45,15 +47,16 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
       let additionalCostTotal = 0
 
       if (item.additionalCosts) {
-        item.additionalCosts.forEach(cost => {
+        item.additionalCosts.forEach((cost) => {
           additionalCostTotal += Number(cost.price)
         })
       }
 
       const quantValue = item.quantity || 0
-      const roundedCost = (quantValue * (item.basePricePer as number) + additionalCostTotal).toFixed(
-        2
-      )
+      const roundedCost = (
+        quantValue * (item.basePricePer as number) +
+        additionalCostTotal
+      ).toFixed(2)
 
       return `$${roundedCost}`
     }
@@ -96,13 +99,22 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
             </span>
           </div>
           <div className="planItem__workItemContent">
-            <SelectInput
+            <Autocomplete
+              renderInput={(params) => <TextField {...params} label="Name" />}
+              options={(filterOptions() as []) || []}
+              onChange={(event, newValue: string | null) =>
+                selectWorkItem(newValue.value)
+              }
+              className="autocomplete"
+              value={item.name || ''}
+            />
+            {/* <SelectInput
               label="name"
               smallSize={true}
               value={item.id || ''}
               onChange={(value) => selectWorkItem(value)}
               options={(filterOptions() as []) || []}
-            />
+            /> */}
             <TextField
               label={
                 item.pricingType === 'PerUnit'
