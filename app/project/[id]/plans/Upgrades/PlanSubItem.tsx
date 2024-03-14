@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
-import { SelectInput } from '@/components/Inputs'
 import CostsModal from '@/components/Modals/CostsModal'
 import { CatalogueItem } from '@/types/types'
 import { Clear, Edit, ExpandLess, ExpandMore } from '@mui/icons-material'
 import { Autocomplete, Divider, IconButton, TextField } from '@mui/material'
 import { observer } from 'mobx-react-lite'
+
+interface PlanSubItemType {
+  label: string
+  value: string
+}
 
 interface PlanSubItemProps {
   item: CatalogueItem
@@ -102,9 +106,11 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
             <Autocomplete
               renderInput={(params) => <TextField {...params} label="Name" />}
               options={(filterOptions() as []) || []}
-              onChange={(event, newValue: string | null) =>
-                selectWorkItem(newValue.value)
-              }
+              onChange={(event, newValue: PlanSubItemType | string | null) => {
+                if (newValue && typeof newValue !== 'string') {
+                  selectWorkItem(newValue.value)
+                }
+              }}
               className="autocomplete"
               value={item.name || ''}
             />

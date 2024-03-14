@@ -19,6 +19,11 @@ import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
 import { AggregationLimit } from '@prisma/client'
+import {
+  AggregationLimitClass,
+  ProcessableAggregationLimit,
+  processPlanWithAggregationLimits,
+} from '../utils/planCalculation'
 
 /**
  * ModelStore is the reactive layer on top of our SyncAPI which treats local storage
@@ -414,7 +419,11 @@ export class _ModelStore {
     await this.patchPlan(this.currentProject?.id as string, currentPlan)
   }
 
-  updatePlanItem = async (planId: string, newItem: CatalogueItem) => {
+  updatePlanItem = async (
+    planId: string,
+    newItem: CatalogueItem,
+    aggregationLimits?: AggregationLimit[]
+  ) => {
     const plans = this.plans
     const currentPlan = plans.find((plan) => plan.id === planId) as Plan
     const catalogueItems = this.catalogueItems as CatalogueItem[]
@@ -429,10 +438,37 @@ export class _ModelStore {
     )
 
     currentPlan.catalogueItems = updatedCatalogueItems
-    // Details are set via planDetailsJSON.
     delete currentPlan.planDetails
+
+    if (aggregationLimits) {
+      currentPlan.catalogueItems.forEach((item) => {
+        item.incentives?.forEach((incentive) => {
+          delete incentive.finalCalculations
+        })
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const aggLimitClasses = aggregationLimits.map((limit: any) => {
+        const processedLimit: ProcessableAggregationLimit = {
+          ...limit,
+          impactedIncentiveIds: limit.impactedIncentives.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (incentive: any) => incentive?.id
+          ),
+        }
+
+        // Create a new instance of AggregationLimitClass with the transformed object
+        return new AggregationLimitClass(processedLimit)
+      })
+
+      processPlanWithAggregationLimits(currentPlan, aggLimitClasses)
+    }
+
+    // Details are set via planDetailsJSON.
     currentPlan.planDetails = JSON.stringify(currentPlan)
+
     await this.patchPlan(this.currentProject?.id as string, currentPlan)
+
+    return currentPlan
   }
 
   getPlan = (planId: string) => {
