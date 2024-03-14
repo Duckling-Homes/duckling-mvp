@@ -156,6 +156,7 @@ export interface Organization {
   name: string
   description?: string
   webpage?: string
+  picture_url?: string
 }
 
 export interface VisualizerTextBlock {

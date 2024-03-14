@@ -432,30 +432,35 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 plan={currentPlan}
                 title={'Home Performance'}
                 property={'HomePerformance'}
+                aggregationLimits={aggregationLimits}
               />
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 title={'HVAC'}
                 property={'HVAC'}
+                aggregationLimits={aggregationLimits}
               />
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 title={'Appliance Upgrades'}
                 property={'Appliances'}
+                aggregationLimits={aggregationLimits}
               />
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 title={'Electrical'}
                 property={'Electrical'}
+                aggregationLimits={aggregationLimits}
               />
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 title={'Additional Services'}
                 property={'Other'}
+                aggregationLimits={aggregationLimits}
               />
               <Photos plan={currentPlan} project={currentProject} />
             </div>

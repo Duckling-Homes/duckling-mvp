@@ -15,6 +15,7 @@ import { CatalogueItem, Plan } from '@/types/types'
 import ModelStore from '@/app/stores/modelStore'
 import PlanSubItem from './PlanSubItem'
 import { observer } from 'mobx-react-lite'
+import { AggregationLimit } from '@prisma/client'
 
 import './style.scss'
 
@@ -23,10 +24,11 @@ interface PlanItemProps {
   plan: Plan
   title: string
   property: string
+  aggregationLimits: AggregationLimit[]
 }
 
 const PlanItem: React.FC<PlanItemProps> = observer(
-  ({ catalogue, plan, title, property }) => {
+  ({ catalogue, plan, title, property, aggregationLimits }) => {
     const subcategories = getSubcategories(property)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const subcategoryMenuOpen = Boolean(anchorEl)
@@ -104,7 +106,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
       }
     }
 
-    const changeItemQuantity = (
+    const changeItemQuantity = async (
       customId: string,
       propertyName: string,
       newValue: string | number
@@ -120,7 +122,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
       )
 
       if (plan?.id && updatedItem) {
-        ModelStore.updatePlanItem(plan.id, updatedItem)
+        await ModelStore.updatePlanItem(plan.id, updatedItem, aggregationLimits)
       }
     }
 
