@@ -43,6 +43,7 @@
     "openai": "^4.20.1",
     "papaparse": "^5.4.1",
     "postcss": "8.4.30",
+    "posthog-js": "^1.113.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-imask": "^7.1.3",

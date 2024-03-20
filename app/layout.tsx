@@ -1,9 +1,10 @@
 // TODO: Search why this is not working. I had to put an import at globals.sccs for the font to work
-import { Roboto } from 'next/font/google'
-
 import { Metadata } from 'next'
+import { Roboto } from 'next/font/google'
+import { PHProvider } from './providers'
 
 import { ClerkProvider } from '@clerk/nextjs'
+import dynamic from 'next/dynamic'
 import './globals.scss'
 // import ducklingTheme from "./style/theme/theme" // Here whenever we decide to move to our own theme
 
@@ -12,6 +13,10 @@ const roboto = Roboto({ subsets: ['latin'],
   weight: [
   '300', '400', '500', '700', '900'
   ]
+})
+
+const PostHogPageView = dynamic(() => import('./PostHogPageView'), {
+  ssr: false,
 })
 
 export const metadata: Metadata = {
@@ -45,9 +50,12 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
+            <PHProvider>
       <html lang="en" className={roboto.className}>
+      <PostHogPageView /> 
         <body>{children}</body>
       </html>
+      </PHProvider>
     </ClerkProvider>
   )
 }

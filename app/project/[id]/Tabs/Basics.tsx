@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import ModelStore from '@/app/stores/modelStore'
-import { Project, ProjectData } from "@/types/types";
+import ModelStore from '@/app/stores/modelStore';
 import { SelectInput, TextInput } from "@/components/Inputs";
+import { Project, ProjectData } from "@/types/types";
+import React, { useEffect, useState } from 'react';
 
 interface BasicsProps {
   currentProject: Project
