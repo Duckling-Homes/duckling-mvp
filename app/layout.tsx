@@ -6,12 +6,19 @@ import { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import './globals.scss'
 // import ducklingTheme from "./style/theme/theme" // Here whenever we decide to move to our own theme
+import dynamic from 'next/dynamic'
+import { PHProvider } from './providers'
 
-const roboto = Roboto({ subsets: ['latin'],
+const roboto = Roboto({
+  subsets: ['latin'],
   display: 'swap',
   weight: [
-  '300', '400', '500', '700', '900'
+    '300', '400', '500', '700', '900'
   ]
+})
+
+const PostHogPageView = dynamic(() => import('./PostHogPageView'), {
+  ssr: false,
 })
 
 export const metadata: Metadata = {
@@ -46,7 +53,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className={roboto.className}>
-        <body>{children}</body>
+        <PHProvider>
+          <body>
+            <PostHogPageView />
+            {children}
+          </body>
+        </PHProvider>
       </html>
     </ClerkProvider>
   )

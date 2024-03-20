@@ -4,15 +4,16 @@ import { HomeOutlined, MenuOutlined } from '@mui/icons-material'
 import { IconButton } from '@mui/material'
 
 import { useClerk, useUser } from '@clerk/nextjs'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { checkDeviceType } from '../../hooks/checkDeviceType'
 import CustomMenu from '../Menu'
-import Link from 'next/link'
 
-import './styles.scss'
 import ModelStore from '@/app/stores/modelStore'
 import { Organization } from '@/types/types'
+import { usePostHog } from 'posthog-js/react'
 import PendingStatus from '../PendingStatus'
+import './styles.scss'
 
 const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
   publicRoute,
@@ -29,6 +30,7 @@ const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
   const open = Boolean(anchorEl)
   const { signOut } = useClerk()
   const { user } = useUser()
+  const posthog = usePostHog()
 
   useEffect(() => {
     if (organization || !user) return
@@ -52,6 +54,7 @@ const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
     setAnchorEl(null)
   }
   const doSignOut = () => {
+    posthog?.capture('clicked_logout')
     signOut()
   }
 
