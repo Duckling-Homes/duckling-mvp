@@ -5,13 +5,17 @@ import Markdown from 'react-markdown'
 const AboutUsPage: React.FC<{
   organization: Organization
 }> = observer(({ organization }) => {
+  const orgImg = organization.picture_url || '/assets/company-profile.png'
+
   return (
     <div className="aboutUs">
-      {organization.picture_url && (
-        <div className="aboutUs__image">
-          <img src={organization.picture_url} alt="profile-picture" />
-        </div>
-      )}
+      <div className="aboutUs__image">
+        <img
+          style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+          src={orgImg}
+          alt="profile-picture"
+        />
+      </div>
       <div className="aboutUs__content">
         <div className="aboutUs__header">
           <p>{organization.name}</p>
