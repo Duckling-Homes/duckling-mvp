@@ -6,27 +6,20 @@ import PlaceHolderPhoto from '../../../../assets/placeholder-image.png'
 
 import '../style.scss'
 import {
-  CalendarMonth,
-  Home,
   HomeOutlined,
   MailOutline,
-  Person,
   PersonOutline,
-  Phone,
   PhoneOutlined,
 } from '@mui/icons-material'
-import dayjs from 'dayjs'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import ModelStore from '@/app/stores/modelStore'
-import { toJS } from 'mobx'
 
 const HomeSummary: React.FC<{
   project: Project
 }> = observer(({ project }) => {
   const [heroPhoto, setHeroPhoto] = useState<PhotoDetails>({})
 
-  console.log(toJS(project))
   useEffect(() => {
     if (project?.heroImageId) {
       ModelStore.downloadPhoto(project.heroImageId).then((response) => {
