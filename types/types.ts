@@ -157,6 +157,13 @@ export interface Organization {
   description?: string
   webpage?: string
   picture_url?: string
+  articles?: OrganizationArticle[]
+}
+
+export interface OrganizationArticle {
+  title: string
+  imageUrl: string
+  url: string
 }
 
 export interface VisualizerTextBlock {
