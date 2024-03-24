@@ -1,0 +1,40 @@
+.syncwarning {
+  background-color: #1976d2; /* Cor de fundo da badge */
+  color: #fff; /* Cor do texto da badge */
+  padding: 5px 10px; /* Espaçamento interno da badge */
+  border-radius: 20px; /* Raio das bordas da badge */
+  font-size: 14px; /* Tamanho da fonte da badge */
+  font-weight: bold; /* Peso da fonte da badge */
+  position: fixed; /* Posição fixa na tela */
+  bottom: 20px; /* Distância da borda inferior */
+  left: 20px; /* Distância da borda direita */
+  z-index: 9999; /* Z-index para garantir que a badge esteja acima de outros elementos */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra da badge */
+  transition: opacity 0.3s ease; /* Transição suave para a opacidade */
+  div {
+    gap: 4px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.syncwarning-offline {
+  background-color: #d32f2f; /* Cor de fundo da badge */
+  color: #fff; /* Cor do texto da badge */
+  padding: 5px 10px; /* Espaçamento interno da badge */
+  border-radius: 20px; /* Raio das bordas da badge */
+  font-size: 14px; /* Tamanho da fonte da badge */
+  font-weight: bold; /* Peso da fonte da badge */
+  position: fixed; /* Posição fixa na tela */
+  bottom: 20px; /* Distância da borda inferior */
+  left: 20px; /* Distância da borda direita */
+  z-index: 9999; /* Z-index para garantir que a badge esteja acima de outros elementos */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra da badge */
+  transition: opacity 0.3s ease; /* Transição suave para a opacidade */
+  div {
+    justify-content: center;
+    gap: 4px;
+    display: flex;
+    align-items: center;
+  }
+}

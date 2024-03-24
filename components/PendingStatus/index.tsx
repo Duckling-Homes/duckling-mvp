@@ -3,6 +3,8 @@ import { observer } from 'mobx-react-lite'
 import { SyncOutlined } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 
+import './style.scss'
+
 const PendingStatus = observer(() => {
   const [onlineStatusFiveSecondsAgo, setOnlineStatusFiveSecondsAgo] = useState(
     ModelStore.onlineStatus
@@ -29,7 +31,7 @@ const PendingStatus = observer(() => {
       }}
     >
       {ModelStore.onlineStatus === 'offline' && (
-        <div>
+        <div className="syncwarning-offline">
           <div>
             Sync status <SyncOutlined fontSize="inherit" /> Offline.
           </div>
@@ -37,7 +39,7 @@ const PendingStatus = observer(() => {
         </div>
       )}
       {ModelStore.onlineStatus === 'online' && (
-        <div>
+        <div className="syncwarning">
           {ModelStore.hasPendingChanges && (
             <div>
               {' '}

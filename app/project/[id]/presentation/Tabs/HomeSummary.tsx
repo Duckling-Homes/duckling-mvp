@@ -1,13 +1,35 @@
 'use client'
 import IssuesView from '../Components/IssuesSummary'
-import { Project } from '@/types/types'
+import { PhotoDetails, Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
+import PlaceHolderPhoto from '../../../../assets/placeholder-image.png'
 
 import '../style.scss'
+import {
+  HomeOutlined,
+  MailOutline,
+  PersonOutline,
+  PhoneOutlined,
+} from '@mui/icons-material'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import ModelStore from '@/app/stores/modelStore'
 
 const HomeSummary: React.FC<{
   project: Project
 }> = observer(({ project }) => {
+  const [heroPhoto, setHeroPhoto] = useState<PhotoDetails>({})
+
+  useEffect(() => {
+    if (project?.heroImageId) {
+      ModelStore.downloadPhoto(project.heroImageId).then((response) => {
+        setHeroPhoto({ photoUrl: response })
+      })
+    } else {
+      setHeroPhoto({})
+    }
+  }, [project?.heroImageId])
+
   return (
     <>
       {/* TODO: Add summary back in - need to generate it first */}
@@ -28,6 +50,36 @@ const HomeSummary: React.FC<{
           </p>
         </div>
       </div> */}
+      <div className="homeSummary__header">
+        {!heroPhoto?.photoUrl && (
+          <Image src={PlaceHolderPhoto} alt="project-image" />
+        )}
+        {heroPhoto?.photoUrl && (
+          <Image
+            alt="project-image"
+            style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+            src={heroPhoto.photoUrl}
+          ></Image>
+        )}
+        <div className="homeSummary__info">
+          <span className="homeSummary__infoItem">
+            <HomeOutlined />
+            {project?.homeownerAddress}
+          </span>
+          <span className="homeSummary__infoItem">
+            <PersonOutline />
+            {project?.homeownerName}
+          </span>
+          <span className="homeSummary__infoItem">
+            <MailOutline />
+            {project.homeownerEmail}
+          </span>
+          <span className="homeSummary__infoItem">
+            <PhoneOutlined />
+            {project.homeownerPhone}
+          </span>
+        </div>
+      </div>
       <div className="issuesOverview">
         <div className="issuesOverview__header">
           <p>Issues</p>
