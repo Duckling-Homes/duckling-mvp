@@ -47,7 +47,9 @@ const Presentation = observer(() => {
       ></TabHolder>
       <div>
         {/* Signature is here instead of PlansPresentation because something about how that component is rendered makes this impossible to use there... to investigate */}
-        {tab === 'Plans' && process.env["SIGNATURES"] &&  <Signature signatureID={project.id!} />}
+        {tab === 'Plans' && process.env['SIGNATURES'] && (
+          <Signature signatureID={project.id!} />
+        )}
       </div>
       <div className="summary">
         <div className="summary__header">

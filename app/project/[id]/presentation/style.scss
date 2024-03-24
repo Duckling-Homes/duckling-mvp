@@ -231,6 +231,39 @@
   }
 }
 
+.homeSummary__header {
+  display: flex;
+  gap: 16px;
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  margin: 16px;
+  img {
+    width: 220px;
+    height: auto;
+    border-radius: 4px;
+  }
+  .homeSummary__info {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    gap: 16px;
+    .homeSummary__infoItem {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.87);
+      svg {
+        color: rgba(0, 0, 0, 0.56);
+      }
+    }
+  }
+}
+
 @media screen and (max-width: 769px) {
   .financing {
     &__content {

@@ -164,95 +164,107 @@ const DataCollection = observer(() => {
       {!openCamera && (
         <Container>
           <div className="dataCollection">
-            <div className="dataCollection__header">
-              <ProjectDetails
-                project={currentProject}
-                heroPhoto={heroPhoto}
-                setOpenCamera={setOpenCamera}
-              ></ProjectDetails>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                }}
-              >
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => setOpenModal(true)}
-                  startIcon={<Edit />}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="error"
-                  onClick={() => setDeleteModal(true)}
-                  startIcon={<Delete />}
-                >
-                  Delete
-                </Button>
-              </div>
-            </div>
-            <div className="dataCollection__buttonGroup">
-              <Button
-                style={{
-                  backgroundColor: '#FFF',
-                  textTransform: 'capitalize',
-                  fontWeight: '400',
-                  padding: '16px 0px',
-                  width: '200px',
-                  color:
-                    currentContent === 'tabs' ? '#2196F3' : 'rgba(0,0,0,0.6)',
-                  border:
-                    currentContent === 'tabs' ? '2px solid #2196F3' : 'none',
-                }}
-                startIcon={<Home />}
-                onClick={() => setCurrentContent('tabs')}
-              >
-                Home Info
-              </Button>
-              <Button
-                style={{
-                  backgroundColor: '#FFF',
-                  textTransform: 'capitalize',
-                  fontWeight: '400',
-                  padding: '16px 0px',
-                  width: '200px',
-                  color:
-                    currentContent === 'plans' ? '#2196F3' : 'rgba(0,0,0,0.6)',
-                  border:
-                    currentContent === 'plans' ? '2px solid #2196F3' : 'none',
-                }}
-                startIcon={<Tune />}
-                onClick={() => setCurrentContent('plans')}
-              >
-                Create Plans
-              </Button>
-              <Button
-                style={{
-                  backgroundColor: '#FFF',
-                  textTransform: 'capitalize',
-                  fontWeight: '400',
-                  padding: '16px 0px',
-                  width: '200px',
-                  color:
-                    currentContent === 'presentation'
-                      ? '#2196F3'
-                      : 'rgba(0,0,0,0.6)',
-                  border:
-                    currentContent === 'presentation'
-                      ? '2px solid #2196F3'
-                      : 'none',
-                }}
-                startIcon={<FormatListNumbered />}
-                onClick={() => setCurrentContent('presentation')}
-              >
-                Present
-              </Button>
-            </div>
+            {currentContent !== 'presentation' && (
+              <>
+                <div className="dataCollection__header">
+                  <ProjectDetails
+                    project={currentProject}
+                    heroPhoto={heroPhoto}
+                    setOpenCamera={setOpenCamera}
+                  ></ProjectDetails>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px',
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => setOpenModal(true)}
+                      startIcon={<Edit />}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="error"
+                      onClick={() => setDeleteModal(true)}
+                      startIcon={<Delete />}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+                <div className="dataCollection__buttonGroup">
+                  <Button
+                    style={{
+                      backgroundColor: '#FFF',
+                      textTransform: 'capitalize',
+                      fontWeight: '400',
+                      padding: '16px 0px',
+                      width: '200px',
+                      color:
+                        currentContent === 'tabs'
+                          ? '#2196F3'
+                          : 'rgba(0,0,0,0.6)',
+                      border:
+                        currentContent === 'tabs'
+                          ? '2px solid #2196F3'
+                          : 'none',
+                    }}
+                    startIcon={<Home />}
+                    onClick={() => setCurrentContent('tabs')}
+                  >
+                    Home Info
+                  </Button>
+                  <Button
+                    style={{
+                      backgroundColor: '#FFF',
+                      textTransform: 'capitalize',
+                      fontWeight: '400',
+                      padding: '16px 0px',
+                      width: '200px',
+                      color:
+                        currentContent === 'plans'
+                          ? '#2196F3'
+                          : 'rgba(0,0,0,0.6)',
+                      border:
+                        currentContent === 'plans'
+                          ? '2px solid #2196F3'
+                          : 'none',
+                    }}
+                    startIcon={<Tune />}
+                    onClick={() => setCurrentContent('plans')}
+                  >
+                    Create Plans
+                  </Button>
+                  <Button
+                    style={{
+                      backgroundColor: '#FFF',
+                      textTransform: 'capitalize',
+                      fontWeight: '400',
+                      padding: '16px 0px',
+                      width: '200px',
+                      color:
+                        currentContent === 'presentation'
+                          ? '#2196F3'
+                          : 'rgba(0,0,0,0.6)',
+                      border:
+                        currentContent === 'presentation'
+                          ? '2px solid #2196F3'
+                          : 'none',
+                    }}
+                    startIcon={<FormatListNumbered />}
+                    onClick={() => setCurrentContent('presentation')}
+                  >
+                    Present
+                  </Button>
+                </div>
+              </>
+            )}
             {currentProject ? renderContent() : null}
           </div>
         </Container>
