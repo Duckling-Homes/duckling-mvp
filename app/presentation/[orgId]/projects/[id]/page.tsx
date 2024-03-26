@@ -1,6 +1,5 @@
 'use client'
 
-import ProjectDetails from '@/app/project/[id]/Tabs/ProjectDetailsView'
 import TabHolder from '@/app/project/[id]/presentation/Tabs/TabHolder'
 import ModelStore from '@/app/stores/modelStore'
 import { Container } from '@/components/Container'
@@ -56,21 +55,6 @@ const ShareablePresentation = observer(() => {
     }
   }, [currentPresentation?.projectDetails.images?.length])
 
-  const getHeroImage = () => {
-    if (!currentPresentation?.projectDetails?.heroImageId) {
-      return {}
-    }
-    if (photos.length == 0) {
-      return {}
-    }
-
-    return (
-      photos.find(
-        (photo) => photo.id === currentPresentation.projectDetails.heroImageId
-      ) || {}
-    )
-  }
-
   return (
     <>
       {currentPresentation && (
@@ -78,19 +62,17 @@ const ShareablePresentation = observer(() => {
           publicRoute={true}
           orgName={currentPresentation.organization?.name}
         >
-          <div className="dataCollection">
-            <div className="dataCollection__header">
-              <ProjectDetails
-                project={currentPresentation.projectDetails}
-                heroPhoto={getHeroImage()}
-              ></ProjectDetails>
-            </div>
+          <div
+            style={{
+              paddingBottom: '20px',
+            }}
+          >
+            <TabHolder
+              project={currentPresentation.projectDetails}
+              organization={currentPresentation.organization}
+              photos={photos}
+            ></TabHolder>
           </div>
-          <TabHolder
-            project={currentPresentation.projectDetails}
-            organization={currentPresentation.organization}
-            photos={photos}
-          ></TabHolder>
         </Container>
       )}
     </>

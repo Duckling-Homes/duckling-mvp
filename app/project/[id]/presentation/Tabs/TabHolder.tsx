@@ -14,7 +14,7 @@ const TabHolder: React.FC<{
   photos: PhotoDetails[]
   onTabChange?: (currentTab: string) => void
 }> = observer(({ project, organization, photos, onTabChange }) => {
-  const TabLabels = ['Home Summary', 'About Us', 'Plans']
+  const TabLabels = ['Your Home', 'Plans', 'About Us']
 
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0)
   function handleChangeTab(event: React.SyntheticEvent, newValue: number) {
@@ -38,9 +38,8 @@ const TabHolder: React.FC<{
         <Tab label={TabLabels[2]} />
       </Tabs>
       {renderTabContent(0, <HomeSummary project={project} />)}
-      {renderTabContent(1, <AboutUsPage organization={organization} />)}
       {renderTabContent(
-        2,
+        1,
         project.plans && project.plans?.length > 0 ? (
           <>
             <PlansPresentation project={project} photos={photos} />
@@ -59,6 +58,7 @@ const TabHolder: React.FC<{
           >{`This project doesn't have any plans to present yet`}</div>
         )
       )}
+      {renderTabContent(2, <AboutUsPage organization={organization} />)}
     </div>
   )
 })

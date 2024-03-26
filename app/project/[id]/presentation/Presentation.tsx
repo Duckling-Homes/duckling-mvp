@@ -9,8 +9,14 @@ import LinkCopier from './Components/LinkCopier'
 import { Signature } from './Components/Signature'
 import TabHolder from './Tabs/TabHolder'
 import './style.scss'
+import { Button } from '@mui/material'
+import { ArrowBack } from '@mui/icons-material'
 
-const Presentation = observer(() => {
+interface PresentationProps {
+  changeBack: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+}
+
+const Presentation: React.FC<PresentationProps> = observer(({ changeBack }) => {
   const { user } = useUser()
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const project = ModelStore.currentProject as Project
@@ -51,8 +57,17 @@ const Presentation = observer(() => {
           <Signature signatureID={project.id!} />
         )}
       </div>
-      <div className="summary">
-        <div className="summary__header">
+      <div className="section">
+        <div className="section__row">
+          <Button
+            startIcon={<ArrowBack />}
+            variant="contained"
+            color="warning"
+            size="small"
+            onClick={changeBack}
+          >
+            Go back
+          </Button>
           <LinkCopier
             link={`${baseUrl}/presentation/${user?.publicMetadata?.organization_id}/projects/${project.id}`}
           ></LinkCopier>
