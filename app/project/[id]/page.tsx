@@ -28,7 +28,7 @@ import {
 import ModelStore from '@/app/stores/modelStore'
 import PhotoCaptureModal from '@/components/Modals/PhotoModal'
 import Plans from './plans/Plans'
-import Presentation from './presentation/page'
+import Presentation from './presentation/Presentation'
 
 import './style.scss'
 import ProjectDetails from './Tabs/ProjectDetailsView'

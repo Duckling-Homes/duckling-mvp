@@ -12,7 +12,11 @@ import './style.scss'
 import { Button } from '@mui/material'
 import { ArrowBack } from '@mui/icons-material'
 
-const Presentation = observer(({ changeBack }) => {
+interface PresentationProps {
+  changeBack: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+}
+
+const Presentation: React.FC<PresentationProps> = observer(({ changeBack }) => {
   const { user } = useUser()
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const project = ModelStore.currentProject as Project
