@@ -17,7 +17,7 @@ const Incentives: React.FC<{
   taxCredits: Incentive[]
   onCheck: (incentiveId: string, parentId: string) => void
 }> = ({ rebates, taxCredits, onCheck }) => {
-  function calculateIncentiveValue(incentive) {
+  function calculateIncentiveValue(incentive: Incentive) {
     switch (incentive.calculationType) {
       case 'FlatRate':
         return `up to $${incentive.calculationRateValue} per project`
@@ -28,7 +28,7 @@ const Incentives: React.FC<{
     }
   }
 
-  function formatPerUnitIncentive(incentive) {
+  function formatPerUnitIncentive(incentive: Incentive) {
     if (incentive.maxLimit) {
       return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
     } else {
@@ -36,14 +36,17 @@ const Incentives: React.FC<{
     }
   }
 
-  function formatPercentageIncentive(incentive) {
-    console.log(incentive)
+  function formatPercentageIncentive(incentive: Incentive) {
+    if (!incentive.calculationRateValue) {
+      return ''
+    }
+
     if (incentive.maxLimit) {
-      return `${incentive.calculationRateValue * 100}%, up to $${
+      return `${incentive?.calculationRateValue * 100}%, up to $${
         incentive.maxLimit
       }`
     } else {
-      return `${incentive.calculationRateValue * 100}%`
+      return `${incentive?.calculationRateValue * 100}%`
     }
   }
 
