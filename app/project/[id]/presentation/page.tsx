@@ -11,7 +11,6 @@ import TabHolder from './Tabs/TabHolder'
 import './style.scss'
 import { Button } from '@mui/material'
 import { ArrowBack } from '@mui/icons-material'
-import Link from 'next/link'
 
 const Presentation = observer(({ changeBack }) => {
   const { user } = useUser()
