@@ -1,11 +1,5 @@
 import { Close } from '@mui/icons-material'
-import {
-  Button,
-  Checkbox,
-  Divider,
-  IconButton,
-  Modal,
-} from '@mui/material'
+import { Button, Checkbox, Divider, IconButton, Modal } from '@mui/material'
 
 import ModelStore from '@/app/stores/modelStore'
 import {
@@ -13,33 +7,43 @@ import {
   AggregationLimitClass,
   processPlanWithAggregationLimits,
 } from '@/app/utils/planCalculation'
-import {
-  CatalogueItem,
-  Incentive,
-  Plan,
-  PlanDetails,
-} from '@/types/types'
+import { CatalogueItem, Incentive, Plan, PlanDetails } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import './styles.scss'
 import { AggregationLimit } from '@prisma/client'
-
-// const STEPS = ['Select Incentives', 'Review Copy']
 
 const Incentives: React.FC<{
   rebates: Incentive[]
   taxCredits: Incentive[]
   onCheck: (incentiveId: string, parentId: string) => void
 }> = ({ rebates, taxCredits, onCheck }) => {
-  function calculateIncentiveValue(incentive: Incentive) {
+  function calculateIncentiveValue(incentive) {
     switch (incentive.calculationType) {
       case 'FlatRate':
         return `up to $${incentive.calculationRateValue} per project`
       case 'PerUnit':
-        return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
+        return formatPerUnitIncentive(incentive)
       case 'Percentage':
-        return `${(incentive.calculationRateValue as number) * 100}%, up to $${
-          incentive.maxLimit
-        }`
+        return formatPercentageIncentive(incentive)
+    }
+  }
+
+  function formatPerUnitIncentive(incentive) {
+    if (incentive.maxLimit) {
+      return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
+    } else {
+      return `$${incentive.calculationRateValue} per unit`
+    }
+  }
+
+  function formatPercentageIncentive(incentive) {
+    console.log(incentive)
+    if (incentive.maxLimit) {
+      return `${incentive.calculationRateValue * 100}%, up to $${
+        incentive.maxLimit
+      }`
+    } else {
+      return `${incentive.calculationRateValue * 100}%`
     }
   }
 
@@ -171,87 +175,6 @@ const Incentives: React.FC<{
   )
 }
 
-// const CopyReview: React.FC<{
-//   plan: Plan
-//   projectId: string
-// }> = ({ plan, projectId }) => {
-//   const [isLoading, setIsLoading] = useState(false)
-//   const [copyFields, setCopyFields] = useState({
-//     summary: '',
-//     recommended: '',
-//     comfort: '',
-//     health: '',
-//   })
-
-//   useEffect(() => {
-//     if (!plan.copy) {
-//       const generateCopy = async () => {
-//         setIsLoading(true)
-//         await ModelStore.generateCopy(plan, projectId)
-//         setIsLoading(false)
-//       }
-//       generateCopy()
-//     }
-//     setCopyFields(plan?.copy as Copy)
-//   }, [])
-
-//   function updateCopyFields(newValue: string, field: string) {
-//     const oldFields = { ...copyFields } as Copy
-
-//     oldFields[field] = newValue
-
-//     setCopyFields(oldFields)
-//     ModelStore.updatePlanCopy(plan.id as string, oldFields)
-//   }
-
-//   if (isLoading) {
-//     return (
-//       <div className="copyReview">
-//         <span>Generating Copy...</span>
-//       </div>
-//     )
-//   }
-
-//   return (
-//     <div className="copyReview">
-//       <div className="copyReview__wrapper">
-//         <span className="copyReview__title">Home Summary</span>
-//         <TextField
-//           multiline
-//           value={plan.copy?.summary || copyFields?.summary}
-//           onChange={({ target }) => updateCopyFields(target.value, 'summary')}
-//         />
-//       </div>
-//       <div className="copyReview__wrapper">
-//         <span className="copyReview__title">Plan Summary</span>
-//         <TextField
-//           multiline
-//           value={plan.copy?.recommended || copyFields?.recommended}
-//           onChange={({ target }) =>
-//             updateCopyFields(target.value, 'recommended')
-//           }
-//         />
-//       </div>
-//       <div className="copyReview__wrapper">
-//         <span className="copyReview__title">Comfort Summary</span>
-//         <TextField
-//           multiline
-//           value={plan.copy?.comfort || copyFields?.comfort}
-//           onChange={({ target }) => updateCopyFields(target.value, 'comfort')}
-//         />
-//       </div>
-//       <div className="copyReview__wrapper">
-//         <span className="copyReview__title">Health Summary</span>
-//         <TextField
-//           multiline
-//           value={plan.copy?.health || copyFields?.health}
-//           onChange={({ target }) => updateCopyFields(target.value, 'health')}
-//         />
-//       </div>
-//     </div>
-//   )
-// }
-
 const IncentivesModal: React.FC<{
   open: boolean
   onClose: () => void
@@ -260,7 +183,6 @@ const IncentivesModal: React.FC<{
   aggregationLimits: AggregationLimit[]
 }> = observer(
   ({ open, onClose, currentPlanId, projectId, aggregationLimits }) => {
-    // const [activeStep, setActiveStep] = useState(0)
     const [plan]: [Plan, PlanDetails] = ModelStore?.getPlan(currentPlanId) as [
       Plan,
       PlanDetails,
@@ -285,7 +207,10 @@ const IncentivesModal: React.FC<{
       catalogueItems?.forEach((item: CatalogueItem) => {
         if (item.incentives && Array.isArray(item.incentives)) {
           item.incentives.forEach((incentive) => {
-            if (incentive.type === type && !uniqueIncentivesSet.has(incentive.id as string)) {
+            if (
+              incentive.type === type &&
+              !uniqueIncentivesSet.has(incentive.id as string)
+            ) {
               incentive.parentId = item.customId
               uniqueIncentivesSet.add(incentive.id as string)
               dedupedIncentives.push(incentive)
@@ -314,7 +239,7 @@ const IncentivesModal: React.FC<{
       // setActiveStep((prevActiveStep) => prevActiveStep - 1)
       onClose()
     }
-    
+
     function handleSelectIncentive(incentiveId: string, parentId: string) {
       let catalogueItems = []
 
@@ -423,20 +348,6 @@ const IncentivesModal: React.FC<{
             </IconButton>
           </div>
           <div className="incentivesModal__body">
-            {/* <Stepper activeStep={activeStep}>
-              {STEPS.map((label) => {
-                const stepProps: { completed?: boolean } = {}
-                const labelProps: {
-                  optional?: React.ReactNode
-                } = {}
-                return (
-                  <Step key={label} {...stepProps}>
-                    <StepLabel {...labelProps}>{label}</StepLabel>
-                  </Step>
-                )
-              })}
-            </Stepper>
-            {renderStep()} */}
             <Incentives
               onCheck={(incentiveId: string, parentId: string) =>
                 handleSelectIncentive(incentiveId, parentId)
@@ -446,13 +357,8 @@ const IncentivesModal: React.FC<{
             />
           </div>
           <div className="incentivesModal__footer">
-            <Button onClick={handleBack}>
-              Cancel
-            </Button>
-            <Button onClick={handleNext}>
-              {/* {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'} */}
-              Finish
-            </Button>
+            <Button onClick={handleBack}>Cancel</Button>
+            <Button onClick={handleNext}>Finish</Button>
           </div>
         </div>
       </Modal>

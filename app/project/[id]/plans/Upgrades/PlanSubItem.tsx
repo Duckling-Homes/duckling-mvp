@@ -38,8 +38,6 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
         value: item.id,
       }))
 
-      console.log(resultArray)
-
       return resultArray
     }
 
