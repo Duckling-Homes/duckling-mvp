@@ -82,8 +82,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     setCopyFields(currentPlan?.copy as Copy)
   }, [currentPlan])
 
-  console.log(catalogue)
-
   async function handlePlanCreation(name: string) {
     if (!currentProject.id) {
       return
