@@ -89,6 +89,10 @@ const DataCollection = observer(() => {
     ModelStore.patchProject(updatedProject)
   }
 
+  const handleBackButtonClick = () => {
+    setCurrentContent('plans')
+  }
+
   function renderContent() {
     switch (currentContent) {
       case 'tabs':
@@ -129,7 +133,7 @@ const DataCollection = observer(() => {
       case 'plans':
         return <Plans currentProject={currentProject} />
       case 'presentation':
-        return <Presentation />
+        return <Presentation changeBack={handleBackButtonClick} />
     }
   }
 

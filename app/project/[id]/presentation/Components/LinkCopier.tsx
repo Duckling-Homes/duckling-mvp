@@ -1,15 +1,18 @@
 import { Button } from '@mui/material'
 import React, { useState } from 'react'
 
+import './style.scss'
+import { ContentCopy } from '@mui/icons-material'
+
 const LinkCopier: React.FC<{ link: string }> = ({ link }) => {
-  const [buttonText, setButtonText] = useState('Copy Shareable Link')
+  const [buttonText, setButtonText] = useState('Copy Link')
 
   const copyToClipboard = () => {
     navigator.clipboard
       .writeText(link)
       .then(() => {
         setButtonText('Copied!')
-        setTimeout(() => setButtonText('Copy Shareable Link'), 2000)
+        setTimeout(() => setButtonText('Copy Link'), 2000)
       })
       .catch((err) => {
         setButtonText('Copy Failed')
@@ -17,14 +20,17 @@ const LinkCopier: React.FC<{ link: string }> = ({ link }) => {
       })
   }
 
+  const shortenedLink = `${link.substring(0, 75)}...`
+
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
-    >
-      <p style={{ marginRight: '20px', fontSize: '16px', fontWeight: '300' }}>
-        {link}
-      </p>
-      <Button variant="contained" size="small" onClick={copyToClipboard}>
+    <div className="linkCopier">
+      <p className="linkCopier__text">{shortenedLink}</p>
+      <Button
+        startIcon={<ContentCopy />}
+        variant="contained"
+        size="small"
+        onClick={copyToClipboard}
+      >
         {buttonText}
       </Button>
     </div>
