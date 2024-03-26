@@ -33,11 +33,8 @@ const AboutUsPage: React.FC<{
           />
         </div>
         <div className="aboutUs__content">
-          <div className="aboutUs__header">
+          <div className="aboutUs__title">
             <p>{organization?.name}</p>
-          </div>
-          <div className="aboutUs__text">
-            <Markdown>{organization?.description}</Markdown>
           </div>
           {organization?.webpage && (
             <div>
@@ -46,6 +43,9 @@ const AboutUsPage: React.FC<{
               </a>
             </div>
           )}
+          <div className="aboutUs__text">
+            <Markdown>{organization?.description}</Markdown>
+          </div>
         </div>
       </div>
 
