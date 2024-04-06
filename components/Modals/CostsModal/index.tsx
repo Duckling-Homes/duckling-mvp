@@ -5,24 +5,31 @@ import {
   Button,
   Divider,
   FormControl,
+  FormLabel,
   IconButton,
+  InputLabel,
   Modal,
   TextField,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
+import './style.scss'
+import { TextInput } from '@/components/Inputs'
+
 const AdditionalCostFunctionalComponent: React.FC<{
   cost: AdditionalCost
   onDelete: (costId: string) => void
   onChange: (value: string, property: string, costId: string) => void
-}> = ({cost, onDelete, onChange}) => {
+}> = ({ cost, onDelete, onChange }) => {
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      gap: '16px'
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '16px',
+      }}
+    >
       <FormControl>
         <TextField
           fullWidth
@@ -31,7 +38,7 @@ const AdditionalCostFunctionalComponent: React.FC<{
           variant="outlined"
           value={cost.name}
           onChange={({ target }) => onChange(target.value, 'name', cost.id)}
-          size='small'
+          size="small"
           required
           placeholder="Additional Cost Name"
         />
@@ -44,8 +51,8 @@ const AdditionalCostFunctionalComponent: React.FC<{
           variant="outlined"
           value={cost.price}
           onChange={({ target }) => onChange(target.value, 'price', cost.id)}
-          type='tel'
-          size='small'
+          type="tel"
+          size="small"
           required
           placeholder="Price"
         />
@@ -95,22 +102,26 @@ const CostsModal: React.FC<{
   function deleteCost(costId: string) {
     const costsList = [...additionalCosts]
 
-    const updatedCosts = costsList.filter(cost => cost.id !== costId)
+    const updatedCosts = costsList.filter((cost) => cost.id !== costId)
     setAdditionalCosts(updatedCosts)
   }
 
-  function changeCost(value: number | string, property: string, costId: string) {
+  function changeCost(
+    value: number | string,
+    property: string,
+    costId: string
+  ) {
     const costsList = [...additionalCosts]
 
-    const updatedCosts = costsList.map(cost => {
+    const updatedCosts = costsList.map((cost) => {
       if (cost.id === costId) {
         return {
           ...cost,
-          [property]: value
-        };
+          [property]: value,
+        }
       }
-      return cost;
-    });
+      return cost
+    })
 
     setAdditionalCosts(updatedCosts)
   }
@@ -118,94 +129,142 @@ const CostsModal: React.FC<{
   function saveAdditionalCosts() {
     const updatedItem = {
       ...item,
-      additionalCosts: additionalCosts
+      additionalCosts: additionalCosts,
     }
 
     ModelStore.updatePlanItem(planId, updatedItem)
     onClose()
   }
-  
+
   return (
     <Modal
       open={open}
-      className="createModal"
+      className="costsModal"
       onClose={() => onClose()}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
-      <div className="createModal__content">
-        <div className="createModal__header">
-          <p>Edit Cost for {item.name}</p>
-          <IconButton
-            sx={{
-              borderRadius: '4px',
-              border: '1px solid #2196F3',
-              color: '#2196F3',
-              padding: '4px 10px',
-            }}
-            onClick={() => onClose()}
-            aria-label="close"
-          >
-            <Close />
-          </IconButton>
+      <div className="costsModal__content">
+        <div className="costsModal__header">
+          <h1>Edit {item.name}</h1>
         </div>
-        <small>Type: {item?.category}</small>
-        <small>Sub-type: {item?.subcategory}</small>
-        <small>{item.pricingType === 'PerUnit' ? 'Quantity' : 'Sizing'}: {item.quantity} {item.pricingType === 'PerUnit' ? 'units' : item.scaledPricingMetric}</small>
-        <form className="createModal__form">
-          <FormControl>
+        <form className="costsModal__form">
+          <div className="costsModal__formItem">
+            <h2>Edit Description</h2>
             <TextField
               fullWidth
-              size='small'
-              id="outlined-basic"
-              label="Base Cost"
+              multiline
+              size="small"
+              id="item-description"
+              label="Description"
               variant="outlined"
-              value={item.basePricePer}
-              type='tel'
+              value={item.description}
+              type="text"
               required
-              placeholder="Base Cost"
+              placeholder="Description"
             />
-          </FormControl>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() => addCost()}
-            size="small"
-            sx={{
-              marginLeft: 'auto',
-            }}
-          >
-            Add a cost
-          </Button>
+            <Divider />
+          </div>
+          <div className="costsModal__formItem">
+            <h2>Edit Cost</h2>
+            <p>Total Cost: $5,200</p>
+            <div className="costsModal__inputGroup">
+              <TextInput
+                label="Name"
+                onChange={(value) => {
+                  console.log(value)
+                }}
+                type="tel"
+                value={item.name || ''}
+                endAdornment="$"
+                placeholder="Name"
+                size="small"
+                required
+                sx={{
+                  display: 'flex',
+                  flex: '3',
+                }}
+              />
+              <TextInput
+                onChange={(value) => {
+                  console.log(value)
+                }}
+                label="Base Cost"
+                type="tel"
+                value={item.basePricePer || ''}
+                startAdornment="$"
+                placeholder="Base Cost"
+                size="small"
+                required
+                sx={{
+                  display: 'flex',
+                  flex: '1',
+                }}
+              />
+              <TextInput
+                onChange={(value) => {
+                  console.log(value)
+                }}
+                label="Quantity"
+                type="tel"
+                value={item.quantity || ''}
+                placeholder="Quantity"
+                size="small"
+                required
+                sx={{
+                  display: 'flex',
+                  flex: '1',
+                }}
+              />
+            </div>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => addCost()}
+              size="small"
+              sx={{
+                marginRight: 'auto',
+              }}
+            >
+              Add a cost
+            </Button>
+            <Divider />
+          </div>
         </form>
         {additionalCosts.length > 0 && (
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px'
-          }}>
-            <Divider style={{marginBottom: '8px'}}/>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+          >
+            <Divider style={{ marginBottom: '8px' }} />
             {additionalCosts.map((cost, index) => (
               <React.Fragment key={index}>
                 <AdditionalCostFunctionalComponent
                   cost={cost}
                   onDelete={(costId) => deleteCost(costId)}
-                  onChange={(value, property, costId) => changeCost(value, property, costId)}
+                  onChange={(value, property, costId) =>
+                    changeCost(value, property, costId)
+                  }
                 />
-                <Divider/>
+                <Divider />
               </React.Fragment>
             ))}
           </div>
         )}
-        <div className="createModal__footer">
+        <div className="costsModal__footer">
           <Button
-            variant="contained"
-            onClick={() => saveAdditionalCosts()}
-            size="small"
+            variant="outlined"
             sx={{
-              marginLeft: 'auto',
+              border: 'none',
             }}
+            onClick={() => onClose()}
           >
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={() => saveAdditionalCosts()}>
             Save
           </Button>
         </div>

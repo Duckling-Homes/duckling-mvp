@@ -12,7 +12,7 @@ const withPWA = withPWAInit.default({
   fallbacks: {
     document: '/~offline',
   },
-  cacheOnFrontEndNav: true,
+  cacheOnFrontEndNav: false,
   reloadOnOnline: false,
 })
 
