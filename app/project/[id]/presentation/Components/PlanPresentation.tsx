@@ -19,6 +19,7 @@ import Markdown from 'react-markdown'
 import CostCard from './CostCard'
 
 import '../style.scss'
+import { ReviewPlanModal } from '@/components/Modals/ReviewPlanModal'
 
 const PlanPresentation: React.FC<{
   plan: Plan
@@ -27,6 +28,8 @@ const PlanPresentation: React.FC<{
   const financingOptions = ModelStore.financingOptions
   const [displayedPhoto, setDisplayedPhoto] = useState<PhotoDetails>()
   const [photoIndex, setPhotoIndex] = useState<number>(0)
+  const [showReviewPlanModal, setShowReviewPlanModal] = useState(true)
+
   useEffect(() => {
     setPhotoIndex(0)
     if (photos && photos.length > 0) {
@@ -308,6 +311,21 @@ const PlanPresentation: React.FC<{
           </div>
         </div>
       </div>
+
+      <div className="acceptance">
+        <div className="acceptance__header">
+          <Button color="primary" onClick={() => setShowReviewPlanModal(true)}>
+            Review and Accept Proposal
+          </Button>
+        </div>
+      </div>
+
+      {showReviewPlanModal && (
+        <ReviewPlanModal
+          open={showReviewPlanModal}
+          onChange={setShowReviewPlanModal}
+        />
+      )}
     </>
   )
 })

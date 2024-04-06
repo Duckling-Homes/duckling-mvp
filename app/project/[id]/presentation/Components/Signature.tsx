@@ -4,6 +4,7 @@ import SignatureCanvas from 'react-signature-canvas'
 
 type Props = {
   signatureID: string
+  onSignature?: (adornment: string) => void
 }
 /**
  *
@@ -11,7 +12,7 @@ type Props = {
  * to save the signature to the db if we want it. (Using localstore right now)
  *
  */
-export const Signature = ({ signatureID }: Props) => {
+export const Signature = ({ signatureID, onSignature }: Props) => {
   const sigCanvas = useRef<SignatureCanvas>(null)
   const [signed, setSigned] = useState(false) // State to track if the signature has been signed
   const [adornment, setAdornment] = useState<string | null>(null) // State to track if the signature has been signed
@@ -34,9 +35,14 @@ export const Signature = ({ signatureID }: Props) => {
 
   const promptAccept = () => {
     const name = prompt('Please print name to accept signature.')
+    if (!name || name.length === 0) {
+      alert('Please enter a name to sign the document!')
+      return
+    }
     const adornment = 'Signed by ' + name + ' at ' + new Date().toLocaleString()
     saveSignature(adornment)
     setAdornment(adornment)
+    onSignature && onSignature(adornment)
   }
 
   // Function to load the saved signature
