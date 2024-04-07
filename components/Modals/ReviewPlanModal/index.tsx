@@ -5,16 +5,17 @@ import { useEffect, useState } from 'react'
 
 type Props = {
   open: boolean
-  onChange: (open: boolean) => void
+  onCancel: () => void
+  onAccept: () => void
 }
 
-export const ReviewPlanModal = ({ open, onChange }: Props) => {
+export const ReviewPlanModal = ({ open, onCancel, onAccept }: Props) => {
   const [mode, setMode] = useState<'documents' | 'signature' | 'finalize'>(
     'documents'
   )
 
   return (
-    <Modal open={open} onClose={() => onChange(false)} className="createModal">
+    <Modal open={open} onClose={() => onCancel()} className="createModal">
       <div
         className="createModal__content"
         style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
@@ -23,7 +24,7 @@ export const ReviewPlanModal = ({ open, onChange }: Props) => {
           <ReviewDocumentsView
             documents={MockDocuments}
             onAccept={() => setMode('signature')}
-            onCancel={() => onChange(false)}
+            onCancel={() => onCancel()}
           />
         )}
 
@@ -37,7 +38,7 @@ export const ReviewPlanModal = ({ open, onChange }: Props) => {
         {mode === 'finalize' && (
           <FinalizeView
             onCancel={() => setMode('signature')}
-            onAccept={() => onChange(false)}
+            onAccept={() => onAccept()}
           />
         )}
       </div>
@@ -104,7 +105,7 @@ const ReviewDocumentsView = ({
         style={{ display: 'flex', justifyContent: 'end', width: '100%' }}
       >
         <Button onClick={backDocument}>Back</Button>
-        <Button onClick={advanceDocument}>Accept</Button>
+        <Button onClick={advanceDocument}>Continue</Button>
       </div>
     </>
   )
