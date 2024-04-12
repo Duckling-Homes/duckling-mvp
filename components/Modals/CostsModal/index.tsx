@@ -2,6 +2,7 @@ import ModelStore from '@/app/stores/modelStore'
 import { AdditionalCost, CatalogueItem } from '@/types/types'
 import { Add, Delete } from '@mui/icons-material'
 import {
+  Autocomplete,
   Button,
   Divider,
   IconButton,
@@ -15,34 +16,49 @@ import { v4 as uuidv4 } from 'uuid'
 
 import './style.scss'
 import { TextInput } from '@/components/Inputs'
+import formatCurrency from '@/app/utils/utils'
 
 const AdditionalCostFunctionalComponent: React.FC<{
   cost: AdditionalCost
   onDelete: (costId: string) => void
   onChange: (value: string, property: string, costId: string) => void
-}> = ({ cost, onDelete, onChange }) => {
+}> = ({ cost, onDelete, onChange, autocompleteOptions }) => {
   return (
     <div className="additionalCost">
-      <TextField
-        className="additionalCost__name"
-        label="Additional Cost Name"
-        variant="outlined"
-        value={cost.name}
-        onChange={({ target }) => onChange(target.value, 'name', cost.id)}
-        size="small"
-        type="text"
-        required
-        placeholder="Additional Cost Name"
-      />
-      <TextField
+      {cost.type === 'catalog' ? (
+        <Autocomplete
+          size="small"
+          renderInput={(params) => <TextField {...params} label="Name" />}
+          options={(autocompleteOptions as []) || []}
+          onChange={(event, newValue) => {
+            console.log(newValue)
+          }}
+          className="additionalCost__name"
+          value={cost.name || ''}
+        />
+      ) : (
+        <TextField
+          className="additionalCost__name"
+          label="Additional Cost Name"
+          variant="outlined"
+          value={cost.name}
+          onChange={({ target }) => onChange(target.value, 'name', cost.id)}
+          size="small"
+          type="text"
+          required
+          placeholder="Additional Cost Name"
+        />
+      )}
+      <TextInput
+        startAdornment="$"
         label="Price"
-        variant="outlined"
-        value={cost.totalPrice}
-        onChange={({ target }) => onChange(target.value, 'price', cost.id)}
+        value={cost.pricePer || ''}
+        onChange={(value) => onChange(value, 'pricePer', cost.id)}
         type="tel"
         size="small"
         required
         placeholder="Price"
+        className="additionalCost__price"
       />
       {cost.type === 'catalog' && (
         <TextField
@@ -54,6 +70,7 @@ const AdditionalCostFunctionalComponent: React.FC<{
           size="small"
           required
           placeholder="Quantity"
+          className="additionalCost__quantity"
         />
       )}
       <IconButton
@@ -77,7 +94,7 @@ const CostsModal: React.FC<{
   onClose: () => void
   item: CatalogueItem
   planId: string
-}> = ({ open, onClose, item, planId }) => {
+}> = ({ open, onClose, item, planId, filteredCatalogueOptions }) => {
   const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
@@ -97,19 +114,13 @@ const CostsModal: React.FC<{
   }
 
   function addCost(type: string) {
-    let newCost: AdditionalCost = {
+    const newCost: AdditionalCost = {
       id: uuidv4(),
       name: '',
       totalPrice: 0,
+      pricePer: 0,
+      quantity: 1,
       type: type,
-    }
-
-    if (type === 'catalog') {
-      newCost = {
-        ...newCost,
-        pricePer: 0,
-        quantity: 0,
-      }
     }
 
     const costsList = [...additionalCosts]
@@ -133,10 +144,15 @@ const CostsModal: React.FC<{
 
     const updatedCosts = costsList.map((cost) => {
       if (cost.id === costId) {
-        return {
+        cost = {
           ...cost,
           [property]: value,
         }
+        if (cost.pricePer && cost.quantity) {
+          cost.totalPrice = Number(cost.pricePer) * Number(cost.quantity)
+        }
+        console.log(cost)
+        return cost
       }
       return cost
     })
@@ -153,6 +169,8 @@ const CostsModal: React.FC<{
     ModelStore.updatePlanItem(planId, updatedItem)
     onClose()
   }
+
+  console.log(item)
 
   return (
     <Modal
@@ -185,7 +203,7 @@ const CostsModal: React.FC<{
           </div>
           <div className="costsModal__formItem">
             <h2>Edit Cost</h2>
-            <p>Total Cost: $5,200</p>
+            <p>Total Cost: {formatCurrency(item?.calculatedPrice || 0)}</p>
             <div className="costsModal__inputGroup">
               <TextInput
                 label="Name"
@@ -243,6 +261,7 @@ const CostsModal: React.FC<{
                   onChange={(value, property, costId) =>
                     changeCost(value, property, costId)
                   }
+                  autocompleteOptions={filteredCatalogueOptions}
                   type={cost.type}
                 />
               </React.Fragment>

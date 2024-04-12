@@ -60,6 +60,7 @@ const TextInput: React.FC<TextInputProps> = ({
   size = 'medium',
   required,
   sx,
+  className,
 }) => {
   const blurActiveElement = () => {
     const activeElement = document.activeElement as HTMLInputElement
@@ -73,6 +74,7 @@ const TextInput: React.FC<TextInputProps> = ({
       id="outlined-basic"
       label={label}
       variant="outlined"
+      className={className}
       placeholder={placeholder}
       type={type}
       value={value}

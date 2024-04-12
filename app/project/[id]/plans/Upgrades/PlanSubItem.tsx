@@ -73,6 +73,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
     return (
       <React.Fragment key={item.customId}>
         <CostsModal
+          filteredCatalogueOptions={filterOptions()}
           open={costModal}
           onClose={() => setCostModal(false)}
           item={item}
@@ -113,13 +114,6 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
               className="autocomplete"
               value={item.name || ''}
             />
-            {/* <SelectInput
-              label="name"
-              smallSize={true}
-              value={item.id || ''}
-              onChange={(value) => selectWorkItem(value)}
-              options={(filterOptions() as []) || []}
-            /> */}
             <TextField
               label={
                 item.pricingType === 'PerUnit'
