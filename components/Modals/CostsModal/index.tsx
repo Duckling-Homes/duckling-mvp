@@ -1,55 +1,102 @@
 import ModelStore from '@/app/stores/modelStore'
-import { AdditionalCost, CatalogueItem } from '@/types/types'
-import { Add, Close, Delete } from '@mui/icons-material'
 import {
+  AdditionalCost,
+  CatalogueItem,
+  FilteredCatalogueItem,
+} from '@/types/types'
+import { Add, Delete } from '@mui/icons-material'
+import {
+  Autocomplete,
   Button,
   Divider,
-  FormControl,
   IconButton,
+  Menu,
+  MenuItem,
   Modal,
   TextField,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
+import './style.scss'
+import { TextInput } from '@/components/Inputs'
+import formatCurrency from '@/app/utils/utils'
+
+interface PlanSubItemType {
+  label: string
+  value: string
+  item: CatalogueItem
+}
+
 const AdditionalCostFunctionalComponent: React.FC<{
   cost: AdditionalCost
   onDelete: (costId: string) => void
-  onChange: (value: string, property: string, costId: string) => void
-}> = ({cost, onDelete, onChange}) => {
+  onChange: (
+    value: string,
+    property: string,
+    costId: string,
+    costType?: string
+  ) => void
+  autocompleteOptions: FilteredCatalogueItem[]
+}> = ({ cost, onDelete, onChange, autocompleteOptions }) => {
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      gap: '16px'
-    }}>
-      <FormControl>
+    <div className="additionalCost">
+      {cost.type === 'catalog' ? (
+        <Autocomplete
+          size="small"
+          renderInput={(params) => <TextField {...params} label="Name" />}
+          options={(autocompleteOptions as []) || []}
+          onChange={(event, newValue) => {
+            if (newValue && typeof newValue !== 'string') {
+              onChange(
+                (newValue as PlanSubItemType).label || '',
+                'name',
+                cost.id,
+                'catalog'
+              )
+            }
+          }}
+          className="additionalCost__name"
+          value={cost.name || ''}
+        />
+      ) : (
         <TextField
-          fullWidth
-          id="outlined-basic"
+          className="additionalCost__name"
           label="Additional Cost Name"
           variant="outlined"
           value={cost.name}
           onChange={({ target }) => onChange(target.value, 'name', cost.id)}
-          size='small'
+          size="small"
+          type="text"
           required
           placeholder="Additional Cost Name"
         />
-      </FormControl>
-      <FormControl>
+      )}
+      <TextInput
+        startAdornment="$"
+        label="Price"
+        value={cost.pricePer || ''}
+        onChange={(value) => onChange(value, 'pricePer', cost.id)}
+        type="tel"
+        size="small"
+        required
+        placeholder="Price"
+        disabled={cost.type === 'catalog' && true}
+        className="additionalCost__price"
+      />
+      {cost.type === 'catalog' && (
         <TextField
-          fullWidth
-          id="outlined-basic"
-          label="Price"
+          label="Quantity"
           variant="outlined"
-          value={cost.price}
-          onChange={({ target }) => onChange(target.value, 'price', cost.id)}
-          type='tel'
-          size='small'
+          value={cost.quantity}
+          onChange={({ target }) => onChange(target.value, 'quantity', cost.id)}
+          type="tel"
+          size="small"
           required
-          placeholder="Price"
+          placeholder="Quantity"
+          className="additionalCost__quantity"
         />
-      </FormControl>
+      )}
       <IconButton
         sx={{
           borderRadius: '4px',
@@ -71,8 +118,11 @@ const CostsModal: React.FC<{
   onClose: () => void
   item: CatalogueItem
   planId: string
-}> = ({ open, onClose, item, planId }) => {
+  filteredCatalogueOptions: FilteredCatalogueItem[]
+}> = ({ open, onClose, item, planId, filteredCatalogueOptions }) => {
   const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([])
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const subcategoryMenuOpen = Boolean(anchorEl)
 
   useEffect(() => {
     if (item?.additionalCosts) {
@@ -80,11 +130,22 @@ const CostsModal: React.FC<{
     }
   }, [])
 
-  function addCost() {
-    const newCost = {
+  function handleMenuClick(event: React.MouseEvent<HTMLButtonElement>) {
+    setAnchorEl(event.currentTarget)
+  }
+
+  function handleClose() {
+    setAnchorEl(null)
+  }
+
+  function addCost(type: string) {
+    const newCost: AdditionalCost = {
       id: uuidv4(),
       name: '',
-      price: 0,
+      totalPrice: 0,
+      pricePer: 0,
+      quantity: 1,
+      type: type,
     }
 
     const costsList = [...additionalCosts]
@@ -95,22 +156,38 @@ const CostsModal: React.FC<{
   function deleteCost(costId: string) {
     const costsList = [...additionalCosts]
 
-    const updatedCosts = costsList.filter(cost => cost.id !== costId)
+    const updatedCosts = costsList.filter((cost) => cost.id !== costId)
     setAdditionalCosts(updatedCosts)
   }
 
-  function changeCost(value: number | string, property: string, costId: string) {
+  function changeCost(
+    value: number | string,
+    property: string,
+    costId: string,
+    costType?: string
+  ) {
     const costsList = [...additionalCosts]
 
-    const updatedCosts = costsList.map(cost => {
+    const updatedCosts = costsList.map((cost) => {
       if (cost.id === costId) {
-        return {
+        cost = {
           ...cost,
-          [property]: value
-        };
+          [property]: value,
+        }
+        if (costType === 'catalog') {
+          console.log('aaaaaaaaa')
+          cost.pricePer = filteredCatalogueOptions.find(
+            (option) => option.label === cost.name
+          )?.item.basePricePer
+        }
+        if (cost.pricePer && cost.quantity) {
+          cost.totalPrice = Number(cost.pricePer) * Number(cost.quantity)
+        }
+        console.log(cost)
+        return cost
       }
-      return cost;
-    });
+      return cost
+    })
 
     setAdditionalCosts(updatedCosts)
   }
@@ -118,94 +195,169 @@ const CostsModal: React.FC<{
   function saveAdditionalCosts() {
     const updatedItem = {
       ...item,
-      additionalCosts: additionalCosts
+      additionalCosts: additionalCosts,
     }
 
     ModelStore.updatePlanItem(planId, updatedItem)
     onClose()
   }
-  
+
+  function getTotalCost() {
+    let totalCost = item.calculatedPrice || 0
+    let additionalCostSum = 0
+
+    additionalCosts?.forEach((cost) => {
+      additionalCostSum += cost.totalPrice
+    })
+
+    totalCost += additionalCostSum
+
+    return formatCurrency(totalCost)
+  }
+
   return (
     <Modal
       open={open}
-      className="createModal"
+      className="costsModal"
       onClose={() => onClose()}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
-      <div className="createModal__content">
-        <div className="createModal__header">
-          <p>Edit Cost for {item.name}</p>
-          <IconButton
-            sx={{
-              borderRadius: '4px',
-              border: '1px solid #2196F3',
-              color: '#2196F3',
-              padding: '4px 10px',
-            }}
-            onClick={() => onClose()}
-            aria-label="close"
-          >
-            <Close />
-          </IconButton>
+      <div className="costsModal__content">
+        <div className="costsModal__header">
+          <h1>Edit {item.name}</h1>
         </div>
-        <small>Type: {item?.category}</small>
-        <small>Sub-type: {item?.subcategory}</small>
-        <small>{item.pricingType === 'PerUnit' ? 'Quantity' : 'Sizing'}: {item.quantity} {item.pricingType === 'PerUnit' ? 'units' : item.scaledPricingMetric}</small>
-        <form className="createModal__form">
-          <FormControl>
+        <form className="costsModal__form">
+          <div className="costsModal__formItem">
+            <h2>Edit Description</h2>
             <TextField
               fullWidth
-              size='small'
-              id="outlined-basic"
-              label="Base Cost"
+              multiline
+              size="small"
+              id="item-description"
+              label="Description"
               variant="outlined"
-              value={item.basePricePer}
-              type='tel'
+              value={item.description}
+              type="text"
               required
-              placeholder="Base Cost"
+              placeholder="Description"
             />
-          </FormControl>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() => addCost()}
-            size="small"
-            sx={{
-              marginLeft: 'auto',
-            }}
-          >
-            Add a cost
-          </Button>
-        </form>
-        {additionalCosts.length > 0 && (
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px'
-          }}>
-            <Divider style={{marginBottom: '8px'}}/>
+            <Divider />
+          </div>
+          <div className="costsModal__formItem">
+            <h2>Edit Cost</h2>
+            <p>Total Cost: {getTotalCost()}</p>
+            <div className="costsModal__inputGroup">
+              <TextInput
+                label="Name"
+                onChange={(value) => {
+                  console.log(value)
+                }}
+                type="tel"
+                value={item.name || ''}
+                placeholder="Name"
+                size="small"
+                required
+                sx={{
+                  display: 'flex',
+                  flex: '3',
+                }}
+              />
+              <TextInput
+                onChange={(value) => {
+                  console.log(value)
+                }}
+                label="Base Cost"
+                type="tel"
+                value={item.basePricePer || ''}
+                startAdornment="$"
+                placeholder="Base Cost"
+                size="small"
+                required
+                sx={{
+                  display: 'flex',
+                  flex: '1',
+                }}
+              />
+              <TextInput
+                onChange={(value) => {
+                  console.log(value)
+                }}
+                label="Quantity"
+                type="tel"
+                value={item.quantity || ''}
+                placeholder="Quantity"
+                size="small"
+                required
+                sx={{
+                  display: 'flex',
+                  flex: '1',
+                }}
+              />
+            </div>
             {additionalCosts.map((cost, index) => (
               <React.Fragment key={index}>
+                <Divider style={{ marginInline: '30%' }} />
                 <AdditionalCostFunctionalComponent
                   cost={cost}
                   onDelete={(costId) => deleteCost(costId)}
-                  onChange={(value, property, costId) => changeCost(value, property, costId)}
+                  onChange={(value, property, costId, costType) =>
+                    changeCost(value, property, costId, costType)
+                  }
+                  autocompleteOptions={filteredCatalogueOptions}
                 />
-                <Divider/>
               </React.Fragment>
             ))}
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={handleMenuClick}
+              size="small"
+              sx={{
+                marginRight: 'auto',
+              }}
+            >
+              Add a cost
+            </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={subcategoryMenuOpen}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  addCost('catalog')
+                  handleClose()
+                }}
+              >
+                Add cost from catalog
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  addCost('additional')
+                  handleClose()
+                }}
+              >
+                Add miscellaneous cost
+              </MenuItem>
+            </Menu>
           </div>
-        )}
-        <div className="createModal__footer">
+        </form>
+        <div className="costsModal__footer">
           <Button
-            variant="contained"
-            onClick={() => saveAdditionalCosts()}
-            size="small"
+            variant="outlined"
             sx={{
-              marginLeft: 'auto',
+              border: 'none',
             }}
+            onClick={() => onClose()}
           >
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={() => saveAdditionalCosts()}>
             Save
           </Button>
         </div>
