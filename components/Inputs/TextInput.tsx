@@ -61,6 +61,7 @@ const TextInput: React.FC<TextInputProps> = ({
   required,
   sx,
   className,
+  disabled = false,
 }) => {
   const blurActiveElement = () => {
     const activeElement = document.activeElement as HTMLInputElement
@@ -83,6 +84,7 @@ const TextInput: React.FC<TextInputProps> = ({
       onWheel={blurActiveElement}
       multiline={multiline || false}
       size={size}
+      disabled={disabled}
       required={required || false}
       sx={sx}
       InputProps={{

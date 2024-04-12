@@ -36,6 +36,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
       const resultArray = filteredArray.map((item) => ({
         label: item.name,
         value: item.id,
+        item: item,
       }))
 
       return resultArray

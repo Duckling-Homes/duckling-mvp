@@ -21,7 +21,12 @@ import formatCurrency from '@/app/utils/utils'
 const AdditionalCostFunctionalComponent: React.FC<{
   cost: AdditionalCost
   onDelete: (costId: string) => void
-  onChange: (value: string, property: string, costId: string) => void
+  onChange: (
+    value: string,
+    property: string,
+    costId: string,
+    costType: string
+  ) => void
 }> = ({ cost, onDelete, onChange, autocompleteOptions }) => {
   return (
     <div className="additionalCost">
@@ -31,7 +36,7 @@ const AdditionalCostFunctionalComponent: React.FC<{
           renderInput={(params) => <TextField {...params} label="Name" />}
           options={(autocompleteOptions as []) || []}
           onChange={(event, newValue) => {
-            console.log(newValue)
+            onChange(newValue?.label, 'name', cost.id, 'catalog')
           }}
           className="additionalCost__name"
           value={cost.name || ''}
@@ -58,6 +63,7 @@ const AdditionalCostFunctionalComponent: React.FC<{
         size="small"
         required
         placeholder="Price"
+        disabled={cost.type === 'catalog' && true}
         className="additionalCost__price"
       />
       {cost.type === 'catalog' && (
@@ -138,7 +144,8 @@ const CostsModal: React.FC<{
   function changeCost(
     value: number | string,
     property: string,
-    costId: string
+    costId: string,
+    costType?: string
   ) {
     const costsList = [...additionalCosts]
 
@@ -147,6 +154,12 @@ const CostsModal: React.FC<{
         cost = {
           ...cost,
           [property]: value,
+        }
+        if (costType === 'catalog') {
+          console.log('aaaaaaaaa')
+          cost.pricePer = filteredCatalogueOptions.find(
+            (option) => option.label === cost.name
+          )?.item.basePricePer
         }
         if (cost.pricePer && cost.quantity) {
           cost.totalPrice = Number(cost.pricePer) * Number(cost.quantity)
@@ -269,8 +282,8 @@ const CostsModal: React.FC<{
                 <AdditionalCostFunctionalComponent
                   cost={cost}
                   onDelete={(costId) => deleteCost(costId)}
-                  onChange={(value, property, costId) =>
-                    changeCost(value, property, costId)
+                  onChange={(value, property, costId, costType) =>
+                    changeCost(value, property, costId, costType)
                   }
                   autocompleteOptions={filteredCatalogueOptions}
                   type={cost.type}
