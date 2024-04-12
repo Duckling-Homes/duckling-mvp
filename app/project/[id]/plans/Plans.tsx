@@ -135,7 +135,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
         estimatedCost += ((item.quantity as number) || 0) * item.basePricePer
         if (item?.additionalCosts) {
           item?.additionalCosts.forEach((cost) => {
-            estimatedCost += Number(cost.price)
+            estimatedCost += Number(cost.totalPrice)
           })
         }
       }
