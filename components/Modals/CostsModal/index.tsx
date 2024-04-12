@@ -1,7 +1,15 @@
 import ModelStore from '@/app/stores/modelStore'
 import { AdditionalCost, CatalogueItem } from '@/types/types'
 import { Add, Delete } from '@mui/icons-material'
-import { Button, Divider, IconButton, Modal, TextField } from '@mui/material'
+import {
+  Button,
+  Divider,
+  IconButton,
+  Menu,
+  MenuItem,
+  Modal,
+  TextField,
+} from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -29,13 +37,25 @@ const AdditionalCostFunctionalComponent: React.FC<{
       <TextField
         label="Price"
         variant="outlined"
-        value={cost.price}
+        value={cost.totalPrice}
         onChange={({ target }) => onChange(target.value, 'price', cost.id)}
         type="tel"
         size="small"
         required
         placeholder="Price"
       />
+      {cost.type === 'catalog' && (
+        <TextField
+          label="Quantity"
+          variant="outlined"
+          value={cost.quantity}
+          onChange={({ target }) => onChange(target.value, 'quantity', cost.id)}
+          type="tel"
+          size="small"
+          required
+          placeholder="Quantity"
+        />
+      )}
       <IconButton
         sx={{
           borderRadius: '4px',
@@ -59,6 +79,8 @@ const CostsModal: React.FC<{
   planId: string
 }> = ({ open, onClose, item, planId }) => {
   const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([])
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const subcategoryMenuOpen = Boolean(anchorEl)
 
   useEffect(() => {
     if (item?.additionalCosts) {
@@ -66,11 +88,28 @@ const CostsModal: React.FC<{
     }
   }, [])
 
-  function addCost() {
-    const newCost = {
+  function handleMenuClick(event: React.MouseEvent<HTMLButtonElement>) {
+    setAnchorEl(event.currentTarget)
+  }
+
+  function handleClose() {
+    setAnchorEl(null)
+  }
+
+  function addCost(type: string) {
+    let newCost: AdditionalCost = {
       id: uuidv4(),
       name: '',
-      price: 0,
+      totalPrice: 0,
+      type: type,
+    }
+
+    if (type === 'catalog') {
+      newCost = {
+        ...newCost,
+        pricePer: 0,
+        quantity: 0,
+      }
     }
 
     const costsList = [...additionalCosts]
@@ -155,7 +194,6 @@ const CostsModal: React.FC<{
                 }}
                 type="tel"
                 value={item.name || ''}
-                endAdornment="$"
                 placeholder="Name"
                 size="small"
                 required
@@ -205,13 +243,14 @@ const CostsModal: React.FC<{
                   onChange={(value, property, costId) =>
                     changeCost(value, property, costId)
                   }
+                  type={cost.type}
                 />
               </React.Fragment>
             ))}
             <Button
               variant="contained"
               startIcon={<Add />}
-              onClick={() => addCost()}
+              onClick={handleMenuClick}
               size="small"
               sx={{
                 marginRight: 'auto',
@@ -219,6 +258,32 @@ const CostsModal: React.FC<{
             >
               Add a cost
             </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={subcategoryMenuOpen}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  addCost('catalog')
+                  handleClose()
+                }}
+              >
+                Add cost from catalog
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  addCost('additional')
+                  handleClose()
+                }}
+              >
+                Add miscellaneous cost
+              </MenuItem>
+            </Menu>
           </div>
         </form>
         <div className="costsModal__footer">

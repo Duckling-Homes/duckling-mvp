@@ -77,8 +77,11 @@
 .additionalCost {
   display: flex;
   gap: 16px;
-  &__name {
+  div {
     display: flex;
     flex: 1;
+    &.additionalCost__name {
+      flex: 2;
+    }
   }
 }

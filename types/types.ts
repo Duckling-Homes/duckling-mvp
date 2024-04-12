@@ -305,5 +305,8 @@ export interface Copy {
 export interface AdditionalCost {
   id: string
   name: string
-  price: number
+  totalPrice: number
+  quantity?: number
+  pricePer?: number
+  type?: string
 }
