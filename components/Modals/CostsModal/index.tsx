@@ -1,16 +1,7 @@
 import ModelStore from '@/app/stores/modelStore'
 import { AdditionalCost, CatalogueItem } from '@/types/types'
-import { Add, Close, Delete } from '@mui/icons-material'
-import {
-  Button,
-  Divider,
-  FormControl,
-  FormLabel,
-  IconButton,
-  InputLabel,
-  Modal,
-  TextField,
-} from '@mui/material'
+import { Add, Delete } from '@mui/icons-material'
+import { Button, Divider, IconButton, Modal, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -23,40 +14,28 @@ const AdditionalCostFunctionalComponent: React.FC<{
   onChange: (value: string, property: string, costId: string) => void
 }> = ({ cost, onDelete, onChange }) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: '16px',
-      }}
-    >
-      <FormControl>
-        <TextField
-          fullWidth
-          id="outlined-basic"
-          label="Additional Cost Name"
-          variant="outlined"
-          value={cost.name}
-          onChange={({ target }) => onChange(target.value, 'name', cost.id)}
-          size="small"
-          required
-          placeholder="Additional Cost Name"
-        />
-      </FormControl>
-      <FormControl>
-        <TextField
-          fullWidth
-          id="outlined-basic"
-          label="Price"
-          variant="outlined"
-          value={cost.price}
-          onChange={({ target }) => onChange(target.value, 'price', cost.id)}
-          type="tel"
-          size="small"
-          required
-          placeholder="Price"
-        />
-      </FormControl>
+    <div className="additionalCost">
+      <TextField
+        className="additionalCost__name"
+        label="Additional Cost Name"
+        variant="outlined"
+        value={cost.name}
+        onChange={({ target }) => onChange(target.value, 'name', cost.id)}
+        size="small"
+        type="text"
+        required
+        placeholder="Additional Cost Name"
+      />
+      <TextField
+        label="Price"
+        variant="outlined"
+        value={cost.price}
+        onChange={({ target }) => onChange(target.value, 'price', cost.id)}
+        type="tel"
+        size="small"
+        required
+        placeholder="Price"
+      />
       <IconButton
         sx={{
           borderRadius: '4px',
@@ -217,6 +196,18 @@ const CostsModal: React.FC<{
                 }}
               />
             </div>
+            {additionalCosts.map((cost, index) => (
+              <React.Fragment key={index}>
+                <Divider style={{ marginInline: '30%' }} />
+                <AdditionalCostFunctionalComponent
+                  cost={cost}
+                  onDelete={(costId) => deleteCost(costId)}
+                  onChange={(value, property, costId) =>
+                    changeCost(value, property, costId)
+                  }
+                />
+              </React.Fragment>
+            ))}
             <Button
               variant="contained"
               startIcon={<Add />}
@@ -228,32 +219,8 @@ const CostsModal: React.FC<{
             >
               Add a cost
             </Button>
-            <Divider />
           </div>
         </form>
-        {additionalCosts.length > 0 && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <Divider style={{ marginBottom: '8px' }} />
-            {additionalCosts.map((cost, index) => (
-              <React.Fragment key={index}>
-                <AdditionalCostFunctionalComponent
-                  cost={cost}
-                  onDelete={(costId) => deleteCost(costId)}
-                  onChange={(value, property, costId) =>
-                    changeCost(value, property, costId)
-                  }
-                />
-                <Divider />
-              </React.Fragment>
-            ))}
-          </div>
-        )}
         <div className="costsModal__footer">
           <Button
             variant="outlined"
