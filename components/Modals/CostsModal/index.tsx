@@ -170,7 +170,18 @@ const CostsModal: React.FC<{
     onClose()
   }
 
-  console.log(item)
+  function getTotalCost() {
+    let totalCost = item.calculatedPrice || 0
+    let additionalCostSum = 0
+
+    additionalCosts?.forEach((cost) => {
+      additionalCostSum += cost.totalPrice
+    })
+
+    totalCost += additionalCostSum
+
+    return formatCurrency(totalCost)
+  }
 
   return (
     <Modal
@@ -203,7 +214,7 @@ const CostsModal: React.FC<{
           </div>
           <div className="costsModal__formItem">
             <h2>Edit Cost</h2>
-            <p>Total Cost: {formatCurrency(item?.calculatedPrice || 0)}</p>
+            <p>Total Cost: {getTotalCost()}</p>
             <div className="costsModal__inputGroup">
               <TextInput
                 label="Name"

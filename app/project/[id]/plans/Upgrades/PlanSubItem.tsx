@@ -50,7 +50,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
 
       if (item.additionalCosts) {
         item.additionalCosts.forEach((cost) => {
-          additionalCostTotal += Number(cost.price)
+          additionalCostTotal += Number(cost.totalPrice)
         })
       }
 
