@@ -102,6 +102,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
           </div>
           <div className="planItem__workItemContent">
             <Autocomplete
+              size="small"
               renderInput={(params) => <TextField {...params} label="Name" />}
               options={(filterOptions() as []) || []}
               onChange={(event, newValue: PlanSubItemType | string | null) => {
