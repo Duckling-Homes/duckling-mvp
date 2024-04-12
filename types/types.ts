@@ -310,3 +310,9 @@ export interface AdditionalCost {
   pricePer?: number
   type?: string
 }
+
+export interface FilteredCatalogueItem {
+  label: string
+  value: string
+  item: CatalogueItem
+}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import CostsModal from '@/components/Modals/CostsModal'
-import { CatalogueItem } from '@/types/types'
+import { CatalogueItem, FilteredCatalogueItem } from '@/types/types'
 import { Clear, Edit, ExpandLess, ExpandMore } from '@mui/icons-material'
 import { Autocomplete, Divider, IconButton, TextField } from '@mui/material'
 import { observer } from 'mobx-react-lite'
@@ -8,6 +8,7 @@ import { observer } from 'mobx-react-lite'
 interface PlanSubItemType {
   label: string
   value: string
+  item: CatalogueItem
 }
 
 interface PlanSubItemProps {
@@ -74,7 +75,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
     return (
       <React.Fragment key={item.customId}>
         <CostsModal
-          filteredCatalogueOptions={filterOptions()}
+          filteredCatalogueOptions={filterOptions() as FilteredCatalogueItem[]}
           open={costModal}
           onClose={() => setCostModal(false)}
           item={item}

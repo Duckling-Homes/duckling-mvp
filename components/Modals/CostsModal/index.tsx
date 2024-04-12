@@ -1,5 +1,9 @@
 import ModelStore from '@/app/stores/modelStore'
-import { AdditionalCost, CatalogueItem } from '@/types/types'
+import {
+  AdditionalCost,
+  CatalogueItem,
+  FilteredCatalogueItem,
+} from '@/types/types'
 import { Add, Delete } from '@mui/icons-material'
 import {
   Autocomplete,
@@ -18,6 +22,12 @@ import './style.scss'
 import { TextInput } from '@/components/Inputs'
 import formatCurrency from '@/app/utils/utils'
 
+interface PlanSubItemType {
+  label: string
+  value: string
+  item: CatalogueItem
+}
+
 const AdditionalCostFunctionalComponent: React.FC<{
   cost: AdditionalCost
   onDelete: (costId: string) => void
@@ -25,8 +35,9 @@ const AdditionalCostFunctionalComponent: React.FC<{
     value: string,
     property: string,
     costId: string,
-    costType: string
+    costType?: string
   ) => void
+  autocompleteOptions: FilteredCatalogueItem[]
 }> = ({ cost, onDelete, onChange, autocompleteOptions }) => {
   return (
     <div className="additionalCost">
@@ -36,7 +47,14 @@ const AdditionalCostFunctionalComponent: React.FC<{
           renderInput={(params) => <TextField {...params} label="Name" />}
           options={(autocompleteOptions as []) || []}
           onChange={(event, newValue) => {
-            onChange(newValue?.label, 'name', cost.id, 'catalog')
+            if (newValue && typeof newValue !== 'string') {
+              onChange(
+                (newValue as PlanSubItemType).label || '',
+                'name',
+                cost.id,
+                'catalog'
+              )
+            }
           }}
           className="additionalCost__name"
           value={cost.name || ''}
@@ -100,6 +118,7 @@ const CostsModal: React.FC<{
   onClose: () => void
   item: CatalogueItem
   planId: string
+  filteredCatalogueOptions: FilteredCatalogueItem[]
 }> = ({ open, onClose, item, planId, filteredCatalogueOptions }) => {
   const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -286,7 +305,6 @@ const CostsModal: React.FC<{
                     changeCost(value, property, costId, costType)
                   }
                   autocompleteOptions={filteredCatalogueOptions}
-                  type={cost.type}
                 />
               </React.Fragment>
             ))}

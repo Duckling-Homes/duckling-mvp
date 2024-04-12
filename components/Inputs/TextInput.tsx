@@ -15,8 +15,11 @@ interface TextInputProps {
   startAdornment?: string | number
   endAdornment?: string | number
   masked?: string
-  size: 'small' | 'medium'
+  size?: 'small' | 'medium'
   required?: boolean
+  className?: string
+  disabled?: boolean
+  sx?: object
 }
 
 interface CustomProps {
