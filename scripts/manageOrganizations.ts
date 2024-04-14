@@ -21,6 +21,8 @@ const processCSV = async (filePath: string, prisma: PrismaClient) => {
         const users = row.users ? row.users.split(',') : []
         const description = row.description ? row.description.trim() : undefined
         const webpage = row.webpage ? row.webpage.trim() : undefined
+        const terms = row.terms ? row.terms.trim() : undefined
+        const privacy = row.privacy ? row.privacy.trim() : undefined
 
         try {
           let organization = await prisma.organization.findFirst({
@@ -42,6 +44,29 @@ const processCSV = async (filePath: string, prisma: PrismaClient) => {
               await prisma.organization.update({
                 where: { id: organization.id },
                 data: { webpage },
+              })
+            }
+
+            // Add Documents
+            const documents = []
+            if (terms && terms != '') {
+              documents.push({
+                name: 'Terms of Service',
+                url: terms,
+              })
+            }
+
+            if (privacy && privacy != '') {
+              documents.push({
+                name: 'Privacy Policy',
+                url: privacy,
+              })
+            }
+
+            if (documents.length > 0) {
+              await prisma.organization.update({
+                where: { id: organization.id },
+                data: { documents },
               })
             }
           } else {

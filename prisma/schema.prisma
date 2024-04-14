@@ -30,6 +30,7 @@ model Organization {
   description    String?
   webpage        String?
 
+
   users User[]
   projects Project[]
   comfortTags ComfortTag[]
@@ -37,6 +38,7 @@ model Organization {
   goalTags GoalTag[]
   productCatalogue ProductCatalogue[]
   financingOptions FinancingOption[]
+  documents Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

@@ -56,6 +56,7 @@ export const Signature = ({ signatureID, onSignature }: Props) => {
       setSigned(true)
       console.log('adornment', adornment)
       setAdornment(adornment)
+      onSignature && onSignature(adornment)
     } else {
       console.log('no sig', false, saveSignature, adornment)
 
