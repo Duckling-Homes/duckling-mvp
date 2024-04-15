@@ -125,12 +125,16 @@ const CostsModal: React.FC<{
   catalogueOptions: CatalogueItem[]
 }> = ({ open, onClose, item, planId, catalogueOptions }) => {
   const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([])
+  const [customDescription, setCustomDescription] = useState<string>('')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
 
   useEffect(() => {
     if (item?.additionalCosts) {
       setAdditionalCosts(item.additionalCosts)
+    }
+    if (item?.description) {
+      setCustomDescription(item.description)
     }
   }, [])
 
@@ -197,6 +201,7 @@ const CostsModal: React.FC<{
   function saveAdditionalCosts() {
     const updatedItem = {
       ...item,
+      description: customDescription,
       additionalCosts: additionalCosts,
     }
 
@@ -239,7 +244,8 @@ const CostsModal: React.FC<{
               id="item-description"
               label="Description"
               variant="outlined"
-              value={item.description}
+              value={customDescription || item?.description}
+              onChange={({ target }) => setCustomDescription(target.value)}
               type="text"
               required
               placeholder="Description"
@@ -252,23 +258,17 @@ const CostsModal: React.FC<{
             <div className="costsModal__inputGroup">
               <TextInput
                 label="Name"
-                onChange={(value) => {
-                  console.log(value)
-                }}
+                disabled
                 type="tel"
                 value={item.name || ''}
                 placeholder="Name"
                 size="small"
-                required
                 sx={{
                   display: 'flex',
                   flex: '3',
                 }}
               />
               <TextInput
-                onChange={(value) => {
-                  console.log(value)
-                }}
                 label="Base Cost"
                 type="tel"
                 value={item.basePricePer || ''}
@@ -276,21 +276,19 @@ const CostsModal: React.FC<{
                 placeholder="Base Cost"
                 size="small"
                 required
+                disabled
                 sx={{
                   display: 'flex',
                   flex: '1',
                 }}
               />
               <TextInput
-                onChange={(value) => {
-                  console.log(value)
-                }}
                 label="Quantity"
+                disabled
                 type="tel"
                 value={item.quantity || ''}
                 placeholder="Quantity"
                 size="small"
-                required
                 sx={{
                   display: 'flex',
                   flex: '1',

@@ -10,7 +10,7 @@ interface TextInputProps {
   type?: string
   value: string | number
   multiline?: boolean
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
   onBlur?: () => void
   startAdornment?: string | number
   endAdornment?: string | number
