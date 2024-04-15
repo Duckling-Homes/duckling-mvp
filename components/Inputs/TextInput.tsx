@@ -10,7 +10,7 @@ interface TextInputProps {
   type?: string
   value: string | number
   multiline?: boolean
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
   onBlur?: () => void
   startAdornment?: string | number
   endAdornment?: string | number
@@ -82,7 +82,7 @@ const TextInput: React.FC<TextInputProps> = ({
       placeholder={placeholder}
       type={type}
       value={value}
-      onChange={({ target }) => onChange(target.value)}
+      onChange={({ target }) => onChange && onChange(target.value)}
       onBlur={onBlur}
       onWheel={blurActiveElement}
       multiline={multiline || false}
