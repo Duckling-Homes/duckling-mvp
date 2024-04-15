@@ -240,6 +240,7 @@ const CostsModal: React.FC<{
             <TextField
               fullWidth
               multiline
+              maxRows={6}
               size="small"
               id="item-description"
               label="Description"
@@ -295,19 +296,23 @@ const CostsModal: React.FC<{
                 }}
               />
             </div>
-            {additionalCosts.map((cost, index) => (
-              <React.Fragment key={index}>
-                <Divider style={{ marginInline: '30%' }} />
-                <AdditionalCostFunctionalComponent
-                  cost={cost}
-                  onDelete={(costId) => deleteCost(costId)}
-                  onChange={(value, property, costId, costType) =>
-                    changeCost(value, property, costId, costType)
-                  }
-                  autocompleteOptions={catalogueOptions}
-                />
-              </React.Fragment>
-            ))}
+            {additionalCosts.length > 0 && (
+              <div className="costsModal__additionalCostGroup">
+                {additionalCosts.map((cost, index) => (
+                  <React.Fragment key={index}>
+                    <Divider style={{ marginInline: '30%' }} />
+                    <AdditionalCostFunctionalComponent
+                      cost={cost}
+                      onDelete={(costId) => deleteCost(costId)}
+                      onChange={(value, property, costId, costType) =>
+                        changeCost(value, property, costId, costType)
+                      }
+                      autocompleteOptions={catalogueOptions}
+                    />
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
             <Button
               variant="contained"
               startIcon={<Add />}
