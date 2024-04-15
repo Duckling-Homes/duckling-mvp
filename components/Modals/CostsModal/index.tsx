@@ -1,9 +1,5 @@
 import ModelStore from '@/app/stores/modelStore'
-import {
-  AdditionalCost,
-  CatalogueItem,
-  FilteredCatalogueItem,
-} from '@/types/types'
+import { AdditionalCost, CatalogueItem } from '@/types/types'
 import { Add, Delete } from '@mui/icons-material'
 import {
   Autocomplete,
@@ -37,15 +33,23 @@ const AdditionalCostFunctionalComponent: React.FC<{
     costId: string,
     costType?: string
   ) => void
-  autocompleteOptions: FilteredCatalogueItem[]
+  autocompleteOptions: CatalogueItem[]
 }> = ({ cost, onDelete, onChange, autocompleteOptions }) => {
+  function parseAutocompleteOptions() {
+    return autocompleteOptions.map((option) => ({
+      label: option.name,
+      value: option.basePricePer,
+      item: option,
+    }))
+  }
+
   return (
     <div className="additionalCost">
       {cost.type === 'catalog' ? (
         <Autocomplete
           size="small"
           renderInput={(params) => <TextField {...params} label="Name" />}
-          options={(autocompleteOptions as []) || []}
+          options={(parseAutocompleteOptions() as []) || []}
           onChange={(event, newValue) => {
             if (newValue && typeof newValue !== 'string') {
               onChange(
@@ -118,8 +122,8 @@ const CostsModal: React.FC<{
   onClose: () => void
   item: CatalogueItem
   planId: string
-  filteredCatalogueOptions: FilteredCatalogueItem[]
-}> = ({ open, onClose, item, planId, filteredCatalogueOptions }) => {
+  catalogueOptions: CatalogueItem[]
+}> = ({ open, onClose, item, planId, catalogueOptions }) => {
   const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const subcategoryMenuOpen = Boolean(anchorEl)
@@ -175,15 +179,13 @@ const CostsModal: React.FC<{
           [property]: value,
         }
         if (costType === 'catalog') {
-          console.log('aaaaaaaaa')
-          cost.pricePer = filteredCatalogueOptions.find(
-            (option) => option.label === cost.name
-          )?.item.basePricePer
+          cost.pricePer = catalogueOptions.find(
+            (option) => option.name === cost.name
+          )?.basePricePer
         }
         if (cost.pricePer && cost.quantity) {
           cost.totalPrice = Number(cost.pricePer) * Number(cost.quantity)
         }
-        console.log(cost)
         return cost
       }
       return cost
@@ -304,7 +306,7 @@ const CostsModal: React.FC<{
                   onChange={(value, property, costId, costType) =>
                     changeCost(value, property, costId, costType)
                   }
-                  autocompleteOptions={filteredCatalogueOptions}
+                  autocompleteOptions={catalogueOptions}
                 />
               </React.Fragment>
             ))}
@@ -353,7 +355,10 @@ const CostsModal: React.FC<{
             sx={{
               border: 'none',
             }}
-            onClick={() => onClose()}
+            onClick={() => {
+              setAdditionalCosts([])
+              onClose()
+            }}
           >
             Cancel
           </Button>
