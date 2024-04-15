@@ -82,7 +82,7 @@ const TextInput: React.FC<TextInputProps> = ({
       placeholder={placeholder}
       type={type}
       value={value}
-      onChange={({ target }) => onChange(target.value)}
+      onChange={({ target }) => onChange && onChange(target.value)}
       onBlur={onBlur}
       onWheel={blurActiveElement}
       multiline={multiline || false}
