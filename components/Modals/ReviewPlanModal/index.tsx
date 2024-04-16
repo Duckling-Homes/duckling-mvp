@@ -19,9 +19,21 @@ export const ReviewPlanModal = observer(
       'documents'
     )
 
-    const documents = (ModelStore.organization?.documents ?? [])
-      .slice()
-      .sort((a, b) => a.name.localeCompare(b.name))
+    const documents =
+      ModelStore.organization?.documents ??
+      // NOTE: Temporary mocks for demo
+      [
+        {
+          name: 'Terms',
+          url: 'https://dbiweb02.sfgov.org/Contractor_Agreement_DBI.pdf',
+        },
+        {
+          name: 'Privacy Policy',
+          url: 'https://static.googleusercontent.com/media/www.google.com/en//intl/en/policies/privacy/google_privacy_policy_en.pdf',
+        },
+      ]
+        .slice()
+        .sort((a, b) => a?.name.localeCompare(b?.name))
 
     return (
       <Modal open={open} onClose={() => onCancel()} className="createModal">
@@ -105,8 +117,8 @@ const ReviewDocumentsView = ({
         <div style={{ fontWeight: 'bold' }}> {currentDocument.name}</div>{' '}
       </div>
 
-      <object
-        data={currentDocument.url}
+      <iframe
+        src={currentDocument.url}
         style={{ width: '100%', height: 600 }}
       />
       <div
