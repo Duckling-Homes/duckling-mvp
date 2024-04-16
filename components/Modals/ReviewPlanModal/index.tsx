@@ -21,6 +21,7 @@ export const ReviewPlanModal = observer(
 
     const documents =
       ModelStore.organization?.documents ??
+      // NOTE: Temporary mocks for demo
       [
         {
           name: 'Terms',
