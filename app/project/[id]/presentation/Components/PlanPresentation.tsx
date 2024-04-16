@@ -1,7 +1,7 @@
 'use client'
 import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
-import { Home } from '@mui/icons-material'
+import { CheckCircle, Download, Home } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
 import NorthIcon from '@mui/icons-material/North'
@@ -19,6 +19,7 @@ import Markdown from 'react-markdown'
 import CostCard from './CostCard'
 
 import '../style.scss'
+import { ReviewPlanModal } from '@/components/Modals/ReviewPlanModal'
 
 const PlanPresentation: React.FC<{
   plan: Plan
@@ -27,6 +28,10 @@ const PlanPresentation: React.FC<{
   const financingOptions = ModelStore.financingOptions
   const [displayedPhoto, setDisplayedPhoto] = useState<PhotoDetails>()
   const [photoIndex, setPhotoIndex] = useState<number>(0)
+  const [reviewState, setReviewState] = useState<
+    'notReviewed' | 'reviewing' | 'reviewed'
+  >('notReviewed')
+
   useEffect(() => {
     setPhotoIndex(0)
     if (photos && photos.length > 0) {
@@ -308,6 +313,34 @@ const PlanPresentation: React.FC<{
           </div>
         </div>
       </div>
+
+      <div className="acceptance">
+        <div className="acceptance__header">
+          {reviewState === 'notReviewed' && (
+            <Button color="primary" onClick={() => setReviewState('reviewing')}>
+              Review and Accept Proposal
+            </Button>
+          )}
+          {reviewState === 'reviewed' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                Your plan has been approved. <CheckCircle />
+              </div>
+              <Button style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                Download PDF <Download />
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {reviewState === 'reviewing' && (
+        <ReviewPlanModal
+          open={reviewState === 'reviewing'}
+          onCancel={() => setReviewState('notReviewed')}
+          onAccept={() => setReviewState('reviewed')}
+        />
+      )}
     </>
   )
 })

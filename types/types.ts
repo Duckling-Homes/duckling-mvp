@@ -158,6 +158,12 @@ export interface Organization {
   webpage?: string
   picture_url?: string
   articles?: OrganizationArticle[]
+  documents?: OrganizationDocument[]
+}
+
+export interface OrganizationDocument {
+  name: string
+  url: string
 }
 
 export interface OrganizationArticle {
