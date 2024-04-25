@@ -1,14 +1,7 @@
 'use client'
 
 import { HomeOutlined, MenuOutlined } from '@mui/icons-material'
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Toolbar,
-  Typography,
-} from '@mui/material'
+import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material'
 
 import { useClerk, useUser } from '@clerk/nextjs'
 import Link from 'next/link'
