@@ -1,7 +1,14 @@
 'use client'
 
 import { HomeOutlined, MenuOutlined } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  Toolbar,
+  Typography,
+} from '@mui/material'
 
 import { useClerk, useUser } from '@clerk/nextjs'
 import Link from 'next/link'
@@ -12,7 +19,6 @@ import CustomMenu from '../Menu'
 import ModelStore from '@/app/stores/modelStore'
 import { Organization } from '@/types/types'
 import { usePostHog } from 'posthog-js/react'
-import PendingStatus from '../PendingStatus'
 import './styles.scss'
 
 const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
@@ -61,55 +67,54 @@ const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
   const device = checkDeviceType()
 
   return (
-    <>
-      <div
-        className="header"
-        style={{
-          display: 'flex',
-          justifyContent: publicRoute ? 'center' : 'space-between',
-        }}
-      >
-        {!publicRoute && device !== 'phone' && (
-          <Link href="/" passHref>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          {!publicRoute && device !== 'phone' && (
+            <Link href="/" passHref>
+              <IconButton
+                sx={{
+                  borderRadius: '4px',
+                  backgroundColor: '#2196F3',
+                  color: '#fff',
+                  padding: '8px 22px',
+                }}
+                aria-label="delete"
+              >
+                <HomeOutlined />
+              </IconButton>
+            </Link>
+          )}
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, textAlign: 'center' }}
+          >
+            {organization ? organization.name : organizationName}
+          </Typography>
+          {!publicRoute && (
             <IconButton
               sx={{
                 borderRadius: '4px',
                 backgroundColor: '#2196F3',
                 color: '#fff',
-                padding: '8px 22px',
+                padding: device === 'phone' ? '8px 12px' : '8px 22px',
               }}
+              onClick={handleClick}
               aria-label="delete"
             >
-              <HomeOutlined />
+              <MenuOutlined fontSize="small" />
             </IconButton>
-          </Link>
-        )}
-        <p className="header__title">
-          {organization ? organization.name : organizationName}
-        </p>
-        {!publicRoute && (
-          <IconButton
-            sx={{
-              borderRadius: '4px',
-              backgroundColor: '#2196F3',
-              color: '#fff',
-              padding: device === 'phone' ? '8px 12px' : '8px 22px',
-            }}
-            onClick={handleClick}
-            aria-label="delete"
-          >
-            <MenuOutlined fontSize="small" />
-          </IconButton>
-        )}
-        <CustomMenu
-          handleSignout={doSignOut}
-          open={open}
-          anchorEl={anchorEl}
-          handleClose={handleClose}
-        />
-      </div>
-      {!publicRoute && <PendingStatus />}
-    </>
+          )}
+          <CustomMenu
+            handleSignout={doSignOut}
+            open={open}
+            anchorEl={anchorEl}
+            handleClose={handleClose}
+          />
+        </Toolbar>
+      </AppBar>
+    </Box>
   )
 }
 
