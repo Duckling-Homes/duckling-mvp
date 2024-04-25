@@ -298,9 +298,9 @@ const CostsModal: React.FC<{
             </div>
             {additionalCosts.length > 0 && (
               <div className="costsModal__additionalCostGroup">
+                <Divider style={{ marginInline: '30%' }} />
                 {additionalCosts.map((cost, index) => (
                   <React.Fragment key={index}>
-                    <Divider style={{ marginInline: '30%' }} />
                     <AdditionalCostFunctionalComponent
                       cost={cost}
                       onDelete={(costId) => deleteCost(costId)}
