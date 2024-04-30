@@ -1,6 +1,6 @@
 'use client'
 
-import { ThemeOptions, createTheme } from '@mui/material/styles'
+import { createTheme } from '@mui/material/styles'
 
 const themeOptions = createTheme({
   palette: {
@@ -161,15 +161,6 @@ const themeOptions = createTheme({
         },
       },
     },
-    MuiBox: {
-      styleOverrides: {
-        root: {
-          '& > *': {
-            margin: 8,
-          },
-        },
-      },
-    },
     MuiAccordion: {
       styleOverrides: {
         root: {
@@ -205,9 +196,6 @@ const themeOptions = createTheme({
         },
         icon: {
           color: 'primary.dark',
-        },
-        deletableIcon: {
-          color: '#092C58',
         },
       },
     },
