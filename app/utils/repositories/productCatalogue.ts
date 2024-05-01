@@ -33,7 +33,11 @@ export async function getProductCatalogueByOrganizationId(
       organizationId,
     },
     include: {
-      incentives: true,
+      incentives: {
+        include: {
+          rebateOrganization: true, // Include the details of the rebateOrganization
+        },
+      },
     },
   })
 }

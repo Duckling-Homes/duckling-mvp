@@ -63,6 +63,7 @@ async function processCSV(filePath: string): Promise<void> {
         const type = incentiveTypeMapping[row.type]
         const calculationRateValue = parseFloat(row.calculationRateValue)
         const maxLimit = row.maxLimit ? parseFloat(row.maxLimit) : null
+        const rebateOrganizationId = row.rebateOrganizationId
 
         const rowData = {
           id: row.id,
@@ -75,6 +76,7 @@ async function processCSV(filePath: string): Promise<void> {
           descriptionText: row.descriptionText,
           criteria: row.criteria || null,
           notes: row.notes || null,
+          rebateOrganizationId,
         }
 
         try {
