@@ -5,10 +5,14 @@ import { Metadata } from 'next'
 
 import { ClerkProvider } from '@clerk/nextjs'
 import './globals.scss'
-import themeOptions from './style/theme/theme' // Here whenever we decide to move to our own theme
+// import themeOptions from './style/theme/theme'
+import themeTwo from './style/theme/themeTwo'
+
 import dynamic from 'next/dynamic'
 import { PHProvider } from './providers'
 import { ThemeProvider } from '@mui/material'
+
+// const [currentTheme, setCurrentTheme] = useState(themeOptions)
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -53,7 +57,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className={roboto.className}>
         <PHProvider>
-          <ThemeProvider theme={themeOptions}>
+          <ThemeProvider theme={themeTwo}>
             <body>
               <PostHogPageView />
               {children}
