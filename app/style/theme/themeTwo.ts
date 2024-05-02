@@ -4,7 +4,7 @@ import { createTheme } from '@mui/material/styles'
 
 const themeTwo = createTheme({
   palette: {
-    type: 'light',
+    mode: 'light',
     primary: {
       light: '#B3E5FC',
       main: '#03A9F4',
