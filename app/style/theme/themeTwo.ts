@@ -44,7 +44,6 @@ const themeTwo = createTheme({
     background: {
       default: '#F5F5F6',
       paper: '#FFFFFF',
-      blueprintDark: '#102027',
     },
     text: {
       primary: '#212121',
