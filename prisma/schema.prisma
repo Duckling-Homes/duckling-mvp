@@ -402,6 +402,7 @@ enum RebateOrg {
   IRA
   NYSERDA
   ConsumersEnergy
+  Other
 }
 
 enum CalculationType {
@@ -419,7 +420,7 @@ model Incentive {
   id                   String          @id @default(uuid())
 
   name                 String
-  rebateOrg            RebateOrg      
+  rebateOrg            RebateOrg?      
   type                 IncentiveType
   calculationType      CalculationType
   calculationRateValue Float           
