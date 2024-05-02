@@ -402,6 +402,7 @@ enum RebateOrg {
   IRA
   NYSERDA
   ConsumersEnergy
+  Other
 }
 
 enum CalculationType {
@@ -419,14 +420,17 @@ model Incentive {
   id                   String          @id @default(uuid())
 
   name                 String
-  rebateOrg            RebateOrg      
+  rebateOrg            RebateOrg?      
   type                 IncentiveType
   calculationType      CalculationType
   calculationRateValue Float           
   maxLimit             Float?          
   descriptionText      String
   criteria             String?
-  notes                String?   
+  notes                String?
+
+  rebateOrganizationId String?
+  rebateOrganization   RebateOrganization?  @relation(fields: [rebateOrganizationId], references: [id])   
 
   productCatalogues    ProductCatalogue[] @relation("ProductCatalogueToIncentive") // Updated relation 
 
@@ -434,7 +438,19 @@ model Incentive {
 
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @default(now()) @updatedAt
+
 }
+
+model RebateOrganization {
+  id                   String          @id @default(uuid())
+  name                 String?
+
+  incentives           Incentive[]
+  
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @default(now()) @updatedAt
+}
+
 
 model Plan {
   id                   String          @id @default(uuid())

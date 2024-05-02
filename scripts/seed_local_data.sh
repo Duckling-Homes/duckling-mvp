@@ -22,6 +22,9 @@ npx prisma generate
 echo "Seeding local organization..."
 ts-node ./scripts/seedLocalOrganization.ts "$DATABASE_URL" || log_and_exit "Failed to seed local organization"
 
+echo "Loading rebate Organizations from CSV..."
+ts-node ./scripts/loadRebateOrganizations.ts "$DATABASE_URL" "./scripts/sampleLocalData/rebateOrganizations.csv" || log_and_exit "Failed to load rebate orgs"
+
 echo "Loading incentives from CSV..."
 ts-node ./scripts/loadIncentives.ts "$DATABASE_URL" "./scripts/sampleLocalData/incentives.csv" || log_and_exit "Failed to load incentives"
 
