@@ -50,10 +50,10 @@ export const LargeFinancingCalculator = (props: Props) => {
   const [editApr, setEditApr] = useState(false)
 
   const upfrontCostDisplayValue = calculated?.upfrontCost
-    ? '$' + Math.round(calculated.upfrontCost).toLocaleString()
+    ? formatCurrency(Math.round(calculated.upfrontCost))
     : '-'
   const monthlyCostDisplayValue = calculated?.monthlyPayment
-    ? '$' + Math.round(calculated.monthlyPayment).toLocaleString()
+    ? formatCurrency(Math.round(calculated.monthlyPayment))
     : '-'
 
   return (

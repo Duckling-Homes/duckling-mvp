@@ -2,6 +2,7 @@ import { Divider } from '@mui/material'
 
 import './style.scss'
 import { CatalogueItem, Incentive, Plan } from '@/types/types'
+import formatCurrency from '@/app/utils/utils'
 
 interface CostCardProps {
   plan: Plan
@@ -40,9 +41,9 @@ const CostCard: React.FC<CostCardProps> = ({
       <>
         <div className="item" key={incentive.id}>
           <span>{incentive.name}</span>
-          <span>{`-$${
-            incentive.finalCalculations?.usedAmount.toFixed(2) || 0
-          }`}</span>
+          <span>
+            {formatCurrency(incentive.finalCalculations?.usedAmount || 0)}
+          </span>
         </div>
         {index !== incentivesToRender.length - 1 && (
           <Divider variant="middle" />
@@ -64,14 +65,14 @@ const CostCard: React.FC<CostCardProps> = ({
       const cost = item.calculatedPrice
         ? item.calculatedPrice
         : item.basePricePer && item.quantity
-          ? item.basePricePer * item.quantity
-          : 0
+        ? item.basePricePer * item.quantity
+        : 0
 
       return (
         <>
           <div className="item" key={item.customId}>
             <span>{item.name}</span>
-            <span>{`$${cost.toFixed(2) || 0}`}</span>
+            <span>{formatCurrency(cost || 0)}</span>
           </div>
           {index !== catalogueItems.length - 1 && <Divider variant="middle" />}
         </>
