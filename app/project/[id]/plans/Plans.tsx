@@ -22,6 +22,7 @@ import PlanItem from './Upgrades/PlanItem'
 import { observer } from 'mobx-react-lite'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 import './style.scss'
+import formatCurrency from '@/app/utils/utils'
 
 interface PlansProps {
   currentProject: Project
@@ -502,18 +503,16 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 <div className="planCreation__sectionItem">
                   <div className="title">
                     Estimated Cost
-                    <span>{`$${calculateEstimatedCost(currentPlan).toFixed(
-                      2
-                    )}`}</span>
+                    <span>
+                      {formatCurrency(calculateEstimatedCost(currentPlan))}
+                    </span>
                   </div>
                 </div>
                 <Divider />
                 <div className="planCreation__sectionItem">
                   <div className="title">
                     Rebates
-                    <span>{`$${calculateRebates(currentPlan).toFixed(
-                      2
-                    )}`}</span>
+                    <span>{formatCurrency(calculateRebates(currentPlan))}</span>
                   </div>
                   <div className="incentiveList">
                     {renderIncentivesList('Rebate', currentPlan)}
@@ -523,9 +522,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 <div className="planCreation__sectionItem">
                   <div className="title">
                     Net Cost
-                    <span>{`$${calculateNetCost(currentPlan).toFixed(
-                      2
-                    )}`}</span>
+                    <span>{formatCurrency(calculateNetCost(currentPlan))}</span>
                   </div>
                   <div className="incentiveList">
                     {renderIncentivesList('TaxCredit', currentPlan)}
@@ -535,9 +532,9 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 <div className="planCreation__sectionItem">
                   <div className="title">
                     Final Cost
-                    <span>{`$${calculateFinalCost(currentPlan).toFixed(
-                      2
-                    )}`}</span>
+                    <span>
+                      {formatCurrency(calculateFinalCost(currentPlan))}
+                    </span>
                   </div>
                 </div>
                 <Divider />

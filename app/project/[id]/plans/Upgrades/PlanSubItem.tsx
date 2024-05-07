@@ -4,6 +4,7 @@ import { CatalogueItem } from '@/types/types'
 import { Clear, Edit, ExpandLess, ExpandMore } from '@mui/icons-material'
 import { Autocomplete, Divider, IconButton, TextField } from '@mui/material'
 import { observer } from 'mobx-react-lite'
+import formatCurrency from '@/app/utils/utils'
 
 interface PlanSubItemType {
   label: string
@@ -57,12 +58,11 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
       }
 
       const quantValue = item.quantity || 0
-      const roundedCost = (
-        quantValue * (item.basePricePer as number) +
-        additionalCostTotal
-      ).toFixed(2)
+      const roundedCost = formatCurrency(
+        quantValue * (item.basePricePer as number) + additionalCostTotal
+      )
 
-      return `$${roundedCost}`
+      return roundedCost
     }
 
     function selectWorkItem(itemId: string) {
