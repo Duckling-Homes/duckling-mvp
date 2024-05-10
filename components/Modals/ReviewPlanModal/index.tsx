@@ -1,16 +1,17 @@
-import { Signature } from '@/app/project/[id]/presentation/Components/Signature'
+import {
+  Signature,
+  SignatureObject,
+} from '@/app/project/[id]/presentation/Components/Signature'
 import ModelStore from '@/app/stores/modelStore'
-import { Download } from '@mui/icons-material'
+import { Print } from '@mui/icons-material'
 import { Button, Modal } from '@mui/material'
 import { observer } from 'mobx-react-lite'
-import { useState } from 'react'
-import { jsPDF } from 'jspdf'
-import html2canvas from 'html2canvas'
+import { useMemo, useState } from 'react'
 
 type Props = {
   open: boolean
   onCancel: () => void
-  onAccept: () => void
+  onAccept: (signature: SignatureObject) => void
 }
 
 export const ReviewPlanModal = observer(
@@ -18,6 +19,7 @@ export const ReviewPlanModal = observer(
     const [mode, setMode] = useState<'documents' | 'signature' | 'finalize'>(
       'documents'
     )
+    const [signature, setSignature] = useState<SignatureObject | null>(null)
 
     const documents =
       ModelStore.organization?.documents ??
@@ -53,13 +55,15 @@ export const ReviewPlanModal = observer(
             <SignatureView
               onCancel={() => setMode('documents')}
               onAccept={() => setMode('finalize')}
+              signature={signature}
+              setSignature={setSignature}
             />
           )}
 
           {mode === 'finalize' && (
             <FinalizeView
               onCancel={() => setMode('signature')}
-              onAccept={() => onAccept()}
+              onAccept={() => onAccept(signature!)}
             />
           )}
         </div>
@@ -135,10 +139,19 @@ const ReviewDocumentsView = ({
 type SignatureViewProps = {
   onCancel: () => void
   onAccept: () => void
+  signature: SignatureObject | null
+  setSignature: (signature: SignatureObject) => void
 }
 
-const SignatureView = ({ onCancel, onAccept }: SignatureViewProps) => {
-  const [continueable, setContinueable] = useState(false)
+const SignatureView = ({
+  onCancel,
+  onAccept,
+  signature,
+  setSignature,
+}: SignatureViewProps) => {
+  const continueable = useMemo(() => {
+    return signature !== null
+  }, [signature])
 
   return (
     <>
@@ -151,7 +164,7 @@ const SignatureView = ({ onCancel, onAccept }: SignatureViewProps) => {
         </div>
       </div>
 
-      <Signature signatureID="MOCK" onSignature={() => setContinueable(true)} />
+      <Signature onSignature={setSignature} />
       <div className="createModal__footer">
         <Button onClick={onCancel}>Back</Button>
         <Button disabled={!continueable} onClick={onAccept}>
@@ -168,56 +181,6 @@ type FinalizeViewProps = {
 }
 
 const FinalizeView = ({ onCancel, onAccept }: FinalizeViewProps) => {
-  const generateAndUploadPDF = async () => {
-    // Assuming you want to capture the whole body. Adjust the selector as needed.
-    const element = document.body
-    const canvas = await html2canvas(element, {
-      scale: window.devicePixelRatio, // Adjust this as needed
-      useCORS: true, // This can help with cross-origin images
-      ignoreElements: (el) => el.classList.contains('createModal'),
-    })
-    const imgData = canvas.toDataURL('image/png')
-    const pdfWidth = canvas.width
-    const pdfHeight = canvas.height
-
-    // Convert dimensions from pixels to millimeters (or another unit), if necessary
-    // Example conversion: 1 px = 0.264583 mm
-    const doc = new jsPDF({
-      orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
-      unit: 'px', // You can change this to 'mm' if you convert dimensions
-      format: [pdfWidth, pdfHeight],
-    })
-    doc.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height)
-    const pdfBlob = doc.output('blob')
-
-    doc.save('plan.pdf')
-
-    console.log('PDF', pdfBlob)
-
-    uploadPDF(pdfBlob)
-  }
-
-  const uploadPDF = async (pdfBlob: Blob) => {
-    const formData = new FormData()
-    formData.append('file', pdfBlob, 'plan.pdf')
-
-    try {
-      // Replace `YOUR_UPLOAD_ENDPOINT` with your actual upload URL
-      const response = await fetch('YOUR_UPLOAD_ENDPOINT', {
-        method: 'POST',
-        body: formData,
-      })
-      if (response.ok) {
-        console.log('PDF uploaded successfully')
-        // Handle further actions after successful upload if necessary
-      } else {
-        console.error('Upload failed', response)
-      }
-    } catch (error) {
-      console.error('Error uploading the file', error)
-    }
-  }
-
   return (
     <>
       <div className="createModal__header">
@@ -234,10 +197,10 @@ const FinalizeView = ({ onCancel, onAccept }: FinalizeViewProps) => {
       </div>
 
       <Button
-        onClick={() => generateAndUploadPDF()}
+        onClick={() => window.print()}
         style={{ display: 'flex', alignItems: 'center', gap: 4, width: 'fit' }}
       >
-        <span>Download PDF</span> <Download />
+        <span>Print</span> <Print />
       </Button>
 
       <div className="createModal__footer">

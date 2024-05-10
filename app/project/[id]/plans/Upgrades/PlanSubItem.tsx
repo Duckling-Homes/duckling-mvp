@@ -23,10 +23,19 @@ interface PlanSubItemProps {
   removeItem: (customId: string) => void
   onItemSelect: (customId: string, selectedItem: CatalogueItem) => void
   planId: string
+  editable?: boolean
 }
 
 const PlanSubItem: React.FC<PlanSubItemProps> = observer(
-  ({ item, onQuantityChange, catalogue, removeItem, onItemSelect, planId }) => {
+  ({
+    item,
+    onQuantityChange,
+    catalogue,
+    removeItem,
+    onItemSelect,
+    planId,
+    editable = true,
+  }) => {
     const [costModal, setCostModal] = useState(false)
     const [showCosts, setShowCosts] = useState(false)
 
@@ -97,8 +106,8 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
               {item.id && (
                 <Edit
                   fontSize="small"
-                  style={{ color: '#2196F3' }}
-                  onClick={() => setCostModal(true)}
+                  style={{ color: editable ? '#2196F3' : 'grey' }}
+                  onClick={() => editable && setCostModal(true)}
                 />
               )}
             </span>
@@ -115,6 +124,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
               }}
               className="autocomplete"
               value={item.name || ''}
+              disabled={!editable}
             />
             <TextField
               label={
@@ -128,7 +138,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
                   : item.scaledPricingMetric
               }
               value={item?.quantity || 0}
-              disabled={!item.id}
+              disabled={!item.id || !editable}
               type="tel"
               size="small"
               onChange={(e) => {
@@ -150,6 +160,7 @@ const PlanSubItem: React.FC<PlanSubItemProps> = observer(
               }}
               aria-label="remove-work-item"
               onClick={() => removeItem(item.customId as string)}
+              disabled={!editable}
             >
               <Clear />
             </IconButton>

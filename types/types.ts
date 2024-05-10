@@ -208,6 +208,8 @@ export interface UpdateApplianceSticker {
   scale?: number
 }
 
+type PlanStatus = 'Draft' | 'Approved'
+
 export interface Plan {
   id?: string
   name?: string
@@ -215,6 +217,9 @@ export interface Plan {
   projectId?: string
   copy?: Copy
   catalogueItems?: CatalogueItem[]
+  status?: PlanStatus
+  approvedAt?: string
+  signature?: string
 }
 
 export interface PlanDetails {

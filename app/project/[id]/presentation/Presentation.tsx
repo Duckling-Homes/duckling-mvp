@@ -6,11 +6,11 @@ import { useUser } from '@clerk/nextjs'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import LinkCopier from './Components/LinkCopier'
-import { Signature } from './Components/Signature'
 import TabHolder from './Tabs/TabHolder'
 import './style.scss'
 import { Button } from '@mui/material'
 import { ArrowBack } from '@mui/icons-material'
+import { PrintHidden } from '@/components/Print/PrintHidden'
 
 interface PresentationProps {
   changeBack: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
@@ -21,7 +21,7 @@ const Presentation: React.FC<PresentationProps> = observer(({ changeBack }) => {
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const project = ModelStore.currentProject as Project
   const organization = ModelStore.organization as Organization
-  const [tab, setTab] = useState<string>('Home Summary')
+  const [, setTab] = useState<string>('Home Summary')
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`
 
@@ -51,28 +51,24 @@ const Presentation: React.FC<PresentationProps> = observer(({ changeBack }) => {
         organization={organization}
         onTabChange={setTab}
       ></TabHolder>
-      <div>
-        {/* Signature is here instead of PlansPresentation because something about how that component is rendered makes this impossible to use there... to investigate */}
-        {tab === 'Plans' && process.env['SIGNATURES'] && (
-          <Signature signatureID={project.id!} />
-        )}
-      </div>
-      <div className="section">
-        <div className="section__row">
-          <Button
-            startIcon={<ArrowBack />}
-            variant="contained"
-            color="warning"
-            size="small"
-            onClick={changeBack}
-          >
-            Go back
-          </Button>
-          <LinkCopier
-            link={`${baseUrl}/presentation/${user?.publicMetadata?.organization_id}/projects/${project.id}`}
-          ></LinkCopier>
+      <PrintHidden>
+        <div className="section">
+          <div className="section__row">
+            <Button
+              startIcon={<ArrowBack />}
+              variant="contained"
+              color="warning"
+              size="small"
+              onClick={changeBack}
+            >
+              Go back
+            </Button>
+            <LinkCopier
+              link={`${baseUrl}/presentation/${user?.publicMetadata?.organization_id}/projects/${project.id}`}
+            ></LinkCopier>
+          </div>
         </div>
-      </div>
+      </PrintHidden>
     </>
   )
 })

@@ -7,6 +7,9 @@ import { Chip } from '@mui/material'
 import PlanPresentation from '../Components/PlanPresentation'
 
 import '../style.scss'
+import { PrintHidden } from '@/components/Print/PrintHidden'
+import { toJS } from 'mobx'
+import { PrintOnly } from '@/components/Print/PrintOnly'
 
 const PlansPresentation: React.FC<{
   project: Project
@@ -46,35 +49,81 @@ const PlansPresentation: React.FC<{
       )
       setPlanPhotos(newPlanPhotos)
     }
+
+    console.log('CURRENT PLAN', toJS(currentPlan))
   }, [currentPlan, photos])
 
   return (
     <>
-      <div className="planSelection">
-        <div className="planSelection__buttons">
-          {plans?.length > 0 && (
-            <div
+      <PrintHidden>
+        <div className="planSelection">
+          <div className="planSelection__buttons">
+            {plans?.length > 0 && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                {plans?.map((plan) => (
+                  <Chip
+                    key={plan.id}
+                    label={plan.name}
+                    color={currentPlan?.id === plan.id ? 'primary' : 'default'}
+                    onClick={() => setCurrentPlan(plan)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </PrintHidden>
+      {currentPlan && (
+        <>
+          {currentPlan.approvedAt && (
+            <PrintHidden
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: '8px',
+                textAlign: 'center',
+                marginTop: '8px',
+                marginBottom: '8px',
+                backgroundColor: 'white',
+                padding: '8px',
+                borderRadius: '8px',
+                marginLeft: '16px',
+                marginRight: '16px',
               }}
             >
-              {plans?.map((plan) => (
-                <Chip
-                  key={plan.id}
-                  label={plan.name}
-                  color={currentPlan?.id === plan.id ? 'primary' : 'default'}
-                  onClick={() => setCurrentPlan(plan)}
-                />
-              ))}
-            </div>
+              <p style={{ fontSize: '14px', marginTop: '4px', color: 'green' }}>
+                ✅ Approved on{' '}
+                {new Date(currentPlan?.approvedAt ?? '').toLocaleDateString()}{' '}
+                at{' '}
+                {new Date(currentPlan?.approvedAt ?? '').toLocaleTimeString()}
+              </p>
+            </PrintHidden>
           )}
-        </div>
-      </div>
-      {currentPlan && (
-        <PlanPresentation plan={currentPlan} photos={planPhotos} />
+          <PrintOnly
+            style={{
+              textAlign: 'center',
+              marginTop: '16px',
+              marginBottom: '16px',
+              backgroundColor: 'white',
+              padding: '16px',
+              borderRadius: '8px',
+              marginLeft: '16px',
+              marginRight: '16px',
+            }}
+          >
+            <h2>Plan: {currentPlan?.name}</h2>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>
+              Approved on{' '}
+              {new Date(currentPlan?.approvedAt ?? '').toLocaleDateString()} at{' '}
+              {new Date(currentPlan?.approvedAt ?? '').toLocaleTimeString()}
+            </p>
+          </PrintOnly>
+          <PlanPresentation plan={currentPlan} photos={planPhotos} />
+        </>
       )}
     </>
   )

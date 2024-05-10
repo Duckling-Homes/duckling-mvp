@@ -69,4 +69,8 @@
       justify-content: flex-end;
     }
   }
+
+  @media print {
+    display: none;
+  }
 }

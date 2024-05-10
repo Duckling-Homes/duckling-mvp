@@ -44,6 +44,9 @@ export const PATCH = withErrorHandler(
     const {
       name,
       planDetails, // Include other relevant fields for a Plan entity
+      status,
+      approvedAt,
+      signature,
     } = await req.json()
 
     const orgContext = req.headers.get('organization-context')
@@ -53,6 +56,9 @@ export const PATCH = withErrorHandler(
       await updatePlan(params.id, {
         name,
         planDetails, // Include other relevant fields for a Plan entity
+        status,
+        approvedAt,
+        signature,
       })
     )
   }

@@ -25,10 +25,18 @@ interface PlanItemProps {
   title: string
   property: string
   aggregationLimits: AggregationLimit[]
+  editable?: boolean
 }
 
 const PlanItem: React.FC<PlanItemProps> = observer(
-  ({ catalogue, plan, title, property, aggregationLimits }) => {
+  ({
+    catalogue,
+    plan,
+    title,
+    property,
+    aggregationLimits,
+    editable = true,
+  }) => {
     const subcategories = getSubcategories(property)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const subcategoryMenuOpen = Boolean(anchorEl)
@@ -153,6 +161,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
             size="small"
             startIcon={<Add />}
             onClick={handleMenuClick}
+            disabled={!editable}
           >
             Add
           </Button>
@@ -193,6 +202,7 @@ const PlanItem: React.FC<PlanItemProps> = observer(
             item={item}
             removeItem={(customId: string) => removeItem(customId)}
             catalogue={catalogue}
+            editable={editable}
           />
         ))}
       </div>

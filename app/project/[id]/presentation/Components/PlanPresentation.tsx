@@ -1,7 +1,7 @@
 'use client'
 import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
-import { CheckCircle, Download, Home } from '@mui/icons-material'
+import { CheckCircle, Home, Print } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
 import NorthIcon from '@mui/icons-material/North'
@@ -20,6 +20,7 @@ import CostCard from './CostCard'
 
 import '../style.scss'
 import { ReviewPlanModal } from '@/components/Modals/ReviewPlanModal'
+import { PrintHidden } from '@/components/Print/PrintHidden'
 
 const PlanPresentation: React.FC<{
   plan: Plan
@@ -30,7 +31,15 @@ const PlanPresentation: React.FC<{
   const [photoIndex, setPhotoIndex] = useState<number>(0)
   const [reviewState, setReviewState] = useState<
     'notReviewed' | 'reviewing' | 'reviewed'
-  >('notReviewed')
+  >(plan.approvedAt ? 'reviewed' : 'notReviewed')
+
+  useEffect(() => {
+    if (plan.approvedAt) {
+      setReviewState('reviewed')
+    } else {
+      setReviewState('notReviewed')
+    }
+  }, [plan])
 
   useEffect(() => {
     setPhotoIndex(0)
@@ -314,32 +323,45 @@ const PlanPresentation: React.FC<{
         </div>
       </div>
 
-      <div className="acceptance">
-        <div className="acceptance__header">
-          {reviewState === 'notReviewed' && (
-            <Button color="primary" onClick={() => setReviewState('reviewing')}>
-              Review and Accept Proposal
-            </Button>
-          )}
-          {reviewState === 'reviewed' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                Your plan has been approved. <CheckCircle />
-              </div>
-              <Button style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                Download PDF <Download />
+      <PrintHidden>
+        <div className="acceptance">
+          <div className="acceptance__header">
+            {reviewState === 'notReviewed' && (
+              <Button
+                color="primary"
+                onClick={() => setReviewState('reviewing')}
+              >
+                Review and Accept Proposal
               </Button>
-            </div>
-          )}
+            )}
+            {reviewState === 'reviewed' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  Your plan has been approved. <CheckCircle />
+                </div>
+                <Button
+                  style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                  onClick={() => window.print()}
+                >
+                  Print <Print />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </PrintHidden>
 
       {reviewState === 'reviewing' && (
-        <ReviewPlanModal
-          open={reviewState === 'reviewing'}
-          onCancel={() => setReviewState('notReviewed')}
-          onAccept={() => setReviewState('reviewed')}
-        />
+        <PrintHidden>
+          <ReviewPlanModal
+            open={reviewState === 'reviewing'}
+            onCancel={() => setReviewState('notReviewed')}
+            onAccept={(signature) => {
+              ModelStore.approvePlan(plan.id!, signature)
+              setReviewState('reviewed')
+            }}
+          />
+        </PrintHidden>
       )}
     </>
   )

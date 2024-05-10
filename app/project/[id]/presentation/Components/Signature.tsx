@@ -1,36 +1,45 @@
 import { Create } from '@mui/icons-material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import SignatureCanvas from 'react-signature-canvas'
 
-type Props = {
-  signatureID: string
-  onSignature?: (adornment: string) => void
+export type SignatureObject = {
+  signer: string
+  date: string
+  signatureBase64: string
 }
-/**
- *
- * NOTE: This component is purely for demo right now! Still needs to be hooked up
- * to save the signature to the db if we want it. (Using localstore right now)
- *
- */
-export const Signature = ({ signatureID, onSignature }: Props) => {
+
+type Props = {
+  onSignature?: (signature: SignatureObject) => void
+}
+
+export const Signature = ({ onSignature }: Props) => {
   const sigCanvas = useRef<SignatureCanvas>(null)
-  const [signed, setSigned] = useState(false) // State to track if the signature has been signed
-  const [adornment, setAdornment] = useState<string | null>(null) // State to track if the signature has been signed
+  const [signature, setSignature] = useState<SignatureObject | null>(null)
+
+  const adornment = useMemo(() => {
+    return signature?.signer && signature?.date
+      ? `Signed by ${signature.signer} at ${signature.date}`
+      : null
+  }, [signature])
+
+  const signed = useMemo(() => {
+    return signature !== null
+  }, [signature])
+
   // Function to save the signature
-  const saveSignature = (adornment: string) => {
+  const saveSignature = (signer: string, date: string) => {
     const signatureImage = sigCanvas.current
       ?.getTrimmedCanvas()
       .toDataURL('image/png')
 
-    const toSave = {
-      savedSignature: signatureImage,
-      adornment,
+    const signature: SignatureObject = {
+      signer: signer,
+      date: date,
+      signatureBase64: signatureImage!,
     }
-    localStorage.setItem(
-      'savedSignature:' + signatureID,
-      JSON.stringify(toSave)
-    )
-    setSigned(true)
+
+    onSignature && onSignature(signature)
+    setSignature(signature)
   }
 
   const promptAccept = () => {
@@ -39,42 +48,14 @@ export const Signature = ({ signatureID, onSignature }: Props) => {
       alert('Please enter a name to sign the document!')
       return
     }
-    const adornment = 'Signed by ' + name + ' at ' + new Date().toLocaleString()
-    saveSignature(adornment)
-    setAdornment(adornment)
-    onSignature && onSignature(adornment)
-  }
-
-  // Function to load the saved signature
-  const loadSignature = () => {
-    const { savedSignature, adornment } = JSON.parse(
-      localStorage.getItem('savedSignature:' + signatureID) ?? '{}'
-    )
-    if (savedSignature) {
-      console.log('has sig', true, saveSignature, adornment)
-      sigCanvas.current?.fromDataURL(savedSignature)
-      setSigned(true)
-      console.log('adornment', adornment)
-      setAdornment(adornment)
-      onSignature && onSignature(adornment)
-    } else {
-      console.log('no sig', false, saveSignature, adornment)
-
-      sigCanvas.current?.on()
-    }
+    saveSignature(name, new Date().toLocaleString())
   }
 
   // Function to clear the signature
   const clearSignature = () => {
-    localStorage.removeItem('savedSignature:' + signatureID)
     sigCanvas.current?.clear()
-    setSigned(false)
-    setAdornment(null)
+    setSignature(null)
   }
-
-  useEffect(() => {
-    loadSignature()
-  }, [])
 
   useEffect(() => {
     if (signed) {
