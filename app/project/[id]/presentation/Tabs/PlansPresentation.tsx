@@ -7,6 +7,7 @@ import { Chip } from '@mui/material'
 import PlanPresentation from '../Components/PlanPresentation'
 
 import '../style.scss'
+import { PrintHidden } from '@/components/Print/PrintHidden'
 
 const PlansPresentation: React.FC<{
   project: Project
@@ -50,29 +51,31 @@ const PlansPresentation: React.FC<{
 
   return (
     <>
-      <div className="planSelection">
-        <div className="planSelection__buttons">
-          {plans?.length > 0 && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: '8px',
-              }}
-            >
-              {plans?.map((plan) => (
-                <Chip
-                  key={plan.id}
-                  label={plan.name}
-                  color={currentPlan?.id === plan.id ? 'primary' : 'default'}
-                  onClick={() => setCurrentPlan(plan)}
-                />
-              ))}
-            </div>
-          )}
+      <PrintHidden>
+        <div className="planSelection">
+          <div className="planSelection__buttons">
+            {plans?.length > 0 && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                {plans?.map((plan) => (
+                  <Chip
+                    key={plan.id}
+                    label={plan.name}
+                    color={currentPlan?.id === plan.id ? 'primary' : 'default'}
+                    onClick={() => setCurrentPlan(plan)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </PrintHidden>
       {currentPlan && (
         <PlanPresentation plan={currentPlan} photos={planPhotos} />
       )}

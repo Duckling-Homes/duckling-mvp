@@ -22,3 +22,16 @@
     }
   }
 }
+
+.print-hidden {
+  @media print {
+    display: none;
+  }
+}
+
+.print-only {
+  display: none;
+  @media print {
+    display: block;
+  }
+}
