@@ -1,7 +1,7 @@
 'use client'
 import { CatalogueItem, PhotoDetails, Plan } from '@/types/types'
 import { observer } from 'mobx-react-lite'
-import { CheckCircle, Download, Home, Print } from '@mui/icons-material'
+import { CheckCircle, Home, Print } from '@mui/icons-material'
 import { LargeFinancingCalculator } from '@/components/Financing/LargeCalculator'
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
 import NorthIcon from '@mui/icons-material/North'
@@ -20,7 +20,6 @@ import CostCard from './CostCard'
 
 import '../style.scss'
 import { ReviewPlanModal } from '@/components/Modals/ReviewPlanModal'
-import { PrintOnly } from '@/components/Print/PrintOnly'
 import { PrintHidden } from '@/components/Print/PrintHidden'
 
 const PlanPresentation: React.FC<{

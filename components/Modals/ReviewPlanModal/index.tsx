@@ -3,12 +3,10 @@ import {
   SignatureObject,
 } from '@/app/project/[id]/presentation/Components/Signature'
 import ModelStore from '@/app/stores/modelStore'
-import { Download, Print } from '@mui/icons-material'
+import { Print } from '@mui/icons-material'
 import { Button, Modal } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 import { useMemo, useState } from 'react'
-import { jsPDF } from 'jspdf'
-import html2canvas from 'html2canvas'
 
 type Props = {
   open: boolean

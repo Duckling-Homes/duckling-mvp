@@ -21,7 +21,7 @@ const Presentation: React.FC<PresentationProps> = observer(({ changeBack }) => {
   const [photos, setPhotos] = useState<PhotoDetails[]>([])
   const project = ModelStore.currentProject as Project
   const organization = ModelStore.organization as Organization
-  const [tab, setTab] = useState<string>('Home Summary')
+  const [, setTab] = useState<string>('Home Summary')
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`
 

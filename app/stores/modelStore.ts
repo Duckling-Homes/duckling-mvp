@@ -18,7 +18,7 @@ import {
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
-import { AggregationLimit, PlanStatus } from '@prisma/client'
+import { AggregationLimit } from '@prisma/client'
 import {
   AggregationLimitClass,
   ProcessableAggregationLimit,

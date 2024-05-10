@@ -217,7 +217,7 @@ export interface Plan {
   projectId?: string
   copy?: Copy
   catalogueItems?: CatalogueItem[]
-  status: PlanStatus
+  status?: PlanStatus
   approvedAt?: string
   signature?: string
 }
