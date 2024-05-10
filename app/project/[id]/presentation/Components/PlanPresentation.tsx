@@ -35,6 +35,14 @@ const PlanPresentation: React.FC<{
   >(plan.approvedAt ? 'reviewed' : 'notReviewed')
 
   useEffect(() => {
+    if (plan.approvedAt) {
+      setReviewState('reviewed')
+    } else {
+      setReviewState('notReviewed')
+    }
+  }, [plan])
+
+  useEffect(() => {
     setPhotoIndex(0)
     if (photos && photos.length > 0) {
       setDisplayedPhoto(photos[0])

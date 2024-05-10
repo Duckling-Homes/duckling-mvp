@@ -82,24 +82,27 @@ const PlansPresentation: React.FC<{
       </PrintHidden>
       {currentPlan && (
         <>
-          <PrintHidden
-            style={{
-              textAlign: 'center',
-              marginTop: '8px',
-              marginBottom: '8px',
-              backgroundColor: 'white',
-              padding: '8px',
-              borderRadius: '8px',
-              marginLeft: '16px',
-              marginRight: '16px',
-            }}
-          >
-            <p style={{ fontSize: '14px', marginTop: '4px', color: 'green' }}>
-              ✅ Approved on{' '}
-              {new Date(currentPlan?.approvedAt ?? '').toLocaleDateString()} at{' '}
-              {new Date(currentPlan?.approvedAt ?? '').toLocaleTimeString()}
-            </p>
-          </PrintHidden>
+          {currentPlan.approvedAt && (
+            <PrintHidden
+              style={{
+                textAlign: 'center',
+                marginTop: '8px',
+                marginBottom: '8px',
+                backgroundColor: 'white',
+                padding: '8px',
+                borderRadius: '8px',
+                marginLeft: '16px',
+                marginRight: '16px',
+              }}
+            >
+              <p style={{ fontSize: '14px', marginTop: '4px', color: 'green' }}>
+                ✅ Approved on{' '}
+                {new Date(currentPlan?.approvedAt ?? '').toLocaleDateString()}{' '}
+                at{' '}
+                {new Date(currentPlan?.approvedAt ?? '').toLocaleTimeString()}
+              </p>
+            </PrintHidden>
+          )}
           <PrintOnly
             style={{
               textAlign: 'center',
