@@ -54,6 +54,8 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     (p) => p.id === currentPlanID
   )
 
+  const planApproved = currentPlan?.approvedAt ? true : false
+
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
       setPlans(currentProject.plans)
@@ -425,13 +427,23 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                   </MenuItem>
                 </Menu>
               </div>
-              <small>Click on “+ ADD” buttons to start adding projects.</small>
+              {planApproved ? (
+                <small style={{ color: 'red' }}>
+                  NOTE: This plan has already been approved. You cannot make any
+                  more changes.
+                </small>
+              ) : (
+                <small>
+                  Click on “+ ADD” buttons to start adding projects.
+                </small>
+              )}
               <PlanItem
                 catalogue={catalogue}
                 plan={currentPlan}
                 title={'Home Performance'}
                 property={'HomePerformance'}
                 aggregationLimits={aggregationLimits}
+                editable={!planApproved}
               />
               <PlanItem
                 catalogue={catalogue}
@@ -439,6 +451,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 title={'HVAC'}
                 property={'HVAC'}
                 aggregationLimits={aggregationLimits}
+                editable={!planApproved}
               />
               <PlanItem
                 catalogue={catalogue}
@@ -446,6 +459,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 title={'Appliance Upgrades'}
                 property={'Appliances'}
                 aggregationLimits={aggregationLimits}
+                editable={!planApproved}
               />
               <PlanItem
                 catalogue={catalogue}
@@ -453,6 +467,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 title={'Electrical'}
                 property={'Electrical'}
                 aggregationLimits={aggregationLimits}
+                editable={!planApproved}
               />
               <PlanItem
                 catalogue={catalogue}
@@ -460,6 +475,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 title={'Additional Services'}
                 property={'Other'}
                 aggregationLimits={aggregationLimits}
+                editable={!planApproved}
               />
               <Photos plan={currentPlan} project={currentProject} />
             </div>
