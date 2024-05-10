@@ -18,7 +18,7 @@ import {
 import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { SyncAPI } from '../sync'
 import { _Object } from '../sync/db'
-import { AggregationLimit } from '@prisma/client'
+import { AggregationLimit, PlanStatus } from '@prisma/client'
 import {
   AggregationLimitClass,
   ProcessableAggregationLimit,
@@ -517,6 +517,20 @@ export class _ModelStore {
     })
 
     this.plans = plans
+  }
+
+  approvePlan = async (
+    planId: string,
+    signature: { signer: string; date: string; signatureBase64: string }
+  ) => {
+    const found = this.plans.find((plan) => plan.id === planId)
+    if (!found) return
+
+    found.status = 'Approved'
+    found.approvedAt = new Date().toISOString()
+    found.signature = JSON.stringify(signature)
+
+    this.patchPlan(this.currentProject?.id as string, found)
   }
 
   generateCopy = async (plan: Plan, projectID: string) => {

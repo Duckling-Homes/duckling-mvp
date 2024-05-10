@@ -6,7 +6,6 @@ import { useUser } from '@clerk/nextjs'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import LinkCopier from './Components/LinkCopier'
-import { Signature } from './Components/Signature'
 import TabHolder from './Tabs/TabHolder'
 import './style.scss'
 import { Button } from '@mui/material'
@@ -51,12 +50,6 @@ const Presentation: React.FC<PresentationProps> = observer(({ changeBack }) => {
         organization={organization}
         onTabChange={setTab}
       ></TabHolder>
-      <div>
-        {/* Signature is here instead of PlansPresentation because something about how that component is rendered makes this impossible to use there... to investigate */}
-        {tab === 'Plans' && process.env['SIGNATURES'] && (
-          <Signature signatureID={project.id!} />
-        )}
-      </div>
       <div className="section">
         <div className="section__row">
           <Button

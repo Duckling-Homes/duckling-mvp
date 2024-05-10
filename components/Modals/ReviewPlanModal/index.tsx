@@ -1,16 +1,19 @@
-import { Signature } from '@/app/project/[id]/presentation/Components/Signature'
+import {
+  Signature,
+  SignatureObject,
+} from '@/app/project/[id]/presentation/Components/Signature'
 import ModelStore from '@/app/stores/modelStore'
 import { Download, Print } from '@mui/icons-material'
 import { Button, Modal } from '@mui/material'
 import { observer } from 'mobx-react-lite'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { jsPDF } from 'jspdf'
 import html2canvas from 'html2canvas'
 
 type Props = {
   open: boolean
   onCancel: () => void
-  onAccept: () => void
+  onAccept: (signature: SignatureObject) => void
 }
 
 export const ReviewPlanModal = observer(
@@ -18,6 +21,7 @@ export const ReviewPlanModal = observer(
     const [mode, setMode] = useState<'documents' | 'signature' | 'finalize'>(
       'documents'
     )
+    const [signature, setSignature] = useState<SignatureObject | null>(null)
 
     const documents =
       ModelStore.organization?.documents ??
@@ -53,13 +57,15 @@ export const ReviewPlanModal = observer(
             <SignatureView
               onCancel={() => setMode('documents')}
               onAccept={() => setMode('finalize')}
+              signature={signature}
+              setSignature={setSignature}
             />
           )}
 
           {mode === 'finalize' && (
             <FinalizeView
               onCancel={() => setMode('signature')}
-              onAccept={() => onAccept()}
+              onAccept={() => onAccept(signature!)}
             />
           )}
         </div>
@@ -135,10 +141,19 @@ const ReviewDocumentsView = ({
 type SignatureViewProps = {
   onCancel: () => void
   onAccept: () => void
+  signature: SignatureObject | null
+  setSignature: (signature: SignatureObject) => void
 }
 
-const SignatureView = ({ onCancel, onAccept }: SignatureViewProps) => {
-  const [continueable, setContinueable] = useState(false)
+const SignatureView = ({
+  onCancel,
+  onAccept,
+  signature,
+  setSignature,
+}: SignatureViewProps) => {
+  const continueable = useMemo(() => {
+    return signature !== null
+  }, [signature])
 
   return (
     <>
@@ -151,7 +166,7 @@ const SignatureView = ({ onCancel, onAccept }: SignatureViewProps) => {
         </div>
       </div>
 
-      <Signature signatureID="MOCK" onSignature={() => setContinueable(true)} />
+      <Signature onSignature={setSignature} />
       <div className="createModal__footer">
         <Button onClick={onCancel}>Back</Button>
         <Button disabled={!continueable} onClick={onAccept}>

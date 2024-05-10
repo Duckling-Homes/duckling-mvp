@@ -32,7 +32,7 @@ const PlanPresentation: React.FC<{
   const [photoIndex, setPhotoIndex] = useState<number>(0)
   const [reviewState, setReviewState] = useState<
     'notReviewed' | 'reviewing' | 'reviewed'
-  >('notReviewed')
+  >(plan.approvedAt ? 'reviewed' : 'notReviewed')
 
   useEffect(() => {
     setPhotoIndex(0)
@@ -349,7 +349,10 @@ const PlanPresentation: React.FC<{
           <ReviewPlanModal
             open={reviewState === 'reviewing'}
             onCancel={() => setReviewState('notReviewed')}
-            onAccept={() => setReviewState('reviewed')}
+            onAccept={(signature) => {
+              ModelStore.approvePlan(plan.id!, signature)
+              setReviewState('reviewed')
+            }}
           />
         </PrintHidden>
       )}

@@ -462,8 +462,17 @@ model Plan {
   projectId            String
   project              Project @relation(name: "ProjectToPlan", fields: [projectId], references: [id], onDelete: Cascade)
   
+  status               PlanStatus @default(Draft)
+  approvedAt           DateTime?
+  signature            Json?       // { signer: '', date: '', signatureBase64: ''}
+  
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @default(now()) @updatedAt
+}
+
+enum PlanStatus {
+  Draft
+  Approved
 }
 
 

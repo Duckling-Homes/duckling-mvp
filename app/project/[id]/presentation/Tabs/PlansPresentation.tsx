@@ -8,6 +8,7 @@ import PlanPresentation from '../Components/PlanPresentation'
 
 import '../style.scss'
 import { PrintHidden } from '@/components/Print/PrintHidden'
+import { toJS } from 'mobx'
 
 const PlansPresentation: React.FC<{
   project: Project
@@ -47,6 +48,8 @@ const PlansPresentation: React.FC<{
       )
       setPlanPhotos(newPlanPhotos)
     }
+
+    console.log('CURRENT PLAN', toJS(currentPlan))
   }, [currentPlan, photos])
 
   return (
