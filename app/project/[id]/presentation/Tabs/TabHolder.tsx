@@ -7,6 +7,7 @@ import { observer } from 'mobx-react-lite'
 import HomeSummary from './HomeSummary'
 import PlansPresentation from './PlansPresentation'
 import AboutUsPage from './AboutUs'
+import { PrintHidden } from '@/components/Print/PrintHidden'
 
 const TabHolder: React.FC<{
   project: Project
@@ -27,16 +28,18 @@ const TabHolder: React.FC<{
 
   return (
     <div>
-      <Tabs
-        sx={{ background: '#FAFAFA' }}
-        variant="fullWidth"
-        value={currentTabIndex}
-        onChange={handleChangeTab}
-      >
-        <Tab label={TabLabels[0]} />
-        <Tab label={TabLabels[1]} />
-        <Tab label={TabLabels[2]} />
-      </Tabs>
+      <PrintHidden>
+        <Tabs
+          sx={{ background: '#FAFAFA' }}
+          variant="fullWidth"
+          value={currentTabIndex}
+          onChange={handleChangeTab}
+        >
+          <Tab label={TabLabels[0]} />
+          <Tab label={TabLabels[1]} />
+          <Tab label={TabLabels[2]} />
+        </Tabs>
+      </PrintHidden>
       {renderTabContent(0, <HomeSummary project={project} />)}
       {renderTabContent(
         1,

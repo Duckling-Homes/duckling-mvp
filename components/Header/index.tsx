@@ -13,6 +13,7 @@ import ModelStore from '@/app/stores/modelStore'
 import { Organization } from '@/types/types'
 import { usePostHog } from 'posthog-js/react'
 import './styles.scss'
+import { PrintHidden } from '../Print/PrintHidden'
 
 const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
   publicRoute,
@@ -62,50 +63,52 @@ const Header: React.FC<{ publicRoute?: boolean; orgName?: string }> = ({
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
-          {!publicRoute && device !== 'phone' && (
-            <Link href="/" passHref>
+        <PrintHidden>
+          <Toolbar>
+            {!publicRoute && device !== 'phone' && (
+              <Link href="/" passHref>
+                <IconButton
+                  sx={{
+                    borderRadius: '4px',
+                    backgroundColor: '#2196F3',
+                    color: '#fff',
+                    padding: '8px 22px',
+                  }}
+                  aria-label="delete"
+                >
+                  <HomeOutlined />
+                </IconButton>
+              </Link>
+            )}
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1, textAlign: 'center' }}
+            >
+              {organization ? organization.name : organizationName}
+            </Typography>
+            {!publicRoute && (
               <IconButton
                 sx={{
                   borderRadius: '4px',
                   backgroundColor: '#2196F3',
                   color: '#fff',
-                  padding: '8px 22px',
+                  padding: device === 'phone' ? '8px 12px' : '8px 22px',
                 }}
+                onClick={handleClick}
                 aria-label="delete"
               >
-                <HomeOutlined />
+                <MenuOutlined fontSize="small" />
               </IconButton>
-            </Link>
-          )}
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, textAlign: 'center' }}
-          >
-            {organization ? organization.name : organizationName}
-          </Typography>
-          {!publicRoute && (
-            <IconButton
-              sx={{
-                borderRadius: '4px',
-                backgroundColor: '#2196F3',
-                color: '#fff',
-                padding: device === 'phone' ? '8px 12px' : '8px 22px',
-              }}
-              onClick={handleClick}
-              aria-label="delete"
-            >
-              <MenuOutlined fontSize="small" />
-            </IconButton>
-          )}
-          <CustomMenu
-            handleSignout={doSignOut}
-            open={open}
-            anchorEl={anchorEl}
-            handleClose={handleClose}
-          />
-        </Toolbar>
+            )}
+            <CustomMenu
+              handleSignout={doSignOut}
+              open={open}
+              anchorEl={anchorEl}
+              handleClose={handleClose}
+            />
+          </Toolbar>
+        </PrintHidden>
       </AppBar>
     </Box>
   )

@@ -10,6 +10,7 @@ import TabHolder from './Tabs/TabHolder'
 import './style.scss'
 import { Button } from '@mui/material'
 import { ArrowBack } from '@mui/icons-material'
+import { PrintHidden } from '@/components/Print/PrintHidden'
 
 interface PresentationProps {
   changeBack: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
@@ -50,22 +51,24 @@ const Presentation: React.FC<PresentationProps> = observer(({ changeBack }) => {
         organization={organization}
         onTabChange={setTab}
       ></TabHolder>
-      <div className="section">
-        <div className="section__row">
-          <Button
-            startIcon={<ArrowBack />}
-            variant="contained"
-            color="warning"
-            size="small"
-            onClick={changeBack}
-          >
-            Go back
-          </Button>
-          <LinkCopier
-            link={`${baseUrl}/presentation/${user?.publicMetadata?.organization_id}/projects/${project.id}`}
-          ></LinkCopier>
+      <PrintHidden>
+        <div className="section">
+          <div className="section__row">
+            <Button
+              startIcon={<ArrowBack />}
+              variant="contained"
+              color="warning"
+              size="small"
+              onClick={changeBack}
+            >
+              Go back
+            </Button>
+            <LinkCopier
+              link={`${baseUrl}/presentation/${user?.publicMetadata?.organization_id}/projects/${project.id}`}
+            ></LinkCopier>
+          </div>
         </div>
-      </div>
+      </PrintHidden>
     </>
   )
 })

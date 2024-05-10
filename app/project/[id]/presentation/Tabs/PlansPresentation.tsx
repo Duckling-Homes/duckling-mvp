@@ -9,6 +9,7 @@ import PlanPresentation from '../Components/PlanPresentation'
 import '../style.scss'
 import { PrintHidden } from '@/components/Print/PrintHidden'
 import { toJS } from 'mobx'
+import { PrintOnly } from '@/components/Print/PrintOnly'
 
 const PlansPresentation: React.FC<{
   project: Project
@@ -80,7 +81,28 @@ const PlansPresentation: React.FC<{
         </div>
       </PrintHidden>
       {currentPlan && (
-        <PlanPresentation plan={currentPlan} photos={planPhotos} />
+        <>
+          <PrintOnly
+            style={{
+              textAlign: 'center',
+              marginTop: '16px',
+              marginBottom: '16px',
+              backgroundColor: 'white',
+              padding: '16px',
+              borderRadius: '8px',
+              marginLeft: '16px',
+              marginRight: '16px',
+            }}
+          >
+            <h2>Plan: {currentPlan?.name}</h2>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>
+              Approved on{' '}
+              {new Date(currentPlan?.approvedAt ?? '').toLocaleDateString()} at{' '}
+              {new Date(currentPlan?.approvedAt ?? '').toLocaleTimeString()}
+            </p>
+          </PrintOnly>
+          <PlanPresentation plan={currentPlan} photos={planPhotos} />
+        </>
       )}
     </>
   )
