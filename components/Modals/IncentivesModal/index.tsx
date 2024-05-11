@@ -22,7 +22,7 @@ const Incentives: React.FC<{
     switch (incentive.calculationType) {
       case 'FlatRate':
         return `up to ${formatCurrency(
-          incentive.calculationRateValue
+          (incentive.calculationRateValue as number) || 0
         )} per project`
       case 'PerUnit':
         return formatPerUnitIncentive(incentive)
