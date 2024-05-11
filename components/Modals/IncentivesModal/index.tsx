@@ -11,6 +11,7 @@ import { CatalogueItem, Incentive, Plan, PlanDetails } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import './styles.scss'
 import { AggregationLimit } from '@prisma/client'
+import formatCurrency from '@/app/utils/utils'
 
 const Incentives: React.FC<{
   rebates: Incentive[]
@@ -20,7 +21,9 @@ const Incentives: React.FC<{
   function calculateIncentiveValue(incentive: Incentive) {
     switch (incentive.calculationType) {
       case 'FlatRate':
-        return `up to $${incentive.calculationRateValue} per project`
+        return `up to ${formatCurrency(
+          incentive.calculationRateValue
+        )} per project`
       case 'PerUnit':
         return formatPerUnitIncentive(incentive)
       case 'Percentage':
@@ -30,9 +33,13 @@ const Incentives: React.FC<{
 
   function formatPerUnitIncentive(incentive: Incentive) {
     if (incentive.maxLimit) {
-      return `$${incentive.calculationRateValue} per unit, up to $${incentive.maxLimit}`
+      return `${formatCurrency(
+        (incentive.calculationRateValue as number) || 0
+      )} per unit, up to ${formatCurrency(incentive.maxLimit)}`
     } else {
-      return `$${incentive.calculationRateValue} per unit`
+      return `${formatCurrency(
+        (incentive.calculationRateValue as number) || 0
+      )} per unit`
     }
   }
 
@@ -42,9 +49,9 @@ const Incentives: React.FC<{
     }
 
     if (incentive.maxLimit) {
-      return `${incentive?.calculationRateValue * 100}%, up to $${
+      return `${incentive?.calculationRateValue * 100}%, up to ${formatCurrency(
         incentive.maxLimit
-      }`
+      )}`
     } else {
       return `${incentive?.calculationRateValue * 100}%`
     }

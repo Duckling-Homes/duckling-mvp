@@ -227,9 +227,9 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
           <span className="name">{incentive.name}</span>
           <small>{incentive.finalCalculations?.warningText}</small>
         </div>
-        <span>{`$${
-          incentive.finalCalculations?.usedAmount.toFixed(2) || 0
-        }`}</span>
+        <span>
+          {formatCurrency(incentive.finalCalculations?.usedAmount || 0)}
+        </span>
       </div>
     ))
   }
@@ -511,7 +511,6 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                     variant="contained"
                     size="small"
                     onClick={() => setIncentivesModal(true)}
-                    // endIcon={<Icons.Tune />}
                   >
                     Set Incentives
                   </Button>
