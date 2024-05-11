@@ -201,7 +201,7 @@ const CostsModal: React.FC<{
   function saveAdditionalCosts() {
     const updatedItem = {
       ...item,
-      description: customDescription,
+      description: customDescription || item.description,
       additionalCosts: additionalCosts,
     }
 
