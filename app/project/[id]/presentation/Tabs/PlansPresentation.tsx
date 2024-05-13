@@ -115,9 +115,7 @@ const PlansPresentation: React.FC<{
           >
             <h2>Plan: {currentPlan?.name}</h2>
             <p style={{ fontSize: '14px', marginTop: '4px' }}>
-              Approved on{' '}
-              {new Date(currentPlan?.approvedAt ?? '').toLocaleDateString()} at{' '}
-              {new Date(currentPlan?.approvedAt ?? '').toLocaleTimeString()}
+              Approved on {formatDateTime(currentPlan?.approvedAt ?? '')}
             </p>
           </PrintOnly>
           <PlanPresentation plan={currentPlan} photos={planPhotos} />
