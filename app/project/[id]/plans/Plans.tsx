@@ -437,7 +437,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                       approvedAt
                     )}. You cannot make any more changes.`}
                   >
-                    <Chip label="Approved" color="success" />
+                    <Chip label="✅ Approved" color="success" />
                   </Tooltip>
                 </div>
               ) : (
