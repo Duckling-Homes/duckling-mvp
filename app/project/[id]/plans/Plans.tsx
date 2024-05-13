@@ -15,6 +15,7 @@ import {
   Menu,
   MenuItem,
   TextField,
+  Tooltip,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
@@ -22,7 +23,7 @@ import PlanItem from './Upgrades/PlanItem'
 import { observer } from 'mobx-react-lite'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 import './style.scss'
-import formatCurrency from '@/app/utils/utils'
+import { formatCurrency, formatDateTime } from '@/app/utils/utils'
 
 interface PlansProps {
   currentProject: Project
@@ -55,6 +56,8 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
   )
 
   const planApproved = currentPlan?.approvedAt ? true : false
+
+  const approvedAt = currentPlan?.approvedAt ?? ''
 
   useEffect(() => {
     if (currentProject && currentProject?.plans) {
@@ -428,10 +431,15 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </Menu>
               </div>
               {planApproved ? (
-                <small style={{ color: 'red' }}>
-                  NOTE: This plan has already been approved. You cannot make any
-                  more changes.
-                </small>
+                <div>
+                  <Tooltip
+                    title={`This plan was approved on ${formatDateTime(
+                      approvedAt
+                    )}. You cannot make any more changes.`}
+                  >
+                    <Chip label="✅ Approved" color="success" />
+                  </Tooltip>
+                </div>
               ) : (
                 <small>
                   Click on “+ ADD” buttons to start adding projects.

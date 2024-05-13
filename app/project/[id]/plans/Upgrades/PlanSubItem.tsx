@@ -4,7 +4,7 @@ import { CatalogueItem } from '@/types/types'
 import { Clear, Edit, ExpandLess, ExpandMore } from '@mui/icons-material'
 import { Autocomplete, Divider, IconButton, TextField } from '@mui/material'
 import { observer } from 'mobx-react-lite'
-import formatCurrency from '@/app/utils/utils'
+import { formatCurrency } from '@/app/utils/utils'
 
 interface PlanSubItemType {
   label: string

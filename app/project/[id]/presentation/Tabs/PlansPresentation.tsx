@@ -10,6 +10,7 @@ import '../style.scss'
 import { PrintHidden } from '@/components/Print/PrintHidden'
 import { toJS } from 'mobx'
 import { PrintOnly } from '@/components/Print/PrintOnly'
+import { formatDateTime } from '@/app/utils/utils'
 
 const PlansPresentation: React.FC<{
   project: Project
@@ -96,10 +97,7 @@ const PlansPresentation: React.FC<{
               }}
             >
               <p style={{ fontSize: '14px', marginTop: '4px', color: 'green' }}>
-                ✅ Approved on{' '}
-                {new Date(currentPlan?.approvedAt ?? '').toLocaleDateString()}{' '}
-                at{' '}
-                {new Date(currentPlan?.approvedAt ?? '').toLocaleTimeString()}
+                ✅ Approved on {formatDateTime(currentPlan?.approvedAt ?? '')}
               </p>
             </PrintHidden>
           )}
@@ -117,9 +115,7 @@ const PlansPresentation: React.FC<{
           >
             <h2>Plan: {currentPlan?.name}</h2>
             <p style={{ fontSize: '14px', marginTop: '4px' }}>
-              Approved on{' '}
-              {new Date(currentPlan?.approvedAt ?? '').toLocaleDateString()} at{' '}
-              {new Date(currentPlan?.approvedAt ?? '').toLocaleTimeString()}
+              Approved on {formatDateTime(currentPlan?.approvedAt ?? '')}
             </p>
           </PrintOnly>
           <PlanPresentation plan={currentPlan} photos={planPhotos} />
