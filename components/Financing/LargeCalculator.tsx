@@ -21,7 +21,7 @@ import {
 import { useFinancingCalculator } from '@/hooks/useFinancingCalculator'
 import { useState } from 'react'
 
-import formatCurrency from '@/app/utils/utils'
+import { formatCurrency } from '@/app/utils/utils'
 import { Done, EditOutlined } from '@mui/icons-material'
 
 import './style.scss'

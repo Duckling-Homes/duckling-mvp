@@ -2,7 +2,7 @@ import { Divider } from '@mui/material'
 
 import './style.scss'
 import { CatalogueItem, Incentive, Plan } from '@/types/types'
-import formatCurrency from '@/app/utils/utils'
+import { formatCurrency } from '@/app/utils/utils'
 
 interface CostCardProps {
   plan: Plan

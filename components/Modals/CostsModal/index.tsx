@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import './style.scss'
 import { TextInput } from '@/components/Inputs'
-import formatCurrency from '@/app/utils/utils'
+import { formatCurrency } from '@/app/utils/utils'
 
 interface PlanSubItemType {
   label: string

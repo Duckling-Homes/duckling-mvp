@@ -11,7 +11,7 @@ import { CatalogueItem, Incentive, Plan, PlanDetails } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import './styles.scss'
 import { AggregationLimit } from '@prisma/client'
-import formatCurrency from '@/app/utils/utils'
+import { formatCurrency } from '@/app/utils/utils'
 
 const Incentives: React.FC<{
   rebates: Incentive[]
