@@ -282,6 +282,13 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
     ModelStore.updatePlanCopy(currentPlan.id, oldFields)
   }
 
+  function getSigner() {
+    if (!currentPlan) {
+      return "the customer"
+    }
+    return JSON.parse(currentPlan?.signature as string).signer
+  }
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -435,15 +442,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </Menu>
               </div>
               {planApproved ? (
-                <div>
-                  <Tooltip
-                    title={`This plan was approved on ${formatDateTime(
-                      approvedAt
-                    )}. You cannot make any more changes.`}
-                  >
-                    <Chip label="✅ Approved" color="success" />
-                  </Tooltip>
-                </div>
+                <small style={{color: "green"}}>
+                  This proposal was approved by {getSigner()} on {formatDateTime(approvedAt)}.
+                  <br/>
+                  You cannot make any more changes
+                </small>
               ) : (
                 <small>
                   Click on “+ ADD” buttons to start adding projects.
