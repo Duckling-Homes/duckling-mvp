@@ -15,7 +15,6 @@ import {
   Menu,
   MenuItem,
   TextField,
-  Tooltip,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
@@ -24,7 +23,6 @@ import { observer } from 'mobx-react-lite'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 import './style.scss'
 import { formatCurrency, formatDateTime } from '@/app/utils/utils'
-import { toJS } from 'mobx'
 
 interface PlansProps {
   currentProject: Project

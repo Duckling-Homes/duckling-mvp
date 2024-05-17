@@ -3,12 +3,11 @@
 import { PhotoDetails, Plan, Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
-import { Chip, Divider, Typography } from '@mui/material'
+import { Chip } from '@mui/material'
 import PlanPresentation from '../Components/PlanPresentation'
 
 import '../style.scss'
 import { PrintHidden } from '@/components/Print/PrintHidden'
-import { toJS } from 'mobx'
 import { PrintOnly } from '@/components/Print/PrintOnly'
 import { formatDateTime } from '@/app/utils/utils'
 
@@ -51,22 +50,6 @@ const PlansPresentation: React.FC<{
       setPlanPhotos(newPlanPhotos)
     }
   }, [currentPlan, photos])
-
-  
-  function getSignatureImage() {
-    if (!currentPlan || !currentPlan.signature) {
-      return ""
-    }
-
-    return JSON.parse(currentPlan.signature as string).signatureBase64
-  }
-
-  function getSigner() {
-    if (!currentPlan || !currentPlan.signature) {
-      return "the customer"
-    }
-    return JSON.parse(currentPlan?.signature as string).signer
-  }
 
   return (
     <>
