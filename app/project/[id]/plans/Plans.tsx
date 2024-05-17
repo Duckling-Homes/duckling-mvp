@@ -4,7 +4,7 @@ import ModelStore from '@/app/stores/modelStore'
 import DeletePlanModal from '@/components/Modals/DeletePlan'
 import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
-import { CatalogueItem, Copy, Incentive, Plan, Project } from '@/types/types'
+import { CatalogueItem, Copy, Incentive, Plan, PlanStatus, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
 import {
   Button,
@@ -15,7 +15,6 @@ import {
   Menu,
   MenuItem,
   TextField,
-  Tooltip,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Photos from './Upgrades/Photos'
@@ -245,9 +244,12 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
     const plan = {
       ...currentPlan,
+      status: 'Draft' as PlanStatus,
       name: `${currentPlan.name} copy`,
     }
 
+    delete plan.approvedAt
+    delete plan.signature
     delete plan.id
 
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
@@ -276,6 +278,13 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
     setCopyFields(oldFields)
     ModelStore.updatePlanCopy(currentPlan.id, oldFields)
+  }
+
+  function getSigner() {
+    if (!currentPlan) {
+      return "the customer"
+    }
+    return JSON.parse(currentPlan?.signature as string).signer
   }
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -431,15 +440,11 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </Menu>
               </div>
               {planApproved ? (
-                <div>
-                  <Tooltip
-                    title={`This plan was approved on ${formatDateTime(
-                      approvedAt
-                    )}. You cannot make any more changes.`}
-                  >
-                    <Chip label="✅ Approved" color="success" />
-                  </Tooltip>
-                </div>
+                <small style={{color: "green"}}>
+                  This proposal was approved by {getSigner()} on {formatDateTime(approvedAt)}.
+                  <br/>
+                  You cannot make any more changes
+                </small>
               ) : (
                 <small>
                   Click on “+ ADD” buttons to start adding projects.

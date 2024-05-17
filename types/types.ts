@@ -208,7 +208,7 @@ export interface UpdateApplianceSticker {
   scale?: number
 }
 
-type PlanStatus = 'Draft' | 'Approved'
+export type PlanStatus = 'Draft' | 'Approved'
 
 export interface Plan {
   id?: string
