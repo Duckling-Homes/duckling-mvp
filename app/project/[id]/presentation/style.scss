@@ -347,4 +347,17 @@
   box-sizing: border-box;
   margin: 16px;
   align-items: center;
+  &__header {
+    width: 100%;
+  }
+  .signature {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    &__details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
 }

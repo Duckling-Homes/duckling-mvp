@@ -14,13 +14,15 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CatalogItemView from './CatalogItemView'
 import { useEffect, useState } from 'react'
-import { Button } from '@mui/material'
+import { Button, Divider, Typography } from '@mui/material'
 import Markdown from 'react-markdown'
 import CostCard from './CostCard'
 
 import '../style.scss'
 import { ReviewPlanModal } from '@/components/Modals/ReviewPlanModal'
 import { PrintHidden } from '@/components/Print/PrintHidden'
+import { formatDateTime } from '@/app/utils/utils'
+import { PrintOnly } from '@/components/Print/PrintOnly'
 
 const PlanPresentation: React.FC<{
   plan: Plan
@@ -173,6 +175,21 @@ const PlanPresentation: React.FC<{
         maximumFractionDigits: 2,
       })
     )
+  }
+
+  function getSignatureImage() {
+    if (!plan || !plan.signature) {
+      return ""
+    }
+
+    return JSON.parse(plan.signature as string).signatureBase64
+  }
+
+  function getSigner() {
+    if (!plan || !plan.signature) {
+      return "the customer"
+    }
+    return JSON.parse(plan?.signature as string).signer
   }
 
   return (
@@ -335,21 +352,64 @@ const PlanPresentation: React.FC<{
               </Button>
             )}
             {reviewState === 'reviewed' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  Your plan has been approved. <CheckCircle />
+              <>
+                <div className="signature">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, alignSelf: "center", marginBottom: "20px" }}>
+                    Your plan has been approved. <CheckCircle />
+                  </div>
+                  <div>
+                    <img
+                      src={`${getSignatureImage()}`}
+                      alt="Signature"
+                      style={{ maxWidth: '100%', height: 'auto' }}
+                    />
+                  </div>
+                  <Divider sx={{ marginTop: '4px', borderColor: "rgba(0, 0, 0, 0.5)" }} />
+                  <div className='signature__details'>
+                    <Typography variant='body1'>
+                      {getSigner()}
+                    </Typography>
+                    <Typography variant='body1' >
+                      {formatDateTime(plan.approvedAt as string)}
+                    </Typography>
+                  </div>
                 </div>
-                <Button
-                  style={{ display: 'flex', alignItems: 'center', gap: 4 }}
-                  onClick={() => window.print()}
-                >
-                  Print <Print />
-                </Button>
-              </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  
+                  <Button
+                    style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                    onClick={() => window.print()}
+                  >
+                    Print <Print />
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </div>
       </PrintHidden>
+
+      <PrintOnly>
+        <div className="signature">
+          <div>
+            <img
+              src={`${getSignatureImage()}`}
+              alt="Signature"
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
+          </div>
+          <Divider sx={{ marginTop: '4px', borderColor: "rgba(0, 0, 0, 0.5)" }} />
+          <div className='signature__details'>
+            <Typography variant='body1'>
+              {getSigner()}
+            </Typography>
+            <Typography variant='body1' >
+              {formatDateTime(plan.approvedAt as string)}
+            </Typography>
+          </div>
+        </div>
+      </PrintOnly>
 
       {reviewState === 'reviewing' && (
         <PrintHidden>

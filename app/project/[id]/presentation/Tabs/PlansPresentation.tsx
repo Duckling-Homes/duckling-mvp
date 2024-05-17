@@ -3,7 +3,7 @@
 import { PhotoDetails, Plan, Project } from '@/types/types'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
-import { Chip } from '@mui/material'
+import { Chip, Divider, Typography } from '@mui/material'
 import PlanPresentation from '../Components/PlanPresentation'
 
 import '../style.scss'
@@ -50,9 +50,23 @@ const PlansPresentation: React.FC<{
       )
       setPlanPhotos(newPlanPhotos)
     }
-
-    console.log('CURRENT PLAN', toJS(currentPlan))
   }, [currentPlan, photos])
+
+  
+  function getSignatureImage() {
+    if (!currentPlan || !currentPlan.signature) {
+      return ""
+    }
+
+    return JSON.parse(currentPlan.signature as string).signatureBase64
+  }
+
+  function getSigner() {
+    if (!currentPlan || !currentPlan.signature) {
+      return "the customer"
+    }
+    return JSON.parse(currentPlan?.signature as string).signer
+  }
 
   return (
     <>
