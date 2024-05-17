@@ -4,7 +4,7 @@ import ModelStore from '@/app/stores/modelStore'
 import DeletePlanModal from '@/components/Modals/DeletePlan'
 import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
-import { CatalogueItem, Copy, Incentive, Plan, Project } from '@/types/types'
+import { CatalogueItem, Copy, Incentive, Plan, PlanStatus, Project } from '@/types/types'
 import * as Icons from '@mui/icons-material'
 import {
   Button,
@@ -24,6 +24,7 @@ import { observer } from 'mobx-react-lite'
 import { InlineFinancingCalculator } from '@/components/Financing/InlineCalculator'
 import './style.scss'
 import { formatCurrency, formatDateTime } from '@/app/utils/utils'
+import { toJS } from 'mobx'
 
 interface PlansProps {
   currentProject: Project
@@ -245,9 +246,12 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
     const plan = {
       ...currentPlan,
+      status: 'Draft' as PlanStatus,
       name: `${currentPlan.name} copy`,
     }
 
+    delete plan.approvedAt
+    delete plan.signature
     delete plan.id
 
     const newPlan = await ModelStore.createPlan(currentProject.id, plan)
