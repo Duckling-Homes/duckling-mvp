@@ -54,7 +54,7 @@ Rules:
       },
       { role: 'user', content: input },
     ],
-    model: 'gpt-4-0125-preview',
+    model: 'gpt-4o',
     response_format: {
       type: 'json_object',
     },
