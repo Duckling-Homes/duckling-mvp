@@ -17,7 +17,10 @@ export function calculateIncentiveAmount(
 ): void {
   let calculatedAmount = 0
 
-  if (incentive.calculationType === 'FlatRate') {
+  if (
+    incentive.calculationType === 'FlatRate' ||
+    incentive.calculationType === 'PerUnit'
+  ) {
     calculatedAmount = Math.min(
       totalEligibleCost,
       incentive.calculationRateValue || 0

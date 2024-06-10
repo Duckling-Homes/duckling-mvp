@@ -4,7 +4,14 @@ import ModelStore from '@/app/stores/modelStore'
 import DeletePlanModal from '@/components/Modals/DeletePlan'
 import IncentivesModal from '@/components/Modals/IncentivesModal'
 import PlanModal from '@/components/Modals/PlanModal'
-import { CatalogueItem, Copy, Incentive, Plan, PlanStatus, Project } from '@/types/types'
+import {
+  CatalogueItem,
+  Copy,
+  Incentive,
+  Plan,
+  PlanStatus,
+  Project,
+} from '@/types/types'
 import * as Icons from '@mui/icons-material'
 import {
   Button,
@@ -282,7 +289,7 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
 
   function getSigner() {
     if (!currentPlan) {
-      return "the customer"
+      return 'the customer'
     }
     return JSON.parse(currentPlan?.signature as string).signer
   }
@@ -440,9 +447,10 @@ const Plans: React.FC<PlansProps> = observer(({ currentProject }) => {
                 </Menu>
               </div>
               {planApproved ? (
-                <small style={{color: "green"}}>
-                  This proposal was approved by {getSigner()} on {formatDateTime(approvedAt)}.
-                  <br/>
+                <small style={{ color: 'green' }}>
+                  This proposal was approved by {getSigner()} on{' '}
+                  {formatDateTime(approvedAt)}.
+                  <br />
                   You cannot make any more changes
                 </small>
               ) : (
