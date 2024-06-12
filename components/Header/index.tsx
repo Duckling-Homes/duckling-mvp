@@ -3,11 +3,11 @@
 import { HomeOutlined, MenuOutlined } from '@mui/icons-material'
 import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material'
 
-import { useClerk, useUser } from '@clerk/nextjs'
+import { useClerk, useUser } from '@clerk/nextjs';
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { checkDeviceType } from '../../hooks/checkDeviceType'
-import CustomMenu from '../Menu'
+import { checkDeviceType } from '../../hooks/checkDeviceType';
+import CustomMenu from '../Menu';
 
 import ModelStore from '@/app/stores/modelStore'
 import { Organization } from '@/types/types'
