@@ -23,7 +23,6 @@ import { ReviewPlanModal } from '@/components/Modals/ReviewPlanModal'
 import { PrintHidden } from '@/components/Print/PrintHidden'
 import { formatDateTime } from '@/app/utils/utils'
 import { PrintOnly } from '@/components/Print/PrintOnly'
-import { toJS } from 'mobx'
 
 const PlanPresentation: React.FC<{
   plan: Plan
