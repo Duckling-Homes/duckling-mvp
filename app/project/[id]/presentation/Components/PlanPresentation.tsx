@@ -330,7 +330,8 @@ const PlanPresentation: React.FC<{
             netCost={formatCurrency(calculateNetCost(plan))}
             finalCost={formatCurrency(calculateFinalCost(plan))}
           />
-          <PrintHidden style={{ width: '100%' }}>
+          {ModelStore.organization?.id !=
+          'dde63049-e00b-4e81-8beb-69fe7526eaa6' ? (
             <div className="financing__wrapper">
               <div className="financing__card">
                 <LargeFinancingCalculator
@@ -339,11 +340,22 @@ const PlanPresentation: React.FC<{
                 />
               </div>
             </div>
-          </PrintHidden>
+          ) : (
+            <PrintHidden style={{ width: '100%' }}>
+              <div className="financing__wrapper">
+                <div className="financing__card">
+                  <LargeFinancingCalculator
+                    totalAmount={calculateFinalCost(plan)}
+                    financingOptions={financingOptions}
+                  />
+                </div>
+              </div>
+            </PrintHidden>
+          )}
         </div>
       </div>
 
-      {ModelStore.organization?.id != 'a4b5aa52-274d-4b1e-8f6b-3828f74c72d3' ? (
+      {ModelStore.organization?.id != 'dde63049-e00b-4e81-8beb-69fe7526eaa6' ? (
         <PrintHidden>
           <div className="acceptance">
             <div className="acceptance__header">
@@ -419,7 +431,7 @@ const PlanPresentation: React.FC<{
       )}
 
       {ModelStore.organization?.id !=
-        'a4b5aa52-274d-4b1e-8f6b-3828f74c72d3' && (
+        'dde63049-e00b-4e81-8beb-69fe7526eaa6' && (
         <PrintOnly>
           <div className="signature">
             <div>
