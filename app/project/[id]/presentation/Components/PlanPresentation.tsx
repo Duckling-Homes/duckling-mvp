@@ -330,7 +330,7 @@ const PlanPresentation: React.FC<{
             finalCost={formatCurrency(calculateFinalCost(plan))}
           />
           {ModelStore.organization?.id !=
-          'dde63049-e00b-4e81-8beb-69fe7526eaa6' ? (
+            'dde63049-e00b-4e81-8beb-69fe7526eaa6' && (
             <div className="financing__wrapper">
               <div className="financing__card">
                 <LargeFinancingCalculator
@@ -339,17 +339,6 @@ const PlanPresentation: React.FC<{
                 />
               </div>
             </div>
-          ) : (
-            <PrintHidden style={{ width: '100%' }}>
-              <div className="financing__wrapper">
-                <div className="financing__card">
-                  <LargeFinancingCalculator
-                    totalAmount={calculateFinalCost(plan)}
-                    financingOptions={financingOptions}
-                  />
-                </div>
-              </div>
-            </PrintHidden>
           )}
         </div>
       </div>
